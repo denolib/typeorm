@@ -74,7 +74,9 @@ export class EntityManager extends BaseEntityManager {
                     if (target.length === 0)
                         return Promise.resolve(target);
 
-                    return this.getRepository<Entity[]>(target[0].constructor).persist(entity as Entity[]);
+                    return Promise.all(target.map((t, i) => {
+                        return this.getRepository<Entity>(t.constructor).persist((entity as Entity[])[i]);
+                    }));
                 } else {
                     return this.getRepository<Entity>(target.constructor).persist(entity as Entity);
                 }
@@ -122,7 +124,9 @@ export class EntityManager extends BaseEntityManager {
             return this.getRepository<Entity|Entity[]>(target).remove(entity);
         } else {
             if (target instanceof Array) {
-                return this.getRepository<Entity[]>(target[0].constructor).remove(entity as Entity[]);
+                return Promise.all(target.map((t, i) => {
+                    return this.getRepository<Entity>(t.constructor).remove((entity as Entity[])[i]);
+                }));
             } else {
                 return this.getRepository<Entity>(target.constructor).remove(entity as Entity);
             }

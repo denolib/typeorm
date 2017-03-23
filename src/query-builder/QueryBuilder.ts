@@ -1585,9 +1585,9 @@ export class QueryBuilder<Entity> {
                 const junctionTable = junctionMetadata.table.name;
                 const junctionAlias = join.alias.parentAliasName + "_" + join.alias.name;
                 const joinAlias = join.alias.name;
-                const joinTable = relation.isOwning ? relation.joinTable : relation.inverseRelation.joinTable; // not sure if this is correct
-                const joinTableColumn = joinTable.referencedColumn.name; // not sure if this is correct
-                const inverseJoinColumnName = joinTable.inverseReferencedColumn.name; // not sure if this is correct
+                const joinTable = relation.isOwning ? relation.joinTable : relation.inverseRelation.joinTable;
+                const joinTableColumn = relation.isOwning ? joinTable.referencedColumn.name : joinTable.inverseReferencedColumn.name;
+                const inverseJoinColumnName = relation.isOwning ? joinTable.inverseReferencedColumn.name : joinTable.referencedColumn.name;
 
                 let condition1 = "", condition2 = "";
                 if (relation.isOwning) {

@@ -89,6 +89,8 @@ export {InsertEvent} from "./subscriber/event/InsertEvent";
 export {UpdateEvent} from "./subscriber/event/UpdateEvent";
 export {RemoveEvent} from "./subscriber/event/RemoveEvent";
 export {EntitySubscriberInterface} from "./subscriber/EntitySubscriberInterface";
+export {ObjectLiteral} from "./common/ObjectLiteral";
+export {ObjectType} from "./common/ObjectType";
 
 // -------------------------------------------------------------------------
 // Deprecated
