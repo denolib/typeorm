@@ -256,56 +256,29 @@ export class MongoEntityManager extends EntityManager {
      * This returns modified version of cursor that transforms each result into Entity model.
      */
     createEntityCursor<Entity>(entityClassOrName: ObjectType<Entity>|EntitySchema<Entity>|string, query?: ObjectLiteral): Cursor<Entity> {
-
         const metadata = this.connection.getMetadata(entityClassOrName);
         const cursor = this.createCursor(entityClassOrName, query);
-        const ParentCursor = PlatformTools.load("mongodb").Cursor;
-        cursor.toArray = function (callback?: MongoCallback<Entity[]>) {
-            if (callback) {
-                ParentCursor.prototype.toArray.call(this, (error: MongoError, results: Entity[]): void => {
-                    if (error) {
-                        callback(error, results);
-                        return;
-                    }
-
-                    const transformer = new DocumentToEntityTransformer();
-                    return callback(error, transformer.transformAll(results, metadata));
-                });
-            } else {
-                return ParentCursor.prototype.toArray.call(this).then((results: Entity[]) => {
-                    const transformer = new DocumentToEntityTransformer();
-                    return transformer.transformAll(results, metadata);
-                });
-            }
-        };
-        cursor.next = function (callback?: MongoCallback<CursorResult>) {
-            if (callback) {
-                ParentCursor.prototype.next.call(this, (error: MongoError, result: CursorResult): void => {
-                    if (error || !result) {
-                        callback(error, result);
-                        return;
-                    }
-
-                    const transformer = new DocumentToEntityTransformer();
-                    return callback(error, transformer.transform(result, metadata));
-                });
-            } else {
-                return ParentCursor.prototype.next.call(this).then((result: Entity) => {
-                    if (!result) return result;
-                    const transformer = new DocumentToEntityTransformer();
-                    return transformer.transform(result, metadata);
-                });
-            }
-        };
+        this.applyEntityTransformationToCursor(metadata, cursor);
         return cursor;
     }
 
     /**
      * Execute an aggregation framework pipeline against the collection.
      */
-    aggregate<Entity>(entityClassOrName: ObjectType<Entity>|EntitySchema<Entity>|string, pipeline: ObjectLiteral[], options?: CollectionAggregationOptions): AggregationCursor<Entity> {
+    aggregate<Entity, R = any>(entityClassOrName: ObjectType<Entity>|EntitySchema<Entity>|string, pipeline: ObjectLiteral[], options?: CollectionAggregationOptions): AggregationCursor<R> {
         const metadata = this.connection.getMetadata(entityClassOrName);
         return this.queryRunner.aggregate(metadata.tableName, pipeline, options);
+    }
+
+    /**
+     * Execute an aggregation framework pipeline against the collection.
+     * This returns modified version of cursor that transforms each result into Entity model.
+     */
+    aggregateEntity<Entity>(entityClassOrName: ObjectType<Entity>|EntitySchema<Entity>|string, pipeline: ObjectLiteral[], options?: CollectionAggregationOptions): AggregationCursor<Entity> {
+        const metadata = this.connection.getMetadata(entityClassOrName);
+        const cursor = this.queryRunner.aggregate(metadata.tableName, pipeline, options);
+        this.applyEntityTransformationToCursor(metadata, cursor);
+        return cursor;
     }
 
     /**
@@ -570,6 +543,50 @@ export class MongoEntityManager extends EntityManager {
     // -------------------------------------------------------------------------
     // Protected Methods
     // -------------------------------------------------------------------------
+
+    /**
+     * Overrides cursor's toArray and next methods to convert results to entity automatically.
+     */
+    protected applyEntityTransformationToCursor<Entity>(metadata: EntityMetadata, cursor: Cursor<Entity>|AggregationCursor<Entity>) {
+        const ParentCursor = PlatformTools.load("mongodb").Cursor;
+        cursor.toArray = function (callback?: MongoCallback<Entity[]>) {
+            if (callback) {
+                ParentCursor.prototype.toArray.call(this, (error: MongoError, results: Entity[]): void => {
+                    if (error) {
+                        callback(error, results);
+                        return;
+                    }
+
+                    const transformer = new DocumentToEntityTransformer();
+                    return callback(error, transformer.transformAll(results, metadata));
+                });
+            } else {
+                return ParentCursor.prototype.toArray.call(this).then((results: Entity[]) => {
+                    const transformer = new DocumentToEntityTransformer();
+                    return transformer.transformAll(results, metadata);
+                });
+            }
+        };
+        cursor.next = function (callback?: MongoCallback<CursorResult>) {
+            if (callback) {
+                ParentCursor.prototype.next.call(this, (error: MongoError, result: CursorResult): void => {
+                    if (error || !result) {
+                        callback(error, result);
+                        return;
+                    }
+
+                    const transformer = new DocumentToEntityTransformer();
+                    return callback(error, transformer.transform(result, metadata));
+                });
+            } else {
+                return ParentCursor.prototype.next.call(this).then((result: Entity) => {
+                    if (!result) return result;
+                    const transformer = new DocumentToEntityTransformer();
+                    return transformer.transform(result, metadata);
+                });
+            }
+        };
+    }
 
     /**
      * Converts FindManyOptions to mongodb query.

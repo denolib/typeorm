@@ -104,7 +104,7 @@ export class MongoRepository<Entity extends ObjectLiteral> extends Repository<En
     /**
      * Creates a cursor for a query that can be used to iterate over results from MongoDB.
      */
-    createCursor(query?: ObjectLiteral): Cursor<Entity> {
+    createCursor<T = any>(query?: ObjectLiteral): Cursor<T> {
         return this.manager.createCursor(this.metadata.target, query);
     }
 
@@ -119,8 +119,16 @@ export class MongoRepository<Entity extends ObjectLiteral> extends Repository<En
     /**
      * Execute an aggregation framework pipeline against the collection.
      */
-    aggregate(pipeline: ObjectLiteral[], options?: CollectionAggregationOptions): AggregationCursor<Entity> {
-        return this.manager.aggregate(this.metadata.target, pipeline, options);
+    aggregate<R = any>(pipeline: ObjectLiteral[], options?: CollectionAggregationOptions): AggregationCursor<R> {
+        return this.manager.aggregate<R>(this.metadata.target, pipeline, options);
+    }
+
+    /**
+     * Execute an aggregation framework pipeline against the collection.
+     * This returns modified version of cursor that transforms each result into Entity model.
+     */
+    aggregateEntity(pipeline: ObjectLiteral[], options?: CollectionAggregationOptions): AggregationCursor<Entity> {
+        return this.manager.aggregateEntity(this.metadata.target, pipeline, options);
     }
 
     /**
