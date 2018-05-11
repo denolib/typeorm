@@ -753,6 +753,8 @@ export abstract class QueryBuilder<Entity> {
 
                             const aliasPath = this.expressionMap.aliasNamePrefixingEnabled ? `${this.alias}.${propertyPath}` : column.propertyPath;
                             let parameterValue = column.getEntityValue(where, true);
+                            if (parameterValue === undefined)
+                                return;
                             const parameterName = "where_" + whereIndex + "_" + propertyIndex + "_" + columnIndex;
 
                             if (parameterValue === null) {

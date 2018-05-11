@@ -34,11 +34,18 @@ export class FindOperator<T> {
     // Constructor
     // -------------------------------------------------------------------------
 
-    constructor(type: FindOperatorType, value: T|FindOperator<T>, useParameter: boolean = true, multipleParameters: boolean = false) {
+    constructor(type: FindOperatorType,
+                value: T|FindOperator<T>,
+                useParameter: boolean = true,
+                multipleParameters: boolean = false) {
         this._type = type;
-        this._value = value;
         this._useParameter = useParameter;
         this._multipleParameters = multipleParameters;
+        this._value = value;
+        // if (condition !== undefined) {
+        //     this.condition = condition;
+        //     this._useParameter = condition === true ? true : false;
+        // }
     }
 
     // -------------------------------------------------------------------------
@@ -70,7 +77,7 @@ export class FindOperator<T> {
     /**
      * Gets the final value needs to be used as parameter value.
      */
-    get value(): T {
+    get value(): T|any {
         if (this._value instanceof FindOperator)
             return this._value.value;
 

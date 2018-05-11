@@ -2,6 +2,8 @@ import {FindOneOptions} from "./FindOneOptions";
 
 /**
  * Defines a special criteria to find specific entities.
+ *
+ * @deprecated
  */
 export interface FindManyOptions<Entity = any> extends FindOneOptions<Entity> {
 

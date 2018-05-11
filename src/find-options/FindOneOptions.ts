@@ -4,6 +4,8 @@ import {FindConditions} from "./FindConditions";
 
 /**
  * Defines a special criteria to find specific entity.
+ *
+ * @deprecated
  */
 export interface FindOneOptions<Entity = any> {
 

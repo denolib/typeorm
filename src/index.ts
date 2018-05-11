@@ -81,6 +81,8 @@ export * from "./find-options/operator/Like";
 export * from "./find-options/operator/MoreThan";
 export * from "./find-options/operator/Not";
 export * from "./find-options/operator/Raw";
+export * from "./find-options/operator/If";
+export * from "./find-options/operator/Switch";
 export * from "./find-options/FindConditions";
 export * from "./find-options/FindManyOptions";
 export * from "./find-options/FindOneOptions";

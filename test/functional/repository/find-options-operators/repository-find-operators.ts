@@ -1,15 +1,29 @@
 import "reflect-metadata";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
-import {Any, Between, Connection, Equal, In, IsNull, LessThan, Like, MoreThan, Not} from "../../../../src";
+import {
+    Any,
+    Between,
+    Connection,
+    Equal,
+    If,
+    In,
+    IsNull,
+    LessThan,
+    Like,
+    MoreThan,
+    Not,
+    Raw,
+    Switch
+} from "../../../../src";
 import {Post} from "./entity/Post";
 import {PostgresDriver} from "../../../../src/driver/postgres/PostgresDriver";
-import {Raw} from "../../../../src/find-options/operator/Raw";
 
-describe("repository > find options > operators", () => {
+describe.only("repository > find options > operators", () => {
 
     let connections: Connection[];
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"]
+        entities: [__dirname + "/entity/*{.js,.ts}"],
+        enabledDrivers: ["mysql"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
@@ -414,6 +428,185 @@ describe("repository > find options > operators", () => {
             likes: Raw(columnAlias => "1 + " + columnAlias + " = 4")
         });
         loadedPosts.should.be.eql([{ id: 2, likes: 3, title: "About #2" }]);
+
+    })));
+
+    it("if (true)", () => Promise.all(connections.map(async connection => {
+
+        // insert some fake data
+        const post1 = new Post();
+        post1.title = "About #1";
+        post1.likes = 12;
+        await connection.manager.save(post1);
+        const post2 = new Post();
+        post2.title = "About #2";
+        post2.likes = 3;
+        await connection.manager.save(post2);
+
+        // check operator
+        const loadedPosts = await connection.getRepository(Post).find({
+            title: If(10 === (5 + 5), "About #1")
+        });
+        loadedPosts.should.be.eql([{ id: 1, likes: 12, title: "About #1" }]);
+
+    })));
+
+    it("if (false)", () => Promise.all(connections.map(async connection => {
+
+        // insert some fake data
+        const post1 = new Post();
+        post1.title = "About #1";
+        post1.likes = 12;
+        await connection.manager.save(post1);
+        const post2 = new Post();
+        post2.title = "About #2";
+        post2.likes = 3;
+        await connection.manager.save(post2);
+
+        // check operator
+        const loadedPosts = await connection.getRepository(Post).find({
+            title: If(9 === (5 + 5), "About #1")
+        });
+        loadedPosts.length.should.be.eql(2);
+
+    })));
+
+    it("if (else)", () => Promise.all(connections.map(async connection => {
+
+        // insert some fake data
+        const post1 = new Post();
+        post1.title = "About #1";
+        post1.likes = 12;
+        await connection.manager.save(post1);
+        const post2 = new Post();
+        post2.title = "About #2";
+        post2.likes = 3;
+        await connection.manager.save(post2);
+
+        // check operator
+        const loadedPosts = await connection.getRepository(Post).find({
+            title: If(9 === (5 + 5), "About #1", "About #2")
+        });
+        loadedPosts.should.be.eql([{ id: 2, likes: 3, title: "About #2" }]);
+
+    })));
+
+    it("if (operator)", () => Promise.all(connections.map(async connection => {
+
+        // insert some fake data
+        const post1 = new Post();
+        post1.title = "About #1";
+        post1.likes = 12;
+        await connection.manager.save(post1);
+        const post2 = new Post();
+        post2.title = "About #2";
+        post2.likes = 3;
+        await connection.manager.save(post2);
+
+        // check operator
+        const loadedPosts = await connection.getRepository(Post).find({
+            title: If(10 === (5 + 5), Like("About #%"))
+        });
+        loadedPosts.length.should.be.eql(2);
+
+    })));
+
+    it("switch", () => Promise.all(connections.map(async connection => {
+
+        // insert some fake data
+        const post1 = new Post();
+        post1.title = "About #1";
+        post1.likes = 12;
+        await connection.manager.save(post1);
+        const post2 = new Post();
+        post2.title = "About #2";
+        post2.likes = 3;
+        await connection.manager.save(post2);
+
+        const value1: "one"|"two"|"three"|"four"|"five"|"move than five"|"less that five" = "two";
+        const loadedPosts1 = await connection.getRepository(Post).find({
+            likes: Switch(value1, {
+                "one": 1,
+                "two": 2,
+                "three": 3,
+                "four": 4,
+                "five": 5,
+                "move than five": MoreThan(5),
+                "less that five": Not(MoreThan(5)),
+            })
+        });
+        loadedPosts1.length.should.be.equal(0);
+
+        const value2: "one"|"two"|"three"|"four"|"five"|"move than five"|"less that five" = "three";
+        const loadedPosts2 = await connection.getRepository(Post).find({
+            likes: Switch(value2, {
+                "one": 1,
+                "two": 2,
+                "three": 3,
+                "four": 4,
+                "five": 5,
+                "move than five": MoreThan(5),
+                "less that five": Not(MoreThan(5)),
+            })
+        });
+        loadedPosts2.should.be.eql([{ id: 2, likes: 3, title: "About #2" }]);
+
+        const value3: "one"|"two"|"three"|"four"|"five"|"move than five"|"less that five" = "move than five";
+        const loadedPosts3 = await connection.getRepository(Post).find({
+            likes: Switch(value3, {
+                "one": 1,
+                "two": 2,
+                "three": 3,
+                "four": 4,
+                "five": 5,
+                "move than five": MoreThan(5),
+                "less that five": Not(MoreThan(5)),
+            })
+        });
+        loadedPosts3.should.be.eql([{ id: 1, likes: 12, title: "About #1" }]);
+
+        const value4: "one"|"two"|"three"|"four"|"five"|"move than five"|"less that five" = "less that five";
+        const loadedPosts4 = await connection.getRepository(Post).find({
+            likes: Switch(value4, {
+                "one": 1,
+                "two": 2,
+                "three": 3,
+                "four": 4,
+                "five": 5,
+                "move than five": MoreThan(5),
+                "less that five": Not(MoreThan(5)),
+            })
+        });
+        loadedPosts4.should.be.eql([{ id: 2, likes: 3, title: "About #2" }]);
+
+        const value5: "one"|"two"|"three"|"four"|"five"|"move than five"|"less that five"|"something else" = "something else";
+        const loadedPosts5 = await connection.getRepository(Post).find({
+            likes: Switch(value5, {
+                "one": 1,
+                "two": 2,
+                "three": 3,
+                "four": 4,
+                "five": 5,
+                "move than five": MoreThan(5),
+                "less that five": Not(MoreThan(5)),
+                "_": 3
+            })
+        });
+        loadedPosts5.should.be.eql([{ id: 2, likes: 3, title: "About #2" }]);
+
+        const value6: "one"|"two"|"three"|"four"|"five"|"move than five"|"less that five"|"something else" = "something else";
+        const loadedPosts6 = await connection.getRepository(Post).find({
+            likes: Switch(value6, {
+                "one": 1,
+                "two": 2,
+                "three": 3,
+                "four": 4,
+                "five": 5,
+                "move than five": MoreThan(5),
+                "less that five": Not(MoreThan(5))
+            })
+        });
+        loadedPosts6.length.should.be.equal(2);
 
     })));
 
