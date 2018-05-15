@@ -18,12 +18,11 @@ import {
 import {Post} from "./entity/Post";
 import {PostgresDriver} from "../../../../src/driver/postgres/PostgresDriver";
 
-describe.only("repository > find options > operators", () => {
+describe("repository > find options > operators", () => {
 
     let connections: Connection[];
     before(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
-        enabledDrivers: ["mysql"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));

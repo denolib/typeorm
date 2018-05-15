@@ -622,6 +622,14 @@ export class EntityMetadata {
     }
 
     /**
+     * Finds column with a given property path.
+     * Does not search in relation unlike findColumnWithPropertyPath.
+     */
+    findColumnWithPropertyPathStrict(propertyPath: string): ColumnMetadata|undefined {
+        return this.columns.find(column => column.propertyPath === propertyPath);
+    }
+
+    /**
      * Finds columns with a given property path.
      * Property path can match a relation, and relations can contain multiple columns.
      */
