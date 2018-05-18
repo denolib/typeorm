@@ -1,7 +1,5 @@
 import {FindOperator} from "./FindOperator";
-import {EntityMetadata, ObjectLiteral, ObjectType, QueryRunner, SelectQueryBuilder} from "..";
-import {getConnection, getManager} from "../index";
-import {RelationMetadata} from "../metadata/RelationMetadata";
+import {QueryRunner} from "..";
 
 /**
  * Value of order by in find options.
@@ -14,10 +12,10 @@ export type FindOptionsOrderByValue = "ASC" | "DESC" | "asc" | "desc" | 1 | -1 |
 /**
  * Order by find options.
  */
-export type FindOptionsOrderBy<E> = {
+export type FindOptionsOrder<E> = {
     [P in keyof E]?:
-        E[P] extends (infer R)[] ? FindOptionsOrderBy<R> :
-        E[P] extends object ? FindOptionsOrderBy<E[P]> :
+        E[P] extends (infer R)[] ? FindOptionsOrder<R> :
+        E[P] extends object ? FindOptionsOrder<E[P]> :
         FindOptionsOrderByValue;
 };
 
@@ -34,7 +32,7 @@ export type FindOptionsRelation<E> = {
 /**
  * Select find options.
  */
-export type FindOptionsSelect<E> = {
+export type FindOptionsSelect<E> = (keyof E)[]|{
     [P in keyof E]?:
         E[P] extends (infer R)[] ? FindOptionsSelect<R> | boolean :
         E[P] extends object ? FindOptionsSelect<E[P]> | boolean :
@@ -107,7 +105,7 @@ export type FindOptions<E> = {
      * Specifies what columns should be selected.
      * Used for partial selections.
      */
-    select?: (keyof E)[]|FindOptionsSelect<E>;
+    select?: FindOptionsSelect<E>;
 
     /**
      * Conditions that should be applied to match entities.
@@ -115,20 +113,9 @@ export type FindOptions<E> = {
     where?: FindOptionsWhere<E>;
 
     /**
-     * Conditions that should be applied to match entities after data selection (using SQL's HAVING operator).
-     */
-    having?: FindOptionsWhere<E>;
-
-    /**
      * Order, in which entities should be ordered.
      */
-    orderBy?: FindOptionsOrderBy<E>;
-
-    /**
-     * Relations that needs to be joined and returned in a single SQL query.
-     * If you have lot of data returned by your query then its more efficient to load it using relations instead of joins.
-     */
-    joins?: (keyof E)[]|FindOptionsRelation<E>;
+    order?: FindOptionsOrder<E>;
 
     /**
      * Relations that needs to be loaded in a separate SQL queries.
@@ -166,106 +153,3 @@ export type FindManyOptions<E> = FindOptions<E> & {
     take?: number;
 
 };
-
-export class ModernQueryBuilder<E> {
-
-    protected options: FindManyOptions<E>;
-    protected mainMetadata: EntityMetadata;
-    protected mainAlias: string;
-    protected queryBuilder: SelectQueryBuilder<E>;
-    protected loaded: { relation: RelationMetadata }[];
-
-    protected selects: string[] = [];
-    protected joins: { alias: string, relationMetadata: RelationMetadata }[] = [];
-    protected conditions: string[] = [];
-    protected parameters: ObjectLiteral = {};
-
-    constructor(entity: ObjectType<E>, options: FindManyOptions<E>) {
-        this.options = options;
-        this.mainMetadata = getConnection().entityMetadatas.find(metadata => metadata.target === entity)!;
-        this.mainAlias = this.mainMetadata.targetName;
-        this.queryBuilder = getManager().createQueryBuilder(entity, this.mainAlias);
-    }
-
-    build<E>() {
-        this.select();
-
-        if (this.options.where)
-            this.where(this.options.where, this.mainMetadata, this.mainAlias);
-
-        if (this.selects.length)
-            this.queryBuilder.addSelect(this.selects);
-        if (this.conditions.length)
-            this.queryBuilder.where(this.conditions.join(" AND "));
-
-        this.queryBuilder.setParameters(this.parameters);
-        return this.queryBuilder;
-    }
-
-    protected select() {
-        if (!this.options.select)
-            return;
-
-        if (this.options.select instanceof Array) {
-            this.options.select.forEach(select => {
-                this.selects.push(this.mainAlias + "." + select);
-            });
-
-        } else {
-            for (let key in this.options.select) {
-
-                const column = this.mainMetadata.findColumnWithPropertyPath(key);
-                const embed = this.mainMetadata.findEmbeddedWithPropertyPath(key);
-                const relation = this.mainMetadata.findRelationWithPropertyPath(key);
-                if (!embed && !column && !relation)
-                    throw new Error(`${key} was not found`);
-
-                if (column) {
-                    if (this.options.select[key] === true) {
-                        this.selects.push(this.mainAlias + "." + key);
-                    }
-                } else if (embed) {
-
-                } else if (relation) {
-
-                }
-
-            }
-        }
-    }
-
-    protected where(where: FindOptionsWhere<any>, metadata: EntityMetadata, alias: string) {
-        for (let key in where) {
-
-            const column = metadata.findColumnWithPropertyPath(key);
-            const embed = metadata.findEmbeddedWithPropertyPath(key);
-            const relation = metadata.findRelationWithPropertyPath(key);
-            if (!embed && !column && !relation)
-                throw new Error(`${key} was not found`);
-
-            if (column) {
-                this.addWhereCondition(alias, key, where[key]);
-
-            } else if (embed) {
-
-            } else if (relation) {
-                const joinAlias = alias + "_" + relation.propertyName;
-                this.joins.push({
-                    alias: joinAlias,
-                    relationMetadata: relation
-                });
-                this.where(where[key], relation.entityMetadata, joinAlias);
-            }
-        }
-    }
-
-    protected addWhereCondition(alias: string, propertyPath: string, value: any) {
-        if (value === undefined)
-            return;
-
-        const paramName = alias + "_" + propertyPath.replace(".", "_");
-        this.conditions.push(`${alias}.${propertyPath} = :${paramName}`);
-        this.parameters[paramName] = value; // todo: handle functions and other edge cases
-    }
-
-}
