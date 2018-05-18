@@ -20,14 +20,27 @@ export type FindOptionsOrder<E> = {
 };
 
 /**
+ * Filters and lefts only object-type properties from the object.
+ * Used in relations find options.
+ */
+export type FindOptionsRelationKeyName<E> = {
+    [K in keyof E]: E[K] extends object ? K : never
+}[keyof E];
+
+/**
+ * Flattens array type in the object.
+ * Used in relations find options.
+ */
+export type FindOptionsRelationKey<E> = {
+    [P in keyof E]?:
+        E[P] extends (infer R)[] ? FindOptionsRelation<R>|boolean :
+        FindOptionsRelation<E[P]>|boolean;
+};
+
+/**
  * Relations find options.
  */
-export type FindOptionsRelation<E> = {
-    [P in keyof E]?:
-        E[P] extends (infer R)[] ? FindOptionsRelation<R> | boolean :
-        E[P] extends object ? FindOptionsRelation<E[P]> | boolean :
-        boolean;
-};
+export type FindOptionsRelation<E> = FindOptionsRelationKey<Pick<E, FindOptionsRelationKeyName<E>>>;
 
 /**
  * Select find options.

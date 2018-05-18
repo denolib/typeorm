@@ -33,6 +33,7 @@ import {OffsetWithoutLimitNotSupportedError} from "../error/OffsetWithoutLimitNo
 import {BroadcasterResult} from "../subscriber/BroadcasterResult";
 import {abbreviate} from "../util/StringUtils";
 import {SelectQueryBuilderOption} from "./SelectQueryBuilderOption";
+import {FindOptionsSelect} from "../find-options/FindOptions";
 
 /**
  * Allows to build complex sql queries in a fashion way and execute those queries.
@@ -100,18 +101,26 @@ export class SelectQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
     select(selection: string[]): this;
 
     /**
+     * Creates SELECT query based on find options.
+     * Replaces all previous selections if they exist.
+     */
+    select(options: FindOptionsSelect<Entity>): this;
+
+    /**
      * Creates SELECT query and selects given data.
      * Replaces all previous selections if they exist.
      */
-    select(selection?: string|string[]|((qb: SelectQueryBuilder<any>) => SelectQueryBuilder<any>), selectionAliasName?: string): SelectQueryBuilder<Entity> {
+    select(selection?: string|string[]|((qb: SelectQueryBuilder<any>) => SelectQueryBuilder<any>)|FindOptionsSelect<Entity>, selectionAliasName?: string): SelectQueryBuilder<Entity> {
         this.expressionMap.queryType = "select";
         if (selection instanceof Array) {
-            this.expressionMap.selects = selection.map(selection => ({ selection: selection }));
+            this.expressionMap.selects = (selection as string[]).map(selection => ({ selection: selection }));
 
         } else if (selection instanceof Function) {
             const subQueryBuilder = selection(this.subQuery());
             this.setParameters(subQueryBuilder.getParameters());
             this.expressionMap.selects.push({ selection: subQueryBuilder.getQuery(), aliasName: selectionAliasName });
+
+        } else if (selection instanceof Object) {
 
         } else if (selection) {
             this.expressionMap.selects = [{ selection: selection, aliasName: selectionAliasName }];

@@ -5,7 +5,7 @@ import {FindOptionsBuilder} from "../../../../src/find-options/FindOptionsBuilde
 import {Post} from "./entity/Post";
 import {prepareData} from "./find-options-test-utils";
 
-describe.only("find options > select", () => {
+describe("find options > select", () => {
 
     let connections: Connection[];
     before(async () => connections = await createTestingConnections({

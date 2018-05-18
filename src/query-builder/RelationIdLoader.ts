@@ -1,4 +1,4 @@
-import {Connection, ObjectLiteral} from "../";
+import {Connection, ObjectLiteral, SelectQueryBuilder} from "../";
 import {RelationMetadata} from "../metadata/RelationMetadata";
 import {ColumnMetadata} from "../metadata/ColumnMetadata";
 
@@ -21,34 +21,10 @@ export class RelationIdLoader {
     /**
      * Loads relation ids of the given entity or entities.
      */
-    async load(target: Function|string, relation: string, entities: ObjectLiteral|ObjectLiteral[], relatedEntities?: ObjectLiteral|ObjectLiteral[]): Promise<any[]>;
+    async load(relation: RelationMetadata, entityOrEntities: ObjectLiteral|ObjectLiteral[], relatedEntityOrRelatedEntities?: ObjectLiteral|ObjectLiteral[]): Promise<any[]> {
 
-    /**
-     * Loads relation ids of the given entity or entities.
-     */
-    async load(relation: RelationMetadata, entities: ObjectLiteral|ObjectLiteral[], relatedEntities?: ObjectLiteral|ObjectLiteral[]): Promise<any[]>;
-
-    /**
-     * Loads relation ids of the given entity or entities.
-     */
-    async load(relationOrTarget: RelationMetadata|Function|string, relationNameOrEntities: string|ObjectLiteral|ObjectLiteral[], entitiesOrRelatedEntities?: ObjectLiteral|ObjectLiteral[], maybeRelatedEntities?: ObjectLiteral|ObjectLiteral[]): Promise<any[]> {
-
-        // normalize arguments
-        let relation: RelationMetadata|undefined, entities: ObjectLiteral[], relatedEntities: ObjectLiteral[]|undefined;
-        if (relationOrTarget instanceof RelationMetadata) {
-            relation = relationOrTarget;
-            entities = relationNameOrEntities instanceof Array ? relationNameOrEntities as ObjectLiteral[] : [relationNameOrEntities as ObjectLiteral];
-            relatedEntities = entitiesOrRelatedEntities instanceof Array ? entitiesOrRelatedEntities as ObjectLiteral[] : (entitiesOrRelatedEntities ? [entitiesOrRelatedEntities as ObjectLiteral] : undefined);
-
-        } else {
-            const entityMetadata = this.connection.getMetadata(relationOrTarget);
-            relation = entityMetadata.findRelationWithPropertyPath(relationNameOrEntities as string);
-            if (!relation)
-                throw new Error(`Relation "${relation}" was not found in "${entityMetadata.name}".`);
-
-            entities = entitiesOrRelatedEntities instanceof Array ? entitiesOrRelatedEntities as ObjectLiteral[] : [entitiesOrRelatedEntities as ObjectLiteral];
-            relatedEntities = maybeRelatedEntities instanceof Array ? maybeRelatedEntities as ObjectLiteral[] : (maybeRelatedEntities ? [maybeRelatedEntities as ObjectLiteral] : undefined);
-        }
+        const entities = entityOrEntities instanceof Array ? entityOrEntities : [entityOrEntities];
+        const relatedEntities = relatedEntityOrRelatedEntities instanceof Array ? relatedEntityOrRelatedEntities : (relatedEntityOrRelatedEntities ? [relatedEntityOrRelatedEntities] : undefined);
 
         // load relation ids depend of relation type
         if (relation.isManyToMany) {
@@ -70,7 +46,8 @@ export class RelationIdLoader {
     async loadManyToManyRelationIdsAndGroup<E1, E2>(
         relation: RelationMetadata,
         entitiesOrEntities: E1|E1[],
-        relatedEntityOrEntities?: E2|E2[]
+        relatedEntityOrEntities?: E2|E2[],
+        queryBuilder?: SelectQueryBuilder<any>
     ): Promise<{ entity: E1, related?: E2|E2[] }[]> {
 
         // console.log("relation:", relation.propertyName);
@@ -79,7 +56,7 @@ export class RelationIdLoader {
         const entities: E1[] = entitiesOrEntities instanceof Array ? entitiesOrEntities : [entitiesOrEntities];
 
         if (!relatedEntityOrEntities) {
-            relatedEntityOrEntities = await this.connection.relationLoader.load(relation, entitiesOrEntities);
+            relatedEntityOrEntities = await this.connection.relationLoader.load(relation, entitiesOrEntities, undefined, queryBuilder);
             if (!relatedEntityOrEntities.length)
                 return entities.map(entity => ({ entity: entity, related: isMany ? [] : undefined }));
         }

@@ -1,9 +1,17 @@
-import {FindManyOptions, FindOptionsOrder, FindOptionsSelect, FindOptionsWhere} from "./FindOptions";
+import {
+    FindManyOptions,
+    FindOptions,
+    FindOptionsOrder,
+    FindOptionsRelation,
+    FindOptionsSelect,
+    FindOptionsWhere
+} from "./FindOptions";
 import {Connection, EntityMetadata, ObjectLiteral, ObjectType, SelectQueryBuilder} from "..";
 import {RelationMetadata} from "../metadata/RelationMetadata";
 
 export class FindOptionsBuilder<E> {
 
+    protected connection: Connection;
     protected options: FindManyOptions<E>;
     protected mainMetadata: EntityMetadata;
     protected mainAlias: string;
@@ -16,11 +24,35 @@ export class FindOptionsBuilder<E> {
     protected orderBys: { alias: string, direction: "ASC"|"DESC", nulls?: "NULLS FIRST"|"NULLS LAST" }[] = [];
     protected parameters: ObjectLiteral = {};
 
-    constructor(connection: Connection, entity: ObjectType<E>, options: FindManyOptions<E>) {
+    protected relationMetadatas: RelationMetadata[] = [];
+
+    constructor(connection: Connection, entity: ObjectType<E>|string, options: FindManyOptions<E>) {
+        this.connection = connection;
         this.options = options;
         this.mainMetadata = connection.entityMetadatas.find(metadata => metadata.target === entity)!;
         this.mainAlias = this.mainMetadata.targetName;
         this.queryBuilder = connection.createQueryBuilder(entity, this.mainAlias, options.options && options.options.queryRunner ? options.options.queryRunner : undefined);
+    }
+
+    async getMany() {
+        const entities = await this.build().getMany();
+        await Promise.all(this.relationMetadatas.map(async relation => {
+
+            const queryBuilder = new FindOptionsBuilder(this.connection, relation.inverseEntityMetadata.target, {
+                select: typeof this.options.select === "object" ? (this.options.select as any)[relation.propertyName] : undefined,
+                order: this.options.order ? (this.options.order as FindOptionsOrder<any>)[relation.propertyName] as FindOptionsOrder<any> : undefined,
+                relations: this.options.relations ? (this.options.relations as FindOptionsRelation<any>)[relation.propertyName] as FindOptionsRelation<any> : undefined,
+            }).build();
+
+            const relatedEntityGroups: any[] = await this.connection.relationIdLoader.loadManyToManyRelationIdsAndGroup(relation, entities, undefined, queryBuilder);
+            entities.forEach(entity => {
+                const relatedEntityGroup = relatedEntityGroups.find(group => group.entity === entity);
+                if (relatedEntityGroup) {
+                    relation.setEntityValue(entity, relatedEntityGroup.related);
+                }
+            });
+        }));
+        return entities;
     }
 
     build<E>() {
@@ -32,6 +64,9 @@ export class FindOptionsBuilder<E> {
 
         if (this.options.order)
             this.buildOrder(this.options.order, this.mainMetadata, this.mainAlias);
+
+        if (this.options.relations)
+            this.buildRelations(this.options, this.mainMetadata);
 
         // add selects
         if (this.selects.length)
@@ -151,6 +186,32 @@ export class FindOptionsBuilder<E> {
                 //     this.buildOrder(select[key] as FindOptionsOrder<any>, relation.inverseEntityMetadata, joinAlias);
                 }
             }
+        }
+    }
+
+    protected buildRelations(options: FindOptions<any>, metadata: EntityMetadata) {
+        if (!options.relations)
+            return;
+
+        if (options.relations instanceof Array) {
+            options.relations.forEach(relationName => {
+                const relation = metadata.findRelationWithPropertyPath(relationName);
+                if (!relation)
+                    throw new Error(`Relation "${relationName}" was not found in ${metadata.targetName}. Make sure your query is correct.`);
+
+                this.relationMetadatas.push(relation);
+            });
+        } else {
+            Object.keys(options.relations).forEach(relationName => {
+                const relationValue = (options.relations as any)[relationName];
+                if (relationValue === true || relationValue instanceof Object) {
+                    const relation = metadata.findRelationWithPropertyPath(relationName);
+                    if (!relation)
+                        throw new Error(`Relation "${relationName}" was not found in ${metadata.targetName}. Make sure your query is correct.`);
+
+                    this.relationMetadatas.push(relation);
+                }
+            });
         }
     }
 
