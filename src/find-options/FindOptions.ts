@@ -40,7 +40,7 @@ export type FindOptionsRelationKey<E> = {
 /**
  * Relations find options.
  */
-export type FindOptionsRelation<E> = FindOptionsRelationKey<Pick<E, FindOptionsRelationKeyName<E>>>;
+export type FindOptionsRelation<E> = FindOptionsRelationKeyName<E>[]|FindOptionsRelationKey<Pick<E, FindOptionsRelationKeyName<E>>>;
 
 /**
  * Select find options.
@@ -134,7 +134,7 @@ export type FindOptions<E> = {
      * Relations that needs to be loaded in a separate SQL queries.
      * If you have lot of data returned by your query then its more efficient to load it using relations instead of joins.
      */
-    relations?: (keyof E)[]|FindOptionsRelation<E>;
+    relations?: FindOptionsRelation<E>;
 
     /**
      * Query caching options.

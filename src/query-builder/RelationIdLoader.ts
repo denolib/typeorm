@@ -89,24 +89,23 @@ export class RelationIdLoader {
 
         return entities.map(entity => {
             const group: { entity: E1, related?: E2|E2[] } = { entity: entity, related: isMany ? [] : undefined };
-            relationIds.forEach(relationId => {
-                const entityMatched = inverseColumns.every(column => {
-                    return column.getEntityValue(entity) === relationId[column.entityMetadata.name + "_" + column.propertyPath.replace(".", "_")];
-                });
-                if (entityMatched) {
-                    relatedEntities.forEach(relatedEntity => {
-                        const relatedEntityMatched = columns.every(column => {
-                            return column.getEntityValue(relatedEntity) === relationId[column.entityMetadata.name + "_" + relation.propertyPath.replace(".", "_") + "_" + column.propertyPath.replace(".", "_")];
-                        });
-                        if (relatedEntityMatched) {
-                            if (isMany) {
-                                (group.related as E2[]).push(relatedEntity);
-                            } else {
-                                group.related = relatedEntity;
-                            }
-                        }
+
+            relatedEntities.forEach(relatedEntity => {
+                relationIds.forEach(relationId => {
+                    const entityMatched = inverseColumns.every(column => {
+                        return column.getEntityValue(entity) === relationId[column.entityMetadata.name + "_" + column.propertyPath.replace(".", "_")];
                     });
-                }
+                    const relatedEntityMatched = columns.every(column => {
+                        return column.getEntityValue(relatedEntity) === relationId[column.entityMetadata.name + "_" + relation.propertyPath.replace(".", "_") + "_" + column.propertyPath.replace(".", "_")];
+                    });
+                    if (entityMatched && relatedEntityMatched) {
+                        if (isMany) {
+                            (group.related as E2[]).push(relatedEntity);
+                        } else {
+                            group.related = relatedEntity;
+                        }
+                    }
+                });
             });
             return group;
         });

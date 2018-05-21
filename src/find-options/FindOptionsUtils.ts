@@ -66,7 +66,7 @@ export class FindOptionsUtils {
             return this.applyOptionsToQueryBuilder(qb, options);
 
         if (options)
-            return qb.where(options);
+            return qb.where(options as any); // todo
 
         return qb;
     }
@@ -97,7 +97,7 @@ export class FindOptionsUtils {
         }
 
         if (options.where)
-            qb.where(options.where);
+            qb.where(options.where as any); // todo
 
         if ((options as FindManyOptions<T>).skip)
             qb.skip((options as FindManyOptions<T>).skip!);

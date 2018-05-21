@@ -1,109 +1,106 @@
 import "reflect-metadata";
 import {Connection} from "../../../../src";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
-import {FindOptionsBuilder} from "../../../../src/find-options/FindOptionsBuilder";
 import {Post} from "./entity/Post";
 import {prepareData} from "./find-options-test-utils";
+import {PostgresDriver} from "../../../../src/driver/postgres/PostgresDriver";
 
 describe("find options > order", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
-        __dirname,
-        enabledDrivers: ["sqlite"]
-    }));
+    before(async () => connections = await createTestingConnections({ __dirname }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
 
     it("order by id DESC", () => Promise.all(connections.map(async connection => {
         await prepareData(connection.manager);
 
-        const posts1 = await new FindOptionsBuilder(connection, Post, {
+        const posts1 = await connection.createQueryBuilder(Post, "post").setFindOptions({
             order: {
                 id: "ASC"
             }
-        }).build().getMany();
+        }).getMany();
         posts1.should.be.eql([
             { id: 1, title: "Post #1", text: "About post #1", counters: { likes: 1 } },
             { id: 2, title: "Post #2", text: "About post #2", counters: { likes: 2 } },
             { id: 3, title: "Post #3", text: "About post #3", counters: { likes: 1 } },
         ]);
 
-        const posts2 = await new FindOptionsBuilder(connection, Post, {
+        const posts2 = await connection.createQueryBuilder(Post, "post").setFindOptions({
             order: {
                 id: "asc"
             }
-        }).build().getMany();
+        }).getMany();
         posts2.should.be.eql([
             { id: 1, title: "Post #1", text: "About post #1", counters: { likes: 1 } },
             { id: 2, title: "Post #2", text: "About post #2", counters: { likes: 2 } },
             { id: 3, title: "Post #3", text: "About post #3", counters: { likes: 1 } },
         ]);
 
-        const posts3 = await new FindOptionsBuilder(connection, Post, {
+        const posts3 = await connection.createQueryBuilder(Post, "post").setFindOptions({
             order: {
                 id: 1
             }
-        }).build().getMany();
+        }).getMany();
         posts3.should.be.eql([
             { id: 1, title: "Post #1", text: "About post #1", counters: { likes: 1 } },
             { id: 2, title: "Post #2", text: "About post #2", counters: { likes: 2 } },
             { id: 3, title: "Post #3", text: "About post #3", counters: { likes: 1 } },
         ]);
 
-        const posts4 = await new FindOptionsBuilder(connection, Post, {
+        const posts4 = await connection.createQueryBuilder(Post, "post").setFindOptions({
             order: {
                 id: {
                     direction: "asc"
                 }
             }
-        }).build().getMany();
+        }).getMany();
         posts4.should.be.eql([
             { id: 1, title: "Post #1", text: "About post #1", counters: { likes: 1 } },
             { id: 2, title: "Post #2", text: "About post #2", counters: { likes: 2 } },
             { id: 3, title: "Post #3", text: "About post #3", counters: { likes: 1 } },
         ]);
 
-        const posts5 = await new FindOptionsBuilder(connection, Post, {
+        const posts5 = await connection.createQueryBuilder(Post, "post").setFindOptions({
             order: {
                 id: "DESC"
             }
-        }).build().getMany();
+        }).getMany();
         posts5.should.be.eql([
             { id: 3, title: "Post #3", text: "About post #3", counters: { likes: 1 } },
             { id: 2, title: "Post #2", text: "About post #2", counters: { likes: 2 } },
             { id: 1, title: "Post #1", text: "About post #1", counters: { likes: 1 } },
         ]);
 
-        const posts6 = await new FindOptionsBuilder(connection, Post, {
+        const posts6 = await connection.createQueryBuilder(Post, "post").setFindOptions({
             order: {
                 id: "desc"
             }
-        }).build().getMany();
+        }).getMany();
         posts6.should.be.eql([
             { id: 3, title: "Post #3", text: "About post #3", counters: { likes: 1 } },
             { id: 2, title: "Post #2", text: "About post #2", counters: { likes: 2 } },
             { id: 1, title: "Post #1", text: "About post #1", counters: { likes: 1 } },
         ]);
 
-        const posts7 = await new FindOptionsBuilder(connection, Post, {
+        const posts7 = await connection.createQueryBuilder(Post, "post").setFindOptions({
             order: {
                 id: -1
             }
-        }).build().getMany();
+        }).getMany();
         posts7.should.be.eql([
             { id: 3, title: "Post #3", text: "About post #3", counters: { likes: 1 } },
             { id: 2, title: "Post #2", text: "About post #2", counters: { likes: 2 } },
             { id: 1, title: "Post #1", text: "About post #1", counters: { likes: 1 } },
         ]);
 
-        const posts8 = await new FindOptionsBuilder(connection, Post, {
+        const posts8 = await connection.createQueryBuilder(Post, "post").setFindOptions({
             order: {
                 id: {
                     direction: "DESC"
                 }
             }
-        }).build().getMany();
+        }).getMany();
         posts8.should.be.eql([
             { id: 3, title: "Post #3", text: "About post #3", counters: { likes: 1 } },
             { id: 2, title: "Post #2", text: "About post #2", counters: { likes: 2 } },
@@ -114,11 +111,11 @@ describe("find options > order", () => {
     it("order by title", () => Promise.all(connections.map(async connection => {
         await prepareData(connection.manager);
 
-        const posts = await new FindOptionsBuilder(connection, Post, {
+        const posts = await connection.createQueryBuilder(Post, "post").setFindOptions({
             order: {
                 title: "desc"
             }
-        }).build().getMany();
+        }).getMany();
         posts.should.be.eql([
             { id: 3, title: "Post #3", text: "About post #3", counters: { likes: 1 } },
             { id: 2, title: "Post #2", text: "About post #2", counters: { likes: 2 } },
@@ -129,12 +126,12 @@ describe("find options > order", () => {
     it("where two criteria", () => Promise.all(connections.map(async connection => {
         await prepareData(connection.manager);
 
-        const posts = await new FindOptionsBuilder(connection, Post, {
+        const posts = await connection.createQueryBuilder(Post, "post").setFindOptions({
             order: {
                 title: "desc",
                 text: "asc"
             }
-        }).build().getMany();
+        }).getMany();
         posts.should.be.eql([
             { id: 3, title: "Post #3", text: "About post #3", counters: { likes: 1 } },
             { id: 2, title: "Post #2", text: "About post #2", counters: { likes: 2 } },
@@ -145,13 +142,13 @@ describe("find options > order", () => {
     it("order by relation", () => Promise.all(connections.map(async connection => {
         await prepareData(connection.manager);
 
-        const posts = await new FindOptionsBuilder(connection, Post, {
+        const posts = await connection.createQueryBuilder(Post, "post").setFindOptions({
             order: {
                 author: {
                     id: "desc"
                 }
             }
-        }).build().getMany();
+        }).getMany();
         posts.should.be.eql([
             { id: 3, title: "Post #3", text: "About post #3", counters: { likes: 1 } },
             { id: 1, title: "Post #1", text: "About post #1", counters: { likes: 1 } },
@@ -162,7 +159,7 @@ describe("find options > order", () => {
     it("order by relation with where relation applied", () => Promise.all(connections.map(async connection => {
         await prepareData(connection.manager);
 
-        const posts = await new FindOptionsBuilder(connection, Post, {
+        const posts = await connection.createQueryBuilder(Post, "post").setFindOptions({
             where: {
                 author: {
                     id: 1
@@ -173,7 +170,7 @@ describe("find options > order", () => {
                     id: "desc"
                 }
             }
-        }).build().getMany();
+        }).getMany();
         posts.should.be.eql([
             { id: 1, title: "Post #1", text: "About post #1", counters: { likes: 1 } },
             { id: 2, title: "Post #2", text: "About post #2", counters: { likes: 2 } },
@@ -181,9 +178,13 @@ describe("find options > order", () => {
     })));
 
     it("order by nested relations", () => Promise.all(connections.map(async connection => {
+
+        if (connection.driver instanceof PostgresDriver) // in postgres ordering works a bit different that's why we decided to skip it
+            return;
+
         await prepareData(connection.manager);
 
-        const posts = await new FindOptionsBuilder(connection, Post, {
+        const posts = await connection.createQueryBuilder(Post, "post").setFindOptions({
             order: {
                 author: {
                     photos: {
@@ -191,7 +192,7 @@ describe("find options > order", () => {
                     }
                 }
             }
-        }).build().getMany();
+        }).getMany();
         posts.should.be.eql([
             { id: 3, title: "Post #3", text: "About post #3", counters: { likes: 1 } },
             { id: 1, title: "Post #1", text: "About post #1", counters: { likes: 1 } },
@@ -200,9 +201,13 @@ describe("find options > order", () => {
     })));
 
     it("order by complex nested relations", () => Promise.all(connections.map(async connection => {
+
+        if (connection.driver instanceof PostgresDriver) // in postgres ordering works a bit different that's why we decided to skip it
+            return;
+
         await prepareData(connection.manager);
 
-        const posts = await new FindOptionsBuilder(connection, Post, {
+        const posts = await connection.createQueryBuilder(Post, "post").setFindOptions({
             order: {
                 author: {
                     photos: {
@@ -213,7 +218,7 @@ describe("find options > order", () => {
                     name: "asc"
                 }
             }
-        }).build().getMany();
+        }).getMany();
         posts.should.be.eql([
             { id: 1, title: "Post #1", text: "About post #1", counters: { likes: 1 } },
             { id: 2, title: "Post #2", text: "About post #2", counters: { likes: 2 } },
@@ -224,13 +229,14 @@ describe("find options > order", () => {
     it("order by column in embed", () => Promise.all(connections.map(async connection => {
         await prepareData(connection.manager);
 
-        const posts = await new FindOptionsBuilder(connection, Post, {
+        const posts = await connection.createQueryBuilder(Post, "post").setFindOptions({
             order: {
                 counters: {
                     likes: "desc"
-                }
+                },
+                id: "asc"
             }
-        }).build().getMany();
+        }).getMany();
         posts.should.be.eql([
             { id: 2, title: "Post #2", text: "About post #2", counters: { likes: 2 } },
             { id: 1, title: "Post #1", text: "About post #1", counters: { likes: 1 } },
@@ -241,7 +247,7 @@ describe("find options > order", () => {
     it("order by relation in embed", () => Promise.all(connections.map(async connection => {
         await prepareData(connection.manager);
 
-        const posts = await new FindOptionsBuilder(connection, Post, {
+        const posts = await connection.createQueryBuilder(Post, "post").setFindOptions({
             order: {
                 counters: {
                     likedUsers: {
@@ -249,7 +255,7 @@ describe("find options > order", () => {
                     }
                 }
             }
-        }).build().getMany();
+        }).getMany();
         posts.should.be.eql([
             { id: 2, title: "Post #2", text: "About post #2", counters: { likes: 2 } },
             { id: 3, title: "Post #3", text: "About post #3", counters: { likes: 1 } },

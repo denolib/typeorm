@@ -9,13 +9,13 @@ import {Counters} from "./entity/Counters";
 export async function prepareData(manager: EntityManager) {
 
     const photo1 = new Photo();
-    photo1.filename = "chain.jpg";
-    photo1.description = "Me and chain";
+    photo1.filename = "saw.jpg";
+    photo1.description = "Me and saw";
     await manager.save(photo1);
 
     const photo2 = new Photo();
-    photo2.filename = "saw.jpg";
-    photo2.description = "Me and saw";
+    photo2.filename = "chain.jpg";
+    photo2.description = "Me and chain";
     await manager.save(photo2);
 
     const user1 = new Author();
