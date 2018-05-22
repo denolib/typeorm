@@ -15,6 +15,7 @@ export type FindOptionsOrderByValue = "ASC" | "DESC" | "asc" | "desc" | 1 | -1 |
 export type FindOptionsOrder<E> = {
     [P in keyof E]?:
         E[P] extends (infer R)[] ? FindOptionsOrder<R> :
+        E[P] extends Promise<infer R> ? FindOptionsOrder<R> :
         E[P] extends object ? FindOptionsOrder<E[P]> :
         FindOptionsOrderByValue;
 };
@@ -24,7 +25,11 @@ export type FindOptionsOrder<E> = {
  * Used in relations find options.
  */
 export type FindOptionsRelationKeyName<E> = {
-    [K in keyof E]: E[K] extends object ? K : never
+    [K in keyof E]:
+        E[K] extends object ? K :
+        E[K] extends object|null ? K :
+        E[K] extends object|undefined ? K :
+        never
 }[keyof E];
 
 /**
@@ -33,8 +38,9 @@ export type FindOptionsRelationKeyName<E> = {
  */
 export type FindOptionsRelationKey<E> = {
     [P in keyof E]?:
-        E[P] extends (infer R)[] ? FindOptionsRelation<R>|boolean :
-        FindOptionsRelation<E[P]>|boolean;
+        E[P] extends (infer R)[] ? FindOptionsRelation<R> | boolean :
+        E[P] extends Promise<infer R> ? FindOptionsRelation<R> | boolean :
+        FindOptionsRelation<E[P]> | boolean;
 };
 
 /**
@@ -48,6 +54,7 @@ export type FindOptionsRelation<E> = FindOptionsRelationKeyName<E>[]|FindOptions
 export type FindOptionsSelect<E> = (keyof E)[]|{
     [P in keyof E]?:
         E[P] extends (infer R)[] ? FindOptionsSelect<R> | boolean :
+        E[P] extends Promise<infer R> ? FindOptionsSelect<R> | boolean :
         E[P] extends object ? FindOptionsSelect<E[P]> | boolean :
         boolean;
 };
@@ -58,9 +65,16 @@ export type FindOptionsSelect<E> = (keyof E)[]|{
 export type FindOptionsWhere<E> = {
     [P in keyof E]?:
         E[P] extends (infer R)[] ? FindOptionsWhere<R> :
-        E[P] extends object ? FindOptionsWhere<E[P]> :
-        FindOperator<E[P]>|E[P]
-};
+        E[P] extends Promise<infer R> ? FindOptionsWhere<R> :
+        E[P] extends Object ? FindOperator<E[P]> | FindOptionsWhere<E[P]> :
+        FindOperator<E[P]> | E[P]
+} | {
+    [P in keyof E]?:
+        E[P] extends (infer R)[] ? FindOptionsWhere<R> :
+        E[P] extends Promise<infer R> ? FindOptionsWhere<R> :
+        E[P] extends Object ? FindOperator<E[P]> | FindOptionsWhere<E[P]> :
+        FindOperator<E[P]> | E[P]
+}[];
 
 /**
  * Extra options that can be applied to FindOptions.
@@ -85,6 +99,15 @@ export type FindExtraOptions = {
      * Enabled by default.
      */
     listeners?: boolean;
+
+    /**
+     * If sets to true then loads all relation ids of the entity and maps them into relation values (not relation objects).
+     * If array of strings is given then loads only relation ids of the given properties.
+     */
+    loadRelationIds?: boolean | {
+        relations?: string[];
+        disableMixedMap?: boolean;
+    }; // todo: extract options into separate interface, reuse
 
     /**
      * Uses provided query runner for query execution.

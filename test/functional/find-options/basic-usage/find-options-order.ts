@@ -17,7 +17,7 @@ describe("find options > order", () => {
 
         const posts1 = await connection.createQueryBuilder(Post, "post").setFindOptions({
             order: {
-                id: "ASC"
+                id: "asc"
             }
         }).getMany();
         posts1.should.be.eql([

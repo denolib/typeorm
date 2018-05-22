@@ -38,9 +38,7 @@ import {ObjectLiteral} from "../common/ObjectLiteral";
 import {MongoQueryRunner} from "../driver/mongodb/MongoQueryRunner";
 import {MongoDriver} from "../driver/mongodb/MongoDriver";
 import {DocumentToEntityTransformer} from "../query-builder/transformer/DocumentToEntityTransformer";
-import {FindManyOptions} from "../find-options/FindManyOptions";
 import {FindOptionsUtils} from "../find-options/FindOptionsUtils";
-import {FindOneOptions} from "../find-options/FindOneOptions";
 import {PlatformTools} from "../platform/PlatformTools";
 import {DeepPartial} from "../common/DeepPartial";
 import {QueryPartialEntity} from "../query-builder/QueryPartialEntity";
@@ -51,6 +49,7 @@ import {RemoveOptions} from "../repository/RemoveOptions";
 import {DeleteResult} from "../query-builder/result/DeleteResult";
 import {EntityMetadata} from "../metadata/EntityMetadata";
 import {EntitySchema} from "../index";
+import {FindManyOptions, FindOptions, FindOptionsWhere} from "../find-options/FindOptions";
 
 /**
  * Entity manager supposed to work with any entity, automatically find its repository and call its methods,
@@ -86,7 +85,7 @@ export class MongoEntityManager extends EntityManager {
     /**
      * Finds entities that match given find options or conditions.
      */
-    async find<Entity>(entityClassOrName: ObjectType<Entity>|EntitySchema<Entity>|string, optionsOrConditions?: FindManyOptions<Entity>|Partial<Entity>): Promise<Entity[]> {
+    async find<Entity>(entityClassOrName: ObjectType<Entity>|EntitySchema<Entity>|string, optionsOrConditions?: FindManyOptions<Entity>|FindOptionsWhere<Entity>): Promise<Entity[]> {
         const query = this.convertFindManyOptionsOrConditionsToMongodbQuery(optionsOrConditions);
         const cursor = await this.createEntityCursor(entityClassOrName, query);
         if (FindOptionsUtils.isFindManyOptions(optionsOrConditions)) {
@@ -105,7 +104,7 @@ export class MongoEntityManager extends EntityManager {
      * Also counts all entities that match given conditions,
      * but ignores pagination settings (from and take options).
      */
-    async findAndCount<Entity>(entityClassOrName: ObjectType<Entity>|EntitySchema<Entity>|string, optionsOrConditions?: FindManyOptions<Entity>|Partial<Entity>): Promise<[ Entity[], number ]> {
+    async findAndCount<Entity>(entityClassOrName: ObjectType<Entity>|EntitySchema<Entity>|string, optionsOrConditions?: FindManyOptions<Entity>|FindOptionsWhere<Entity>): Promise<[ Entity[], number ]> {
         const query = this.convertFindManyOptionsOrConditionsToMongodbQuery(optionsOrConditions);
         const cursor = await this.createEntityCursor(entityClassOrName, query);
         if (FindOptionsUtils.isFindManyOptions(optionsOrConditions)) {
@@ -127,7 +126,7 @@ export class MongoEntityManager extends EntityManager {
      * Finds entities by ids.
      * Optionally find options can be applied.
      */
-    async findByIds<Entity>(entityClassOrName: ObjectType<Entity>|EntitySchema<Entity>|string, ids: any[], optionsOrConditions?: FindManyOptions<Entity>|Partial<Entity>): Promise<Entity[]> {
+    async findByIds<Entity>(entityClassOrName: ObjectType<Entity>|EntitySchema<Entity>|string, ids: any[], optionsOrConditions?: FindManyOptions<Entity>|FindOptionsWhere<Entity>): Promise<Entity[]> {
         const metadata = this.connection.getMetadata(entityClassOrName);
         const query = this.convertFindManyOptionsOrConditionsToMongodbQuery(optionsOrConditions) || {};
         const objectIdInstance = PlatformTools.load("mongodb").ObjectID;
@@ -154,8 +153,8 @@ export class MongoEntityManager extends EntityManager {
      * Finds first entity that matches given conditions and/or find options.
      */
     async findOne<Entity>(entityClassOrName: ObjectType<Entity>|EntitySchema<Entity>|string,
-                          optionsOrConditions?: string|string[]|number|number[]|Date|Date[]|ObjectID|ObjectID[]|FindOneOptions<Entity>|DeepPartial<Entity>,
-                          maybeOptions?: FindOneOptions<Entity>): Promise<Entity|undefined> {
+                          optionsOrConditions?: string|string[]|number|number[]|Date|Date[]|ObjectID|ObjectID[]|FindOptions<Entity>|FindOptionsWhere<Entity>,
+                          maybeOptions?: FindOptions<Entity>): Promise<Entity|undefined> {
         const objectIdInstance = PlatformTools.load("mongodb").ObjectID;
         const id = (optionsOrConditions instanceof objectIdInstance) || typeof optionsOrConditions === "string" ?  optionsOrConditions : undefined;
         const query = this.convertFindOneOptionsOrConditionsToMongodbQuery((id ? maybeOptions : optionsOrConditions) as any) || {};
@@ -206,7 +205,7 @@ export class MongoEntityManager extends EntityManager {
      * Executes fast and efficient UPDATE query.
      * Does not check if entity exist in the database.
      */
-    async update<Entity>(target: ObjectType<Entity>|EntitySchema<Entity>|string, criteria: string|string[]|number|number[]|Date|Date[]|ObjectID|ObjectID[]|DeepPartial<Entity>, partialEntity: DeepPartial<Entity>, options?: SaveOptions): Promise<UpdateResult> {
+    async update<Entity>(target: ObjectType<Entity>|EntitySchema<Entity>|string, criteria: string|string[]|number|number[]|Date|Date[]|ObjectID|ObjectID[]|FindOptionsWhere<Entity>, partialEntity: DeepPartial<Entity>, options?: SaveOptions): Promise<UpdateResult> {
         if (criteria instanceof Array) {
             await Promise.all((criteria as any[]).map(criteriaItem => {
                 return this.update(target, criteriaItem, partialEntity);
@@ -226,7 +225,7 @@ export class MongoEntityManager extends EntityManager {
      * Executes fast and efficient DELETE query.
      * Does not check if entity exist in the database.
      */
-    async delete<Entity>(target: ObjectType<Entity>|EntitySchema<Entity>|string, criteria: string|string[]|number|number[]|Date|Date[]|ObjectID|ObjectID[]|DeepPartial<Entity>, options?: RemoveOptions): Promise<DeleteResult> {
+    async delete<Entity>(target: ObjectType<Entity>|EntitySchema<Entity>|string, criteria: string|string[]|number|number[]|Date|Date[]|ObjectID|ObjectID[]|FindOptionsWhere<Entity>, options?: RemoveOptions): Promise<DeleteResult> {
         if (criteria instanceof Array) {
             await Promise.all((criteria as any[]).map(criteriaItem => {
                 return this.delete(target, criteriaItem);
@@ -591,16 +590,12 @@ export class MongoEntityManager extends EntityManager {
     /**
      * Converts FindManyOptions to mongodb query.
      */
-    protected convertFindManyOptionsOrConditionsToMongodbQuery<Entity>(optionsOrConditions: FindManyOptions<Entity>|Partial<Entity>|undefined): ObjectLiteral|undefined {
+    protected convertFindManyOptionsOrConditionsToMongodbQuery<Entity>(optionsOrConditions: FindManyOptions<Entity>|FindOptionsWhere<Entity>|undefined): ObjectLiteral|undefined {
         if (!optionsOrConditions)
             return undefined;
 
         if (FindOptionsUtils.isFindManyOptions(optionsOrConditions))
-            // If where condition is passed as a string which contains sql we have to ignore
-            // as mongo is not a sql database
-            return typeof optionsOrConditions.where === "string"
-                ? {}
-                : optionsOrConditions.where;
+            return optionsOrConditions.where;
 
         return optionsOrConditions;
     }
@@ -608,7 +603,7 @@ export class MongoEntityManager extends EntityManager {
     /**
      * Converts FindOneOptions to mongodb query.
      */
-    protected convertFindOneOptionsOrConditionsToMongodbQuery<Entity>(optionsOrConditions: FindOneOptions<Entity>|Partial<Entity>|undefined): ObjectLiteral|undefined {
+    protected convertFindOneOptionsOrConditionsToMongodbQuery<Entity>(optionsOrConditions: FindOptions<Entity>|FindOptionsWhere<Entity>|undefined): ObjectLiteral|undefined {
         if (!optionsOrConditions)
             return undefined;
 

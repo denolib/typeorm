@@ -235,6 +235,11 @@ export class QueryExpressionMap {
     callListeners: boolean = true;
 
     /**
+     * Indicates if eager relations are loaded (they are by default).
+     */
+    eagerRelations: boolean = true;
+
+    /**
      * Indicates if query must be wrapped into transaction.
      */
     useTransaction: boolean = false;

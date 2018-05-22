@@ -33,16 +33,13 @@ describe("persistence > cascade operations with custom name", () => {
 
             // now check
             const posts = await connection.manager.find(Post, {
-                join: {
-                    alias: "post",
-                    leftJoinAndSelect: {
-                        category: "post.category"
-                    }
-                },
+                relations: ["category"],
                 order: {
                     id: "ASC"
                 }
             });
+
+            console.log(posts);
 
             posts.should.be.eql([{
                 id: 1,

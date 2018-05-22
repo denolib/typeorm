@@ -69,8 +69,11 @@ describe("persistence > custom-column-names", function() {
         // load a post
         before(function() {
             return postRepository
-                .findOne(1, { join: { alias: "post", leftJoinAndSelect: { category: "post.category" } }})
-                .then(post => loadedPost = post!);
+                .findOne(1, { relations: ["category"] })
+                .then(post => {
+                    console.log("loadedPost", post);
+                    loadedPost = post!;
+                });
         });
 
         it("should contain attached category", function () {
@@ -104,7 +107,7 @@ describe("persistence > custom-column-names", function() {
         // load a post
         before(function() {
             return postRepository
-                .findOne(1, { join: { alias: "post", leftJoinAndSelect: { category: "post.category" } } })
+                .findOne(1, { relations: ["category"] })
                 .then(post => loadedPost = post!);
         });
 
@@ -134,7 +137,7 @@ describe("persistence > custom-column-names", function() {
         // load a post
         before(function() {
             return postRepository
-                .findOne(1, { join: { alias: "post", leftJoinAndSelect: { category: "post.category" } }})
+                .findOne(1, { relations: ["category"] })
                 .then(post => loadedPost = post!);
         });
 
@@ -182,7 +185,11 @@ describe("persistence > custom-column-names", function() {
         // load a post
         before(function() {
             return postRepository
-                .findOne(1, { join: { alias: "post", leftJoinAndSelect: { category: "post.category", metadata: "category.metadata" } } })
+                .findOne(1, {
+                    relations: {
+                        category: ["metadata"]
+                    }
+                })
                 .then(post => loadedPost = post!);
         });
 
@@ -227,7 +234,11 @@ describe("persistence > custom-column-names", function() {
         // load a post
         before(function() {
             return postRepository
-                .findOne(1, { join: { alias: "post", leftJoinAndSelect: { category: "post.category", metadata: "category.metadata" } } })
+                .findOne(1, {
+                    relations: {
+                        category: ["metadata"]
+                    }
+                })
                 .then(post => loadedPost = post!);
         });
 

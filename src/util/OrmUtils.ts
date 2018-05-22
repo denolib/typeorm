@@ -155,6 +155,17 @@ export class OrmUtils {
         });
     }
 
+    /**
+     * Gets deeper value of object.
+     */
+    static deepValue(obj: ObjectLiteral, path: string) {
+        const segments = path.split(".");
+        for (let i = 0, len = segments.length; i < len; i++) {
+            obj = obj[segments[i]];
+        }
+        return obj;
+    }
+
     // -------------------------------------------------------------------------
     // Private methods
     // -------------------------------------------------------------------------

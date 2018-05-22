@@ -201,6 +201,79 @@ describe("find options > relations", () => {
                 ]
             },
         ]);
+    })));
+
+    it("relation in embed", () => Promise.all(connections.map(async connection => {
+        await prepareData(connection.manager);
+
+        const posts = await connection.createQueryBuilder(Post, "post").setFindOptions({
+            relations: {
+                counters: {
+                    likedUsers: {
+                        photos: true
+                    }
+                }
+            }
+        }).getMany();
+        posts.should.be.eql([
+            {
+                id: 1,
+                title: "Post #1",
+                text: "About post #1",
+                counters: {
+                    likes: 1,
+                    likedUsers: [{
+                        id: 1,
+                        age: 25,
+                        firstName: "Timber",
+                        lastName: "Saw",
+                        photos: [
+                            { id: 1, filename: "saw.jpg", description: "Me and saw" },
+                            { id: 2, filename: "chain.jpg", description: "Me and chain" }
+                        ]
+                    }]
+                },
+            },
+            {
+                id: 2,
+                title: "Post #2",
+                text: "About post #2",
+                counters: {
+                    likes: 2,
+                    likedUsers: [{
+                        id: 1,
+                        age: 25,
+                        firstName: "Timber",
+                        lastName: "Saw",
+                        photos: [
+                            { id: 1, filename: "saw.jpg", description: "Me and saw" },
+                            { id: 2, filename: "chain.jpg", description: "Me and chain" }
+                        ]
+                    }, {
+                        id: 2,
+                        firstName: "Gyro",
+                        lastName: "Copter",
+                        age: 52,
+                        photos: []
+                    }]
+                },
+            },
+            {
+                id: 3,
+                title: "Post #3",
+                text: "About post #3",
+                counters: {
+                    likes: 1,
+                    likedUsers: [{
+                        id: 2,
+                        firstName: "Gyro",
+                        lastName: "Copter",
+                        age: 52,
+                        photos: []
+                    }]
+                },
+            },
+        ]);
 
     })));
 

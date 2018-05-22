@@ -47,12 +47,7 @@ describe("persistence > partial persist", () => {
 
         // load a post
         const loadedPost = await postRepository.findOne(1, {
-            join: {
-                alias: "post",
-                leftJoinAndSelect: {
-                    categories: "post.categories"
-                }
-            }
+            relations: ["categories"],
         });
 
         expect(loadedPost!).not.to.be.empty;
@@ -70,12 +65,7 @@ describe("persistence > partial persist", () => {
 
         // now check if update worked as expected, title is updated and all other columns are not touched
         const loadedPostAfterTitleUpdate = await postRepository.findOne(1, {
-            join: {
-                alias: "post",
-                leftJoinAndSelect: {
-                    categories: "post.categories"
-                }
-            }
+            relations: ["categories"],
         });
 
         expect(loadedPostAfterTitleUpdate!).not.to.be.empty;
@@ -93,12 +83,7 @@ describe("persistence > partial persist", () => {
 
         // now check if update worked as expected, stars counter is updated and all other columns are not touched
         const loadedPostAfterStarsUpdate = await postRepository.findOne(1, {
-            join: {
-                alias: "post",
-                leftJoinAndSelect: {
-                    categories: "post.categories"
-                }
-            }
+            relations: ["categories"],
         });
 
         expect(loadedPostAfterStarsUpdate!).not.to.be.empty;
@@ -116,12 +101,7 @@ describe("persistence > partial persist", () => {
 
         // now check if update worked as expected, name of category is updated and all other columns are not touched
         const loadedPostAfterCategoryUpdate = await postRepository.findOne(1, {
-            join: {
-                alias: "post",
-                leftJoinAndSelect: {
-                    categories: "post.categories"
-                }
-            }
+            relations: ["categories"],
         });
 
         expect(loadedPostAfterCategoryUpdate!).not.to.be.empty;

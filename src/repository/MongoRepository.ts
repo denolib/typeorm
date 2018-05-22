@@ -1,7 +1,5 @@
 import {ObjectLiteral} from "../common/ObjectLiteral";
 import {Repository} from "./Repository";
-import {FindManyOptions} from "../find-options/FindManyOptions";
-import {FindOneOptions} from "../find-options/FindOneOptions";
 import {
     AggregationCursor,
     BulkWriteOpResultObject,
@@ -35,6 +33,7 @@ import {
 import {MongoEntityManager} from "../entity-manager/MongoEntityManager";
 import {QueryRunner} from "../query-runner/QueryRunner";
 import {SelectQueryBuilder} from "../query-builder/SelectQueryBuilder";
+import {FindManyOptions, FindOptions, FindOptionsWhere} from "../find-options/FindOptions";
 
 /**
  * Repository used to manage mongodb documents of a single entity type.
@@ -73,7 +72,7 @@ export class MongoRepository<Entity extends ObjectLiteral> extends Repository<En
     /**
      * Finds entities that match given find options or conditions.
      */
-    find(optionsOrConditions?: FindManyOptions<Entity>|Partial<Entity>): Promise<Entity[]> {
+    find(optionsOrConditions?: FindManyOptions<Entity>|FindOptionsWhere<Entity>): Promise<Entity[]> {
         return this.manager.find(this.metadata.target, optionsOrConditions);
     }
 
@@ -82,7 +81,7 @@ export class MongoRepository<Entity extends ObjectLiteral> extends Repository<En
      * Also counts all entities that match given conditions,
      * but ignores pagination settings (from and take options).
      */
-    findAndCount(optionsOrConditions?: FindManyOptions<Entity>|Partial<Entity>): Promise<[ Entity[], number ]> {
+    findAndCount(optionsOrConditions?: FindManyOptions<Entity>|FindOptionsWhere<Entity>): Promise<[ Entity[], number ]> {
         return this.manager.findAndCount(this.metadata.target, optionsOrConditions);
     }
 
@@ -90,14 +89,14 @@ export class MongoRepository<Entity extends ObjectLiteral> extends Repository<En
      * Finds entities by ids.
      * Optionally find options can be applied.
      */
-    findByIds(ids: any[], optionsOrConditions?: FindManyOptions<Entity>|Partial<Entity>): Promise<Entity[]> {
+    findByIds(ids: any[], optionsOrConditions?: FindManyOptions<Entity>|FindOptionsWhere<Entity>): Promise<Entity[]> {
         return this.manager.findByIds(this.metadata.target, ids, optionsOrConditions);
     }
 
     /**
      * Finds first entity that matches given conditions and/or find options.
      */
-    findOne(optionsOrConditions?: string|number|Date|ObjectID|FindOneOptions<Entity>|Partial<Entity>, maybeOptions?: FindOneOptions<Entity>): Promise<Entity|undefined> {
+    findOne(optionsOrConditions?: string|number|Date|ObjectID|FindOptions<Entity>|FindOptionsWhere<Entity>, maybeOptions?: FindOptions<Entity>): Promise<Entity|undefined> {
         return this.manager.findOne(this.metadata.target, optionsOrConditions as any, maybeOptions as any);
     }
 

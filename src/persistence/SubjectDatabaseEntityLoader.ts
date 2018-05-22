@@ -1,7 +1,7 @@
 import {Subject} from "./Subject";
 import {ObjectLiteral} from "../common/ObjectLiteral";
 import {QueryRunner} from "../query-runner/QueryRunner";
-import {FindManyOptions} from "../find-options/FindManyOptions";
+import {FindManyOptions} from "../find-options/FindOptions";
 
 /**
  * Loads database entities for all operate subjects which do not have database entity set.
@@ -78,10 +78,12 @@ export class SubjectDatabaseEntityLoader {
             }
 
             const findOptions: FindManyOptions<any> = {
-                loadEagerRelations: false,
-                loadRelationIds: {
-                    relations: loadRelationPropertyPaths,
-                    disableMixedMap: true
+                options: {
+                    eagerRelations: false,
+                    loadRelationIds: {
+                        relations: loadRelationPropertyPaths,
+                        disableMixedMap: true
+                    }
                 }
             };
 

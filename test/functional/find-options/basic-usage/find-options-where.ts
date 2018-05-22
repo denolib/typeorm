@@ -174,4 +174,29 @@ describe("find options > where", () => {
         ]);
     })));
 
+    it("where complex with or + and", () => Promise.all(connections.map(async connection => {
+        await prepareData(connection.manager);
+
+        const posts = await connection.createQueryBuilder(Post, "post").setFindOptions({
+            where: [{
+                title: "Post #2",
+            }, {
+                counters: {
+                    likedUsers: [{
+                        firstName: "Gyro",
+                        lastName: "Copter"
+                    }, {
+                        firstName: "Timber",
+                        lastName: "Saw"
+                    }]
+                }
+            }]
+        }).getMany();
+        posts.should.be.eql([
+            { id: 1, title: "Post #1", text: "About post #1", counters: { likes: 1 } },
+            { id: 2, title: "Post #2", text: "About post #2", counters: { likes: 2 } },
+            { id: 3, title: "Post #3", text: "About post #3", counters: { likes: 1 } },
+        ]);
+    })));
+
 });

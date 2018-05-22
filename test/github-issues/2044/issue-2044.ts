@@ -31,7 +31,7 @@ describe("github issues > #2044 Should not double get embedded column value", ()
         const photos = await connection.manager.find(Photo, {
             relations: ["user"]
         });
-        // console.log(photos);
+        console.log(photos);
 
         const resultPhoto = photos[0];
 

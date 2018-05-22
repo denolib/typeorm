@@ -618,6 +618,17 @@ export class ColumnMetadata {
         }
     }
 
+    /**
+     * Compares given entity's column value with a given value.
+     */
+    compareEntityValue(entity: any, valueToCompareWith: any) {
+        const columnValue = this.getEntityValue(entity);
+        if (columnValue instanceof Object) {
+            return columnValue.equals(valueToCompareWith);
+        }
+        return columnValue === valueToCompareWith;
+    }
+
     // ---------------------------------------------------------------------
     // Builder Methods
     // ---------------------------------------------------------------------

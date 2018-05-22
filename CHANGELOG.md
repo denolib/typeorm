@@ -5,6 +5,12 @@ however since API is already quite stable we don't expect too much breaking chan
 If we missed a note on some change or you have a questions on migrating from old version, 
 feel free to ask us and community.
 
+## 0.3.0 (next)
+
+* find options interface was completely re-written (find options is parameter passed to find* methods)
+* now query builder adds joins to eager relations by default (previously only find methods did that)
+* `primary` flag has been removed from relation decorators. Now if you want to make a relation primary you must define a primary column with the same name relation uses
+
 ## 0.2.5
 
 * added support for enum arrays in postgres

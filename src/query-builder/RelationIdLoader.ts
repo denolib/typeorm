@@ -21,7 +21,7 @@ export class RelationIdLoader {
     /**
      * Loads relation ids of the given entity or entities.
      */
-    async load(relation: RelationMetadata, entityOrEntities: ObjectLiteral|ObjectLiteral[], relatedEntityOrRelatedEntities?: ObjectLiteral|ObjectLiteral[]): Promise<any[]> {
+    load(relation: RelationMetadata, entityOrEntities: ObjectLiteral|ObjectLiteral[], relatedEntityOrRelatedEntities?: ObjectLiteral|ObjectLiteral[]): Promise<any[]> {
 
         const entities = entityOrEntities instanceof Array ? entityOrEntities : [entityOrEntities];
         const relatedEntities = relatedEntityOrRelatedEntities instanceof Array ? relatedEntityOrRelatedEntities : (relatedEntityOrRelatedEntities ? [relatedEntityOrRelatedEntities] : undefined);
@@ -62,7 +62,9 @@ export class RelationIdLoader {
         }
         // const relationIds = await this.load(relation, relatedEntityOrEntities!, entitiesOrEntities);
         const relationIds = await this.load(relation, entitiesOrEntities, relatedEntityOrEntities);
-        // console.log("relationIds", relationIds);
+        console.log("entities", entities);
+        console.log("relatedEntityOrEntities", relatedEntityOrEntities);
+        console.log("relationIds", relationIds);
 
         const relatedEntities: E2[] = relatedEntityOrEntities instanceof Array ? relatedEntityOrEntities : [relatedEntityOrEntities!];
 
@@ -93,10 +95,10 @@ export class RelationIdLoader {
             relatedEntities.forEach(relatedEntity => {
                 relationIds.forEach(relationId => {
                     const entityMatched = inverseColumns.every(column => {
-                        return column.getEntityValue(entity) === relationId[column.entityMetadata.name + "_" + column.propertyPath.replace(".", "_")];
+                        return column.compareEntityValue(entity, relationId[column.entityMetadata.name + "_" + column.propertyPath.replace(".", "_")]);
                     });
                     const relatedEntityMatched = columns.every(column => {
-                        return column.getEntityValue(relatedEntity) === relationId[column.entityMetadata.name + "_" + relation.propertyPath.replace(".", "_") + "_" + column.propertyPath.replace(".", "_")];
+                        return column.compareEntityValue(relatedEntity, relationId[column.entityMetadata.name + "_" + relation.propertyPath.replace(".", "_") + "_" + column.propertyPath.replace(".", "_")]);
                     });
                     if (entityMatched && relatedEntityMatched) {
                         if (isMany) {
@@ -107,6 +109,7 @@ export class RelationIdLoader {
                     }
                 });
             });
+            console.log("group", group);
             return group;
         });
     }
@@ -166,11 +169,11 @@ export class RelationIdLoader {
         const qb = this.connection.createQueryBuilder();
 
         // select all columns from junction table
-        junctionMetadata.ownerColumns.forEach(column => {
+        columns.forEach(column => {
             const columnName = column.referencedColumn!.entityMetadata.name + "_" + column.referencedColumn!.propertyPath.replace(".", "_");
             qb.addSelect(mainAlias + "." + column.propertyPath, columnName);
         });
-        junctionMetadata.inverseColumns.forEach(column => {
+        inverseColumns.forEach(column => {
             const columnName = column.referencedColumn!.entityMetadata.name + "_" + relation.propertyPath.replace(".", "_") + "_" + column.referencedColumn!.propertyPath.replace(".", "_");
             qb.addSelect(mainAlias + "." + column.propertyPath, columnName);
         });
@@ -221,6 +224,43 @@ export class RelationIdLoader {
      */
     protected loadForManyToOneAndOneToOneOwner(relation: RelationMetadata, entities: ObjectLiteral[], relatedEntities?: ObjectLiteral[]) {
         const mainAlias = relation.entityMetadata.targetName;
+
+        // console.log("entitiesx", entities);
+        // console.log("relatedEntitiesx", relatedEntities);
+        const hasAllJoinColumnsInEntity = relation.joinColumns.every(joinColumn => {
+            return !!relation.entityMetadata.nonVirtualColumns.find(column => column === joinColumn);
+        });
+        if (relatedEntities && hasAllJoinColumnsInEntity) {
+            let relationIdMaps: ObjectLiteral[] = [];
+            entities.forEach(entity => {
+                let relationIdMap: ObjectLiteral = {};
+                relation.entityMetadata.primaryColumns.forEach(primaryColumn => {
+                    const key = primaryColumn.entityMetadata.name + "_" + primaryColumn.propertyPath.replace(".", "_");
+                    relationIdMap[key] = primaryColumn.getEntityValue(entity);
+                });
+
+                relatedEntities.forEach(relatedEntity => {
+                    relation.joinColumns.forEach(joinColumn => {
+                        const entityColumnValue = joinColumn.getEntityValue(entity);
+                        const relatedEntityColumnValue = joinColumn.referencedColumn!.getEntityValue(relatedEntity);
+                        if (entityColumnValue === undefined || relatedEntityColumnValue === undefined)
+                            return;
+
+                        if (entityColumnValue === relatedEntityColumnValue) {
+                            const key = joinColumn.referencedColumn!.entityMetadata.name + "_" + relation.propertyPath.replace(".", "_") + "_" + joinColumn.referencedColumn!.propertyPath.replace(".", "_");
+                            relationIdMap[key] = relatedEntityColumnValue;
+                        }
+                    });
+                });
+                if (Object.keys(relationIdMap).length === relation.entityMetadata.primaryColumns.length + relation.joinColumns.length) {
+                    relationIdMaps.push(relationIdMap);
+                }
+            });
+            console.log("relationIdMap", relationIdMaps);
+            console.log("entities.length", entities.length);
+            if (relationIdMaps.length === entities.length)
+                return Promise.resolve(relationIdMaps);
+        }
 
         // select all columns we need
         const qb = this.connection.createQueryBuilder();
