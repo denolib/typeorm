@@ -71,8 +71,8 @@ export class RelationCountAttribute {
     }
 
     get junctionAlias(): string {
-        const [parentAlias, relationProperty] = this.relationName.split(".");
-        return parentAlias + "_" + relationProperty + "_rc";
+        const [parentAlias, relationProperty] = QueryBuilderUtils.extractAliasAndPropertyPath(this.relationName);
+        return parentAlias + "_" + relationProperty.replace(".", "_") + "_rc";
     }
 
     /**
@@ -84,7 +84,7 @@ export class RelationCountAttribute {
         if (!QueryBuilderUtils.isAliasProperty(this.relationName))
             throw new Error(`Given value is a string representation of alias property`);
 
-        const [parentAlias, propertyPath] = this.relationName.split(".");
+        const [parentAlias, propertyPath] = QueryBuilderUtils.extractAliasAndPropertyPath(this.relationName);
         const relationOwnerSelection = this.expressionMap.findAliasByName(parentAlias);
         const relation = relationOwnerSelection.metadata.findRelationWithPropertyPath(propertyPath);
         if (!relation)
@@ -106,7 +106,7 @@ export class RelationCountAttribute {
     }
 
     get mapToPropertyPropertyName(): string {
-        return this.mapToProperty!.split(".")[1];
+        return QueryBuilderUtils.extractAliasAndPropertyPath(this.mapToProperty!)[1];
     }
 
 }

@@ -1,3 +1,4 @@
+import {QueryBuilderUtils} from './QueryBuilderUtils';
 import {RawSqlResultsToEntityTransformer} from "./transformer/RawSqlResultsToEntityTransformer";
 import {ObjectLiteral} from "../common/ObjectLiteral";
 import {SqlServerDriver} from "../driver/sqlserver/SqlServerDriver";
@@ -2065,9 +2066,9 @@ export class SelectQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
         const selectString = Object.keys(orderBys)
             .map(orderCriteria => {
                 if (orderCriteria.indexOf(".") !== -1) {
-                    const [aliasName, propertyPath] = orderCriteria.split(".");
+                    const [aliasName, propertyPath] = QueryBuilderUtils.extractAliasAndPropertyPath(orderCriteria);
                     const alias = this.expressionMap.findAliasByName(aliasName);
-                    const column = alias.metadata.findColumnWithPropertyName(propertyPath);
+                    const column = alias.metadata.findColumnWithPropertyPath(propertyPath);
                     return this.escape(parentAlias) + "." + this.escape(this.buildColumnAlias(aliasName, column!.databaseName));
                 } else {
                     if (this.expressionMap.selects.find(select => select.selection === orderCriteria || select.aliasName === orderCriteria))
@@ -2081,9 +2082,9 @@ export class SelectQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
         const orderByObject: OrderByCondition = {};
         Object.keys(orderBys).forEach(orderCriteria => {
             if (orderCriteria.indexOf(".") !== -1) {
-                const [aliasName, propertyPath] = orderCriteria.split(".");
+                const [aliasName, propertyPath] = QueryBuilderUtils.extractAliasAndPropertyPath(orderCriteria);
                 const alias = this.expressionMap.findAliasByName(aliasName);
-                const column = alias.metadata.findColumnWithPropertyName(propertyPath);
+                const column = alias.metadata.findColumnWithPropertyPath(propertyPath);
                 orderByObject[this.escape(parentAlias) + "." + this.escape(this.buildColumnAlias(aliasName, column!.databaseName))] = orderBys[orderCriteria];
             } else {
                 if (this.expressionMap.selects.find(select => select.selection === orderCriteria || select.aliasName === orderCriteria)) {

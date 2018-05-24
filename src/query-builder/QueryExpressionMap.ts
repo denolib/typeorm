@@ -2,6 +2,7 @@ import {Alias} from "./Alias";
 import {ObjectLiteral} from "../common/ObjectLiteral";
 import {OrderByCondition} from "../find-options/OrderByCondition";
 import {JoinAttribute} from "./JoinAttribute";
+import {QueryBuilderUtils} from './QueryBuilderUtils';
 import {RelationIdAttribute} from "./relation-id/RelationIdAttribute";
 import {RelationCountAttribute} from "./relation-count/RelationCountAttribute";
 import {Connection} from "../connection/Connection";
@@ -339,9 +340,9 @@ export class QueryExpressionMap {
     }
 
     findColumnByAliasExpression(aliasExpression: string): ColumnMetadata|undefined {
-        const [aliasName, propertyPath] = aliasExpression.split(".");
+        const [aliasName, propertyPath] = QueryBuilderUtils.extractAliasAndPropertyPath(aliasExpression);
         const alias = this.findAliasByName(aliasName);
-        return alias.metadata.findColumnWithPropertyName(propertyPath);
+        return alias.metadata.findColumnWithPropertyPath(propertyPath);
     }
 
     /**
