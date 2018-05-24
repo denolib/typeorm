@@ -1,7 +1,7 @@
 import {Subject} from "./Subject";
 import {ObjectLiteral} from "../common/ObjectLiteral";
 import {QueryRunner} from "../query-runner/QueryRunner";
-import {FindManyOptions} from "../find-options/FindOptions";
+import {FindOptions} from "../find-options/FindOptions";
 
 /**
  * Loads database entities for all operate subjects which do not have database entity set.
@@ -77,7 +77,7 @@ export class SubjectDatabaseEntityLoader {
                 loadRelationPropertyPaths.push(...subjectGroup.subjects[0].metadata.manyToManyRelations.map(relation => relation.propertyPath));
             }
 
-            const findOptions: FindManyOptions<any> = {
+            const findOptions: FindOptions<any> = {
                 options: {
                     eagerRelations: false,
                     loadRelationIds: {

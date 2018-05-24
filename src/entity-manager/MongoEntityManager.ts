@@ -49,7 +49,7 @@ import {RemoveOptions} from "../repository/RemoveOptions";
 import {DeleteResult} from "../query-builder/result/DeleteResult";
 import {EntityMetadata} from "../metadata/EntityMetadata";
 import {EntitySchema} from "../index";
-import {FindManyOptions, FindOptions, FindOptionsWhere} from "../find-options/FindOptions";
+import {FindOptions, FindOptionsWhere} from "../find-options/FindOptions";
 
 /**
  * Entity manager supposed to work with any entity, automatically find its repository and call its methods,
@@ -85,10 +85,10 @@ export class MongoEntityManager extends EntityManager {
     /**
      * Finds entities that match given find options or conditions.
      */
-    async find<Entity>(entityClassOrName: ObjectType<Entity>|EntitySchema<Entity>|string, optionsOrConditions?: FindManyOptions<Entity>|FindOptionsWhere<Entity>): Promise<Entity[]> {
-        const query = this.convertFindManyOptionsOrConditionsToMongodbQuery(optionsOrConditions);
+    async find<Entity>(entityClassOrName: ObjectType<Entity>|EntitySchema<Entity>|string, optionsOrConditions?: FindOptions<Entity>|FindOptionsWhere<Entity>): Promise<Entity[]> {
+        const query = this.convertFindOptionsOrConditionsToMongodbQuery(optionsOrConditions);
         const cursor = await this.createEntityCursor(entityClassOrName, query);
-        if (FindOptionsUtils.isFindManyOptions(optionsOrConditions)) {
+        if (FindOptionsUtils.isFindOptions(optionsOrConditions)) {
             if (optionsOrConditions.skip)
                 cursor.skip(optionsOrConditions.skip);
             if (optionsOrConditions.take)
@@ -104,10 +104,10 @@ export class MongoEntityManager extends EntityManager {
      * Also counts all entities that match given conditions,
      * but ignores pagination settings (from and take options).
      */
-    async findAndCount<Entity>(entityClassOrName: ObjectType<Entity>|EntitySchema<Entity>|string, optionsOrConditions?: FindManyOptions<Entity>|FindOptionsWhere<Entity>): Promise<[ Entity[], number ]> {
-        const query = this.convertFindManyOptionsOrConditionsToMongodbQuery(optionsOrConditions);
+    async findAndCount<Entity>(entityClassOrName: ObjectType<Entity>|EntitySchema<Entity>|string, optionsOrConditions?: FindOptions<Entity>|FindOptionsWhere<Entity>): Promise<[ Entity[], number ]> {
+        const query = this.convertFindOptionsOrConditionsToMongodbQuery(optionsOrConditions);
         const cursor = await this.createEntityCursor(entityClassOrName, query);
-        if (FindOptionsUtils.isFindManyOptions(optionsOrConditions)) {
+        if (FindOptionsUtils.isFindOptions(optionsOrConditions)) {
             if (optionsOrConditions.skip)
                 cursor.skip(optionsOrConditions.skip);
             if (optionsOrConditions.take)
@@ -126,9 +126,9 @@ export class MongoEntityManager extends EntityManager {
      * Finds entities by ids.
      * Optionally find options can be applied.
      */
-    async findByIds<Entity>(entityClassOrName: ObjectType<Entity>|EntitySchema<Entity>|string, ids: any[], optionsOrConditions?: FindManyOptions<Entity>|FindOptionsWhere<Entity>): Promise<Entity[]> {
+    async findByIds<Entity>(entityClassOrName: ObjectType<Entity>|EntitySchema<Entity>|string, ids: any[], optionsOrConditions?: FindOptions<Entity>|FindOptionsWhere<Entity>): Promise<Entity[]> {
         const metadata = this.connection.getMetadata(entityClassOrName);
-        const query = this.convertFindManyOptionsOrConditionsToMongodbQuery(optionsOrConditions) || {};
+        const query = this.convertFindOptionsOrConditionsToMongodbQuery(optionsOrConditions) || {};
         const objectIdInstance = PlatformTools.load("mongodb").ObjectID;
         query["_id"] = { $in: ids.map(id => {
             if (id instanceof objectIdInstance)
@@ -138,7 +138,7 @@ export class MongoEntityManager extends EntityManager {
         }) };
 
         const cursor = await this.createEntityCursor(entityClassOrName, query);
-        if (FindOptionsUtils.isFindManyOptions(optionsOrConditions)) {
+        if (FindOptionsUtils.isFindOptions(optionsOrConditions)) {
             if (optionsOrConditions.skip)
                 cursor.skip(optionsOrConditions.skip);
             if (optionsOrConditions.take)
@@ -162,7 +162,7 @@ export class MongoEntityManager extends EntityManager {
             query["_id"] = (id instanceof objectIdInstance) ? id : new objectIdInstance(id);
         }
         const cursor = await this.createEntityCursor(entityClassOrName, query);
-        if (FindOptionsUtils.isFindOneOptions(optionsOrConditions)) {
+        if (FindOptionsUtils.isFindOptions(optionsOrConditions)) {
             if (optionsOrConditions.order)
                 cursor.sort(this.convertFindOptionsOrderToOrderCriteria(optionsOrConditions.order));
         }
@@ -588,13 +588,13 @@ export class MongoEntityManager extends EntityManager {
     }
 
     /**
-     * Converts FindManyOptions to mongodb query.
+     * Converts FindOptions to mongodb query.
      */
-    protected convertFindManyOptionsOrConditionsToMongodbQuery<Entity>(optionsOrConditions: FindManyOptions<Entity>|FindOptionsWhere<Entity>|undefined): ObjectLiteral|undefined {
+    protected convertFindOptionsOrConditionsToMongodbQuery<Entity>(optionsOrConditions: FindOptions<Entity>|FindOptionsWhere<Entity>|undefined): ObjectLiteral|undefined {
         if (!optionsOrConditions)
             return undefined;
 
-        if (FindOptionsUtils.isFindManyOptions(optionsOrConditions))
+        if (FindOptionsUtils.isFindOptions(optionsOrConditions))
             return optionsOrConditions.where;
 
         return optionsOrConditions;
@@ -607,7 +607,7 @@ export class MongoEntityManager extends EntityManager {
         if (!optionsOrConditions)
             return undefined;
 
-        if (FindOptionsUtils.isFindOneOptions(optionsOrConditions))
+        if (FindOptionsUtils.isFindOptions(optionsOrConditions))
             // If where condition is passed as a string which contains sql we have to ignore
             // as mongo is not a sql database
             return typeof optionsOrConditions.where === "string"

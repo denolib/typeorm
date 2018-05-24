@@ -1,5 +1,5 @@
 import {Repository} from "./Repository";
-import {FindManyOptions, FindOptions, FindOptionsWhere, getConnection} from "../index";
+import {FindOptions, FindOptionsWhere, getConnection} from "../index";
 import {DeepPartial} from "../common/DeepPartial";
 import {SaveOptions} from "./SaveOptions";
 import {RemoveOptions} from "./RemoveOptions";
@@ -233,7 +233,7 @@ export class BaseEntity {
     /**
      * Finds entities that match given options.
      */
-    static find<T extends BaseEntity>(this: ObjectType<T>, options?: FindManyOptions<T>): Promise<T[]>;
+    static find<T extends BaseEntity>(this: ObjectType<T>, options?: FindOptions<T>): Promise<T[]>;
 
     /**
      * Finds entities that match given conditions.
@@ -243,7 +243,7 @@ export class BaseEntity {
     /**
      * Finds entities that match given find options or conditions.
      */
-    static find<T extends BaseEntity>(this: ObjectType<T>, optionsOrConditions?: FindManyOptions<T>|FindOptionsWhere<T>): Promise<T[]> {
+    static find<T extends BaseEntity>(this: ObjectType<T>, optionsOrConditions?: FindOptions<T>|FindOptionsWhere<T>): Promise<T[]> {
         return (this as any).getRepository().find(optionsOrConditions as any);
     }
 
@@ -252,7 +252,7 @@ export class BaseEntity {
      * Also counts all entities that match given conditions,
      * but ignores pagination settings (from and take options).
      */
-    static findAndCount<T extends BaseEntity>(this: ObjectType<T>, options?: FindManyOptions<T>): Promise<[ T[], number ]>;
+    static findAndCount<T extends BaseEntity>(this: ObjectType<T>, options?: FindOptions<T>): Promise<[ T[], number ]>;
 
     /**
      * Finds entities that match given conditions.
@@ -266,7 +266,7 @@ export class BaseEntity {
      * Also counts all entities that match given conditions,
      * but ignores pagination settings (from and take options).
      */
-    static findAndCount<T extends BaseEntity>(this: ObjectType<T>, optionsOrConditions?: FindManyOptions<T>|FindOptionsWhere<T>): Promise<[ T[], number ]> {
+    static findAndCount<T extends BaseEntity>(this: ObjectType<T>, optionsOrConditions?: FindOptions<T>|FindOptionsWhere<T>): Promise<[ T[], number ]> {
         return (this as any).getRepository().findAndCount(optionsOrConditions as any);
     }
 
@@ -274,7 +274,7 @@ export class BaseEntity {
      * Finds entities by ids.
      * Optionally find options can be applied.
      */
-    static findByIds<T extends BaseEntity>(this: ObjectType<T>, ids: any[], options?: FindManyOptions<T>): Promise<T[]>;
+    static findByIds<T extends BaseEntity>(this: ObjectType<T>, ids: any[], options?: FindOptions<T>): Promise<T[]>;
 
     /**
      * Finds entities by ids.
@@ -286,7 +286,7 @@ export class BaseEntity {
      * Finds entities by ids.
      * Optionally find options can be applied.
      */
-    static findByIds<T extends BaseEntity>(this: ObjectType<T>, ids: any[], optionsOrConditions?: FindManyOptions<T>|FindOptionsWhere<T>): Promise<T[]> {
+    static findByIds<T extends BaseEntity>(this: ObjectType<T>, ids: any[], optionsOrConditions?: FindOptions<T>|FindOptionsWhere<T>): Promise<T[]> {
         return (this as any).getRepository().findByIds(ids, optionsOrConditions as any);
     }
 

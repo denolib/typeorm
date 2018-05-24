@@ -11,7 +11,7 @@ import {UpdateResult} from "../query-builder/result/UpdateResult";
 import {InsertResult} from "../query-builder/result/InsertResult";
 import {QueryPartialEntity} from "../query-builder/QueryPartialEntity";
 import {ObjectID} from "../driver/mongodb/typings";
-import {FindManyOptions, FindOptions, FindOptionsWhere} from "../find-options/FindOptions";
+import {FindOptions, FindOptionsWhere} from "../find-options/FindOptions";
 
 /**
  * Repository is supposed to work with your entity objects. Find entities, insert, update, delete, etc.
@@ -193,7 +193,7 @@ export class Repository<Entity extends ObjectLiteral> {
     /**
      * Finds entities that match given options.
      */
-    find(options?: FindManyOptions<Entity>): Promise<Entity[]>;
+    find(options?: FindOptions<Entity>): Promise<Entity[]>;
 
     /**
      * Finds entities that match given conditions.
@@ -203,7 +203,7 @@ export class Repository<Entity extends ObjectLiteral> {
     /**
      * Finds entities that match given find options or conditions.
      */
-    find(optionsOrConditions?: FindManyOptions<Entity>|FindOptionsWhere<Entity>): Promise<Entity[]> {
+    find(optionsOrConditions?: FindOptions<Entity>|FindOptionsWhere<Entity>): Promise<Entity[]> {
         return this.manager.find(this.metadata.target, optionsOrConditions as any);
     }
 
@@ -212,7 +212,7 @@ export class Repository<Entity extends ObjectLiteral> {
      * Also counts all entities that match given conditions,
      * but ignores pagination settings (from and take options).
      */
-    findAndCount(options?: FindManyOptions<Entity>): Promise<[ Entity[], number ]>;
+    findAndCount(options?: FindOptions<Entity>): Promise<[ Entity[], number ]>;
 
     /**
      * Finds entities that match given conditions.
@@ -226,7 +226,7 @@ export class Repository<Entity extends ObjectLiteral> {
      * Also counts all entities that match given conditions,
      * but ignores pagination settings (from and take options).
      */
-    findAndCount(optionsOrConditions?: FindManyOptions<Entity>|FindOptionsWhere<Entity>): Promise<[ Entity[], number ]> {
+    findAndCount(optionsOrConditions?: FindOptions<Entity>|FindOptionsWhere<Entity>): Promise<[ Entity[], number ]> {
         return this.manager.findAndCount(this.metadata.target, optionsOrConditions as any);
     }
 
@@ -234,7 +234,7 @@ export class Repository<Entity extends ObjectLiteral> {
      * Finds entities by ids.
      * Optionally find options can be applied.
      */
-    findByIds(ids: any[], options?: FindManyOptions<Entity>): Promise<Entity[]>;
+    findByIds(ids: any[], options?: FindOptions<Entity>): Promise<Entity[]>;
 
     /**
      * Finds entities by ids.
@@ -246,7 +246,7 @@ export class Repository<Entity extends ObjectLiteral> {
      * Finds entities by ids.
      * Optionally find options can be applied.
      */
-    findByIds(ids: any[], optionsOrConditions?: FindManyOptions<Entity>|FindOptionsWhere<Entity>): Promise<Entity[]> {
+    findByIds(ids: any[], optionsOrConditions?: FindOptions<Entity>|FindOptionsWhere<Entity>): Promise<Entity[]> {
         return this.manager.findByIds(this.metadata.target, ids, optionsOrConditions as any);
     }
 

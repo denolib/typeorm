@@ -171,12 +171,6 @@ export type FindOptions<E> = {
      * Extra options.
      */
     options?: FindExtraOptions;
-};
-
-/**
- * Find options for operators that return multiple entities.
- */
-export type FindManyOptions<E> = FindOptions<E> & {
 
     /**
      * Offset (paginated) where from entities should be taken.

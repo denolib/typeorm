@@ -30,7 +30,7 @@ import {InsertResult} from "../query-builder/result/InsertResult";
 import {UpdateResult} from "../query-builder/result/UpdateResult";
 import {DeleteResult} from "../query-builder/result/DeleteResult";
 import {OracleDriver} from "../driver/oracle/OracleDriver";
-import {FindManyOptions, FindOptions, FindOptionsWhere} from "../find-options/FindOptions";
+import {FindOptions, FindOptionsWhere} from "../find-options/FindOptions";
 
 /**
  * Entity manager supposed to work with any entity, automatically find its repository and call its methods,
@@ -451,7 +451,7 @@ export class EntityManager {
     /**
      * Finds entities that match given options.
      */
-    find<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, options?: FindManyOptions<Entity>): Promise<Entity[]>;
+    find<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, options?: FindOptions<Entity>): Promise<Entity[]>;
 
     /**
      * Finds entities that match given conditions.
@@ -461,12 +461,12 @@ export class EntityManager {
     /**
      * Finds entities that match given find options or conditions.
      */
-    async find<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, optionsOrConditions?: FindManyOptions<Entity>|FindOptionsWhere<Entity>): Promise<Entity[]> {
+    async find<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, optionsOrConditions?: FindOptions<Entity>|FindOptionsWhere<Entity>): Promise<Entity[]> {
         const metadata = this.connection.getMetadata(entityClass);
         const qb = this.createQueryBuilder(entityClass, metadata.name);
 
         if (optionsOrConditions)
-            qb.setFindOptions(FindOptionsUtils.isFindManyOptions(optionsOrConditions) ? optionsOrConditions : { where: optionsOrConditions });
+            qb.setFindOptions(FindOptionsUtils.isFindOptions(optionsOrConditions) ? optionsOrConditions : { where: optionsOrConditions });
 
         return qb.getMany();
     }
@@ -476,7 +476,7 @@ export class EntityManager {
      * Also counts all entities that match given conditions,
      * but ignores pagination settings (from and take options).
      */
-    findAndCount<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, options?: FindManyOptions<Entity>): Promise<[Entity[], number]>;
+    findAndCount<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, options?: FindOptions<Entity>): Promise<[Entity[], number]>;
 
     /**
      * Finds entities that match given conditions.
@@ -490,12 +490,12 @@ export class EntityManager {
      * Also counts all entities that match given conditions,
      * but ignores pagination settings (from and take options).
      */
-    async findAndCount<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, optionsOrConditions?: FindManyOptions<Entity>|FindOptionsWhere<Entity>): Promise<[Entity[], number]> {
+    async findAndCount<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, optionsOrConditions?: FindOptions<Entity>|FindOptionsWhere<Entity>): Promise<[Entity[], number]> {
         const metadata = this.connection.getMetadata(entityClass);
         const qb = this.createQueryBuilder(entityClass, metadata.name);
 
         if (optionsOrConditions)
-            qb.setFindOptions(FindOptionsUtils.isFindManyOptions(optionsOrConditions) ? optionsOrConditions : { where: optionsOrConditions });
+            qb.setFindOptions(FindOptionsUtils.isFindOptions(optionsOrConditions) ? optionsOrConditions : { where: optionsOrConditions });
 
         return qb.getManyAndCount();
     }
@@ -504,7 +504,7 @@ export class EntityManager {
      * Finds entities with ids.
      * Optionally find options can be applied.
      */
-    findByIds<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, ids: any[], options?: FindManyOptions<Entity>): Promise<Entity[]>;
+    findByIds<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, ids: any[], options?: FindOptions<Entity>): Promise<Entity[]>;
 
     /**
      * Finds entities with ids.
@@ -516,7 +516,7 @@ export class EntityManager {
      * Finds entities with ids.
      * Optionally find options or conditions can be applied.
      */
-    async findByIds<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, ids: any[], optionsOrConditions?: FindManyOptions<Entity>|FindOptionsWhere<Entity>): Promise<Entity[]> {
+    async findByIds<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, ids: any[], optionsOrConditions?: FindOptions<Entity>|FindOptionsWhere<Entity>): Promise<Entity[]> {
 
         // if no ids passed, no need to execute a query - just return an empty array of values
         if (!ids.length)
@@ -526,7 +526,7 @@ export class EntityManager {
         const qb = this.createQueryBuilder(entityClass, metadata.name);
 
         if (optionsOrConditions)
-            qb.setFindOptions(FindOptionsUtils.isFindManyOptions(optionsOrConditions) ? optionsOrConditions : { where: optionsOrConditions });
+            qb.setFindOptions(FindOptionsUtils.isFindOptions(optionsOrConditions) ? optionsOrConditions : { where: optionsOrConditions });
 
         return qb.andWhereInIds(ids).getMany();
     }
@@ -552,14 +552,14 @@ export class EntityManager {
     async findOne<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, idOrOptionsOrConditions?: string|string[]|number|number[]|Date|Date[]|ObjectID|ObjectID[]|FindOptions<Entity>|FindOptionsWhere<Entity>, maybeOptions?: FindOptions<Entity>): Promise<Entity|undefined> {
 
         let findOptions: FindOptions<Entity>|undefined = undefined;
-        if (FindOptionsUtils.isFindOneOptions(idOrOptionsOrConditions)) {
+        if (FindOptionsUtils.isFindOptions(idOrOptionsOrConditions)) {
             findOptions = idOrOptionsOrConditions;
-        } else if (maybeOptions && FindOptionsUtils.isFindOneOptions(maybeOptions)) {
+        } else if (maybeOptions && FindOptionsUtils.isFindOptions(maybeOptions)) {
             findOptions = maybeOptions;
         }
 
         let options: FindOptionsWhere<Entity>|undefined = undefined;
-        if (idOrOptionsOrConditions instanceof Object && !FindOptionsUtils.isFindOneOptions(idOrOptionsOrConditions))
+        if (idOrOptionsOrConditions instanceof Object && !FindOptionsUtils.isFindOptions(idOrOptionsOrConditions))
             options = idOrOptionsOrConditions as FindOptionsWhere<Entity>;
 
         const metadata = this.connection.getMetadata(entityClass);

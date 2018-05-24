@@ -34,7 +34,6 @@ import {BroadcasterResult} from "../subscriber/BroadcasterResult";
 import {abbreviate} from "../util/StringUtils";
 import {SelectQueryBuilderOption} from "./SelectQueryBuilderOption";
 import {
-    FindManyOptions,
     FindOptions,
     FindOptionsOrder, FindOptionsRelation,
     FindOptionsSelect,
@@ -50,7 +49,7 @@ import {OrmUtils} from "../util/OrmUtils";
  */
 export class SelectQueryBuilder<Entity> extends QueryBuilder<Entity> implements WhereExpression {
 
-    protected findOptions: FindManyOptions<Entity> = {};
+    protected findOptions: FindOptions<Entity> = {};
     protected selects: string[] = [];
     protected joins: { type: "inner"|"left", alias: string, parentAlias: string, relationMetadata: RelationMetadata, select: boolean }[] = [];
     protected conditions: string = "";
@@ -2292,7 +2291,9 @@ export class SelectQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
         let condition: string = "";
         let parameterIndex = Object.keys(this.expressionMap.nativeParameters).length;
         if (where instanceof Array) {
-            condition = ("(" + where.map(whereItem => this.buildWhere(whereItem, metadata, alias, embedPrefix)).map(condition => "(" + condition + ")").join(" OR ") + ")");
+            condition = ("(" + where.map(whereItem => {
+                return this.buildWhere(whereItem, metadata, alias, embedPrefix);
+            }).filter(condition => !!condition).map(condition => "(" + condition + ")").join(" OR ") + ")");
 
         } else {
             let andConditions: string[] = [];
@@ -2340,7 +2341,9 @@ export class SelectQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
                     // this.expressionMap.parameters[paramName] = where[key]; // todo: handle functions and other edge cases
 
                 } else if (embed) {
-                    andConditions.push(this.buildWhere(where[key], metadata, alias, propertyPath));
+                    const condition = this.buildWhere(where[key], metadata, alias, propertyPath);
+                    if (condition)
+                        andConditions.push(condition);
 
                 } else if (relation) {
                     const joinAlias = alias + "_" + relation.propertyName;
@@ -2357,7 +2360,9 @@ export class SelectQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
                         if (existJoin.type === "left")
                             existJoin.type = "inner";
                     }
-                    andConditions.push(this.buildWhere(where[key], relation.inverseEntityMetadata, joinAlias));
+                    const condition = this.buildWhere(where[key], relation.inverseEntityMetadata, joinAlias);
+                    if (condition)
+                        andConditions.push(condition);
                 }
             }
             condition = andConditions.join(" AND ");
