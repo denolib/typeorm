@@ -39,8 +39,6 @@ describe("persistence > cascade operations with custom name", () => {
                 }
             });
 
-            console.log(posts);
-
             posts.should.be.eql([{
                 id: 1,
                 title: "Hello Post #1",

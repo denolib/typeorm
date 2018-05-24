@@ -130,14 +130,16 @@ export class Subject {
 
         if (this.entity) {
             this.entityWithFulfilledIds = Object.assign({}, this.entity);
-            if (this.parentSubject) {
-                this.metadata.primaryColumns.forEach(primaryColumn => {
-                    if (primaryColumn.relationMetadata && primaryColumn.relationMetadata.inverseEntityMetadata === this.parentSubject!.metadata) {
-                        primaryColumn.setEntityValue(this.entityWithFulfilledIds!, this.parentSubject!.entity);
-                    }
-                });
-            }
+            // if (this.parentSubject) {
+            //     this.metadata.primaryColumns.forEach(primaryColumn => {
+                    // if (primaryColumn.relationMetadata && primaryColumn.relationMetadata.inverseEntityMetadata === this.parentSubject!.metadata) {
+                    //     primaryColumn.setEntityValue(this.entityWithFulfilledIds!, this.parentSubject!.entity);
+                    // }
+                // });
+            // }
+            // console.log("this.entityWithFulfilledIds", this.entityWithFulfilledIds);
             this.identifier = this.metadata.getEntityIdMap(this.entityWithFulfilledIds);
+            // console.log("this.identifier", this.identifier);
 
         } else if (this.databaseEntity) {
             this.identifier = this.metadata.getEntityIdMap(this.databaseEntity);

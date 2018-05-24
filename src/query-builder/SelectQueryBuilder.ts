@@ -2041,15 +2041,16 @@ export class SelectQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
                     order: this.findOptions.order ? OrmUtils.deepValue(this.findOptions.order, relation.propertyPath) : undefined,
                     relations: this.findOptions.relations && typeof this.findOptions.relations === "object" ? OrmUtils.deepValue(this.findOptions.relations, relation.propertyPath) : undefined,
                 });
-            console.log("entities", entities);
-            const relatedEntityGroups: any[] = await this.connection.relationIdLoader.loadManyToManyRelationIdsAndGroup(relation, entities, undefined, queryBuilder);
-            entities.forEach(entity => {
-                const relatedEntityGroup = relatedEntityGroups.find(group => group.entity === entity);
-                if (relatedEntityGroup) {
-                    const value = relatedEntityGroup.related === undefined ? null : relatedEntityGroup.related;
-                    relation.setEntityValue(entity, value);
-                }
-            });
+            if (entities.length > 0) {
+                const relatedEntityGroups: any[] = await this.connection.relationIdLoader.loadManyToManyRelationIdsAndGroup(relation, entities, undefined, queryBuilder);
+                entities.forEach(entity => {
+                    const relatedEntityGroup = relatedEntityGroups.find(group => group.entity === entity);
+                    if (relatedEntityGroup) {
+                        const value = relatedEntityGroup.related === undefined ? null : relatedEntityGroup.related;
+                        relation.setEntityValue(entity, value);
+                    }
+                });
+            }
         }));
 
         return {

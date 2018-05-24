@@ -20,11 +20,11 @@ describe("github issues > #1576 Entities with null as `id` are merged [@next]", 
             { id: null, name: "2", name2: null },
         ];
 
-        const post = connection.manager.create(Post, {
+        connection.manager.create(Post, {
             categories: cats
         });
+        // console.log(post);
 
-        console.log(post);
     })));
 
 });

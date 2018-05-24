@@ -200,14 +200,14 @@ describe("database schema > column types > postgres-enum", () => {
 
         let result = await queryRunner.query(`SELECT "n"."nspname", "t"."typname" FROM "pg_type" "t" ` +
             `INNER JOIN "pg_namespace" "n" ON "n"."oid" = "t"."typnamespace" ` +
-            `WHERE "n"."nspname" = 'public' AND "t"."typname" = 'post_enumerable_enum'`);
+            `WHERE "n"."nspname" = current_schema() AND "t"."typname" = 'post_enumerable_enum'`);
         result.length.should.be.equal(1);
 
         await queryRunner.executeMemoryDownSql();
 
         result = await queryRunner.query(`SELECT "n"."nspname", "t"."typname" FROM "pg_type" "t" ` +
             `INNER JOIN "pg_namespace" "n" ON "n"."oid" = "t"."typnamespace" ` +
-            `WHERE "n"."nspname" = 'public' AND "t"."typname" = 'post_enum_enum'`);
+            `WHERE "n"."nspname" = current_schema() AND "t"."typname" = 'post_enum_enum'`);
         result.length.should.be.equal(1);
 
         await queryRunner.release();
@@ -222,14 +222,14 @@ describe("database schema > column types > postgres-enum", () => {
 
         let result = await queryRunner.query(`SELECT "n"."nspname", "t"."typname" FROM "pg_type" "t" ` +
             `INNER JOIN "pg_namespace" "n" ON "n"."oid" = "t"."typnamespace" ` +
-            `WHERE "n"."nspname" = 'public' AND "t"."typname" = 'question_enum_enum'`);
+            `WHERE "n"."nspname" = current_schema() AND "t"."typname" = 'question_enum_enum'`);
         result.length.should.be.equal(1);
 
         await queryRunner.executeMemoryDownSql();
 
         result = await queryRunner.query(`SELECT "n"."nspname", "t"."typname" FROM "pg_type" "t" ` +
             `INNER JOIN "pg_namespace" "n" ON "n"."oid" = "t"."typnamespace" ` +
-            `WHERE "n"."nspname" = 'public' AND "t"."typname" = 'post_enum_enum'`);
+            `WHERE "n"."nspname" = current_schema() AND "t"."typname" = 'post_enum_enum'`);
         result.length.should.be.equal(1);
 
         await queryRunner.release();

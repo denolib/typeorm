@@ -71,7 +71,6 @@ describe("persistence > custom-column-names", function() {
             return postRepository
                 .findOne(1, { relations: ["category"] })
                 .then(post => {
-                    console.log("loadedPost", post);
                     loadedPost = post!;
                 });
         });

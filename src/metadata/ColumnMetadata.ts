@@ -5,7 +5,6 @@ import {RelationMetadata} from "./RelationMetadata";
 import {ObjectLiteral} from "../common/ObjectLiteral";
 import {ColumnMetadataArgs} from "../metadata-args/ColumnMetadataArgs";
 import {Connection} from "../connection/Connection";
-import {OrmUtils} from "../util/OrmUtils";
 import {ValueTransformer} from "../decorator/options/ValueTransformer";
 import {MongoDriver} from "../driver/mongodb/MongoDriver";
 import {PromiseUtils} from "../util/PromiseUtils";
@@ -494,7 +493,7 @@ export class ColumnMetadata {
             return Object.keys(map).length > 0 ? map : undefined;
 
         } else { // no embeds - no problems. Simply return column property name and its value of the entity
-            if (this.relationMetadata && entity[this.propertyName] && entity[this.propertyName] instanceof Object) {
+            /*if (this.relationMetadata && entity[this.propertyName] && entity[this.propertyName] instanceof Object) { // commented since functionality is suspicious no failing test was found
                 const map = this.relationMetadata.joinColumns.reduce((map, joinColumn) => {
                     const value = joinColumn.referencedColumn!.getEntityValueMap(entity[this.propertyName]);
                     if (value === undefined) return map;
@@ -504,12 +503,12 @@ export class ColumnMetadata {
                     return { [this.propertyName]: map };
 
                 return undefined;
-            } else {
-                if (entity[this.propertyName] !== undefined && (returnNulls === false || entity[this.propertyName] !== null))
-                    return { [this.propertyName]: entity[this.propertyName] };
+            } else {*/
+            if (entity[this.propertyName] !== undefined && (returnNulls === false || entity[this.propertyName] !== null))
+                return { [this.propertyName]: entity[this.propertyName] };
 
-                return undefined;
-            }
+            return undefined;
+            // }
         }
     }
 

@@ -12,7 +12,7 @@ import {PrimaryColumn} from "../../../../src/decorator/columns/PrimaryColumn";
 export class Translation {
 
     @PrimaryColumn()
-    localeId: number;
+    localeCode: string;
 
     @PrimaryColumn()
     messageId: number;

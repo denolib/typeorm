@@ -27,13 +27,10 @@ describe("github issues > #1972 STI problem - empty columns", () => {
         const tournamentUserParticipant = new TournamentUserParticipant({
             user,
         });
-        console.log(tournamentUserParticipant);
         await connection.manager.save(tournamentUserParticipant);
 
         // find user participant in the DB
         const result = await connection.manager.findOne(TournamentUserParticipant);
-        console.log(result);
-
         if (result) {
             assert(result.user instanceof User);
         }

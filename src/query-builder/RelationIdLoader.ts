@@ -62,9 +62,9 @@ export class RelationIdLoader {
         }
         // const relationIds = await this.load(relation, relatedEntityOrEntities!, entitiesOrEntities);
         const relationIds = await this.load(relation, entitiesOrEntities, relatedEntityOrEntities);
-        console.log("entities", entities);
-        console.log("relatedEntityOrEntities", relatedEntityOrEntities);
-        console.log("relationIds", relationIds);
+        // console.log("entities", entities);
+        // console.log("relatedEntityOrEntities", relatedEntityOrEntities);
+        // console.log("relationIds", relationIds);
 
         const relatedEntities: E2[] = relatedEntityOrEntities instanceof Array ? relatedEntityOrEntities : [relatedEntityOrEntities!];
 
@@ -109,7 +109,6 @@ export class RelationIdLoader {
                     }
                 });
             });
-            console.log("group", group);
             return group;
         });
     }
@@ -256,8 +255,8 @@ export class RelationIdLoader {
                     relationIdMaps.push(relationIdMap);
                 }
             });
-            console.log("relationIdMap", relationIdMaps);
-            console.log("entities.length", entities.length);
+            // console.log("relationIdMap", relationIdMaps);
+            // console.log("entities.length", entities.length);
             if (relationIdMaps.length === entities.length)
                 return Promise.resolve(relationIdMaps);
         }

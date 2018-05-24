@@ -222,7 +222,7 @@ export class RawSqlResultsToEntityTransformer {
                 const idMap = columns.reduce((idMap, column) => {
                     let value = result[column.databaseName];
                     if (relation.isOneToMany || relation.isOneToOneNotOwner) {
-                        if (column.referencedColumn) // if column is a relation
+                        if (column.referencedColumn && column.isVirtual) // if column is a relation // column.isVirtual is a new check make sure everything gonna work
                             value = column.referencedColumn.createValueMap(value);
 
                         return OrmUtils.mergeDeep(idMap, column.createValueMap(value));
@@ -243,7 +243,6 @@ export class RawSqlResultsToEntityTransformer {
                 }
                 return idMap;
             }).filter(result => result);
-
 
             const properties = rawRelationIdResult.relationIdAttribute.mapToPropertyPropertyPath.split(".");
             const mapToProperty = (properties: string[], map: ObjectLiteral, value: any): any => {
