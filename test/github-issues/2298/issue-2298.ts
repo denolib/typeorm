@@ -89,8 +89,5 @@ describe("github issues > #2298 - Repository filtering not considering related c
             ]
         }]);
 
-        console.log(loadedTicket);
-
-
     })));
 });
