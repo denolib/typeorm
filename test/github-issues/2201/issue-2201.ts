@@ -24,13 +24,12 @@ describe.only("github issues > #2201 - Create a select query when using a (custo
         await closeTestingConnections(connections);
     });
 
-    it.skip("Should not try to update the junction table when not needed", async () => {
+    it("Should not try to update the junction table when not needed", async () => {
         const connections = await createTestingConnections({
             entities: [__dirname + "/entity/ver2/*{.js,.ts}"],
             enabledDrivers: ["postgres"],
             schemaCreate: true,
             dropSchema: true,
-            logging: true
         });
         if (!connections.length) return;
 
@@ -59,7 +58,6 @@ describe.only("github issues > #2201 - Create a select query when using a (custo
             .where("record.id = :recordId", { recordId: record.id });
 
         const result = (await query.getOne())!;
-        console.log(result);
 
         result.status = "failed";
 
