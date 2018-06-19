@@ -57,7 +57,7 @@ export class RelationLoader {
         const columns = relation.entityMetadata.primaryColumns;
         const joinColumns = relation.isOwning ? relation.joinColumns : relation.inverseRelation!.joinColumns;
         const conditions = joinColumns.map(joinColumn => {
-            return `${relation.entityMetadata.name}.${relation.propertyName} = ${mainAlias}.${joinColumn.referencedColumn!.propertyName}`;
+            return `${relation.entityMetadata.name}.${joinColumn.propertyName} = ${mainAlias}.${joinColumn.referencedColumn!.propertyName}`;
         }).join(" AND ");
 
         const joinAliasName = relation.entityMetadata.name;

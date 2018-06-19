@@ -19,7 +19,7 @@ Learn more [Transactions](./transactions.md).
 ```typescript
 await manager.transaction(async manager => {
     // NOTE: you must perform all database operations using the given manager instance
-    // its a special instance of EntityManager working with this transaction
+    // it's a special instance of EntityManager working with this transaction
     // and don't forget to await things here
 });
 ```
@@ -151,6 +151,17 @@ await manager.delete(User, { firstName: "Timber" });
 
 ```typescript
 const count = await manager.count(User, { firstName: "Timber" });
+```
+
+* `increment` - Increments some column by provided value of entities that match given options.
+
+```typescript
+await manager.increment(User, { firstName: "Timber" }, "age", 3);
+```
+
+* `decrement` - Decrements some column by provided value that match given options.
+```typescript
+await manager.count(User, { firstName: "Timber" }, "age", 3);
 ```
 
 * `find` - Finds entities that match given options.

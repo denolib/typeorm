@@ -11,6 +11,18 @@ feel free to ask us and community.
 * now query builder adds joins to eager relations by default (previously only find methods did that)
 * `primary` flag has been removed from relation decorators. Now if you want to make a relation primary you must define a primary column with the same name relation uses
 
+## 0.2.8
+
+* added support for specifying isolation levels in transactions
+
+## 0.2.7
+
+* added support for rowversion type for mssql (#2198)
+
+## 0.2.6
+
+* fixed wrong aggregate and count methods signature in mongodb
+
 ## 0.2.5
 
 * added support for enum arrays in postgres

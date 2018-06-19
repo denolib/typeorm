@@ -129,7 +129,6 @@ export class MongoRepository<Entity extends ObjectLiteral> extends Repository<En
     aggregateEntity(pipeline: ObjectLiteral[], options?: CollectionAggregationOptions): AggregationCursor<Entity> {
         return this.manager.aggregateEntity(this.metadata.target, pipeline, options);
     }
-
     /**
      * Perform a bulkWrite operation without a fluent API.
      */
@@ -140,7 +139,7 @@ export class MongoRepository<Entity extends ObjectLiteral> extends Repository<En
     /**
      * Count number of matching documents in the db to a query.
      */
-    count(query?: ObjectLiteral, options?: MongoCountPreferences): Promise<any> {
+    count(query?: ObjectLiteral, options?: MongoCountPreferences): Promise<number> {
         return this.manager.count(this.metadata.target, query || {}, options);
     }
 

@@ -245,7 +245,7 @@ export class MongoEntityManager extends EntityManager {
     /**
      * Creates a cursor for a query that can be used to iterate over results from MongoDB.
      */
-    createCursor<Entity>(entityClassOrName: ObjectType<Entity>|EntitySchema<Entity>|string, query?: ObjectLiteral): Cursor<Entity> {
+    createCursor<Entity, T = any>(entityClassOrName: ObjectType<Entity>|EntitySchema<Entity>|string, query?: ObjectLiteral): Cursor<T> {
         const metadata = this.connection.getMetadata(entityClassOrName);
         return this.queryRunner.cursor(metadata.tableName, query);
     }
@@ -291,7 +291,7 @@ export class MongoEntityManager extends EntityManager {
     /**
      * Count number of matching documents in the db to a query.
      */
-    count<Entity>(entityClassOrName: ObjectType<Entity>|EntitySchema<Entity>|string, query?: ObjectLiteral, options?: MongoCountPreferences): Promise<any> {
+    count<Entity>(entityClassOrName: ObjectType<Entity>|EntitySchema<Entity>|string, query?: ObjectLiteral, options?: MongoCountPreferences): Promise<number> {
         const metadata = this.connection.getMetadata(entityClassOrName);
         return this.queryRunner.count(metadata.tableName, query, options);
     }
@@ -653,6 +653,50 @@ export class MongoEntityManager extends EntityManager {
         const objectIdInstance = PlatformTools.load("mongodb").ObjectID;
         return {
             "_id": (idMap instanceof objectIdInstance) ? idMap : new objectIdInstance(idMap)
+        };
+    }
+
+    /**
+     * Overrides cursor's toArray and next methods to convert results to entity automatically.
+     */
+    protected applyEntityTransformationToCursor<Entity>(metadata: EntityMetadata, cursor: Cursor<Entity>|AggregationCursor<Entity>) {
+        const ParentCursor = PlatformTools.load("mongodb").Cursor;
+        cursor.toArray = function (callback?: MongoCallback<Entity[]>) {
+            if (callback) {
+                ParentCursor.prototype.toArray.call(this, (error: MongoError, results: Entity[]): void => {
+                    if (error) {
+                        callback(error, results);
+                        return;
+                    }
+
+                    const transformer = new DocumentToEntityTransformer();
+                    return callback(error, transformer.transformAll(results, metadata));
+                });
+            } else {
+                return ParentCursor.prototype.toArray.call(this).then((results: Entity[]) => {
+                    const transformer = new DocumentToEntityTransformer();
+                    return transformer.transformAll(results, metadata);
+                });
+            }
+        };
+        cursor.next = function (callback?: MongoCallback<CursorResult>) {
+            if (callback) {
+                ParentCursor.prototype.next.call(this, (error: MongoError, result: CursorResult): void => {
+                    if (error || !result) {
+                        callback(error, result);
+                        return;
+                    }
+
+                    const transformer = new DocumentToEntityTransformer();
+                    return callback(error, transformer.transform(result, metadata));
+                });
+            } else {
+                return ParentCursor.prototype.next.call(this).then((result: Entity) => {
+                    if (!result) return result;
+                    const transformer = new DocumentToEntityTransformer();
+                    return transformer.transform(result, metadata);
+                });
+            }
         };
     }
 

@@ -58,7 +58,7 @@ export class BaseEntity {
      */
     async reload(): Promise<void> {
         const base: any = this.constructor;
-        const newestEntity: BaseEntity = await base.getRepository().findOneOrFail(base.getId());
+        const newestEntity: BaseEntity = await base.getRepository().findOneOrFail(base.getId(this));
 
         Object.assign(this, newestEntity);
     }
@@ -310,6 +310,28 @@ export class BaseEntity {
      */
     static findOne<T extends BaseEntity>(this: ObjectType<T>, optionsOrConditions?: string|number|Date|ObjectID|FindOptions<T>|FindOptionsWhere<T>, maybeOptions?: FindOptions<T>): Promise<T|undefined> {
         return (this as any).getRepository().findOne(optionsOrConditions as any, maybeOptions);
+    }
+
+    /**
+     * Finds first entity that matches given options.
+     */
+    static findOneOrFail<T extends BaseEntity>(this: ObjectType<T>, id?: string|number|Date|ObjectID, options?: FindOneOptions<T>): Promise<T>;
+
+    /**
+     * Finds first entity that matches given options.
+     */
+    static findOneOrFail<T extends BaseEntity>(this: ObjectType<T>, options?: FindOneOptions<T>): Promise<T>;
+
+    /**
+     * Finds first entity that matches given conditions.
+     */
+    static findOneOrFail<T extends BaseEntity>(this: ObjectType<T>, conditions?: DeepPartial<T>, options?: FindOneOptions<T>): Promise<T>;
+
+    /**
+     * Finds first entity that matches given conditions.
+     */
+    static findOneOrFail<T extends BaseEntity>(this: ObjectType<T>, optionsOrConditions?: string|number|Date|ObjectID|FindOneOptions<T>|DeepPartial<T>, maybeOptions?: FindOneOptions<T>): Promise<T> {
+        return (this as any).getRepository().findOneOrFail(optionsOrConditions as any, maybeOptions);
     }
 
     /**
