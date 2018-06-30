@@ -305,7 +305,7 @@ export class RelationIdLoader {
                 return relation.joinColumns.indexOf(column) !== -1;
             });
             if (sameReferencedColumns) {
-                return entities.map(entity => {
+                return Promise.resolve(entities.map(entity => {
                     const result: ObjectLiteral = {};
                     relation.joinColumns.forEach(function (joinColumn) {
                         const value = joinColumn.referencedColumn!.getEntityValue(entity);
@@ -315,7 +315,7 @@ export class RelationIdLoader {
                         result[primaryColumnName] = value;
                     });
                     return result;
-                });
+                }));
             }
         }
 
