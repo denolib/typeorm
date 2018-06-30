@@ -299,6 +299,26 @@ export class RelationIdLoader {
      */
     protected loadForOneToManyAndOneToOneNotOwner(relation: RelationMetadata, entities: ObjectLiteral[], relatedEntities?: ObjectLiteral[]) {
         relation = relation.inverseRelation!;
+
+        if (relation.entityMetadata.primaryColumns.length === relation.joinColumns.length) {
+            const sameReferencedColumns = relation.entityMetadata.primaryColumns.every(column => {
+                return relation.joinColumns.indexOf(column) !== -1;
+            });
+            if (sameReferencedColumns) {
+                return entities.map(entity => {
+                    const result: ObjectLiteral = {};
+                    relation.joinColumns.forEach(function (joinColumn) {
+                        const value = joinColumn.referencedColumn!.getEntityValue(entity);
+                        const joinColumnName = joinColumn.referencedColumn!.entityMetadata.name + "_" + joinColumn.referencedColumn!.propertyPath.replace(".", "_");
+                        const primaryColumnName = joinColumn.entityMetadata.name + "_" + relation.inverseRelation!.propertyPath.replace(".", "_") + "_" + joinColumn.propertyPath.replace(".", "_");
+                        result[joinColumnName] = value;
+                        result[primaryColumnName] = value;
+                    });
+                    return result;
+                });
+            }
+        }
+
         const mainAlias = relation.entityMetadata.targetName;
 
         // select all columns we need
