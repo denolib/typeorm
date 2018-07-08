@@ -21,7 +21,7 @@
 </div>
 
 TypeORM is an [ORM](https://en.wikipedia.org/wiki/Object-relational_mapping) 
-that can run in NodeJS, Browser, Cordova, PhoneGap, Ionic, React Native and Electron platforms
+that can run in NodeJS, Browser, Cordova, PhoneGap, Ionic, React Native, NativeScript, Expo, and Electron platforms
 and can be used with TypeScript and JavaScript (ES5, ES6, ES7, ES8).
 Its goal is to always support the latest JavaScript features and provide additional features
 that help you to develop any kind of application that uses databases - from
@@ -69,7 +69,7 @@ Some TypeORM features:
 * connection configuration in json / xml / yml / env formats
 * supports MySQL / MariaDB / Postgres / SQLite / Microsoft SQL Server / Oracle / sql.js
 * supports MongoDB NoSQL database
-* works in NodeJS / Browser / Ionic / Cordova / React Native / Electron platforms
+* works in NodeJS / Browser / Ionic / Cordova / React Native / NativeScript / Expo / Electron platforms
 * TypeScript and JavaScript support
 * produced code is performant, flexible, clean and maintainable
 * follows all possible best practices
@@ -200,14 +200,20 @@ await timber.remove();
     
         `npm install oracledb --save`
     
-    Install only *one* of them, depending on which database you use.
-    
-    To make the Oracle driver work, you need to follow the installation instructions from 
-    [their](https://github.com/oracle/node-oracledb) site.
+        Install only *one* of them, depending on which database you use.
+
+        To make the Oracle driver work, you need to follow the installation instructions from
+        [their](https://github.com/oracle/node-oracledb) site.
 
     * for **MongoDB** (experimental)
 
         `npm install mongodb --save`
+
+    * for **NativeScript**, **react-native** and **Cordova**
+
+        Check [documentation of supported platforms](docs/supported-platforms.md)
+
+
 
 ##### TypeScript configuration
 
@@ -240,7 +246,8 @@ typeorm init --name MyProject --database mysql
 ```
 
 Where `name` is the name of your project and `database` is the database you'll use.
-Database can be one of the following values: `mysql`, `mariadb`, `postgres`, `sqlite`, `mssql`, `oracle`, `mongodb`, `cordova`, `react-native`.
+Database can be one of the following values: `mysql`, `mariadb`, `postgres`, `sqlite`, `mssql`, `oracle`, `mongodb`,
+`cordova`, `react-native`, `expo`, `nativescript`.
 
 This command will generate a new project in the `MyProject` directory with the following files:
 
@@ -535,7 +542,7 @@ createConnection({
 
 We are using MySQL in this example, but you can use any other supported database. 
 To use another database, simply change the `type` in the options to the database type you are using: 
-mysql, mariadb, postgres, sqlite, mssql, oracle, cordova, react-native or mongodb.
+mysql, mariadb, postgres, sqlite, mssql, oracle, cordova, nativescript, react-native, expo, or mongodb.
 Also make sure to use your own host, port, username, password and database settings.
 
 We added our Photo entity to the list of entities for this connection. 
@@ -1261,35 +1268,22 @@ There are several extensions that simplify working with TypeORM and integrating 
 * [TypeORM integration](https://github.com/typeorm/typeorm-routing-controllers-extensions) with [routing-controllers](https://github.com/pleerock/routing-controllers)
 * Models generation from existing database - [typeorm-model-generator](https://github.com/Kononnable/typeorm-model-generator)
 
-## Contributing 😰
+## Contributing
 
 Learn about contribution [here](https://github.com/typeorm/typeorm/blob/master/CONTRIBUTING.md) and how to setup your development environment [here](https://github.com/typeorm/typeorm/blob/master/DEVELOPER.md).
 
 This project exists thanks to all the people who contribute:
 
-<a href="https://github.com/typeorm/typeorm/graphs/contributors"><img src="https://opencollective.com/typeorm/contributors.svg?width=890" /></a>
+<a href="https://github.com/typeorm/typeorm/graphs/contributors"><img src="https://opencollective.com/typeorm/contributors.svg?width=890&showBtn=false" /></a>
 
+## Sponsors
 
-## Backers 🙏
+Open source is hard and time-consuming. If you want to invest into TypeORM's future you can become a sponsor and make our core team to spend more time on TypeORM's improvements and new features. [Become a sponsor](https://opencollective.com/typeorm)
 
-Thank you to all our backers! If you want to support a project and become a backer [click here.](https://opencollective.com/typeorm#backer)
+<a href="https://opencollective.com/typeorm" target="_blank"><img src="https://opencollective.com/typeorm/tiers/sponsor.svg?width=890"></a>
 
-<a href="https://opencollective.com/typeorm#backers" target="_blank"><img src="https://opencollective.com/typeorm/backers.svg?width=890"></a>
+## Gold Sponsors
 
+Become a gold sponsor and get a premium technical support from our core contributors. [Become a gold sponsor](https://opencollective.com/typeorm)
 
-## Sponsors 🤑
-
-Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [Become a sponsor](https://opencollective.com/typeorm#sponsor)
-
-<a href="https://opencollective.com/typeorm/sponsor/0/website" target="_blank"><img src="https://opencollective.com/typeorm/sponsor/0/avatar.svg"></a>
-<a href="https://opencollective.com/typeorm/sponsor/1/website" target="_blank"><img src="https://opencollective.com/typeorm/sponsor/1/avatar.svg"></a>
-<a href="https://opencollective.com/typeorm/sponsor/2/website" target="_blank"><img src="https://opencollective.com/typeorm/sponsor/2/avatar.svg"></a>
-<a href="https://opencollective.com/typeorm/sponsor/3/website" target="_blank"><img src="https://opencollective.com/typeorm/sponsor/3/avatar.svg"></a>
-<a href="https://opencollective.com/typeorm/sponsor/4/website" target="_blank"><img src="https://opencollective.com/typeorm/sponsor/4/avatar.svg"></a>
-<a href="https://opencollective.com/typeorm/sponsor/5/website" target="_blank"><img src="https://opencollective.com/typeorm/sponsor/5/avatar.svg"></a>
-<a href="https://opencollective.com/typeorm/sponsor/6/website" target="_blank"><img src="https://opencollective.com/typeorm/sponsor/6/avatar.svg"></a>
-<a href="https://opencollective.com/typeorm/sponsor/7/website" target="_blank"><img src="https://opencollective.com/typeorm/sponsor/7/avatar.svg"></a>
-<a href="https://opencollective.com/typeorm/sponsor/8/website" target="_blank"><img src="https://opencollective.com/typeorm/sponsor/8/avatar.svg"></a>
-<a href="https://opencollective.com/typeorm/sponsor/9/website" target="_blank"><img src="https://opencollective.com/typeorm/sponsor/9/avatar.svg"></a>
-
-
+<a href="https://opencollective.com/typeorm" target="_blank"><img src="https://opencollective.com/typeorm/tiers/gold-sponsor.svg?width=890"></a>

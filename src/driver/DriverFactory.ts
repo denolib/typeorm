@@ -5,9 +5,11 @@ import {OracleDriver} from "./oracle/OracleDriver";
 import {SqliteDriver} from "./sqlite/SqliteDriver";
 import {CordovaDriver} from "./cordova/CordovaDriver";
 import {ReactNativeDriver} from "./react-native/ReactNativeDriver";
+import {NativescriptDriver} from "./nativescript/NativescriptDriver";
 import {SqljsDriver} from "./sqljs/SqljsDriver";
 import {MysqlDriver} from "./mysql/MysqlDriver";
 import {PostgresDriver} from "./postgres/PostgresDriver";
+import {ExpoDriver} from "./expo/ExpoDriver";
 import {Driver} from "./Driver";
 import {Connection} from "../connection/Connection";
 
@@ -32,6 +34,8 @@ export class DriverFactory {
                 return new SqliteDriver(connection);
             case "cordova":
                 return new CordovaDriver(connection);
+            case "nativescript":
+                return new NativescriptDriver(connection);
             case "react-native":
                 return new ReactNativeDriver(connection);
             case "sqljs":
@@ -42,6 +46,8 @@ export class DriverFactory {
                 return new SqlServerDriver(connection);
             case "mongodb":
                 return new MongoDriver(connection);
+            case "expo":
+                return new ExpoDriver(connection);
             default:
                 throw new MissingDriverError(type);
         }
