@@ -66,8 +66,8 @@ export type FindOptionsWhere<E> = {
     [P in keyof E]?:
         E[P] extends (infer R)[] ? FindOptionsWhere<R> :
         E[P] extends Promise<infer R> ? FindOptionsWhere<R> :
-        E[P] extends Object ? FindOperator<E[P]> | FindOptionsWhere<E[P]> :
-        FindOperator<E[P]> | E[P]
+        E[P] extends Object ? FindOperator<E[P]> | FindAltOperator<E[P]> | FindOptionsWhere<E[P]> :
+        FindOperator<E[P]> | FindAltOperator<E[P]> | E[P]
 } | {
     [P in keyof E]?:
         E[P] extends (infer R)[] ? FindOptionsWhere<R> :
@@ -75,6 +75,31 @@ export type FindOptionsWhere<E> = {
         E[P] extends Object ? FindOperator<E[P]> | FindOptionsWhere<E[P]> :
         FindOperator<E[P]> | E[P]
 }[];
+
+/**
+ * Alternative FindOperator syntax.
+ */
+export type FindAltOperator<T> = {
+    $any: T[] | FindAltOperator<T>
+} | {
+    $between: [T, T]
+} | {
+    $equal: T | FindAltOperator<T>
+} | {
+    $iLike: T | FindAltOperator<T>
+} | {
+    $in: T[] | FindAltOperator<T>
+} | {
+    $lessThan: T | FindAltOperator<T>
+} |  {
+    $like: T | FindAltOperator<T>
+} | {
+    $moreThan: T | FindAltOperator<T>
+} | {
+    $not: T | FindAltOperator<T>
+} | {
+    $raw: T | FindAltOperator<T>
+};
 
 /**
  * Extra options that can be applied to FindOptions.

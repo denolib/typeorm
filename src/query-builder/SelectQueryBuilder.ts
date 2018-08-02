@@ -1,3 +1,4 @@
+import {normalizeFindOptions} from "../find-options/FindOptionsUtils";
 import {QueryBuilderUtils} from './QueryBuilderUtils';
 import {RawSqlResultsToEntityTransformer} from "./transformer/RawSqlResultsToEntityTransformer";
 import {ObjectLiteral} from "../common/ObjectLiteral";
@@ -94,7 +95,7 @@ export class SelectQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
     }
 
     setFindOptions(findOptions: FindOptions<Entity>) {
-        this.findOptions = findOptions;
+        this.findOptions = normalizeFindOptions(findOptions);
         return this;
     }
 

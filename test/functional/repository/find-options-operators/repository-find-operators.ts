@@ -18,7 +18,7 @@ import {
 import {Post} from "./entity/Post";
 import {PostgresDriver} from "../../../../src/driver/postgres/PostgresDriver";
 
-describe("repository > find options > operators", () => {
+describe.only("repository > find options > operators", () => {
 
     let connections: Connection[];
     before(async () => connections = await createTestingConnections({
@@ -47,6 +47,26 @@ describe("repository > find options > operators", () => {
 
     })));
 
+    it("$not", () => Promise.all(connections.map(async connection => {
+
+        // insert some fake data
+        const post1 = new Post();
+        post1.title = "About #1";
+        post1.likes = 12;
+        await connection.manager.save(post1);
+        const post2 = new Post();
+        post2.title = "About #2";
+        post2.likes = 3;
+        await connection.manager.save(post2);
+
+        // check operator
+        const loadedPosts = await connection.getRepository(Post).find({
+            title: { $not: "About #1" }
+        });
+        loadedPosts.should.be.eql([{ id: 2, likes: 3, title: "About #2" }]);
+
+    })));
+
     it("lessThan", () => Promise.all(connections.map(async connection => {
 
         // insert some fake data
@@ -62,6 +82,26 @@ describe("repository > find options > operators", () => {
         // check operator
         const loadedPosts = await connection.getRepository(Post).find({
             likes: LessThan(10)
+        });
+        loadedPosts.should.be.eql([{ id: 2, likes: 3, title: "About #2" }]);
+
+    })));
+
+    it("$lessThan", () => Promise.all(connections.map(async connection => {
+
+        // insert some fake data
+        const post1 = new Post();
+        post1.title = "About #1";
+        post1.likes = 12;
+        await connection.manager.save(post1);
+        const post2 = new Post();
+        post2.title = "About #2";
+        post2.likes = 3;
+        await connection.manager.save(post2);
+
+        // check operator
+        const loadedPosts = await connection.getRepository(Post).find({
+            likes: { $lessThan: 10 }
         });
         loadedPosts.should.be.eql([{ id: 2, likes: 3, title: "About #2" }]);
 
@@ -87,6 +127,26 @@ describe("repository > find options > operators", () => {
 
     })));
 
+    it("$not($lessThan)", () => Promise.all(connections.map(async connection => {
+
+        // insert some fake data
+        const post1 = new Post();
+        post1.title = "About #1";
+        post1.likes = 12;
+        await connection.manager.save(post1);
+        const post2 = new Post();
+        post2.title = "About #2";
+        post2.likes = 3;
+        await connection.manager.save(post2);
+
+        // check operator
+        const loadedPosts = await connection.getRepository(Post).find({
+            likes: { $not: { $lessThan: 10 } }
+        });
+        loadedPosts.should.be.eql([{ id: 1, likes: 12, title: "About #1" }]);
+
+    })));
+
     it("moreThan", () => Promise.all(connections.map(async connection => {
 
         // insert some fake data
@@ -102,6 +162,26 @@ describe("repository > find options > operators", () => {
         // check operator
         const loadedPosts = await connection.getRepository(Post).find({
             likes: MoreThan(10)
+        });
+        loadedPosts.should.be.eql([{ id: 1, likes: 12, title: "About #1" }]);
+
+    })));
+
+    it("$moreThan", () => Promise.all(connections.map(async connection => {
+
+        // insert some fake data
+        const post1 = new Post();
+        post1.title = "About #1";
+        post1.likes = 12;
+        await connection.manager.save(post1);
+        const post2 = new Post();
+        post2.title = "About #2";
+        post2.likes = 3;
+        await connection.manager.save(post2);
+
+        // check operator
+        const loadedPosts = await connection.getRepository(Post).find({
+            likes: { $moreThan: 10 }
         });
         loadedPosts.should.be.eql([{ id: 1, likes: 12, title: "About #1" }]);
 
@@ -127,6 +207,26 @@ describe("repository > find options > operators", () => {
 
     })));
 
+    it("$not($moreThan)", () => Promise.all(connections.map(async connection => {
+
+        // insert some fake data
+        const post1 = new Post();
+        post1.title = "About #1";
+        post1.likes = 12;
+        await connection.manager.save(post1);
+        const post2 = new Post();
+        post2.title = "About #2";
+        post2.likes = 3;
+        await connection.manager.save(post2);
+
+        // check operator
+        const loadedPosts = await connection.getRepository(Post).find({
+            likes: { $not: { $moreThan: 10 }}
+        });
+        loadedPosts.should.be.eql([{ id: 2, likes: 3, title: "About #2" }]);
+
+    })));
+
     it("equal", () => Promise.all(connections.map(async connection => {
 
         // insert some fake data
@@ -142,6 +242,26 @@ describe("repository > find options > operators", () => {
         // check operator
         const loadedPosts = await connection.getRepository(Post).find({
             title: Equal("About #2")
+        });
+        loadedPosts.should.be.eql([{ id: 2, likes: 3, title: "About #2" }]);
+
+    })));
+
+    it("$equal", () => Promise.all(connections.map(async connection => {
+
+        // insert some fake data
+        const post1 = new Post();
+        post1.title = "About #1";
+        post1.likes = 12;
+        await connection.manager.save(post1);
+        const post2 = new Post();
+        post2.title = "About #2";
+        post2.likes = 3;
+        await connection.manager.save(post2);
+
+        // check operator
+        const loadedPosts = await connection.getRepository(Post).find({
+            title: { $equal: "About #2" }
         });
         loadedPosts.should.be.eql([{ id: 2, likes: 3, title: "About #2" }]);
 
@@ -167,6 +287,26 @@ describe("repository > find options > operators", () => {
 
     })));
 
+    it("not(equal)", () => Promise.all(connections.map(async connection => {
+
+        // insert some fake data
+        const post1 = new Post();
+        post1.title = "About #1";
+        post1.likes = 12;
+        await connection.manager.save(post1);
+        const post2 = new Post();
+        post2.title = "About #2";
+        post2.likes = 3;
+        await connection.manager.save(post2);
+
+        // check operator
+        const loadedPosts = await connection.getRepository(Post).find({
+            title: { $not: { $equal: "About #2" }}
+        });
+        loadedPosts.should.be.eql([{ id: 1, likes: 12, title: "About #1" }]);
+
+    })));
+
     it("like", () => Promise.all(connections.map(async connection => {
 
         // insert some fake data
@@ -187,6 +327,26 @@ describe("repository > find options > operators", () => {
 
     })));
 
+    it("like", () => Promise.all(connections.map(async connection => {
+
+        // insert some fake data
+        const post1 = new Post();
+        post1.title = "About #1";
+        post1.likes = 12;
+        await connection.manager.save(post1);
+        const post2 = new Post();
+        post2.title = "About #2";
+        post2.likes = 3;
+        await connection.manager.save(post2);
+
+        // check operator
+        const loadedPosts = await connection.getRepository(Post).find({
+            title: { $like: "%out #%" }
+        });
+        loadedPosts.should.be.eql([{ id: 1, likes: 12, title: "About #1" }, { id: 2, likes: 3, title: "About #2" }]);
+
+    })));
+
     it("not(like)", () => Promise.all(connections.map(async connection => {
 
         // insert some fake data
@@ -202,6 +362,26 @@ describe("repository > find options > operators", () => {
         // check operator
         const loadedPosts = await connection.getRepository(Post).find({
             title: Not(Like("%out #1"))
+        });
+        loadedPosts.should.be.eql([{ id: 2, likes: 3, title: "About #2" }]);
+
+    })));
+
+    it("$not($like)", () => Promise.all(connections.map(async connection => {
+
+        // insert some fake data
+        const post1 = new Post();
+        post1.title = "About #1";
+        post1.likes = 12;
+        await connection.manager.save(post1);
+        const post2 = new Post();
+        post2.title = "About #2";
+        post2.likes = 3;
+        await connection.manager.save(post2);
+
+        // check operator
+        const loadedPosts = await connection.getRepository(Post).find({
+            title: { $not: { $like: "%out #1" }}
         });
         loadedPosts.should.be.eql([{ id: 2, likes: 3, title: "About #2" }]);
 
@@ -237,6 +417,36 @@ describe("repository > find options > operators", () => {
 
     })));
 
+    it("$between", () => Promise.all(connections.map(async connection => {
+
+        // insert some fake data
+        const post1 = new Post();
+        post1.title = "About #1";
+        post1.likes = 12;
+        await connection.manager.save(post1);
+        const post2 = new Post();
+        post2.title = "About #2";
+        post2.likes = 3;
+        await connection.manager.save(post2);
+
+        // check operator
+        const loadedPosts1 = await connection.getRepository(Post).find({
+            likes: { $between: [1, 10] }
+        });
+        loadedPosts1.should.be.eql([{ id: 2, likes: 3, title: "About #2" }]);
+
+        const loadedPosts2 = await connection.getRepository(Post).find({
+            likes: { $between: [10, 13] }
+        });
+        loadedPosts2.should.be.eql([{ id: 1, likes: 12, title: "About #1" }]);
+
+        const loadedPosts3 = await connection.getRepository(Post).find({
+            likes: { $between: [1, 20] }
+        });
+        loadedPosts3.should.be.eql([{ id: 1, likes: 12, title: "About #1" }, { id: 2, likes: 3, title: "About #2" }]);
+
+    })));
+
     it("not(between)", () => Promise.all(connections.map(async connection => {
 
         // insert some fake data
@@ -266,6 +476,35 @@ describe("repository > find options > operators", () => {
         loadedPosts3.should.be.eql([]);
     })));
 
+    it("$not($between)", () => Promise.all(connections.map(async connection => {
+
+        // insert some fake data
+        const post1 = new Post();
+        post1.title = "About #1";
+        post1.likes = 12;
+        await connection.manager.save(post1);
+        const post2 = new Post();
+        post2.title = "About #2";
+        post2.likes = 3;
+        await connection.manager.save(post2);
+
+        // check operator
+        const loadedPosts1 = await connection.getRepository(Post).find({
+            likes: { $not: { $between: [1, 10] }}
+        });
+        loadedPosts1.should.be.eql([{ id: 1, likes: 12, title: "About #1" }]);
+
+        const loadedPosts2 = await connection.getRepository(Post).find({
+            likes: { $not: { $between: [10, 13] }}
+        });
+        loadedPosts2.should.be.eql([{ id: 2, likes: 3, title: "About #2" }]);
+
+        const loadedPosts3 = await connection.getRepository(Post).find({
+            likes: { $not: { $between: [1, 20] }}
+        });
+        loadedPosts3.should.be.eql([]);
+    })));
+
     it("in", () => Promise.all(connections.map(async connection => {
 
         // insert some fake data
@@ -286,6 +525,26 @@ describe("repository > find options > operators", () => {
 
     })));
 
+    it("$in", () => Promise.all(connections.map(async connection => {
+
+        // insert some fake data
+        const post1 = new Post();
+        post1.title = "About #1";
+        post1.likes = 12;
+        await connection.manager.save(post1);
+        const post2 = new Post();
+        post2.title = "About #2";
+        post2.likes = 3;
+        await connection.manager.save(post2);
+
+        // check operator
+        const loadedPosts = await connection.getRepository(Post).find({
+            title: { $in: ["About #2", "About #3"] }
+        });
+        loadedPosts.should.be.eql([{ id: 2, likes: 3, title: "About #2" }]);
+
+    })));
+
     it("not(in)", () => Promise.all(connections.map(async connection => {
 
         // insert some fake data
@@ -301,6 +560,26 @@ describe("repository > find options > operators", () => {
         // check operator
         const loadedPosts = await connection.getRepository(Post).find({
             title: Not(In(["About #1", "About #3"]))
+        });
+        loadedPosts.should.be.eql([{ id: 2, likes: 3, title: "About #2" }]);
+
+    })));
+
+    it("$not($in)", () => Promise.all(connections.map(async connection => {
+
+        // insert some fake data
+        const post1 = new Post();
+        post1.title = "About #1";
+        post1.likes = 12;
+        await connection.manager.save(post1);
+        const post2 = new Post();
+        post2.title = "About #2";
+        post2.likes = 3;
+        await connection.manager.save(post2);
+
+        // check operator
+        const loadedPosts = await connection.getRepository(Post).find({
+            title: { $not: { $in: ["About #1", "About #3"] }}
         });
         loadedPosts.should.be.eql([{ id: 2, likes: 3, title: "About #2" }]);
 
@@ -328,6 +607,28 @@ describe("repository > find options > operators", () => {
 
     })));
 
+    it("$any", () => Promise.all(connections.map(async connection => {
+        if (!(connection.driver instanceof PostgresDriver))
+            return;
+
+        // insert some fake data
+        const post1 = new Post();
+        post1.title = "About #1";
+        post1.likes = 12;
+        await connection.manager.save(post1);
+        const post2 = new Post();
+        post2.title = "About #2";
+        post2.likes = 3;
+        await connection.manager.save(post2);
+
+        // check operator
+        const loadedPosts = await connection.getRepository(Post).find({
+            title: { $any: ["About #2", "About #3"] }
+        });
+        loadedPosts.should.be.eql([{ id: 2, likes: 3, title: "About #2" }]);
+
+    })));
+
     it("not(any)", () => Promise.all(connections.map(async connection => {
         if (!(connection.driver instanceof PostgresDriver))
             return;
@@ -345,6 +646,28 @@ describe("repository > find options > operators", () => {
         // check operator
         const loadedPosts = await connection.getRepository(Post).find({
             title: Not(Any(["About #2", "About #3"]))
+        });
+        loadedPosts.should.be.eql([{ id: 1, likes: 12, title: "About #1" }]);
+
+    })));
+
+    it("$not($any)", () => Promise.all(connections.map(async connection => {
+        if (!(connection.driver instanceof PostgresDriver))
+            return;
+
+        // insert some fake data
+        const post1 = new Post();
+        post1.title = "About #1";
+        post1.likes = 12;
+        await connection.manager.save(post1);
+        const post2 = new Post();
+        post2.title = "About #2";
+        post2.likes = 3;
+        await connection.manager.save(post2);
+
+        // check operator
+        const loadedPosts = await connection.getRepository(Post).find({
+            title: { $not: { $any: ["About #2", "About #3"] } }
         });
         loadedPosts.should.be.eql([{ id: 1, likes: 12, title: "About #1" }]);
 
@@ -405,6 +728,26 @@ describe("repository > find options > operators", () => {
         // check operator
         const loadedPosts = await connection.getRepository(Post).find({
             likes: Raw("12")
+        });
+        loadedPosts.should.be.eql([{ id: 1, likes: 12, title: "About #1" }]);
+
+    })));
+
+    it("$raw", () => Promise.all(connections.map(async connection => {
+
+        // insert some fake data
+        const post1 = new Post();
+        post1.title = "About #1";
+        post1.likes = 12;
+        await connection.manager.save(post1);
+        const post2 = new Post();
+        post2.title = "About #2";
+        post2.likes = 3;
+        await connection.manager.save(post2);
+
+        // check operator
+        const loadedPosts = await connection.getRepository(Post).find({
+            likes: { $raw: "12" }
         });
         loadedPosts.should.be.eql([{ id: 1, likes: 12, title: "About #1" }]);
 
