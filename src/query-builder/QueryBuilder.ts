@@ -724,8 +724,15 @@ export abstract class QueryBuilder<Entity> {
             const transformedIds = (ids as any[]).map(id => {
                 return primaryColumn.getEntityValue(metadata.ensureEntityIdMap(id), true);
             });
-            this.expressionMap.nativeParameters["qb_ids"] = transformedIds;
-            return alias + this.escape(primaryColumn.databaseName) + " IN (" + this.connection.driver.createParameter("qb_ids", parameterIndex) + ")"
+
+            const areAllNumbers = transformedIds.every((id: any) => typeof id === "number");
+            if (areAllNumbers) {
+                return `${alias + this.escape(primaryColumn.databaseName)} IN (${transformedIds.join(", ")})`;
+
+            } else {
+                this.expressionMap.parameters["qb_ids"] = transformedIds;
+                return alias + this.escape(primaryColumn.databaseName) + " IN (...:qb_ids)";
+            }
         }
     }
 
