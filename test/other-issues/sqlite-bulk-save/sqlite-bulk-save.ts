@@ -3,7 +3,7 @@ import {closeTestingConnections, createTestingConnections, reloadTestingDatabase
 import {Connection} from "../../../src/connection/Connection";
 import {Post} from "./entity/Post";
 
-describe.only("other issues > bulk save in sqlite", () => {
+describe("other issues > bulk save in sqlite", () => {
 
     let connections: Connection[];
     before(async () => connections = await createTestingConnections({
