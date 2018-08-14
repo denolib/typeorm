@@ -703,20 +703,30 @@ export abstract class QueryBuilder<Entity> {
         // create shortcuts for better readability
         const alias = this.expressionMap.aliasNamePrefixingEnabled ? this.escape(this.expressionMap.mainAlias!.name) + "." : "";
         let parameterIndex = Object.keys(this.expressionMap.nativeParameters).length;
-        const whereStrings = (ids as any[]).map((id, index) => {
-            id = metadata.ensureEntityIdMap(id);
-            const whereSubStrings: string[] = [];
-            metadata.primaryColumns.forEach((primaryColumn, secondIndex) => {
-                const parameterName = "id_" + index + "_" + secondIndex;
-                // whereSubStrings.push(alias + this.escape(primaryColumn.databaseName) + "=:id_" + index + "_" + secondIndex);
-                whereSubStrings.push(alias + this.escape(primaryColumn.databaseName) + " = " + this.connection.driver.createParameter(parameterName, parameterIndex));
-                this.expressionMap.nativeParameters[parameterName] = primaryColumn.getEntityValue(id, true);
-                parameterIndex++;
-            });
-            return whereSubStrings.join(" AND ");
-        });
 
-        return whereStrings.length > 1 ? whereStrings.map(whereString => "(" + whereString + ")").join(" OR ") : whereStrings[0];
+        if (metadata.primaryColumns.length > 1) {
+            const whereStrings = (ids as any[]).map((id, index) => {
+                id = metadata.ensureEntityIdMap(id);
+                const whereSubStrings: string[] = [];
+                metadata.primaryColumns.forEach((primaryColumn, secondIndex) => {
+                    const parameterName = "id_" + index + "_" + secondIndex;
+                    // whereSubStrings.push(alias + this.escape(primaryColumn.databaseName) + "=:id_" + index + "_" + secondIndex);
+                    whereSubStrings.push(alias + this.escape(primaryColumn.databaseName) + " = " + this.connection.driver.createParameter(parameterName, parameterIndex));
+                    this.expressionMap.nativeParameters[parameterName] = primaryColumn.getEntityValue(id, true);
+                    parameterIndex++;
+                });
+                return whereSubStrings.join(" AND ");
+            });
+            return whereStrings.length > 1 ? whereStrings.map(whereString => "(" + whereString + ")").join(" OR ") : whereStrings[0];
+
+        } else {
+            const [primaryColumn] = metadata.primaryColumns;
+            const transformedIds = (ids as any[]).map(id => {
+                return primaryColumn.getEntityValue(metadata.ensureEntityIdMap(id), true);
+            });
+            this.expressionMap.nativeParameters["qb_ids"] = transformedIds;
+            return alias + this.escape(primaryColumn.databaseName) + " IN (" + this.connection.driver.createParameter("qb_ids", parameterIndex) + ")"
+        }
     }
 
     /**

@@ -98,7 +98,7 @@ export type FindAltOperator<T> = {
 } | {
     $not: T | FindAltOperator<T>
 } | {
-    $raw: T | FindAltOperator<T>
+    $raw: string
 };
 
 /**

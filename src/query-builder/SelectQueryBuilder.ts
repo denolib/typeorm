@@ -1,5 +1,5 @@
 import {normalizeFindOptions} from "../find-options/FindOptionsUtils";
-import {QueryBuilderUtils} from './QueryBuilderUtils';
+import {QueryBuilderUtils} from "./QueryBuilderUtils";
 import {RawSqlResultsToEntityTransformer} from "./transformer/RawSqlResultsToEntityTransformer";
 import {ObjectLiteral} from "../common/ObjectLiteral";
 import {SqlServerDriver} from "../driver/sqlserver/SqlServerDriver";
