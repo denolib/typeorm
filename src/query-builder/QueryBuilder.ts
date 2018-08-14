@@ -731,7 +731,7 @@ export abstract class QueryBuilder<Entity> {
 
             } else {
                 this.expressionMap.parameters["qb_ids"] = transformedIds;
-                return alias + this.escape(primaryColumn.databaseName) + " IN (...:qb_ids)";
+                return alias + this.escape(primaryColumn.databaseName) + " IN (:...qb_ids)";
             }
         }
     }
