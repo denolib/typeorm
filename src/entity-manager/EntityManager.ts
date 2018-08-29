@@ -1,37 +1,39 @@
-import {Connection} from "../connection/Connection";
-import {ObjectType} from "../common/ObjectType";
-import {EntityNotFoundError} from "../error/EntityNotFoundError";
-import {QueryRunnerProviderAlreadyReleasedError} from "../error/QueryRunnerProviderAlreadyReleasedError";
 import {DeepPartial} from "../common/DeepPartial";
-import {RemoveOptions} from "../repository/RemoveOptions";
-import {SaveOptions} from "../repository/SaveOptions";
-import {NoNeedToReleaseEntityManagerError} from "../error/NoNeedToReleaseEntityManagerError";
-import {MongoRepository} from "../repository/MongoRepository";
-import {TreeRepository} from "../repository/TreeRepository";
-import {Repository} from "../repository/Repository";
-import {FindOptionsUtils} from "../find-options/FindOptionsUtils";
-import {PlainObjectToNewEntityTransformer} from "../query-builder/transformer/PlainObjectToNewEntityTransformer";
-import {PlainObjectToDatabaseEntityTransformer} from "../query-builder/transformer/PlainObjectToDatabaseEntityTransformer";
-import {CustomRepositoryNotFoundError} from "../error/CustomRepositoryNotFoundError";
-import {EntitySchema, getMetadataArgsStorage} from "../index";
-import {AbstractRepository} from "../repository/AbstractRepository";
-import {CustomRepositoryCannotInheritRepositoryError} from "../error/CustomRepositoryCannotInheritRepositoryError";
-import {QueryRunner} from "../query-runner/QueryRunner";
-import {SelectQueryBuilder} from "../query-builder/SelectQueryBuilder";
+import {ObjectType} from "../common/ObjectType";
+import {Connection} from "../connection/Connection";
 import {MongoDriver} from "../driver/mongodb/MongoDriver";
+import {ObjectID} from "../driver/mongodb/typings";
+import {OracleDriver} from "../driver/oracle/OracleDriver";
+import {IsolationLevel} from "../driver/types/IsolationLevel";
+import {CustomRepositoryCannotInheritRepositoryError} from "../error/CustomRepositoryCannotInheritRepositoryError";
+import {CustomRepositoryNotFoundError} from "../error/CustomRepositoryNotFoundError";
+import {EntityNotFoundError} from "../error/EntityNotFoundError";
+import {NoNeedToReleaseEntityManagerError} from "../error/NoNeedToReleaseEntityManagerError";
+import {QueryRunnerProviderAlreadyReleasedError} from "../error/QueryRunnerProviderAlreadyReleasedError";
 import {RepositoryNotFoundError} from "../error/RepositoryNotFoundError";
 import {RepositoryNotTreeError} from "../error/RepositoryNotTreeError";
-import {RepositoryFactory} from "../repository/RepositoryFactory";
 import {TreeRepositoryNotSupportedError} from "../error/TreeRepositoryNotSupportedError";
-import {QueryPartialEntity} from "../query-builder/QueryPartialEntity";
+import {FindOptions, FindOptionsWhere} from "../find-options/FindOptions";
+import {FindOptionsUtils} from "../find-options/FindOptionsUtils";
+import {EntitySchema, getMetadataArgsStorage} from "../index";
+import {QueryObserver} from "../observer/QueryObserver";
 import {EntityPersistExecutor} from "../persistence/EntityPersistExecutor";
-import {ObjectID} from "../driver/mongodb/typings";
+import {QueryPartialEntity} from "../query-builder/QueryPartialEntity";
+import {DeleteResult} from "../query-builder/result/DeleteResult";
 import {InsertResult} from "../query-builder/result/InsertResult";
 import {UpdateResult} from "../query-builder/result/UpdateResult";
-import {DeleteResult} from "../query-builder/result/DeleteResult";
-import {OracleDriver} from "../driver/oracle/OracleDriver";
-import {FindOptions, FindOptionsWhere} from "../find-options/FindOptions";
-import {IsolationLevel} from "../driver/types/IsolationLevel";
+import {SelectQueryBuilder} from "../query-builder/SelectQueryBuilder";
+import {PlainObjectToDatabaseEntityTransformer} from "../query-builder/transformer/PlainObjectToDatabaseEntityTransformer";
+import {PlainObjectToNewEntityTransformer} from "../query-builder/transformer/PlainObjectToNewEntityTransformer";
+import {QueryRunner} from "../query-runner/QueryRunner";
+import {AbstractRepository} from "../repository/AbstractRepository";
+import {MongoRepository} from "../repository/MongoRepository";
+import {RemoveOptions} from "../repository/RemoveOptions";
+import {Repository} from "../repository/Repository";
+import {RepositoryFactory} from "../repository/RepositoryFactory";
+import {SaveOptions} from "../repository/SaveOptions";
+import {TreeRepository} from "../repository/TreeRepository";
+import Observable = require("zen-observable");
 
 /**
  * Entity manager supposed to work with any entity, automatically find its repository and call its methods,
@@ -486,6 +488,48 @@ export class EntityManager {
             qb.setFindOptions(FindOptionsUtils.isFindOptions(optionsOrConditions) ? optionsOrConditions : { where: optionsOrConditions });
 
         return qb.getMany();
+    }
+
+    /**
+     * Finds entities that match given options and returns observable.
+     * Whenever new data appears that matches given query observable emits new value.
+     */
+    observe<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, options?: FindOptions<Entity>): Observable<Entity[]>;
+
+    /**
+     * Finds entities that match given conditions and returns observable.
+     * Whenever new data appears that matches given query observable emits new value.
+     */
+    observe<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, conditions?: FindOptionsWhere<Entity>): Observable<Entity[]>;
+
+    /**
+     * Finds entities that match given options and returns observable.
+     * Whenever new data appears that matches given query observable emits new value.
+     */
+    observe<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, optionsOrConditions?: FindOptions<Entity>|FindOptionsWhere<Entity>): Observable<Entity[]> {
+        const metadata = this.connection.getMetadata(entityClass);
+        return new QueryObserver(this, "find", metadata, optionsOrConditions).observe();
+    }
+
+    /**
+     * Finds entities that match given options and returns observable.
+     * Whenever new data appears that matches given query observable emits new value.
+     */
+    observeManyAndCount<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, options?: FindOptions<Entity>): Observable<[Entity[], number]>;
+
+    /**
+     * Finds entities that match given conditions and returns observable.
+     * Whenever new data appears that matches given query observable emits new value.
+     */
+    observeManyAndCount<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, conditions?: FindOptionsWhere<Entity>): Observable<[Entity[], number]>;
+
+    /**
+     * Finds entities that match given options and returns observable.
+     * Whenever new data appears that matches given query observable emits new value.
+     */
+    observeManyAndCount<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, optionsOrConditions?: FindOptions<Entity>|FindOptionsWhere<Entity>): Observable<[Entity[], number]> {
+        const metadata = this.connection.getMetadata(entityClass);
+        return new QueryObserver(this, "findAndCount", metadata, optionsOrConditions).observe();
     }
 
     /**

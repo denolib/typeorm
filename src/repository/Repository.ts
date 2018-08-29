@@ -12,6 +12,7 @@ import {InsertResult} from "../query-builder/result/InsertResult";
 import {QueryPartialEntity} from "../query-builder/QueryPartialEntity";
 import {ObjectID} from "../driver/mongodb/typings";
 import {FindOptions, FindOptionsWhere} from "../find-options/FindOptions";
+import Observable = require("zen-observable");
 
 /**
  * Repository is supposed to work with your entity objects. Find entities, insert, update, delete, etc.
@@ -188,6 +189,13 @@ export class Repository<Entity extends ObjectLiteral> {
      */
     count(conditions?: FindOptionsWhere<Entity>): Promise<number> {
         return this.manager.count(this.metadata.target, conditions);
+    }
+
+    /**
+     * Observes given entities.
+     */
+    observe(entities: Entity[]): Observable<Entity> {
+
     }
 
     /**
