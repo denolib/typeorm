@@ -147,8 +147,18 @@ export class EntityPersistExecutor {
 
                     // commit transaction if it was started by us
                     // console.time("commit");
-                    if (isTransactionStartedByUs === true)
+                    if (isTransactionStartedByUs === true) {
                         await queryRunner.commitTransaction();
+
+                        const allObservers = queryRunner.manager === this.connection.manager
+                            ? queryRunner.manager.observers
+                            : [...queryRunner.manager.observers, ...this.connection.manager.observers];
+                        allObservers.forEach(observer => observer.execute());
+                    } else {
+                        if (queryRunner.manager !== this.connection.manager) {
+                            queryRunner.manager.observers.forEach(observer => observer.execute());
+                        }
+                    }
                     // console.timeEnd("commit");
 
                 } catch (error) {

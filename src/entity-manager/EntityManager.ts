@@ -56,6 +56,11 @@ export class EntityManager {
      */
     readonly queryRunner?: QueryRunner;
 
+    /**
+     * Observers observing queries.
+     */
+    readonly observers: QueryObserver[] = [];
+
     // -------------------------------------------------------------------------
     // Protected Properties
     // -------------------------------------------------------------------------
@@ -126,6 +131,9 @@ export class EntityManager {
               }
             const result = await runInTransaction(queryRunner.manager);
             await queryRunner.commitTransaction();
+
+            const allObservers = this === this.connection.manager ? this.observers : [...this.observers, ...this.connection.manager.observers];
+            allObservers.forEach(observer => observer.execute());
             return result;
 
         } catch (err) {

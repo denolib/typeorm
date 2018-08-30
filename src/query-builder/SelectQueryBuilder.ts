@@ -1053,8 +1053,20 @@ export class SelectQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
             const results = await this.loadRawResults(queryRunner);
 
             // close transaction if we started it
-            if (transactionStartedByUs) {
+            if (transactionStartedByUs)
                 await queryRunner.commitTransaction();
+
+            // second case is when operation is executed without transaction and at the same time
+            // nobody started transaction from the above
+            if (transactionStartedByUs || (this.expressionMap.useTransaction === false && queryRunner.isTransactionActive === false)) {
+                const allObservers = queryRunner.manager === this.connection.manager
+                    ? queryRunner.manager.observers
+                    : [...queryRunner.manager.observers, ...this.connection.manager.observers];
+                allObservers.forEach(observer => observer.execute());
+            } else {
+                if (queryRunner.manager !== this.connection.manager) {
+                    queryRunner.manager.observers.forEach(observer => observer.execute());
+                }
             }
 
             return results;
@@ -1095,8 +1107,20 @@ export class SelectQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
             const results = await this.executeEntitiesAndRawResults(queryRunner);
 
             // close transaction if we started it
-            if (transactionStartedByUs) {
+            if (transactionStartedByUs)
                 await queryRunner.commitTransaction();
+
+            // second case is when operation is executed without transaction and at the same time
+            // nobody started transaction from the above
+            if (transactionStartedByUs || (this.expressionMap.useTransaction === false && queryRunner.isTransactionActive === false)) {
+                const allObservers = queryRunner.manager === this.connection.manager
+                    ? queryRunner.manager.observers
+                    : [...queryRunner.manager.observers, ...this.connection.manager.observers];
+                allObservers.forEach(observer => observer.execute());
+            } else {
+                if (queryRunner.manager !== this.connection.manager) {
+                    queryRunner.manager.observers.forEach(observer => observer.execute());
+                }
             }
 
             return results;
@@ -1176,8 +1200,20 @@ export class SelectQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
             const results = await this.executeCountQuery(queryRunner);
 
             // close transaction if we started it
-            if (transactionStartedByUs) {
+            if (transactionStartedByUs)
                 await queryRunner.commitTransaction();
+
+            // second case is when operation is executed without transaction and at the same time
+            // nobody started transaction from the above
+            if (transactionStartedByUs || (this.expressionMap.useTransaction === false && queryRunner.isTransactionActive === false)) {
+                const allObservers = queryRunner.manager === this.connection.manager
+                    ? queryRunner.manager.observers
+                    : [...queryRunner.manager.observers, ...this.connection.manager.observers];
+                allObservers.forEach(observer => observer.execute());
+            } else {
+                if (queryRunner.manager !== this.connection.manager) {
+                    queryRunner.manager.observers.forEach(observer => observer.execute());
+                }
             }
 
             return results;
@@ -1224,8 +1260,20 @@ export class SelectQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
             const results: [Entity[], number] = [entitiesAndRaw.entities, count];
 
             // close transaction if we started it
-            if (transactionStartedByUs) {
+            if (transactionStartedByUs)
                 await queryRunner.commitTransaction();
+
+            // second case is when operation is executed without transaction and at the same time
+            // nobody started transaction from the above
+            if (transactionStartedByUs || (this.expressionMap.useTransaction === false && queryRunner.isTransactionActive === false)) {
+                const allObservers = queryRunner.manager === this.connection.manager
+                    ? queryRunner.manager.observers
+                    : [...queryRunner.manager.observers, ...this.connection.manager.observers];
+                allObservers.forEach(observer => observer.execute());
+            } else {
+                if (queryRunner.manager !== this.connection.manager) {
+                    queryRunner.manager.observers.forEach(observer => observer.execute());
+                }
             }
 
             return results;
@@ -1270,8 +1318,20 @@ export class SelectQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
             const results = queryRunner.stream(sql, parameters, releaseFn, releaseFn);
 
             // close transaction if we started it
-            if (transactionStartedByUs) {
+            if (transactionStartedByUs)
                 await queryRunner.commitTransaction();
+
+            // second case is when operation is executed without transaction and at the same time
+            // nobody started transaction from the above
+            if (transactionStartedByUs || (this.expressionMap.useTransaction === false && queryRunner.isTransactionActive === false)) {
+                const allObservers = queryRunner.manager === this.connection.manager
+                    ? queryRunner.manager.observers
+                    : [...queryRunner.manager.observers, ...this.connection.manager.observers];
+                allObservers.forEach(observer => observer.execute());
+            } else {
+                if (queryRunner.manager !== this.connection.manager) {
+                    queryRunner.manager.observers.forEach(observer => observer.execute());
+                }
             }
 
             return results;

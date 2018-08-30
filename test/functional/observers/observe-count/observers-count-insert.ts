@@ -21,7 +21,7 @@ describe.only("observers > count > on insert", function() {
             let time: number = 0;
 
             await connection.manager.save(new Post("Hello Post"));
-            connection.manager.observeCount(Post).subscribe(count => {
+            const subscription = connection.manager.observeCount(Post).subscribe(count => {
                 time++;
 
                 if (time === 1) {
@@ -34,7 +34,16 @@ describe.only("observers > count > on insert", function() {
 
                 } else if (time === 3) {
                     count.should.be.equal(3);
-                    ok();
+                    subscription.unsubscribe();
+
+                    connection.manager
+                        .save(new Post("Forth Post"))
+                        .then(() => {
+                            setTimeout(() => {
+                                time.should.be.equal(3);
+                                ok();
+                            }, 50);
+                        });
                 }
             });
         });
