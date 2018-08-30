@@ -3,7 +3,7 @@ import {Connection, LessThan, MoreThan} from "../../../../src";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
 import {Post} from "./entity/Post";
 
-describe("observers > basic > on update", function() {
+describe.only("observers > many and count > on update", function() {
 
     let connections: Connection[];
     before(async () => {
@@ -15,7 +15,7 @@ describe("observers > basic > on update", function() {
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
 
-    it("should observe entities when new entity is updated", ok => {
+    it("should dispatch event with new value when entity is updated", ok => {
         connections.filter((connection, index) => index === 0).map(async connection => {
             let time: number = 0;
             const post1 = await connection.manager.save(new Post("Hello #1"));
@@ -23,7 +23,7 @@ describe("observers > basic > on update", function() {
             /*const post3 = */await connection.manager.save(new Post("Hello #3"));
             /*const post4 = */await connection.manager.save(new Post("Hello #4"));
 
-            connection.manager.observe(Post, { where: { id: LessThan(4), active: true } }).subscribe(entities => {
+            connection.manager.observeManyAndCount(Post, { where: { id: LessThan(4), active: true } }).subscribe(([entities, count]) => {
                 time++;
 
                 if (time === 1) {
@@ -32,6 +32,7 @@ describe("observers > basic > on update", function() {
                         { id: 2, title: "Hello #2", active: true },
                         { id: 3, title: "Hello #3", active: true },
                     ]);
+                    count.should.be.equal(3);
                     post1.title = "Updated Post #1";
                     connection.manager.save(post1);
 
@@ -41,6 +42,7 @@ describe("observers > basic > on update", function() {
                         { id: 2, title: "Hello #2", active: true },
                         { id: 3, title: "Hello #3", active: true },
                     ]);
+                    count.should.be.equal(3);
                     connection.manager.save(new Post("Hello #5"));
                     setTimeout(() => {
                         post1.title = "Again Updated Post #1";
@@ -53,6 +55,7 @@ describe("observers > basic > on update", function() {
                         { id: 2, title: "Hello #2", active: true },
                         { id: 3, title: "Hello #3", active: true },
                     ]);
+                    count.should.be.equal(3);
 
                     post2.title = "Updated Post #2";
                     connection.manager.save(post2);
@@ -63,6 +66,7 @@ describe("observers > basic > on update", function() {
                         { id: 2, title: "Updated Post #2", active: true },
                         { id: 3, title: "Hello #3", active: true },
                     ]);
+                    count.should.be.equal(3);
 
                     connection.manager.update(Post, {
                         id: MoreThan(1)
@@ -76,6 +80,7 @@ describe("observers > basic > on update", function() {
                         { id: 2, title: "raw updated", active: true },
                         { id: 3, title: "raw updated", active: true },
                     ]);
+                    count.should.be.equal(3);
 
                     post2.active = false;
                     connection.manager.save(post2);
@@ -85,6 +90,7 @@ describe("observers > basic > on update", function() {
                         { id: 1, title: "Again Updated Post #1", active: true },
                         { id: 3, title: "raw updated", active: true },
                     ]);
+                    count.should.be.equal(2);
                     ok();
                 }
             });

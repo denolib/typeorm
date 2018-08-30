@@ -454,20 +454,6 @@ export class EntityManager {
     }
 
     /**
-     * Counts entities that match given conditions.
-     * Useful for pagination.
-     */
-    count<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, conditions?: FindOptionsWhere<Entity>): Promise<number> {
-        const metadata = this.connection.getMetadata(entityClass);
-        const qb = this.createQueryBuilder(entityClass, metadata.name);
-
-        if (conditions)
-            qb.setFindOptions({ where: conditions });
-
-        return qb.getCount();
-    }
-
-    /**
      * Finds entities that match given options.
      */
     find<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, options?: FindOptions<Entity>): Promise<Entity[]>;
@@ -488,48 +474,6 @@ export class EntityManager {
             qb.setFindOptions(FindOptionsUtils.isFindOptions(optionsOrConditions) ? optionsOrConditions : { where: optionsOrConditions });
 
         return qb.getMany();
-    }
-
-    /**
-     * Finds entities that match given options and returns observable.
-     * Whenever new data appears that matches given query observable emits new value.
-     */
-    observe<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, options?: FindOptions<Entity>): Observable<Entity[]>;
-
-    /**
-     * Finds entities that match given conditions and returns observable.
-     * Whenever new data appears that matches given query observable emits new value.
-     */
-    observe<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, conditions?: FindOptionsWhere<Entity>): Observable<Entity[]>;
-
-    /**
-     * Finds entities that match given options and returns observable.
-     * Whenever new data appears that matches given query observable emits new value.
-     */
-    observe<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, optionsOrConditions?: FindOptions<Entity>|FindOptionsWhere<Entity>): Observable<Entity[]> {
-        const metadata = this.connection.getMetadata(entityClass);
-        return new QueryObserver(this, "find", metadata, optionsOrConditions).observe();
-    }
-
-    /**
-     * Finds entities that match given options and returns observable.
-     * Whenever new data appears that matches given query observable emits new value.
-     */
-    observeManyAndCount<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, options?: FindOptions<Entity>): Observable<[Entity[], number]>;
-
-    /**
-     * Finds entities that match given conditions and returns observable.
-     * Whenever new data appears that matches given query observable emits new value.
-     */
-    observeManyAndCount<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, conditions?: FindOptionsWhere<Entity>): Observable<[Entity[], number]>;
-
-    /**
-     * Finds entities that match given options and returns observable.
-     * Whenever new data appears that matches given query observable emits new value.
-     */
-    observeManyAndCount<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, optionsOrConditions?: FindOptions<Entity>|FindOptionsWhere<Entity>): Observable<[Entity[], number]> {
-        const metadata = this.connection.getMetadata(entityClass);
-        return new QueryObserver(this, "findAndCount", metadata, optionsOrConditions).observe();
     }
 
     /**
@@ -664,6 +608,104 @@ export class EntityManager {
             }
             return Promise.resolve(value);
         });
+    }
+
+    /**
+     * Counts entities that match given conditions.
+     * Useful for pagination.
+     */
+    count<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, conditions?: FindOptionsWhere<Entity>): Promise<number> {
+        const metadata = this.connection.getMetadata(entityClass);
+        const qb = this.createQueryBuilder(entityClass, metadata.name);
+
+        if (conditions)
+            qb.setFindOptions({ where: conditions });
+
+        return qb.getCount();
+    }
+
+    /**
+     * Finds entities that match given options and returns observable.
+     * Whenever new data appears that matches given query observable emits new value.
+     */
+    observe<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, options?: FindOptions<Entity>): Observable<Entity[]>;
+
+    /**
+     * Finds entities that match given conditions and returns observable.
+     * Whenever new data appears that matches given query observable emits new value.
+     */
+    observe<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, conditions?: FindOptionsWhere<Entity>): Observable<Entity[]>;
+
+    /**
+     * Finds entities that match given options and returns observable.
+     * Whenever new data appears that matches given query observable emits new value.
+     */
+    observe<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, optionsOrConditions?: FindOptions<Entity>|FindOptionsWhere<Entity>): Observable<Entity[]> {
+        const metadata = this.connection.getMetadata(entityClass);
+        return new QueryObserver(this, "find", metadata, optionsOrConditions).observe();
+    }
+
+    /**
+     * Finds entities and count that match given options and returns observable.
+     * Whenever new data appears that matches given query observable emits new value.
+     */
+    observeManyAndCount<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, options?: FindOptions<Entity>): Observable<[Entity[], number]>;
+
+    /**
+     * Finds entities and count that match given conditions and returns observable.
+     * Whenever new data appears that matches given query observable emits new value.
+     */
+    observeManyAndCount<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, conditions?: FindOptionsWhere<Entity>): Observable<[Entity[], number]>;
+
+    /**
+     * Finds entities and count that match given options and returns observable.
+     * Whenever new data appears that matches given query observable emits new value.
+     */
+    observeManyAndCount<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, optionsOrConditions?: FindOptions<Entity>|FindOptionsWhere<Entity>): Observable<[Entity[], number]> {
+        const metadata = this.connection.getMetadata(entityClass);
+        return new QueryObserver(this, "findAndCount", metadata, optionsOrConditions).observe();
+    }
+
+    /**
+     * Finds entity that match given options and returns observable.
+     * Whenever new data appears that matches given query observable emits new value.
+     */
+    observeOne<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, options?: FindOptions<Entity>): Observable<Entity>;
+
+    /**
+     * Finds entity that match given conditions and returns observable.
+     * Whenever new data appears that matches given query observable emits new value.
+     */
+    observeOne<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, conditions?: FindOptionsWhere<Entity>): Observable<Entity>;
+
+    /**
+     * Finds entity that match given options and returns observable.
+     * Whenever new data appears that matches given query observable emits new value.
+     */
+    observeOne<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, optionsOrConditions?: FindOptions<Entity>|FindOptionsWhere<Entity>): Observable<Entity> {
+        const metadata = this.connection.getMetadata(entityClass);
+        return new QueryObserver(this, "findOne", metadata, optionsOrConditions).observe();
+    }
+
+    /**
+     * Gets the entities count match given options and returns observable.
+     * Whenever new data appears that matches given query observable emits new value.
+     */
+    observeCount<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, options?: FindOptions<Entity>): Observable<number>;
+
+    /**
+     * Gets the entities count match given options and returns observable.
+     * Whenever new data appears that matches given query observable emits new value.
+     */
+    observeCount<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, conditions?: FindOptionsWhere<Entity>): Observable<number>;
+
+    /**
+     * Gets the entities count match given options and returns observable.
+     * Whenever new data appears that matches given query observable emits new value.
+     */
+    observeCount<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, optionsOrConditions?: FindOptions<Entity>|FindOptionsWhere<Entity>): Observable<number> {
+        const metadata = this.connection.getMetadata(entityClass);
+        return new QueryObserver(this, "count", metadata, optionsOrConditions).observe();
     }
 
     /**

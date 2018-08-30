@@ -4,7 +4,7 @@ import {Connection} from "../../../../src";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
 import {Post} from "./entity/Post";
 
-describe("observers > basic > on insert", function() {
+describe.only("observers > many and count > on insert", function() {
 
     let connections: Connection[];
     before(async () => {
@@ -21,11 +21,12 @@ describe("observers > basic > on insert", function() {
             let time: number = 0;
 
             await connection.manager.save(new Post("Hello Post"));
-            connection.manager.observe(Post).subscribe(entities => {
+            connection.manager.observeManyAndCount(Post).subscribe(([entities, count]) => {
                 time++;
 
                 if (time === 1) {
                     entities.should.be.eql([{ id: 1, title: "Hello Post", active: true }]);
+                    count.should.be.eql(1);
                     connection.manager.save(new Post("Second Post"));
 
                 } else if (time === 2) {
@@ -33,6 +34,7 @@ describe("observers > basic > on insert", function() {
                         { id: 1, title: "Hello Post", active: true },
                         { id: 2, title: "Second Post", active: true },
                     ]);
+                    count.should.be.eql(2);
                     connection.manager.save(new Post("Third Post"));
 
                 } else if (time === 3) {
@@ -41,6 +43,7 @@ describe("observers > basic > on insert", function() {
                         { id: 2, title: "Second Post", active: true },
                         { id: 3, title: "Third Post", active: true },
                     ]);
+                    count.should.be.eql(3);
                     ok();
                 }
             });
@@ -56,16 +59,17 @@ describe("observers > basic > on insert", function() {
             await connection.manager.save(new Post("Hello #3"));
 
             connection.manager
-                .observe(Post, {
+                .observeManyAndCount(Post, {
                     where: {
                         id: Between(3, 5)
                     }
-                }).subscribe(entities => {
+                }).subscribe(([entities, count]) => {
                     lastEntities = entities;
                     time++;
 
                     if (time === 1) {
                         entities.should.be.eql([{ id: 3, title: "Hello #3", active: true }]);
+                        count.should.be.eql(1);
                         connection.manager.save(new Post("Hello #4"));
 
                     } else if (time === 2) {
@@ -73,6 +77,7 @@ describe("observers > basic > on insert", function() {
                             { id: 3, title: "Hello #3", active: true },
                             { id: 4, title: "Hello #4", active: true },
                         ]);
+                        count.should.be.eql(2);
                         connection.manager.save(new Post("Hello #5"));
 
                     } else if (time === 3) {
@@ -81,6 +86,7 @@ describe("observers > basic > on insert", function() {
                             { id: 4, title: "Hello #4", active: true },
                             { id: 5, title: "Hello #5", active: true },
                         ]);
+                        count.should.be.eql(3);
                         connection.manager
                             .save(new Post("Hello #6"))
                             .then(() => {
@@ -106,20 +112,21 @@ describe("observers > basic > on insert", function() {
             await connection.manager.save(new Post("Hello #3"));
 
             connection.manager
-                .observe(Post, {
+                .observeManyAndCount(Post, {
                     where: {
                         id: Between(3, 5)
                     },
                     order: {
                         title: "DESC"
                     }
-                }).subscribe(entities => {
+                }).subscribe(([entities, count]) => {
                     lastEntities = entities;
                     time++;
 
                     if (time === 1) {
                         entities.should.be.eql([{ id: 3, title: "Hello #3", active: true }]);
                         connection.manager.save(new Post("Hello #4"));
+                        count.should.be.eql(1);
 
                     } else if (time === 2) {
                         entities.should.be.eql([
@@ -127,6 +134,7 @@ describe("observers > basic > on insert", function() {
                             { id: 3, title: "Hello #3", active: true },
                         ]);
                         connection.manager.save(new Post("Hello #5"));
+                        count.should.be.eql(2);
 
                     } else if (time === 3) {
                         entities.should.be.eql([
@@ -134,6 +142,7 @@ describe("observers > basic > on insert", function() {
                             { id: 4, title: "Hello #4", active: true },
                             { id: 3, title: "Hello #3", active: true },
                         ]);
+                        count.should.be.eql(3);
                         connection.manager
                             .save(new Post("Hello #6"))
                             .then(() => {
