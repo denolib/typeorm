@@ -1,4 +1,3 @@
-import {EntitySchema, ObjectType} from "..";
 import {DeepPartial} from "../common/DeepPartial";
 import {ObjectLiteral} from "../common/ObjectLiteral";
 import {ObjectID} from "../driver/mongodb/typings";
@@ -300,19 +299,19 @@ export class Repository<Entity extends ObjectLiteral> {
      * Finds entities that match given options and returns observable.
      * Whenever new data appears that matches given query observable emits new value.
      */
-    observe<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, options?: FindOptions<Entity>): Observable<Entity[]>;
+    observe<Entity>(options?: FindOptions<Entity>): Observable<Entity[]>;
 
     /**
      * Finds entities that match given conditions and returns observable.
      * Whenever new data appears that matches given query observable emits new value.
      */
-    observe<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, conditions?: FindOptionsWhere<Entity>): Observable<Entity[]>;
+    observe<Entity>(conditions?: FindOptionsWhere<Entity>): Observable<Entity[]>;
 
     /**
      * Finds entities that match given options and returns observable.
      * Whenever new data appears that matches given query observable emits new value.
      */
-    observe<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, optionsOrConditions?: FindOptions<Entity>|FindOptionsWhere<Entity>): Observable<Entity[]> {
+    observe<Entity>(optionsOrConditions?: FindOptions<Entity>|FindOptionsWhere<Entity>): Observable<Entity[]> {
         return this.manager.observe(this.metadata.target, optionsOrConditions as any);
     }
 
@@ -320,19 +319,19 @@ export class Repository<Entity extends ObjectLiteral> {
      * Finds entities and count that match given options and returns observable.
      * Whenever new data appears that matches given query observable emits new value.
      */
-    observeManyAndCount<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, options?: FindOptions<Entity>): Observable<[Entity[], number]>;
+    observeManyAndCount<Entity>(options?: FindOptions<Entity>): Observable<[Entity[], number]>;
 
     /**
      * Finds entities and count that match given conditions and returns observable.
      * Whenever new data appears that matches given query observable emits new value.
      */
-    observeManyAndCount<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, conditions?: FindOptionsWhere<Entity>): Observable<[Entity[], number]>;
+    observeManyAndCount<Entity>(conditions?: FindOptionsWhere<Entity>): Observable<[Entity[], number]>;
 
     /**
      * Finds entities and count that match given options and returns observable.
      * Whenever new data appears that matches given query observable emits new value.
      */
-    observeManyAndCount<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, optionsOrConditions?: FindOptions<Entity>|FindOptionsWhere<Entity>): Observable<[Entity[], number]> {
+    observeManyAndCount<Entity>(optionsOrConditions?: FindOptions<Entity>|FindOptionsWhere<Entity>): Observable<[Entity[], number]> {
         return this.manager.observeManyAndCount(this.metadata.target, optionsOrConditions as any);
     }
 
@@ -340,19 +339,19 @@ export class Repository<Entity extends ObjectLiteral> {
      * Finds entity that match given options and returns observable.
      * Whenever new data appears that matches given query observable emits new value.
      */
-    observeOne<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, options?: FindOptions<Entity>): Observable<Entity>;
+    observeOne<Entity>(options?: FindOptions<Entity>): Observable<Entity>;
 
     /**
      * Finds entity that match given conditions and returns observable.
      * Whenever new data appears that matches given query observable emits new value.
      */
-    observeOne<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, conditions?: FindOptionsWhere<Entity>): Observable<Entity>;
+    observeOne<Entity>(conditions?: FindOptionsWhere<Entity>): Observable<Entity>;
 
     /**
      * Finds entity that match given options and returns observable.
      * Whenever new data appears that matches given query observable emits new value.
      */
-    observeOne<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, optionsOrConditions?: FindOptions<Entity>|FindOptionsWhere<Entity>): Observable<Entity> {
+    observeOne<Entity>(optionsOrConditions?: FindOptions<Entity>|FindOptionsWhere<Entity>): Observable<Entity> {
         return this.manager.observeOne(this.metadata.target, optionsOrConditions as any);
     }
 
@@ -360,19 +359,19 @@ export class Repository<Entity extends ObjectLiteral> {
      * Gets the entities count match given options and returns observable.
      * Whenever new data appears that matches given query observable emits new value.
      */
-    observeCount<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, options?: FindOptions<Entity>): Observable<number>;
+    observeCount<Entity>(options?: FindOptions<Entity>): Observable<number>;
 
     /**
      * Gets the entities count match given options and returns observable.
      * Whenever new data appears that matches given query observable emits new value.
      */
-    observeCount<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, conditions?: FindOptionsWhere<Entity>): Observable<number>;
+    observeCount<Entity>(conditions?: FindOptionsWhere<Entity>): Observable<number>;
 
     /**
      * Gets the entities count match given options and returns observable.
      * Whenever new data appears that matches given query observable emits new value.
      */
-    observeCount<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, optionsOrConditions?: FindOptions<Entity>|FindOptionsWhere<Entity>): Observable<number> {
+    observeCount<Entity>(optionsOrConditions?: FindOptions<Entity>|FindOptionsWhere<Entity>): Observable<number> {
         return this.manager.observeCount(this.metadata.target, optionsOrConditions as any);
     }
 

@@ -1,15 +1,15 @@
-import {Repository} from "./Repository";
-import {EntitySchema, FindOptions, FindOptionsWhere, getConnection} from "../index";
 import {DeepPartial} from "../common/DeepPartial";
-import {SaveOptions} from "./SaveOptions";
-import {RemoveOptions} from "./RemoveOptions";
-import {Connection} from "../connection/Connection";
 import {ObjectType} from "../common/ObjectType";
-import {SelectQueryBuilder} from "../query-builder/SelectQueryBuilder";
+import {Connection} from "../connection/Connection";
+import {ObjectID} from "../driver/mongodb/typings";
+import {FindOptions, FindOptionsWhere, getConnection} from "../index";
+import {DeleteResult} from "../query-builder/result/DeleteResult";
 import {InsertResult} from "../query-builder/result/InsertResult";
 import {UpdateResult} from "../query-builder/result/UpdateResult";
-import {DeleteResult} from "../query-builder/result/DeleteResult";
-import {ObjectID} from "../driver/mongodb/typings";
+import {SelectQueryBuilder} from "../query-builder/SelectQueryBuilder";
+import {RemoveOptions} from "./RemoveOptions";
+import {Repository} from "./Repository";
+import {SaveOptions} from "./SaveOptions";
 import Observable = require("zen-observable");
 
 /**
@@ -339,19 +339,19 @@ export class BaseEntity {
      * Finds entities that match given options and returns observable.
      * Whenever new data appears that matches given query observable emits new value.
      */
-    static observe<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, options?: FindOptions<Entity>): Observable<Entity[]>;
+    static observe<Entity>(options?: FindOptions<Entity>): Observable<Entity[]>;
 
     /**
      * Finds entities that match given conditions and returns observable.
      * Whenever new data appears that matches given query observable emits new value.
      */
-    static observe<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, conditions?: FindOptionsWhere<Entity>): Observable<Entity[]>;
+    static observe<Entity>(conditions?: FindOptionsWhere<Entity>): Observable<Entity[]>;
 
     /**
      * Finds entities that match given options and returns observable.
      * Whenever new data appears that matches given query observable emits new value.
      */
-    static observe<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, optionsOrConditions?: FindOptions<Entity>|FindOptionsWhere<Entity>): Observable<Entity[]> {
+    static observe<Entity>(optionsOrConditions?: FindOptions<Entity>|FindOptionsWhere<Entity>): Observable<Entity[]> {
         return (this as any).getRepository().observe(optionsOrConditions as any);
     }
 
@@ -359,19 +359,19 @@ export class BaseEntity {
      * Finds entities and count that match given options and returns observable.
      * Whenever new data appears that matches given query observable emits new value.
      */
-    static observeManyAndCount<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, options?: FindOptions<Entity>): Observable<[Entity[], number]>;
+    static observeManyAndCount<Entity>(options?: FindOptions<Entity>): Observable<[Entity[], number]>;
 
     /**
      * Finds entities and count that match given conditions and returns observable.
      * Whenever new data appears that matches given query observable emits new value.
      */
-    static observeManyAndCount<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, conditions?: FindOptionsWhere<Entity>): Observable<[Entity[], number]>;
+    static observeManyAndCount<Entity>(conditions?: FindOptionsWhere<Entity>): Observable<[Entity[], number]>;
 
     /**
      * Finds entities and count that match given options and returns observable.
      * Whenever new data appears that matches given query observable emits new value.
      */
-    static observeManyAndCount<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, optionsOrConditions?: FindOptions<Entity>|FindOptionsWhere<Entity>): Observable<[Entity[], number]> {
+    static observeManyAndCount<Entity>(optionsOrConditions?: FindOptions<Entity>|FindOptionsWhere<Entity>): Observable<[Entity[], number]> {
         return (this as any).getRepository().observeManyAndCount(optionsOrConditions as any);
     }
 
@@ -379,19 +379,19 @@ export class BaseEntity {
      * Finds entity that match given options and returns observable.
      * Whenever new data appears that matches given query observable emits new value.
      */
-    static observeOne<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, options?: FindOptions<Entity>): Observable<Entity>;
+    static observeOne<Entity>(options?: FindOptions<Entity>): Observable<Entity>;
 
     /**
      * Finds entity that match given conditions and returns observable.
      * Whenever new data appears that matches given query observable emits new value.
      */
-    static observeOne<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, conditions?: FindOptionsWhere<Entity>): Observable<Entity>;
+    static observeOne<Entity>(conditions?: FindOptionsWhere<Entity>): Observable<Entity>;
 
     /**
      * Finds entity that match given options and returns observable.
      * Whenever new data appears that matches given query observable emits new value.
      */
-    static observeOne<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, optionsOrConditions?: FindOptions<Entity>|FindOptionsWhere<Entity>): Observable<Entity> {
+    static observeOne<Entity>(optionsOrConditions?: FindOptions<Entity>|FindOptionsWhere<Entity>): Observable<Entity> {
         return (this as any).getRepository().observeOne(optionsOrConditions as any);
     }
 
@@ -399,19 +399,19 @@ export class BaseEntity {
      * Gets the entities count match given options and returns observable.
      * Whenever new data appears that matches given query observable emits new value.
      */
-    static observeCount<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, options?: FindOptions<Entity>): Observable<number>;
+    static observeCount<Entity>(options?: FindOptions<Entity>): Observable<number>;
 
     /**
      * Gets the entities count match given options and returns observable.
      * Whenever new data appears that matches given query observable emits new value.
      */
-    static observeCount<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, conditions?: FindOptionsWhere<Entity>): Observable<number>;
+    static observeCount<Entity>(conditions?: FindOptionsWhere<Entity>): Observable<number>;
 
     /**
      * Gets the entities count match given options and returns observable.
      * Whenever new data appears that matches given query observable emits new value.
      */
-    static observeCount<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, optionsOrConditions?: FindOptions<Entity>|FindOptionsWhere<Entity>): Observable<number> {
+    static observeCount<Entity>(optionsOrConditions?: FindOptions<Entity>|FindOptionsWhere<Entity>): Observable<number> {
         return (this as any).getRepository().observeCount(optionsOrConditions as any);
     }
 
