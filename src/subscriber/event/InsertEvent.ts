@@ -1,3 +1,4 @@
+import {EntityMetadata} from "../..";
 import {EntityManager} from "../../entity-manager/EntityManager";
 import {Connection} from "../../connection/Connection";
 import {QueryRunner} from "../../query-runner/QueryRunner";
@@ -23,6 +24,11 @@ export interface InsertEvent<Entity> {
      * All database operations in the subscribed event listener should be performed using this entity manager instance.
      */
     manager: EntityManager;
+
+    /**
+     * Entity metadata of the inserted entity.
+     */
+    metadata: EntityMetadata;
 
     /**
      * Inserting event.

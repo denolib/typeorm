@@ -13,9 +13,10 @@ import {QueryRunnerProviderAlreadyReleasedError} from "../error/QueryRunnerProvi
 import {RepositoryNotFoundError} from "../error/RepositoryNotFoundError";
 import {RepositoryNotTreeError} from "../error/RepositoryNotTreeError";
 import {TreeRepositoryNotSupportedError} from "../error/TreeRepositoryNotSupportedError";
-import {FindOptions, FindOptionsWhere} from "../find-options/FindOptions";
+import {FindExtraOptions, FindOptions, FindOptionsWhere} from "../find-options/FindOptions";
 import {FindOptionsUtils} from "../find-options/FindOptionsUtils";
 import {EntitySchema, getMetadataArgsStorage} from "../index";
+import {ObserverExecutor} from "../observer/ObserverExecutor";
 import {QueryObserver} from "../observer/QueryObserver";
 import {EntityPersistExecutor} from "../persistence/EntityPersistExecutor";
 import {QueryPartialEntity} from "../query-builder/QueryPartialEntity";
@@ -55,11 +56,6 @@ export class EntityManager {
      * Used only in non-global entity manager.
      */
     readonly queryRunner?: QueryRunner;
-
-    /**
-     * Observers observing queries.
-     */
-    readonly observers: QueryObserver[] = [];
 
     // -------------------------------------------------------------------------
     // Protected Properties
@@ -131,9 +127,7 @@ export class EntityManager {
               }
             const result = await runInTransaction(queryRunner.manager);
             await queryRunner.commitTransaction();
-
-            const allObservers = this === this.connection.manager ? this.observers : [...this.observers, ...this.connection.manager.observers];
-            allObservers.forEach(observer => observer.execute());
+            await new ObserverExecutor(this.connection.observers).execute();
             return result;
 
         } catch (err) {
@@ -622,12 +616,12 @@ export class EntityManager {
      * Counts entities that match given conditions.
      * Useful for pagination.
      */
-    count<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, conditions?: FindOptionsWhere<Entity>): Promise<number> {
+    count<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, conditions?: FindOptionsWhere<Entity>, options?: FindExtraOptions): Promise<number> {
         const metadata = this.connection.getMetadata(entityClass);
         const qb = this.createQueryBuilder(entityClass, metadata.name);
 
-        if (conditions)
-            qb.setFindOptions({ where: conditions });
+        if (conditions || options)
+            qb.setFindOptions({ where: conditions, options: options });
 
         return qb.getCount();
     }
@@ -650,7 +644,7 @@ export class EntityManager {
      */
     observe<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, optionsOrConditions?: FindOptions<Entity>|FindOptionsWhere<Entity>): Observable<Entity[]> {
         const metadata = this.connection.getMetadata(entityClass);
-        return new QueryObserver(this, "find", metadata, optionsOrConditions).observe();
+        return new QueryObserver(this.connection, "find", metadata, optionsOrConditions).observe();
     }
 
     /**
@@ -671,7 +665,7 @@ export class EntityManager {
      */
     observeManyAndCount<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, optionsOrConditions?: FindOptions<Entity>|FindOptionsWhere<Entity>): Observable<[Entity[], number]> {
         const metadata = this.connection.getMetadata(entityClass);
-        return new QueryObserver(this, "findAndCount", metadata, optionsOrConditions).observe();
+        return new QueryObserver(this.connection, "findAndCount", metadata, optionsOrConditions).observe();
     }
 
     /**
@@ -692,7 +686,7 @@ export class EntityManager {
      */
     observeOne<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, optionsOrConditions?: FindOptions<Entity>|FindOptionsWhere<Entity>): Observable<Entity> {
         const metadata = this.connection.getMetadata(entityClass);
-        return new QueryObserver(this, "findOne", metadata, optionsOrConditions).observe();
+        return new QueryObserver(this.connection, "findOne", metadata, optionsOrConditions).observe();
     }
 
     /**
@@ -713,7 +707,7 @@ export class EntityManager {
      */
     observeCount<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, optionsOrConditions?: FindOptions<Entity>|FindOptionsWhere<Entity>): Observable<number> {
         const metadata = this.connection.getMetadata(entityClass);
-        return new QueryObserver(this, "count", metadata, optionsOrConditions).observe();
+        return new QueryObserver(this.connection, "count", metadata, optionsOrConditions).observe();
     }
 
     /**

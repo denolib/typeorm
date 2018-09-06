@@ -1,3 +1,4 @@
+import {ObserverExecutor} from "../observer/ObserverExecutor";
 import {QueryBuilder} from "./QueryBuilder";
 import {ObjectLiteral} from "../common/ObjectLiteral";
 import {Connection} from "../connection/Connection";
@@ -101,14 +102,9 @@ export class UpdateQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
 
             // second case is when operation is executed without transaction and at the same time
             // nobody started transaction from the above
-            if (transactionStartedByUs || (this.expressionMap.useTransaction === false && queryRunner.isTransactionActive === false)) {
-                const allObservers = queryRunner.manager === this.connection.manager
-                    ? queryRunner.manager.observers
-                    : [...queryRunner.manager.observers, ...this.connection.manager.observers];
-                allObservers.forEach(observer => observer.execute());
-            } else {
-                if (queryRunner.manager !== this.connection.manager) {
-                    queryRunner.manager.observers.forEach(observer => observer.execute());
+            if (this.expressionMap.callObservers) {
+                if (transactionStartedByUs || (this.expressionMap.useTransaction === false && queryRunner.isTransactionActive === false)) {
+                    await new ObserverExecutor(this.connection.observers).execute();
                 }
             }
 

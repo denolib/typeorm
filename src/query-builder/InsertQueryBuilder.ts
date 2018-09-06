@@ -1,3 +1,4 @@
+import {ObserverExecutor} from "../observer/ObserverExecutor";
 import {QueryBuilder} from "./QueryBuilder";
 import {ObjectLiteral} from "../common/ObjectLiteral";
 import {ObjectType} from "../common/ObjectType";
@@ -57,12 +58,14 @@ export class InsertQueryBuilder<Entity> extends QueryBuilder<Entity> {
             // console.timeEnd(".value sets");
 
             // call before insertion methods in listeners and subscribers
-            if (this.expressionMap.callListeners === true && this.expressionMap.mainAlias!.hasMetadata) {
-                const broadcastResult = new BroadcasterResult();
-                valueSets.forEach(valueSet => {
-                    queryRunner.broadcaster.broadcastBeforeInsertEvent(broadcastResult, this.expressionMap.mainAlias!.metadata, valueSet);
-                });
-                if (broadcastResult.promises.length > 0) await Promise.all(broadcastResult.promises);
+            if (this.expressionMap.callObservers) {
+                if (this.expressionMap.callListeners === true && this.expressionMap.mainAlias!.hasMetadata) {
+                    const broadcastResult = new BroadcasterResult();
+                    valueSets.forEach(valueSet => {
+                        queryRunner.broadcaster.broadcastBeforeInsertEvent(broadcastResult, this.expressionMap.mainAlias!.metadata, valueSet);
+                    });
+                    if (broadcastResult.promises.length > 0) await Promise.all(broadcastResult.promises);
+                }
             }
 
             // if update entity mode is enabled we may need extra columns for the returning statement
@@ -105,14 +108,9 @@ export class InsertQueryBuilder<Entity> extends QueryBuilder<Entity> {
 
             // second case is when operation is executed without transaction and at the same time
             // nobody started transaction from the above
-            if (transactionStartedByUs || (this.expressionMap.useTransaction === false && queryRunner.isTransactionActive === false)) {
-                const allObservers = queryRunner.manager === this.connection.manager
-                    ? queryRunner.manager.observers
-                    : [...queryRunner.manager.observers, ...this.connection.manager.observers];
-                allObservers.forEach(observer => observer.execute());
-            } else {
-                if (queryRunner.manager !== this.connection.manager) {
-                    queryRunner.manager.observers.forEach(observer => observer.execute());
+            if (this.expressionMap.callObservers) {
+                if (transactionStartedByUs || (this.expressionMap.useTransaction === false && queryRunner.isTransactionActive === false)) {
+                    await new ObserverExecutor(this.connection.observers).execute();
                 }
             }
             // console.timeEnd(".commit");

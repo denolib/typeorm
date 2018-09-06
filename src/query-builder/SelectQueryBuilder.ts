@@ -1,4 +1,5 @@
 import {normalizeFindOptions} from "../find-options/FindOptionsUtils";
+import {ObserverExecutor} from "../observer/ObserverExecutor";
 import {QueryBuilderUtils} from "./QueryBuilderUtils";
 import {RawSqlResultsToEntityTransformer} from "./transformer/RawSqlResultsToEntityTransformer";
 import {ObjectLiteral} from "../common/ObjectLiteral";
@@ -1053,20 +1054,10 @@ export class SelectQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
             const results = await this.loadRawResults(queryRunner);
 
             // close transaction if we started it
-            if (transactionStartedByUs)
+            if (transactionStartedByUs) {
                 await queryRunner.commitTransaction();
-
-            // second case is when operation is executed without transaction and at the same time
-            // nobody started transaction from the above
-            if (transactionStartedByUs || (this.expressionMap.useTransaction === false && queryRunner.isTransactionActive === false)) {
-                const allObservers = queryRunner.manager === this.connection.manager
-                    ? queryRunner.manager.observers
-                    : [...queryRunner.manager.observers, ...this.connection.manager.observers];
-                allObservers.forEach(observer => observer.execute());
-            } else {
-                if (queryRunner.manager !== this.connection.manager) {
-                    queryRunner.manager.observers.forEach(observer => observer.execute());
-                }
+                if (this.expressionMap.callObservers)
+                    await new ObserverExecutor(this.connection.observers).execute();
             }
 
             return results;
@@ -1107,20 +1098,10 @@ export class SelectQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
             const results = await this.executeEntitiesAndRawResults(queryRunner);
 
             // close transaction if we started it
-            if (transactionStartedByUs)
+            if (transactionStartedByUs) {
                 await queryRunner.commitTransaction();
-
-            // second case is when operation is executed without transaction and at the same time
-            // nobody started transaction from the above
-            if (transactionStartedByUs || (this.expressionMap.useTransaction === false && queryRunner.isTransactionActive === false)) {
-                const allObservers = queryRunner.manager === this.connection.manager
-                    ? queryRunner.manager.observers
-                    : [...queryRunner.manager.observers, ...this.connection.manager.observers];
-                allObservers.forEach(observer => observer.execute());
-            } else {
-                if (queryRunner.manager !== this.connection.manager) {
-                    queryRunner.manager.observers.forEach(observer => observer.execute());
-                }
+                if (this.expressionMap.callObservers)
+                    await new ObserverExecutor(this.connection.observers).execute();
             }
 
             return results;
@@ -1200,20 +1181,10 @@ export class SelectQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
             const results = await this.executeCountQuery(queryRunner);
 
             // close transaction if we started it
-            if (transactionStartedByUs)
+            if (transactionStartedByUs) {
                 await queryRunner.commitTransaction();
-
-            // second case is when operation is executed without transaction and at the same time
-            // nobody started transaction from the above
-            if (transactionStartedByUs || (this.expressionMap.useTransaction === false && queryRunner.isTransactionActive === false)) {
-                const allObservers = queryRunner.manager === this.connection.manager
-                    ? queryRunner.manager.observers
-                    : [...queryRunner.manager.observers, ...this.connection.manager.observers];
-                allObservers.forEach(observer => observer.execute());
-            } else {
-                if (queryRunner.manager !== this.connection.manager) {
-                    queryRunner.manager.observers.forEach(observer => observer.execute());
-                }
+                if (this.expressionMap.callObservers)
+                    await new ObserverExecutor(this.connection.observers).execute();
             }
 
             return results;
@@ -1260,20 +1231,10 @@ export class SelectQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
             const results: [Entity[], number] = [entitiesAndRaw.entities, count];
 
             // close transaction if we started it
-            if (transactionStartedByUs)
+            if (transactionStartedByUs) {
                 await queryRunner.commitTransaction();
-
-            // second case is when operation is executed without transaction and at the same time
-            // nobody started transaction from the above
-            if (transactionStartedByUs || (this.expressionMap.useTransaction === false && queryRunner.isTransactionActive === false)) {
-                const allObservers = queryRunner.manager === this.connection.manager
-                    ? queryRunner.manager.observers
-                    : [...queryRunner.manager.observers, ...this.connection.manager.observers];
-                allObservers.forEach(observer => observer.execute());
-            } else {
-                if (queryRunner.manager !== this.connection.manager) {
-                    queryRunner.manager.observers.forEach(observer => observer.execute());
-                }
+                if (this.expressionMap.callObservers)
+                    await new ObserverExecutor(this.connection.observers).execute();
             }
 
             return results;
@@ -1318,20 +1279,10 @@ export class SelectQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
             const results = queryRunner.stream(sql, parameters, releaseFn, releaseFn);
 
             // close transaction if we started it
-            if (transactionStartedByUs)
+            if (transactionStartedByUs) {
                 await queryRunner.commitTransaction();
-
-            // second case is when operation is executed without transaction and at the same time
-            // nobody started transaction from the above
-            if (transactionStartedByUs || (this.expressionMap.useTransaction === false && queryRunner.isTransactionActive === false)) {
-                const allObservers = queryRunner.manager === this.connection.manager
-                    ? queryRunner.manager.observers
-                    : [...queryRunner.manager.observers, ...this.connection.manager.observers];
-                allObservers.forEach(observer => observer.execute());
-            } else {
-                if (queryRunner.manager !== this.connection.manager) {
-                    queryRunner.manager.observers.forEach(observer => observer.execute());
-                }
+                if (this.expressionMap.callObservers)
+                    await new ObserverExecutor(this.connection.observers).execute();
             }
 
             return results;
@@ -1916,6 +1867,9 @@ export class SelectQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
 
                 if (this.findOptions.options.listeners === false)
                     this.callListeners(false);
+
+                if (this.findOptions.options.observers === false)
+                    this.callObservers(false);
 
                 if (this.findOptions.options.loadRelationIds === true) {
                     this.loadAllRelationIds();

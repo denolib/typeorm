@@ -19,13 +19,13 @@ describe("github issues > #953 MySQL 5.7 JSON column parse", () => {
         let user = repo.create({
             username: "admin",
             password: "admin",
-            roles: ["ADMIN"],
+            roles: ["admin"],
             lastLoginAt: new Date()
         });
         await repo.save(user);
 
         let user1 = await repo.findOne({username: "admin"});
-        expect(user1).has.property("roles").with.is.an("array").and.contains("ADMIN");
+        expect(user1).has.property("roles").with.is.an("array").and.contains("admin");
     })));
 
 });

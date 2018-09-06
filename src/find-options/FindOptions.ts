@@ -126,6 +126,12 @@ export type FindExtraOptions = {
     listeners?: boolean;
 
     /**
+     * Indicates if observers must be executed before and after the query execution.
+     * Enabled by default.
+     */
+    observers?: boolean;
+
+    /**
      * If sets to true then loads all relation ids of the entity and maps them into relation values (not relation objects).
      * If array of strings is given then loads only relation ids of the given properties.
      */

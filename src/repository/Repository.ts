@@ -2,7 +2,7 @@ import {DeepPartial} from "../common/DeepPartial";
 import {ObjectLiteral} from "../common/ObjectLiteral";
 import {ObjectID} from "../driver/mongodb/typings";
 import {EntityManager} from "../entity-manager/EntityManager";
-import {FindOptions, FindOptionsWhere} from "../find-options/FindOptions";
+import {FindExtraOptions, FindOptions, FindOptionsWhere} from "../find-options/FindOptions";
 import {EntityMetadata} from "../metadata/EntityMetadata";
 import {QueryPartialEntity} from "../query-builder/QueryPartialEntity";
 import {DeleteResult} from "../query-builder/result/DeleteResult";
@@ -291,8 +291,8 @@ export class Repository<Entity extends ObjectLiteral> {
     /**
      * Counts entities that match given conditions.
      */
-    count(conditions?: FindOptionsWhere<Entity>): Promise<number> {
-        return this.manager.count(this.metadata.target, conditions);
+    count(conditions?: FindOptionsWhere<Entity>, options?: FindExtraOptions): Promise<number> {
+        return this.manager.count(this.metadata.target, conditions, options);
     }
 
     /**

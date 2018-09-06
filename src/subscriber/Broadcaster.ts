@@ -48,6 +48,7 @@ export class Broadcaster {
                         connection: this.queryRunner.connection,
                         queryRunner: this.queryRunner,
                         manager: this.queryRunner.manager,
+                        metadata: metadata,
                         entity: entity
                     });
                     if (executionResult instanceof Promise)
@@ -85,6 +86,7 @@ export class Broadcaster {
                         connection: this.queryRunner.connection,
                         queryRunner: this.queryRunner,
                         manager: this.queryRunner.manager,
+                        metadata: metadata,
                         entity: entity,
                         databaseEntity: databaseEntity,
                         updatedColumns: [], // todo: subject.diffColumns,
@@ -125,6 +127,7 @@ export class Broadcaster {
                         connection: this.queryRunner.connection,
                         queryRunner: this.queryRunner,
                         manager: this.queryRunner.manager,
+                        metadata: metadata,
                         entity: entity,
                         databaseEntity: databaseEntity,
                         entityId: metadata.getEntityIdMixedMap(databaseEntity)
@@ -165,6 +168,7 @@ export class Broadcaster {
                         connection: this.queryRunner.connection,
                         queryRunner: this.queryRunner,
                         manager: this.queryRunner.manager,
+                        metadata: metadata,
                         entity: entity
                     });
                     if (executionResult instanceof Promise)
@@ -203,6 +207,7 @@ export class Broadcaster {
                         connection: this.queryRunner.connection,
                         queryRunner: this.queryRunner,
                         manager: this.queryRunner.manager,
+                        metadata: metadata,
                         entity: entity,
                         databaseEntity: databaseEntity,
                         updatedColumns: [], // todo: subject.diffColumns,
@@ -244,6 +249,7 @@ export class Broadcaster {
                         connection: this.queryRunner.connection,
                         queryRunner: this.queryRunner,
                         manager: this.queryRunner.manager,
+                        metadata: metadata,
                         entity: entity,
                         databaseEntity: databaseEntity,
                         entityId: metadata.getEntityIdMixedMap(databaseEntity)

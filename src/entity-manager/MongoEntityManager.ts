@@ -48,7 +48,7 @@ import {UpdateResult} from "../query-builder/result/UpdateResult";
 import {RemoveOptions} from "../repository/RemoveOptions";
 import {DeleteResult} from "../query-builder/result/DeleteResult";
 import {EntityMetadata} from "../metadata/EntityMetadata";
-import {EntitySchema} from "../index";
+import {EntitySchema, FindExtraOptions} from "../index";
 import {FindOptions, FindOptionsWhere} from "../find-options/FindOptions";
 
 /**
@@ -291,9 +291,9 @@ export class MongoEntityManager extends EntityManager {
     /**
      * Count number of matching documents in the db to a query.
      */
-    count<Entity>(entityClassOrName: ObjectType<Entity>|EntitySchema<Entity>|string, query?: ObjectLiteral, options?: MongoCountPreferences): Promise<number> {
+    count<Entity>(entityClassOrName: ObjectType<Entity>|EntitySchema<Entity>|string, query?: ObjectLiteral, options?: FindExtraOptions, mongoOptions?: MongoCountPreferences): Promise<number> {
         const metadata = this.connection.getMetadata(entityClassOrName);
-        return this.queryRunner.count(metadata.tableName, query, options);
+        return this.queryRunner.count(metadata.tableName, query, mongoOptions);
     }
 
     /**

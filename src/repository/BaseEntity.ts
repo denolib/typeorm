@@ -2,7 +2,7 @@ import {DeepPartial} from "../common/DeepPartial";
 import {ObjectType} from "../common/ObjectType";
 import {Connection} from "../connection/Connection";
 import {ObjectID} from "../driver/mongodb/typings";
-import {FindOptions, FindOptionsWhere, getConnection} from "../index";
+import {FindExtraOptions, FindOptions, FindOptionsWhere, getConnection} from "../index";
 import {DeleteResult} from "../query-builder/result/DeleteResult";
 import {InsertResult} from "../query-builder/result/InsertResult";
 import {UpdateResult} from "../query-builder/result/UpdateResult";
@@ -227,8 +227,8 @@ export class BaseEntity {
     /**
      * Counts entities that match given conditions.
      */
-    static count<T extends BaseEntity>(this: ObjectType<T>, conditions?: FindOptionsWhere<T>): Promise<number> {
-        return (this as any).getRepository().count(conditions);
+    static count<T extends BaseEntity>(this: ObjectType<T>, conditions?: FindOptionsWhere<T>, options?: FindExtraOptions): Promise<number> {
+        return (this as any).getRepository().count(conditions, options);
     }
 
     /**

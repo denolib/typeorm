@@ -458,6 +458,15 @@ export abstract class QueryBuilder<Entity> {
     }
 
     /**
+     * Indicates if observers must be called before and after query execution.
+     * Enabled by default.
+     */
+    callObservers(enabled: boolean): this {
+        this.expressionMap.callObservers = enabled;
+        return this;
+    }
+
+    /**
      * If set to true the query will be wrapped into a transaction.
      */
     useTransaction(enabled: boolean): this {

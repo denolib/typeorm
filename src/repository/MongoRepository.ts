@@ -33,7 +33,7 @@ import {
 import {MongoEntityManager} from "../entity-manager/MongoEntityManager";
 import {QueryRunner} from "../query-runner/QueryRunner";
 import {SelectQueryBuilder} from "../query-builder/SelectQueryBuilder";
-import {FindOptions, FindOptionsWhere} from "../find-options/FindOptions";
+import {FindExtraOptions, FindOptions, FindOptionsWhere} from "../find-options/FindOptions";
 
 /**
  * Repository used to manage mongodb documents of a single entity type.
@@ -139,8 +139,8 @@ export class MongoRepository<Entity extends ObjectLiteral> extends Repository<En
     /**
      * Count number of matching documents in the db to a query.
      */
-    count(query?: ObjectLiteral, options?: MongoCountPreferences): Promise<number> {
-        return this.manager.count(this.metadata.target, query || {}, options);
+    count(query?: ObjectLiteral, options?: FindExtraOptions, mongoOptions?: MongoCountPreferences): Promise<number> {
+        return this.manager.count(this.metadata.target, query || {}, options, mongoOptions);
     }
 
     /**

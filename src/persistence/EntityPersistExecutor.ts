@@ -1,4 +1,5 @@
 import {ObjectLiteral} from "../common/ObjectLiteral";
+import {ObserverExecutor} from "../observer/ObserverExecutor";
 import {SaveOptions} from "../repository/SaveOptions";
 import {RemoveOptions} from "../repository/RemoveOptions";
 import {MustBeEntityError} from "../error/MustBeEntityError";
@@ -147,17 +148,14 @@ export class EntityPersistExecutor {
 
                     // commit transaction if it was started by us
                     // console.time("commit");
+                    // console.log("committing");
                     if (isTransactionStartedByUs === true) {
+                        // console.log("committing oh yeah");
                         await queryRunner.commitTransaction();
 
-                        const allObservers = queryRunner.manager === this.connection.manager
-                            ? queryRunner.manager.observers
-                            : [...queryRunner.manager.observers, ...this.connection.manager.observers];
-                        allObservers.forEach(observer => observer.execute());
-                    } else {
-                        if (queryRunner.manager !== this.connection.manager) {
-                            queryRunner.manager.observers.forEach(observer => observer.execute());
-                        }
+                        // console.log("dispatching", this.connection.observers);
+                        await new ObserverExecutor(this.connection.observers).execute();
+                        // console.log("dispatched");
                     }
                     // console.timeEnd("commit");
 

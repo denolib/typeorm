@@ -79,6 +79,8 @@ export class SubjectDatabaseEntityLoader {
 
             const findOptions: FindOptions<any> = {
                 options: {
+                    listeners: false,
+                    observers: false,
                     eagerRelations: false,
                     loadRelationIds: {
                         relations: loadRelationPropertyPaths,

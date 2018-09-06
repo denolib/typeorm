@@ -1,3 +1,4 @@
+import {EntityMetadata} from "../..";
 import {ColumnMetadata} from "../../metadata/ColumnMetadata";
 import {RelationMetadata} from "../../metadata/RelationMetadata";
 import {EntityManager} from "../../entity-manager/EntityManager";
@@ -25,6 +26,11 @@ export interface UpdateEvent<Entity> {
      * All database operations in the subscribed event listener should be performed using this entity manager instance.
      */
     manager: EntityManager;
+
+    /**
+     * Entity metadata of the updated entity.
+     */
+    metadata: EntityMetadata;
 
     /**
      * Updating entity.

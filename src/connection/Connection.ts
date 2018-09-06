@@ -1,4 +1,5 @@
 import {Driver} from "../driver/Driver";
+import {QueryObserver} from "../observer/QueryObserver";
 import {Repository} from "../repository/Repository";
 import {EntitySubscriberInterface} from "../subscriber/EntitySubscriberInterface";
 import {ObjectType} from "../common/ObjectType";
@@ -90,6 +91,11 @@ export class Connection {
      * Entity subscriber instances that are registered for this connection.
      */
     readonly subscribers: EntitySubscriberInterface<any>[] = [];
+
+    /**
+     * Observers observing queries.
+     */
+    readonly observers: QueryObserver[] = [];
 
     /**
      * All entity metadatas that are registered for this connection.

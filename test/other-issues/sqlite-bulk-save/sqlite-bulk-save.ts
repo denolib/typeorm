@@ -3,7 +3,7 @@ import {closeTestingConnections, createTestingConnections, reloadTestingDatabase
 import {Connection} from "../../../src/connection/Connection";
 import {Post} from "./entity/Post";
 
-describe("other issues > bulk save in sqlite", () => {
+describe.only("other issues > bulk save in sqlite", () => {
 
     let connections: Connection[];
     before(async () => connections = await createTestingConnections({
@@ -20,7 +20,6 @@ describe("other issues > bulk save in sqlite", () => {
         for (let i = 1; i <= 10000; i++) {
             posts.push(new Post(i, "Post #" + i));
         }
-        console.log(`saving...`);
         await connection.manager.save(posts);
 
     })));
