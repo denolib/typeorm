@@ -24,22 +24,18 @@ export class ObserverExecutor {
      */
     async execute(): Promise<void> {
         for (let observer of this.observers) {
-            console.log("executing", observer);
 
             if (observer.insertEvents.length > 0) {
-                console.log("executing inserts");
                 await this.handleInsertEvent(observer);
                 observer.insertEvents = [];
             }
 
             if (observer.updateEvents.length > 0) {
-                console.log("executing updates");
                 await this.handleUpdateEvent(observer);
                 observer.updateEvents = [];
             }
 
             if (observer.removeEvents.length > 0) {
-                console.log("executing removes");
                 await this.handleRemoveEvent(observer);
                 observer.removeEvents = [];
             }
