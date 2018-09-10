@@ -77,8 +77,9 @@ export class SubjectChangedColumnsComputer {
                         normalizedValue = DateUtils.mixedDateToUtcDatetimeString(entityValue);
                         databaseValue = DateUtils.mixedDateToUtcDatetimeString(databaseValue);
 
-                    } else if (column.type === "json" || column.type === "jsonb") {
-                        normalizedValue = JSON.stringify(entityValue);
+                    } else if (column.type === "json" || column.type === "jsonb" || column.type === "simple-json") {
+                        if (normalizedValue !== null && normalizedValue !== undefined)
+                            normalizedValue = JSON.stringify(normalizedValue);
                         if (databaseValue !== null && databaseValue !== undefined)
                             databaseValue = JSON.stringify(databaseValue);
 

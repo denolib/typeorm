@@ -2028,7 +2028,9 @@ export class SelectQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
             }
 
         } else {
+            // console.time("load raw results");
             rawResults = await this.loadRawResults(queryRunner);
+            // console.timeEnd("load raw results");
         }
 
         if (rawResults.length > 0) {
@@ -2037,7 +2039,9 @@ export class SelectQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
             const rawRelationIdResults = await relationIdLoader.load(rawResults);
             const rawRelationCountResults = await relationCountLoader.load(rawResults);
             const transformer = new RawSqlResultsToEntityTransformer(this.expressionMap, this.connection.driver, rawRelationIdResults, rawRelationCountResults, this.queryRunner);
+            // console.time("transforming entities");
             entities = transformer.transform(rawResults, this.expressionMap.mainAlias!);
+            // console.timeEnd("transforming entities");
 
             // broadcast all "after load" events
             if (this.expressionMap.callListeners === true && this.expressionMap.mainAlias.hasMetadata) {

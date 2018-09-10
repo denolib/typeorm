@@ -38,7 +38,9 @@ export class RawSqlResultsToEntityTransformer {
      * we need to group our result and we must have some unique id (primary key in our case)
      */
     transform(rawResults: any[], alias: Alias): any[] {
+        // console.time("grouping");
         const group = this.group(rawResults, alias);
+        // console.timeEnd("grouping");
         const entities: any[] = [];
         group.forEach(results => {
             const entity = this.transformRawResultsGroup(results, alias);

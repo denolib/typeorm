@@ -15,7 +15,7 @@ import {RepositoryNotTreeError} from "../error/RepositoryNotTreeError";
 import {TreeRepositoryNotSupportedError} from "../error/TreeRepositoryNotSupportedError";
 import {FindExtraOptions, FindOptions, FindOptionsWhere} from "../find-options/FindOptions";
 import {FindOptionsUtils} from "../find-options/FindOptionsUtils";
-import {EntitySchema, getMetadataArgsStorage} from "../index";
+import {EntitySchema, getMetadataArgsStorage, In} from "../index";
 import {ObserverExecutor} from "../observer/ObserverExecutor";
 import {QueryObserver} from "../observer/QueryObserver";
 import {EntityPersistExecutor} from "../persistence/EntityPersistExecutor";
@@ -532,10 +532,44 @@ export class EntityManager {
         const metadata = this.connection.getMetadata(entityClass);
         const qb = this.createQueryBuilder(entityClass, metadata.name);
 
-        if (optionsOrConditions)
-            qb.setFindOptions(FindOptionsUtils.isFindOptions(optionsOrConditions) ? optionsOrConditions : { where: optionsOrConditions });
+        // todo: implement only-find options it later
+        // let options: FindOptions<any> = { };
+        // if (optionsOrConditions) {
+        //     if (FindOptionsUtils.isFindOptions(optionsOrConditions)) {
+        //         options = optionsOrConditions;
+        //     } else {
+        //         options = { where: optionsOrConditions };
+        //     }
+        // }
+        // if (!options.where) {
+        //     options.where = {  };
+        // }
+        // return qb.setFindOptions(optionsOrConditions).getMany();
 
-        return qb.andWhereInIds(ids).getMany();
+        const findOptions: FindOptions<Entity> = {};
+        if (FindOptionsUtils.isFindOptions(optionsOrConditions)) {
+            Object.assign(findOptions, optionsOrConditions);
+        } else if (optionsOrConditions) {
+            Object.assign(findOptions, { where: optionsOrConditions });
+        }
+
+        if (findOptions.where || metadata.primaryColumns.length > 1) {
+            return qb.andWhereInIds(ids).getMany();
+        }
+
+        // this is for optimization purpose
+        findOptions.where = {};
+        const primaryColumn = metadata.primaryColumns[0];
+        const normalizedIds = ids.map(id => {
+            return typeof id === "object" ? primaryColumn.getEntityValue(id) : id;
+        });
+        primaryColumn.setEntityValue(findOptions.where, In(normalizedIds));
+
+        // console.log("WHERE:", findOptions);
+        qb.setFindOptions(findOptions);
+        const results = await qb.getMany();
+        // console.log("results", results);
+        return results;
     }
 
     /**
@@ -580,6 +614,9 @@ export class EntityManager {
 
         } else if (typeof idOrOptionsOrConditions === "string" || typeof idOrOptionsOrConditions === "number" || (idOrOptionsOrConditions as any) instanceof Date) {
             qb.andWhereInIds(metadata.ensureEntityIdMap(idOrOptionsOrConditions));
+
+        } else if (!findOptions) {
+            throw new Error(`Wrong arguments supplied. You must provide valid options to findOne method.`);
         }
 
         return qb.getOne();

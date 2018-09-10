@@ -126,8 +126,10 @@ export class SubjectExecutor {
         // console.timeEnd(".updation");
 
         // make sure our remove subjects are sorted (using topological sorting) when multiple entities are passed for the removal
-        // console.time(".removal");
+        // console.time(".SubjectTopoligicalSorter");
         this.removeSubjects = new SubjectTopoligicalSorter(this.removeSubjects).sort("delete");
+        // console.timeEnd(".SubjectTopoligicalSorter");
+        // console.time(".removal");
         await this.executeRemoveOperations();
         // console.timeEnd(".removal");
 

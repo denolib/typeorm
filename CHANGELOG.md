@@ -10,6 +10,8 @@ feel free to ask us and community.
 * find options interface was completely re-written (find options is parameter passed to find* methods)
 * now query builder adds joins to eager relations by default (previously only find methods did that)
 * `primary` flag has been removed from relation decorators. Now if you want to make a relation primary you must define a primary column with the same name relation uses
+* added observer methods to repositories and entity manager
+* `findOne` now throws error if no (or wrong) criteria supplied
 
 ## 0.2.8
 

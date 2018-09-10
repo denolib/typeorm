@@ -64,6 +64,7 @@ export class EntityPersistExecutor {
                 const entities: ObjectLiteral[] = this.entity instanceof Array ? this.entity : [this.entity];
                 const entitiesInChunks = this.options && this.options.chunk && this.options.chunk > 0 ? OrmUtils.chunk(entities, this.options.chunk) : [entities];
 
+                // console.log("entitiesInChunks", entitiesInChunks);
                 // console.time("building subject executors...");
                 const executors = await Promise.all(entitiesInChunks.map(async entities => {
                     const subjects: Subject[] = [];
@@ -154,7 +155,9 @@ export class EntityPersistExecutor {
                         await queryRunner.commitTransaction();
 
                         // console.log("dispatching", this.connection.observers);
+                        // console.time("dispatching");
                         await new ObserverExecutor(this.connection.observers).execute();
+                        // console.timeEnd("dispatching");
                         // console.log("dispatched");
                     }
                     // console.timeEnd("commit");

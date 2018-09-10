@@ -374,6 +374,15 @@ export class UpdateQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
                 // todo: make this and other query builder to work with properly with tables without metadata
                 const columns = metadata.findColumnsWithPropertyPath(propertyPath);
                 columns.forEach(column => {
+
+                    // skip weird cases when we send wrong relations in update map
+                    if (column.relationMetadata &&
+                        (column.relationMetadata.isManyToMany || column.relationMetadata.isOneToMany))
+                        return;
+
+                    // skip generated columns updation since we can't update them - only database update them
+                    if (column.isGenerated) return;
+
                     const paramName = "upd_" + column.databaseName;
 
                     //
