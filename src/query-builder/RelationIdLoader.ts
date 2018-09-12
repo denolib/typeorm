@@ -180,8 +180,16 @@ export class RelationIdLoader {
         // add conditions for the given entities
         let condition1 = "";
         if (columns.length === 1) {
-            qb.setParameter("values1", entities.map(entity => columns[0].referencedColumn!.getEntityValue(entity)));
-            condition1 = mainAlias + "." + columns[0].propertyPath + " IN (:...values1)"; // todo: use ANY for postgres
+
+            const values = entities.map(entity => columns[0].referencedColumn!.getEntityValue(entity));
+            const areAllNumbers = values.every(value => typeof value === "number");
+
+            if (areAllNumbers) {
+                qb.where(`${mainAlias}.${columns[0].propertyPath} IN (${values.join(", ")})`);
+            } else {
+                qb.setParameter("values1", values);
+                condition1 = mainAlias + "." + columns[0].propertyPath + " IN (:...values1)"; // todo: use ANY for postgres
+            }
 
         } else {
             condition1 = "(" + entities.map((entity, entityIndex) => {
@@ -197,8 +205,15 @@ export class RelationIdLoader {
         let condition2 = "";
         if (relatedEntities) {
             if (inverseColumns.length === 1) {
-                qb.setParameter("values2", relatedEntities.map(entity => inverseColumns[0].referencedColumn!.getEntityValue(entity)));
-                condition2 = mainAlias + "." + inverseColumns[0].propertyPath + " IN (:...values2)"; // todo: use ANY for postgres
+                const values = relatedEntities.map(entity => inverseColumns[0].referencedColumn!.getEntityValue(entity));
+                const areAllNumbers = values.every(value => typeof value === "number");
+
+                if (areAllNumbers) {
+                    qb.where(`${mainAlias}.${columns[0].propertyPath} IN (${values.join(", ")})`);
+                } else {
+                    qb.setParameter("values2", values);
+                    condition2 = mainAlias + "." + inverseColumns[0].propertyPath + " IN (:...values2)"; // todo: use ANY for postgres
+                }
 
             } else {
                 condition2 = "(" + relatedEntities.map((entity, entityIndex) => {
@@ -293,8 +308,16 @@ export class RelationIdLoader {
         // add condition for entities
         let condition: string = "";
         if (relation.entityMetadata.primaryColumns.length === 1) {
-            qb.setParameter("values", entities.map(entity => relation.entityMetadata.primaryColumns[0].getEntityValue(entity)));
-            condition = mainAlias + "." + relation.entityMetadata.primaryColumns[0].propertyPath + " IN (:...values)";
+
+            const values = entities.map(entity => relation.entityMetadata.primaryColumns[0].getEntityValue(entity));
+            const areAllNumbers = values.every(value => typeof value === "number");
+
+            if (areAllNumbers) {
+                condition = `${mainAlias}.${relation.entityMetadata.primaryColumns[0].propertyPath} IN (${values.join(", ")})`;
+            } else {
+                qb.setParameter("values", values);
+                condition = mainAlias + "." + relation.entityMetadata.primaryColumns[0].propertyPath + " IN (:...values)"; // todo: use ANY for postgres
+            }
 
         } else {
             condition = entities.map((entity, entityIndex) => {
@@ -353,8 +376,15 @@ export class RelationIdLoader {
         // add condition for entities
         let condition: string = "";
         if (relation.joinColumns.length === 1) {
-            qb.setParameter("values", entities.map(entity => relation.joinColumns[0].referencedColumn!.getEntityValue(entity)));
-            condition = mainAlias + "." + relation.joinColumns[0].propertyPath + " IN (:...values)";
+            const values = entities.map(entity => relation.joinColumns[0].referencedColumn!.getEntityValue(entity));
+            const areAllNumbers = values.every(value => typeof value === "number");
+
+            if (areAllNumbers) {
+                condition = `${mainAlias}.${relation.joinColumns[0].propertyPath} IN (${values.join(", ")})`;
+            } else {
+                qb.setParameter("values", values);
+                condition = mainAlias + "." + relation.joinColumns[0].propertyPath + " IN (:...values)"; // todo: use ANY for postgres
+            }
 
         } else {
             condition = entities.map((entity, entityIndex) => {
