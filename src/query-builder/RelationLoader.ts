@@ -66,7 +66,7 @@ export class RelationLoader {
         if (columns.length === 1) {
 
             const values = entities.map(entity => columns[0].getEntityValue(entity));
-            const areAllNumbers = values.map(value => typeof value === "number");
+            const areAllNumbers = values.every(value => typeof value === "number");
 
             if (areAllNumbers) {
                 qb.where(`${joinAliasName}.${columns[0].propertyPath} IN (${values.join(", ")})`);
@@ -111,7 +111,7 @@ export class RelationLoader {
         if (columns.length === 1) {
 
             const values = entities.map(entity => columns[0].referencedColumn!.getEntityValue(entity));
-            const areAllNumbers = values.map(value => typeof value === "number");
+            const areAllNumbers = values.every(value => typeof value === "number");
 
             if (areAllNumbers) {
                 qb.where(`${aliasName}.${columns[0].propertyPath} IN (${values.join(", ")})`);
@@ -158,7 +158,7 @@ export class RelationLoader {
         const joinColumnConditions: string[] = [];
         relation.joinColumns.forEach(joinColumn => {
             const values = entities.map(entity => joinColumn.referencedColumn!.getEntityValue(entity));
-            const areAllNumbers = values.map(value => typeof value === "number");
+            const areAllNumbers = values.every(value => typeof value === "number");
 
             if (areAllNumbers) {
                 joinColumnConditions.push(`${joinAlias}.${joinColumn.propertyName} IN (${values.join(", ")})`);
@@ -205,7 +205,7 @@ export class RelationLoader {
         const inverseJoinColumnConditions: string[] = [];
         relation.inverseRelation!.inverseJoinColumns.forEach(column => {
             const values = entities.map(entity => column.referencedColumn!.getEntityValue(entity));
-            const areAllNumbers = values.map(value => typeof value === "number");
+            const areAllNumbers = values.every(value => typeof value === "number");
 
             if (areAllNumbers) {
                 joinColumnConditions.push(`${joinAlias}.${column.propertyName} IN (${values.join(", ")})`);
