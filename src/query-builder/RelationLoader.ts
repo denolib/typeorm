@@ -64,8 +64,16 @@ export class RelationLoader {
         qb.innerJoin(relation.entityMetadata.target as Function, joinAliasName, conditions);
 
         if (columns.length === 1) {
-            qb.where(`${joinAliasName}.${columns[0].propertyPath} IN (:...${joinAliasName + "_" + columns[0].propertyName})`);
-            qb.setParameter(joinAliasName + "_" + columns[0].propertyName, entities.map(entity => columns[0].getEntityValue(entity)));
+
+            const values = entities.map(entity => columns[0].getEntityValue(entity));
+            const areAllNumbers = values.map(value => typeof value === "number");
+
+            if (areAllNumbers) {
+                qb.where(`${joinAliasName}.${columns[0].propertyPath} IN (${values.join(", ")})`);
+            } else {
+                qb.where(`${joinAliasName}.${columns[0].propertyPath} IN (:...${joinAliasName + "_" + columns[0].propertyName})`);
+                qb.setParameter(joinAliasName + "_" + columns[0].propertyName, values);
+            }
 
         } else {
             const condition = entities.map((entity, entityIndex) => {
@@ -101,8 +109,16 @@ export class RelationLoader {
         const aliasName = qb.expressionMap.mainAlias!.name;
 
         if (columns.length === 1) {
-            qb.where(`${aliasName}.${columns[0].propertyPath} IN (:...${aliasName + "_" + columns[0].propertyName})`);
-            qb.setParameter(aliasName + "_" + columns[0].propertyName, entities.map(entity => columns[0].referencedColumn!.getEntityValue(entity)));
+
+            const values = entities.map(entity => columns[0].referencedColumn!.getEntityValue(entity));
+            const areAllNumbers = values.map(value => typeof value === "number");
+
+            if (areAllNumbers) {
+                qb.where(`${aliasName}.${columns[0].propertyPath} IN (${values.join(", ")})`);
+            } else {
+                qb.where(`${aliasName}.${columns[0].propertyPath} IN (:...${aliasName + "_" + columns[0].propertyName})`);
+                qb.setParameter(aliasName + "_" + columns[0].propertyName, values);
+            }
 
         } else {
             const condition = entities.map((entity, entityIndex) => {
@@ -137,16 +153,24 @@ export class RelationLoader {
 
         const mainAlias = qb.expressionMap.mainAlias!.name;
         const joinAlias = relation.junctionEntityMetadata!.tableName;
-        const joinColumnConditions = relation.joinColumns.map(joinColumn => {
-            return `${joinAlias}.${joinColumn.propertyName} IN (:...${joinColumn.propertyName})`;
+
+        const parameters: ObjectLiteral = {};
+        const joinColumnConditions: string[] = [];
+        relation.joinColumns.forEach(joinColumn => {
+            const values = entities.map(entity => joinColumn.referencedColumn!.getEntityValue(entity));
+            const areAllNumbers = values.map(value => typeof value === "number");
+
+            if (areAllNumbers) {
+                joinColumnConditions.push(`${joinAlias}.${joinColumn.propertyName} IN (${values.join(", ")})`);
+            } else {
+                parameters[joinColumn.propertyName] = values;
+                joinColumnConditions.push(`${joinAlias}.${joinColumn.propertyName} IN (:...${joinColumn.propertyName})`);
+            }
         });
+
         const inverseJoinColumnConditions = relation.inverseJoinColumns.map(inverseJoinColumn => {
             return `${joinAlias}.${inverseJoinColumn.propertyName}=${mainAlias}.${inverseJoinColumn.referencedColumn!.propertyName}`;
         });
-        const parameters = relation.joinColumns.reduce((parameters, joinColumn) => {
-            parameters[joinColumn.propertyName] = entities.map(entity => joinColumn.referencedColumn!.getEntityValue(entity));
-            return parameters;
-        }, {} as ObjectLiteral);
 
         return qb
             .innerJoin(joinAlias, joinAlias, [...joinColumnConditions, ...inverseJoinColumnConditions].join(" AND "))
@@ -176,13 +200,20 @@ export class RelationLoader {
         const joinColumnConditions = relation.inverseRelation!.joinColumns.map(joinColumn => {
             return `${joinAlias}.${joinColumn.propertyName} = ${mainAlias}.${joinColumn.referencedColumn!.propertyName}`;
         });
-        const inverseJoinColumnConditions = relation.inverseRelation!.inverseJoinColumns.map(inverseJoinColumn => {
-            return `${joinAlias}.${inverseJoinColumn.propertyName} IN (:...${inverseJoinColumn.propertyName})`;
+
+        const parameters: ObjectLiteral = {};
+        const inverseJoinColumnConditions: string[] = [];
+        relation.inverseRelation!.inverseJoinColumns.forEach(column => {
+            const values = entities.map(entity => column.referencedColumn!.getEntityValue(entity));
+            const areAllNumbers = values.map(value => typeof value === "number");
+
+            if (areAllNumbers) {
+                joinColumnConditions.push(`${joinAlias}.${column.propertyName} IN (${values.join(", ")})`);
+            } else {
+                parameters[column.propertyName] = values;
+                joinColumnConditions.push(`${joinAlias}.${column.propertyName} IN (:...${column.propertyName})`);
+            }
         });
-        const parameters = relation.inverseRelation!.inverseJoinColumns.reduce((parameters, joinColumn) => {
-            parameters[joinColumn.propertyName] = entities.map(entity => joinColumn.referencedColumn!.getEntityValue(entity));
-            return parameters;
-        }, {} as ObjectLiteral);
 
         return qb
             .innerJoin(joinAlias, joinAlias, [...joinColumnConditions, ...inverseJoinColumnConditions].join(" AND "))
