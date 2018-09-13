@@ -68,7 +68,7 @@ export class RelationIdLoader {
 
         const relatedEntities: E2[] = relatedEntityOrEntities instanceof Array ? relatedEntityOrEntities : [relatedEntityOrEntities!];
 
-        let columns: ColumnMetadata[], inverseColumns: ColumnMetadata[];
+        let columns: ColumnMetadata[] = [], inverseColumns: ColumnMetadata[] = [];
         if (relation.isManyToManyOwner) {
             columns = relation.junctionEntityMetadata!.inverseColumns.map(column => column.referencedColumn!);
             inverseColumns = relation.junctionEntityMetadata!.ownerColumns.map(column => column.referencedColumn!);
@@ -92,15 +92,20 @@ export class RelationIdLoader {
         return entities.map(entity => {
             const group: { entity: E1, related?: E2|E2[] } = { entity: entity, related: isMany ? [] : undefined };
 
+            const entityRelationIds = relationIds.filter(relationId => {
+                return inverseColumns.every(column => {
+                    return column.compareEntityValue(entity, relationId[column.entityMetadata.name + "_" + column.propertyAliasName]);
+                });
+            });
+            if (!entityRelationIds.length)
+                return group;
+
             relatedEntities.forEach(relatedEntity => {
-                relationIds.forEach(relationId => {
-                    const entityMatched = inverseColumns.every(column => {
-                        return column.compareEntityValue(entity, relationId[column.entityMetadata.name + "_" + column.propertyPath.replace(".", "_")]);
-                    });
+                entityRelationIds.forEach(relationId => {
                     const relatedEntityMatched = columns.every(column => {
                         return column.compareEntityValue(relatedEntity, relationId[column.entityMetadata.name + "_" + relation.propertyPath.replace(".", "_") + "_" + column.propertyPath.replace(".", "_")]);
                     });
-                    if (entityMatched && relatedEntityMatched) {
+                    if (relatedEntityMatched) {
                         if (isMany) {
                             (group.related as E2[]).push(relatedEntity);
                         } else {
