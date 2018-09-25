@@ -7,6 +7,7 @@ import {ColumnMetadata} from "../../metadata/ColumnMetadata";
 import {Table} from "../../schema-builder/table/Table";
 import {TableIndex} from "../../schema-builder/table/TableIndex";
 import {TableForeignKey} from "../../schema-builder/table/TableForeignKey";
+import {SqliteConnectionOptions} from "../sqlite/SqliteConnectionOptions";
 import {AbstractSqliteDriver} from "./AbstractSqliteDriver";
 import {ReadStream} from "../../platform/PlatformTools";
 import {TableIndexOptions} from "../../schema-builder/options/TableIndexOptions";
@@ -79,6 +80,10 @@ export abstract class AbstractSqliteQueryRunner extends BaseQueryRunner implemen
             } else {
                 await this.query("PRAGMA read_uncommitted = false");
             }
+        }
+
+        if ((this.connection.options as SqliteConnectionOptions).enableWAL === true) {
+            await this.query("PRAGMA journal_mode = WAL");
         }
 
         await this.query("BEGIN TRANSACTION");
