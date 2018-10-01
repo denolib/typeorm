@@ -789,9 +789,16 @@ export abstract class QueryBuilder<Entity> {
                                 if (parameterValue.useParameter) {
                                     const realParameterValues: any[] = parameterValue.multipleParameters ? parameterValue.value : [parameterValue.value];
                                     realParameterValues.forEach((realParameterValue, realParameterValueIndex) => {
-                                        this.expressionMap.nativeParameters[parameterName + realParameterValueIndex] = realParameterValue;
-                                        parameterIndex++;
-                                        parameters.push(this.connection.driver.createParameter(parameterName + realParameterValueIndex, parameterIndex - 1));
+
+                                        // don't create parameters for number to prevent max number of variables issues as much as possible
+                                        if (typeof realParameterValue === "number") {
+                                            parameters.push(realParameterValue);
+
+                                        } else {
+                                            this.expressionMap.nativeParameters[parameterName + realParameterValueIndex] = realParameterValue;
+                                            parameterIndex++;
+                                            parameters.push(this.connection.driver.createParameter(parameterName + realParameterValueIndex, parameterIndex - 1));
+                                        }
                                     });
                                 }
                                 return parameterValue.toSql(this.connection, aliasPath, parameters);
