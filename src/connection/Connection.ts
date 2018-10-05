@@ -197,13 +197,13 @@ export class Connection {
             if (this.options.dropSchema)
                 await this.dropDatabase();
 
+            // if option is set - run migrations
+            if (this.options.migrationsRun)
+                await this.runMigrations();
+
             // if option is set - automatically synchronize a schema
             if (this.options.synchronize)
                 await this.synchronize();
-
-            // if option is set - automatically synchronize a schema
-            if (this.options.migrationsRun)
-                await this.runMigrations();
 
         } catch (error) {
 
