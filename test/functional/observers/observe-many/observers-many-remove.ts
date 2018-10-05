@@ -3,7 +3,7 @@ import {Connection, LessThan} from "../../../../src";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
 import {Post} from "./entity/Post";
 
-describe.only("observers > many > on remove", function() {
+describe("observers > many > on remove", function() {
 
     let connections: Connection[];
     before(async () => {

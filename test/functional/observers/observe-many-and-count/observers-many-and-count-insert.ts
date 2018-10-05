@@ -4,7 +4,7 @@ import {Connection} from "../../../../src";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
 import {Post} from "./entity/Post";
 
-describe.only("observers > many and count > on insert", function() {
+describe("observers > many and count > on insert", function() {
 
     let connections: Connection[];
     before(async () => {

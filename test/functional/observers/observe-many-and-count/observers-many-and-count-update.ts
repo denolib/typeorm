@@ -3,7 +3,7 @@ import {Connection, LessThan, MoreThan} from "../../../../src";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
 import {Post} from "./entity/Post";
 
-describe.only("observers > many and count > on update", function() {
+describe("observers > many and count > on update", function() {
 
     let connections: Connection[];
     before(async () => {
