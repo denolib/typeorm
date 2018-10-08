@@ -65,8 +65,19 @@ export abstract class AbstractSqliteQueryRunner extends BaseQueryRunner implemen
      * Starts transaction.
      */
     async startTransaction(isolationLevel?: IsolationLevel): Promise<void> {
-        if (this.isTransactionActive)
-            throw new TransactionAlreadyStartedError();
+        if (this.isTransactionActive) {
+            const options = this.driver.options as SqliteConnectionOptions;
+            if (options.busyErrorRetry && typeof options.busyErrorRetry === "number") {
+                return new Promise<void>((ok, fail) => {
+                    setTimeout(
+                        () => this.startTransaction(isolationLevel).then(ok).catch(fail),
+                        options.busyErrorRetry as number
+                    );
+                });
+            } else {
+                throw new TransactionAlreadyStartedError();
+            }
+        }
 
         this.isTransactionActive = true;
         
