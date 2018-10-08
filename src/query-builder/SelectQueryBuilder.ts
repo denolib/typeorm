@@ -1853,7 +1853,9 @@ export class SelectQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
             if (this.expressionMap.eagerRelations === true) {
                 if (!this.findOptions.options || this.findOptions.options.eagerRelations !== false) {
                     // Create a list of all of the alias+propertyPaths that were manually joined, so we don't join them again
-                    const manuallyJoinedRelations = this.expressionMap.joinAttributes.filter(join => join.relationPropertyPath).map(join => join.parentAlias + "." + join.relationPropertyPath);
+                    const manuallyJoinedRelations = this.expressionMap.joinAttributes
+                                                        .filter(join => join.relationPropertyPath)
+                                                        .map(join => join.parentAlias + "." + join.relationPropertyPath);
                     const joinEagerRelations = (alias: string, metadata: EntityMetadata) => {
                         metadata.eagerRelations.forEach(relation => {
                             const relationAlias = alias + "_" + relation.propertyPath.replace(".", "_");
