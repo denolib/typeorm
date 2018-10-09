@@ -4,7 +4,7 @@ import {closeTestingConnections, createTestingConnections, reloadTestingDatabase
 import {Post} from "./entity/Post";
 import {expect} from "chai";
 
-describe.only("observers > one > on remove", function() {
+describe("observers > one > on remove", function() {
 
     let connections: Connection[];
     before(async () => {
