@@ -7,13 +7,17 @@ import {Connection} from "../";
 export class FindOperator<T> {
 
     // -------------------------------------------------------------------------
-    // Private Properties
+    // Public Properties
     // -------------------------------------------------------------------------
 
     /**
      * Operator type.
      */
-    private _type: FindOperatorType;
+    type: FindOperatorType;
+
+    // -------------------------------------------------------------------------
+    // Private Properties
+    // -------------------------------------------------------------------------
 
     /**
      * Parameter value.
@@ -38,7 +42,7 @@ export class FindOperator<T> {
                 value: T|FindOperator<T>,
                 useParameter: boolean = true,
                 multipleParameters: boolean = false) {
-        this._type = type;
+        this.type = type;
         this._useParameter = useParameter;
         this._multipleParameters = multipleParameters;
         this._value = value;
@@ -92,7 +96,7 @@ export class FindOperator<T> {
      * Gets SQL needs to be inserted into final query.
      */
     toSql(connection: Connection, aliasPath: string, parameters: string[]): string {
-        switch (this._type) {
+        switch (this.type) {
             case "not":
                 if (this._value instanceof FindOperator) {
                     return `NOT(${this._value.toSql(connection, aliasPath, parameters)})`;

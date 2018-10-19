@@ -473,7 +473,7 @@ export class EntityManager {
         const qb = this.createQueryBuilder(entityClass, metadata.name);
 
         if (optionsOrConditions)
-            qb.setFindOptions(FindOptionsUtils.isFindOptions(optionsOrConditions) ? optionsOrConditions : { where: optionsOrConditions });
+            qb.setFindOptions(FindOptionsUtils.isFindOptions(optionsOrConditions) ? optionsOrConditions as any : { where: optionsOrConditions });
 
         return qb.getMany();
     }
@@ -502,7 +502,7 @@ export class EntityManager {
         const qb = this.createQueryBuilder(entityClass, metadata.name);
 
         if (optionsOrConditions)
-            qb.setFindOptions(FindOptionsUtils.isFindOptions(optionsOrConditions) ? optionsOrConditions : { where: optionsOrConditions });
+            qb.setFindOptions(FindOptionsUtils.isFindOptions(optionsOrConditions) ? optionsOrConditions as any : { where: optionsOrConditions });
 
         return qb.getManyAndCount();
     }
@@ -594,7 +594,7 @@ export class EntityManager {
 
         let findOptions: FindOptions<Entity>|undefined = undefined;
         if (FindOptionsUtils.isFindOptions(idOrOptionsOrConditions)) {
-            findOptions = idOrOptionsOrConditions;
+            findOptions = idOrOptionsOrConditions as any;
         } else if (maybeOptions && FindOptionsUtils.isFindOptions(maybeOptions)) {
             findOptions = maybeOptions;
         }

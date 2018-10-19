@@ -60,21 +60,21 @@ export type FindOptionsSelect<E> = (keyof E)[]|{
 };
 
 /**
- * Where and Having find options.
+ * "where" in find options.
  */
-export type FindOptionsWhere<E> = {
+export type FindOptionsWhereCondition<E> = {
     [P in keyof E]?:
-        E[P] extends (infer R)[] ? FindOptionsWhere<R> :
-        E[P] extends Promise<infer R> ? FindOptionsWhere<R> :
-        E[P] extends Object ? FindOperator<E[P]> | FindAltOperator<E[P]> | FindOptionsWhere<E[P]> :
+        E[P] extends (infer R)[] ? FindOptionsWhere<R> | boolean | FindOperator<number> | FindAltOperator<number> :
+        E[P] extends Promise<infer R> ? FindOptionsWhere<R> | boolean :
+        E[P] extends Object ? FindOperator<E[P]> | FindAltOperator<E[P]> | FindOptionsWhere<E[P]> | boolean :
         FindOperator<E[P]> | FindAltOperator<E[P]> | E[P]
-} | {
-    [P in keyof E]?:
-        E[P] extends (infer R)[] ? FindOptionsWhere<R> :
-        E[P] extends Promise<infer R> ? FindOptionsWhere<R> :
-        E[P] extends Object ? FindOperator<E[P]> | FindOptionsWhere<E[P]> :
-        FindOperator<E[P]> | E[P]
-}[];
+};
+
+/**
+ * "where" in find options.
+ * Includes "array where" as well.
+ */
+export type FindOptionsWhere<E> = FindOptionsWhereCondition<E>|FindOptionsWhereCondition<E>[];
 
 /**
  * Alternative FindOperator syntax.

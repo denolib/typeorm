@@ -74,6 +74,12 @@ export class RelationMetadata {
     propertyPath: string;
 
     /**
+     * Same as property path, but dots are replaced with '_'.
+     * Used in query builder statements.
+     */
+    propertyAliasName: string;
+
+    /**
      * Indicates if this is a parent (can be only many-to-one relation) relation in the tree tables.
      */
     isTreeParent: boolean = false;
@@ -443,6 +449,7 @@ export class RelationMetadata {
      */
     build() {
         this.propertyPath = this.buildPropertyPath();
+        this.propertyAliasName = this.propertyPath.replace(".", "_");
     }
 
     /**

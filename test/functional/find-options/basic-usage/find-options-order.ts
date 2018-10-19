@@ -5,7 +5,7 @@ import {Post} from "./entity/Post";
 import {prepareData} from "./find-options-test-utils";
 import {PostgresDriver} from "../../../../src/driver/postgres/PostgresDriver";
 
-describe("find options > order", () => {
+describe.only("find options > order", () => {
 
     let connections: Connection[];
     before(async () => connections = await createTestingConnections({ __dirname }));

@@ -2195,7 +2195,7 @@ export class SelectQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
 
         if (select instanceof Array) {
             select.forEach(select => {
-                this.selects.push(this.expressionMap.mainAlias!.name + "." + select);
+                this.selects.push(this.expressionMap.mainAlias!.name + "." + (select as string));
             });
 
         } else {
@@ -2235,7 +2235,7 @@ export class SelectQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
         }
     }
 
-    protected buildRelations(relations: FindOptionsRelation<any>, metadata: EntityMetadata, embedPrefix?: string) {
+    protected buildRelations(relations: FindOptionsRelation<any>|any, metadata: EntityMetadata, embedPrefix?: string) {
         if (!relations)
             return;
 
@@ -2311,7 +2311,7 @@ export class SelectQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
         }
     }
 
-    protected buildWhere(where: FindOptionsWhere<any>, metadata: EntityMetadata, alias: string, embedPrefix?: string): string {
+    protected buildWhere(where: any, metadata: EntityMetadata, alias: string, embedPrefix?: string): string {
         let condition: string = "";
         let parameterIndex = Object.keys(this.expressionMap.nativeParameters).length;
         if (where instanceof Array) {
@@ -2377,23 +2377,72 @@ export class SelectQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
                         andConditions.push(condition);
 
                 } else if (relation) {
-                    const joinAlias = alias + "_" + relation.propertyName;
-                    const existJoin = this.joins.find(join => join.alias === joinAlias);
-                    if (!existJoin) {
-                        this.joins.push({
-                            type: "inner",
-                            select: false,
-                            alias: joinAlias,
-                            parentAlias: alias,
-                            relationMetadata: relation
-                        });
-                    } else {
-                        if (existJoin.type === "left")
-                            existJoin.type = "inner";
+
+                    // if all properties of where are undefined we don't need to join anything
+                    // this can happen when user defines map with conditional queries inside
+                    if (where[key] instanceof Object) {
+                        const allAllUndefined = Object.keys(where[key]).every(k => where[key][k] === undefined);
+                        if (allAllUndefined) {
+                            continue;
+                        }
                     }
-                    const condition = this.buildWhere(where[key], relation.inverseEntityMetadata, joinAlias);
-                    if (condition)
-                        andConditions.push(condition);
+
+                    if (where[key] instanceof FindOperator) {
+                        if (where[key].type === "moreThan" || where[key].type === "lessThan") {
+                            const sqlOperator = where[key].type === "moreThan" ? ">" : "<";
+                            // basically relation count functionality
+                            const qb: QueryBuilder<any> = this.subQuery();
+                            if (relation.isManyToManyOwner) {
+                                qb.select("COUNT(*)")
+                                    .from(relation.joinTableName, relation.joinTableName)
+                                    .where(relation.joinColumns.map(column => {
+                                        return `${relation.joinTableName}.${column.propertyName} = ${alias}.${column.referencedColumn!.propertyName}`;
+                                    }).join(" AND "));
+
+                            } else if (relation.isManyToManyNotOwner) {
+                                qb.select("COUNT(*)")
+                                    .from(relation.inverseRelation!.joinTableName, relation.inverseRelation!.joinTableName)
+                                    .where(relation.inverseRelation!.inverseJoinColumns.map(column => {
+                                        return `${relation.inverseRelation!.joinTableName}.${column.propertyName} = ${alias}.${column.referencedColumn!.propertyName}`;
+                                    }).join(" AND "));
+
+                            } else if (relation.isOneToMany) {
+                                qb.select("COUNT(*)")
+                                    .from(relation.inverseEntityMetadata.target, relation.inverseEntityMetadata.tableName)
+                                    .where(relation.inverseRelation!.joinColumns.map(column => {
+                                        return `${relation.inverseEntityMetadata.tableName}.${column.propertyName} = ${alias}.${column.referencedColumn!.propertyName}`;
+                                    }).join(" AND "));
+
+                            } else {
+                                throw new Error(`This relation isn't supported by given find operator`);
+                            }
+                            // this
+                            //     .addSelect(qb.getSql(), relation.propertyAliasName + "_cnt")
+                            //     .andWhere(this.escape(relation.propertyAliasName + "_cnt") + " " + sqlOperator + " " + parseInt(where[key].value));
+                            this.andWhere((qb.getSql()) + " " + sqlOperator + " " + parseInt(where[key].value));
+                        }
+
+                    } else {
+
+                        const joinAlias = alias + "_" + relation.propertyName;
+                        const existJoin = this.joins.find(join => join.alias === joinAlias);
+                        if (!existJoin) {
+                            this.joins.push({
+                                type: "inner",
+                                select: false,
+                                alias: joinAlias,
+                                parentAlias: alias,
+                                relationMetadata: relation
+                            });
+                        } else {
+                            if (existJoin.type === "left")
+                                existJoin.type = "inner";
+                        }
+
+                        const condition = this.buildWhere(where[key], relation.inverseEntityMetadata, joinAlias);
+                        if (condition)
+                            andConditions.push(condition);
+                    }
                 }
             }
             condition = andConditions.join(" AND ");
