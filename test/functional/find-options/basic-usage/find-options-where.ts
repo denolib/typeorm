@@ -7,7 +7,7 @@ import {Post} from "./entity/Post";
 import {Tag} from "./entity/Tag";
 import {prepareData} from "./find-options-test-utils";
 
-describe.only("find options > where", () => {
+describe("find options > where", () => {
 
     let connections: Connection[];
     before(async () => connections = await createTestingConnections({ __dirname }));
