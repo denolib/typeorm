@@ -1992,8 +1992,7 @@ export class SelectQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
                 //     options: this.findOptions.options,
                 //     where: this.findOptions.where
                 // })
-                .orderBy()
-                .groupBy();
+                .orderBy();
 
             rawResults = await new SelectQueryBuilder(this.connection, queryRunner)
                 .select(`DISTINCT ${querySelects.join(", ")}`)
