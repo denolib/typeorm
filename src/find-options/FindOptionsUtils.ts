@@ -47,7 +47,7 @@ export function normalizeFindOptions<T>(options: FindOptions<T>): FindOptions<T>
         const valueKeys = Object.keys(obj);
         if (valueKeys.length === 1) {
             let value = obj[valueKeys[0]];
-            if (value instanceof Object && !(value instanceof Array))
+            if (value instanceof Object && !(value instanceof Array) && !(value instanceof Function))
                 value = recursively$FindOption(value);
 
             if (valueKeys[0] === "$any") {
