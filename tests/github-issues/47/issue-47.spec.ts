@@ -1,21 +1,20 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {Post} from "./entity/Post";
-import {expect} from "chai";
 import {Category} from "./entity/Category";
 
 describe("github issues > #47 wrong sql syntax when loading lazy relation", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
         enabledDrivers: ["mysql"] // we can properly test lazy-relations only on one platform
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should persist successfully and return persisted entity", () => Promise.all(connections.map(async connection => {
+    test("should persist successfully and return persisted entity", () => Promise.all(connections.map(async connection => {
 
         // create objects to save
         const category1 = new Category();
@@ -44,24 +43,24 @@ describe("github issues > #47 wrong sql syntax when loading lazy relation", () =
             .getMany();
 
         const loadedCategory1 = await loadedPost[0].category;
-        expect(loadedCategory1!).not.to.be.undefined;
-        loadedCategory1!.id.should.equal(1);
-        loadedCategory1!.name.should.equal("category #1");
+        expect(loadedCategory1).not.toBeUndefined();
+        expect(loadedCategory1!.id).toEqual(1);
+        expect(loadedCategory1!.name).toEqual("category #1");
 
         const loadedCategory2 = await loadedPost[1].category;
-        expect(loadedCategory2!).not.to.be.undefined;
-        loadedCategory2!.id.should.equal(2);
-        loadedCategory2!.name.should.equal("category #2");
+        expect(loadedCategory2!).not.toBeUndefined();
+        expect(loadedCategory2!.id).toEqual(2);
+        expect(loadedCategory2!.name).toEqual("category #2");
 
         const loadedPosts1 = await loadedCategory1.posts;
-        expect(loadedPosts1!).not.to.be.undefined;
-        loadedPosts1![0].id.should.equal(1);
-        loadedPosts1![0].title.should.equal("Hello Post #1");
+        expect(loadedPosts1!).not.toBeUndefined();
+        expect(loadedPosts1![0].id).toEqual(1);
+        expect(loadedPosts1![0].title).toEqual("Hello Post #1");
 
         const loadedPosts2 = await loadedCategory2.posts;
-        expect(loadedPosts2!).not.to.be.undefined;
-        loadedPosts2![0].id.should.equal(2);
-        loadedPosts2![0].title.should.equal("Hello Post #2");
+        expect(loadedPosts2!).not.toBeUndefined();
+        expect(loadedPosts2![0].id).toEqual(2);
+        expect(loadedPosts2![0].title).toEqual("Hello Post #2");
 
         // todo: need to test somehow how query is being generated, or how many raw data is returned
 
