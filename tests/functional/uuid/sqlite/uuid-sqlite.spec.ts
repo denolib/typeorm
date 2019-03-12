@@ -1,6 +1,5 @@
 import "reflect-metadata";
-import {expect} from "chai";
-import {Connection} from "../../../../src/connection/Connection";
+import {Connection} from "../../../../src";
 import {
     closeTestingConnections,
     createTestingConnections,
@@ -9,7 +8,7 @@ import {
 import {Post} from "./entity/Post";
 import {Question} from "./entity/Question";
 
-describe("uuid-sqlite", () => {
+describe.only("uuid-sqlite", () => {
 
     let connections: Connection[];
     beforeAll(async () => {
@@ -21,7 +20,7 @@ describe("uuid-sqlite", () => {
     beforeEach(() => reloadTestingDatabases(connections));
     afterAll(() => closeTestingConnections(connections));
 
-    it("should persist uuid correctly when it is generated non primary column", () => Promise.all(connections.map(async connection => {
+    test("should persist uuid correctly when it is generated non primary column", () => Promise.all(connections.map(async connection => {
 
         const postRepository = connection.getRepository(Post);
         const questionRepository = connection.getRepository(Question);
@@ -33,28 +32,28 @@ describe("uuid-sqlite", () => {
         const post = new Post();
         await postRepository.save(post);
         const loadedPost = await postRepository.findOne(1);
-        expect(loadedPost!.uuid).to.be.exist;
-        postTable!.findColumnByName("uuid")!.type.should.be.equal("varchar");
+        expect(loadedPost!.uuid).toBeDefined();
+        expect(postTable!.findColumnByName("uuid")!.type).toEqual("varchar");
 
         const post2 = new Post();
         post2.uuid = "fd357b8f-8838-42f6-b7a2-ae027444e895";
         await postRepository.save(post2);
         const loadedPost2 = await postRepository.findOne(2);
-        expect(loadedPost2!.uuid).to.equal("fd357b8f-8838-42f6-b7a2-ae027444e895");
+        expect(loadedPost2!.uuid).toEqual("fd357b8f-8838-42f6-b7a2-ae027444e895");
 
         const question = new Question();
         question.uuid2 = "fd357b8f-8838-42f6-b7a2-ae027444e895";
         const savedQuestion = await questionRepository.save(question);
         const loadedQuestion = await questionRepository.findOne(savedQuestion.id);
-        expect(loadedQuestion!.id).to.be.exist;
-        expect(loadedQuestion!.uuid).to.be.exist;
-        expect(loadedQuestion!.uuid2).to.equal("fd357b8f-8838-42f6-b7a2-ae027444e895");
-        expect(loadedQuestion!.uuid3).to.be.null;
-        expect(loadedQuestion!.uuid4).to.be.exist;
-        questionTable!.findColumnByName("id")!.type.should.be.equal("varchar");
-        questionTable!.findColumnByName("uuid")!.type.should.be.equal("varchar");
-        questionTable!.findColumnByName("uuid2")!.type.should.be.equal("varchar");
-        questionTable!.findColumnByName("uuid3")!.type.should.be.equal("varchar");
+        expect(loadedQuestion!.id).toBeDefined();
+        expect(loadedQuestion!.uuid).toBeDefined();
+        expect(loadedQuestion!.uuid2).toEqual("fd357b8f-8838-42f6-b7a2-ae027444e895");
+        expect(loadedQuestion!.uuid3).toBeNull();
+        expect(loadedQuestion!.uuid4).toBeDefined();
+        expect(questionTable!.findColumnByName("id")!.type).toEqual("varchar");
+        expect(questionTable!.findColumnByName("uuid")!.type).toEqual("varchar");
+        expect(questionTable!.findColumnByName("uuid2")!.type).toEqual("varchar");
+        expect(questionTable!.findColumnByName("uuid3")!.type).toEqual("varchar");
 
         const question2 = new Question();
         question2.id = "1ecad7f6-23ee-453e-bb44-16eca26d5189";
@@ -64,10 +63,10 @@ describe("uuid-sqlite", () => {
         question2.uuid4 = null;
         await questionRepository.save(question2);
         const loadedQuestion2 = await questionRepository.findOne("1ecad7f6-23ee-453e-bb44-16eca26d5189");
-        expect(loadedQuestion2!.id).to.equal("1ecad7f6-23ee-453e-bb44-16eca26d5189");
-        expect(loadedQuestion2!.uuid).to.equal("35b44650-b2cd-44ec-aa54-137fbdf1c373");
-        expect(loadedQuestion2!.uuid2).to.equal("fd357b8f-8838-42f6-b7a2-ae027444e895");
-        expect(loadedQuestion2!.uuid3).to.be.null;
-        expect(loadedQuestion2!.uuid4).to.be.null;
+        expect(loadedQuestion2!.id).toEqual("1ecad7f6-23ee-453e-bb44-16eca26d5189");
+        expect(loadedQuestion2!.uuid).toEqual("35b44650-b2cd-44ec-aa54-137fbdf1c373");
+        expect(loadedQuestion2!.uuid2).toEqual("fd357b8f-8838-42f6-b7a2-ae027444e895");
+        expect(loadedQuestion2!.uuid3).toBeNull();
+        expect(loadedQuestion2!.uuid4).toBeNull();
     })));
 });
