@@ -1,21 +1,25 @@
 import "reflect-metadata";
 import {expect} from "chai";
 import {Connection} from "../../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
+import {
+    closeTestingConnections,
+    createTestingConnections,
+    reloadTestingDatabases
+} from "../../../../test/utils/test-utils";
 import {Post} from "./entity/Post";
 import {Question} from "./entity/Question";
 
 describe("uuid-sqlite", () => {
 
     let connections: Connection[];
-    before(async () => {
+    beforeAll(async () => {
         connections = await createTestingConnections({
             entities: [__dirname + "/entity/*{.js,.ts}"],
             enabledDrivers: ["sqlite"],
         });
     });
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
     it("should persist uuid correctly when it is generated non primary column", () => Promise.all(connections.map(async connection => {
 

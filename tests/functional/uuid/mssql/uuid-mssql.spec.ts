@@ -16,7 +16,7 @@ describe("uuid-mssql", () => {
         enabledDrivers: ["mssql"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
     test("should persist uuid correctly when it is generated non primary column", () => Promise.all(connections.map(async connection => {
 
