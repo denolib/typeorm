@@ -8,7 +8,7 @@ import {
 import {Post} from "./entity/Post";
 import {Question} from "./entity/Question";
 
-describe.only("uuid-sqlite", () => {
+describe("uuid-sqlite", () => {
 
     let connections: Connection[];
     beforeAll(async () => {
