@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../../test/utils/test-utils";
 import {Connection} from "../../../../../src/connection/Connection";
 import {
     Post,
@@ -12,7 +12,7 @@ import {
  * Because lazy relations are overriding prototype is impossible to run these tests on multiple connections.
  * So we run tests only for mysql.
  */
-describe("named-columns-lazy-relations", () => {
+describe("named-tables-lazy-relations", () => {
 
     let connections: Connection[];
     before(async () => connections = await createTestingConnections({

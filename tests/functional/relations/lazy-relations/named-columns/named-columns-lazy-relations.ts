@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../../test/utils/test-utils";
 import {Connection} from "../../../../../src/connection/Connection";
 import {
     Post,
@@ -7,27 +7,18 @@ import {
 import {
     Category,
 } from "./entity/Category";
-import {EntitySchema} from "../../../../../src";
 
 /**
  * Because lazy relations are overriding prototype is impossible to run these tests on multiple connections.
  * So we run tests only for mysql.
  */
-describe("basic-lazy-relations", () => {
-
-    let UserSchema: any, ProfileSchema: any;
-    const appRoot = require("app-root-path");
-    const resourceDir = appRoot + "/test/functional/relations/lazy-relations/basic-lazy-relation/";
-    UserSchema = new EntitySchema<any>(require(resourceDir + "schema/user.json"));
-    ProfileSchema = new EntitySchema<any>(require(resourceDir + "schema/profile.json"));
+describe("named-columns-lazy-relations", () => {
 
     let connections: Connection[];
     before(async () => connections = await createTestingConnections({
         entities: [
             Post,
             Category,
-            UserSchema,
-            ProfileSchema
         ],
         enabledDrivers: ["postgres"] // we can properly test lazy-relations only on one platform
     }));
@@ -66,9 +57,9 @@ describe("basic-lazy-relations", () => {
 
         const categories = await post.categories;
         categories.length.should.be.equal(3);
-        categories.should.deep.include({ id: 1, name: "kids" });
-        categories.should.deep.include({ id: 2, name: "people" });
-        categories.should.deep.include({ id: 3, name: "animals" });
+        categories.should.deep.include(savedCategory1);
+        categories.should.deep.include(savedCategory2);
+        categories.should.deep.include(savedCategory3);
     })));
 
 
@@ -104,9 +95,9 @@ describe("basic-lazy-relations", () => {
 
         const categories = await post.twoSideCategories;
         categories.length.should.be.equal(3);
-        categories.should.deep.include({ id: 1, name: "kids" });
-        categories.should.deep.include({ id: 2, name: "people" });
-        categories.should.deep.include({ id: 3, name: "animals" });
+        categories.should.deep.include(savedCategory1);
+        categories.should.deep.include(savedCategory2);
+        categories.should.deep.include(savedCategory3);
 
         const category = (await categoryRepository.findOne(1))!;
         category.name.should.be.equal("kids");
@@ -118,31 +109,6 @@ describe("basic-lazy-relations", () => {
         likePost.title = "Hello post";
         likePost.text = "This is post about post";
         twoSidePosts.should.deep.include(likePost);
-    })));
-
-    it("should persist and hydrate successfully on a one-to-one relation with inverse side loaded from entity schema", () => Promise.all(connections.map(async connection => {
-        const userRepository = connection.getRepository("User");
-        const profileRepository = connection.getRepository("Profile");
-
-        const profile: any = profileRepository.create();
-        profile.country = "Japan";
-        await profileRepository.save(profile);
-
-        const newUser: any = userRepository.create();
-        newUser.firstName = "Umed";
-        newUser.secondName = "San";
-        newUser.profile = Promise.resolve(profile);
-        await userRepository.save(newUser);
-
-        await newUser.profile.should.eventually.be.eql(profile);
-
-        // const loadOptions: FindOptions = { alias: "user", innerJoinAndSelect };
-        const loadedUser: any = await userRepository.findOne(1);
-        loadedUser.firstName.should.be.equal("Umed");
-        loadedUser.secondName.should.be.equal("San");
-
-        const lazyLoadedProfile = await loadedUser.profile;
-        lazyLoadedProfile.country.should.be.equal("Japan");
     })));
 
     it("should persist and hydrate successfully on a many-to-one relation without inverse side", () => Promise.all(connections.map(async connection => {
@@ -326,39 +292,4 @@ describe("basic-lazy-relations", () => {
         loadedPost.title.should.be.equal("post with great category");
     })));
 
-    it("should successfully load relations within a transaction", () => Promise.all(connections.filter((connection) => (new Set(["mysql", "sqlite", "postgres"])).has(connection.options.type)).map(async connection => {
-        await connection.manager.transaction(async (manager) => {
-            const category = new Category();
-            category.name = "category of great post";
-            await manager.save(category);
-    
-            const post = new Post();
-            post.title = "post with great category";
-            post.text = "post with great category and great text";
-            post.oneCategory = Promise.resolve(category);
-            await manager.save(post);
-
-            const loadedCategory = await manager.findOne(Category, { where: { name: "category of great post" } });
-            const loadedPost = await loadedCategory!.onePost;
-            loadedPost.title.should.be.equal("post with great category");
-        });
-    })));
-
-    it("should successfully load relations outside a transaction with entity generated within a transaction", () => Promise.all(connections.filter((connection) => (new Set(["mysql", "sqlite", "postgres"])).has(connection.options.type)).map(async connection => {
-        const loadedCategory = await connection.manager.transaction(async (manager) => {
-            const category = new Category();
-            category.name = "category of great post";
-            await manager.save(category);
-    
-            const post = new Post();
-            post.title = "post with great category";
-            post.text = "post with great category and great text";
-            post.oneCategory = Promise.resolve(category);
-            await manager.save(post);
-
-            return await manager.findOne(Category, { where: { name: "category of great post" } });
-        });
-        const loadedPost = await loadedCategory!.onePost;
-        loadedPost.title.should.be.equal("post with great category");
-    })));
 });
