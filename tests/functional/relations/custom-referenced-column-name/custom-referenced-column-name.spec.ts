@@ -1,7 +1,6 @@
 import "reflect-metadata";
-import {expect} from "chai";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../test/utils/test-utils";
-import {Connection} from "../../../../src/connection/Connection";
+import {Connection} from "../../../../src";
 import {Post} from "./entity/Post";
 import {Category} from "./entity/Category";
 import {Tag} from "./entity/Tag";
@@ -9,15 +8,15 @@ import {Tag} from "./entity/Tag";
 describe("relations > custom-referenced-column-name", () => {
     
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
     describe("many-to-one", () => {
 
-        it("should load related entity when relation use custom referenced column name", () => Promise.all(connections.map(async connection => {
+        test("should load related entity when relation use custom referenced column name", () => Promise.all(connections.map(async connection => {
 
             const category1 = new Category();
             category1.name = "cars";
@@ -41,22 +40,22 @@ describe("relations > custom-referenced-column-name", () => {
                 .createQueryBuilder(Post, "post")
                 .getMany();
 
-            expect(loadedPosts![0].categoryName).to.not.be.undefined;
-            expect(loadedPosts![0].categoryName).to.be.equal("cars");
-            expect(loadedPosts![1].categoryName).to.not.be.undefined;
-            expect(loadedPosts![1].categoryName).to.be.equal("airplanes");
+            expect(loadedPosts![0].categoryName).not.toBeUndefined();
+            expect(loadedPosts![0].categoryName).toEqual("cars");
+            expect(loadedPosts![1].categoryName).not.toBeUndefined();
+            expect(loadedPosts![1].categoryName).toEqual("airplanes");
 
             const loadedPost = await connection.manager
                 .createQueryBuilder(Post, "post")
                 .where("post.id = :id", { id: 1 })
                 .getOne();
 
-            expect(loadedPost!.categoryName).to.not.be.undefined;
-            expect(loadedPost!.categoryName).to.be.equal("cars");
+            expect(loadedPost!.categoryName).not.toBeUndefined();
+            expect(loadedPost!.categoryName).toEqual("cars");
 
         })));
 
-        it("should load related entity when relation defined with empty join column", () => Promise.all(connections.map(async connection => {
+        test("should load related entity when relation defined with empty join column", () => Promise.all(connections.map(async connection => {
 
             const category1 = new Category();
             category1.name = "cars";
@@ -81,8 +80,8 @@ describe("relations > custom-referenced-column-name", () => {
                 .leftJoinAndSelect("post.categoryWithEmptyJoinCol", "categoryWithEmptyJoinCol")
                 .getMany();
 
-            expect(loadedPosts![0].categoryWithEmptyJoinCol.id).to.be.equal(1);
-            expect(loadedPosts![1].categoryWithEmptyJoinCol.id).to.be.equal(2);
+            expect(loadedPosts![0].categoryWithEmptyJoinCol.id).toEqual(1);
+            expect(loadedPosts![1].categoryWithEmptyJoinCol.id).toEqual(2);
 
             const loadedPost = await connection.manager
                 .createQueryBuilder(Post, "post")
@@ -90,11 +89,11 @@ describe("relations > custom-referenced-column-name", () => {
                 .leftJoinAndSelect("post.categoryWithEmptyJoinCol", "categoryWithEmptyJoinCol")
                 .getOne();
 
-            expect(loadedPost!.categoryWithEmptyJoinCol.id).to.be.equal(1);
+            expect(loadedPost!.categoryWithEmptyJoinCol.id).toEqual(1);
 
         })));
 
-        it("should load related entity when relation defined without reference column name", () => Promise.all(connections.map(async connection => {
+        test("should load related entity when relation defined without reference column name", () => Promise.all(connections.map(async connection => {
 
             const category1 = new Category();
             category1.name = "cars";
@@ -118,19 +117,19 @@ describe("relations > custom-referenced-column-name", () => {
                 .createQueryBuilder(Post, "post")
                 .getMany();
 
-            expect(loadedPosts![0].categoryId).to.be.equal(1);
-            expect(loadedPosts![1].categoryId).to.be.equal(2);
+            expect(loadedPosts![0].categoryId).toEqual(1);
+            expect(loadedPosts![1].categoryId).toEqual(2);
 
             const loadedPost = await connection.manager
                 .createQueryBuilder(Post, "post")
                 .where("post.id = :id", { id: 1 })
                 .getOne();
 
-            expect(loadedPost!.categoryId).to.be.equal(1);
+            expect(loadedPost!.categoryId).toEqual(1);
 
         })));
 
-        it("should load related entity when relation defined without column name", () => Promise.all(connections.map(async connection => {
+        test("should load related entity when relation defined without column name", () => Promise.all(connections.map(async connection => {
 
             const category1 = new Category();
             category1.name = "cars";
@@ -155,8 +154,8 @@ describe("relations > custom-referenced-column-name", () => {
                 .leftJoinAndSelect("post.categoryWithoutColName", "categoryWithoutColName")
                 .getMany();
 
-            expect(loadedPosts![0].categoryWithoutColName.id).to.be.equal(1);
-            expect(loadedPosts![1].categoryWithoutColName.id).to.be.equal(2);
+            expect(loadedPosts![0].categoryWithoutColName.id).toEqual(1);
+            expect(loadedPosts![1].categoryWithoutColName.id).toEqual(2);
 
             const loadedPost = await connection.manager
                 .createQueryBuilder(Post, "post")
@@ -164,11 +163,11 @@ describe("relations > custom-referenced-column-name", () => {
                 .where("post.id = :id", { id: 1 })
                 .getOne();
 
-            expect(loadedPost!.categoryWithoutColName.id).to.be.equal(1);
+            expect(loadedPost!.categoryWithoutColName.id).toEqual(1);
 
         })));
 
-        it("should load related entity when relation defined without reference column name and relation does not have relation column in entity", () => Promise.all(connections.map(async connection => {
+        test("should load related entity when relation defined without reference column name and relation does not have relation column in entity", () => Promise.all(connections.map(async connection => {
 
             const category1 = new Category();
             category1.name = "cars";
@@ -193,10 +192,10 @@ describe("relations > custom-referenced-column-name", () => {
                 .leftJoinAndSelect("post.categoryWithoutRefColName2", "categoryWithoutRefColName2")
                 .getMany();
 
-            expect(loadedPosts![0].categoryWithoutRefColName2).to.not.be.undefined;
-            expect(loadedPosts![0].categoryWithoutRefColName2.id).to.be.equal(1);
-            expect(loadedPosts![1].categoryWithoutRefColName2).to.not.be.undefined;
-            expect(loadedPosts![1].categoryWithoutRefColName2.id).to.be.equal(2);
+            expect(loadedPosts![0].categoryWithoutRefColName2).not.toBeUndefined();
+            expect(loadedPosts![0].categoryWithoutRefColName2.id).toEqual(1);
+            expect(loadedPosts![1].categoryWithoutRefColName2).not.toBeUndefined();
+            expect(loadedPosts![1].categoryWithoutRefColName2.id).toEqual(2);
 
             const loadedPost = await connection.manager
                 .createQueryBuilder(Post, "post")
@@ -204,12 +203,12 @@ describe("relations > custom-referenced-column-name", () => {
                 .where("post.id = :id", { id: 1 })
                 .getOne();
 
-            expect(loadedPost!.categoryWithoutRefColName2).to.not.be.undefined;
-            expect(loadedPost!.categoryWithoutRefColName2.id).to.be.equal(1);
+            expect(loadedPost!.categoryWithoutRefColName2).not.toBeUndefined();
+            expect(loadedPost!.categoryWithoutRefColName2.id).toEqual(1);
 
         })));
 
-        it("should persist relation when relation sets via join column", () => Promise.all(connections.map(async connection => {
+        test("should persist relation when relation sets via join column", () => Promise.all(connections.map(async connection => {
 
             const category1 = new Category();
             category1.name = "cars";
@@ -234,10 +233,10 @@ describe("relations > custom-referenced-column-name", () => {
                 .leftJoinAndSelect("post.category", "category")
                 .getMany();
 
-            expect(loadedPosts![0].category).to.not.be.undefined;
-            expect(loadedPosts![0].category.id).to.be.equal(1);
-            expect(loadedPosts![1].category).to.not.be.undefined;
-            expect(loadedPosts![1].category.id).to.be.equal(2);
+            expect(loadedPosts![0].category).not.toBeUndefined();
+            expect(loadedPosts![0].category.id).toEqual(1);
+            expect(loadedPosts![1].category).not.toBeUndefined();
+            expect(loadedPosts![1].category.id).toEqual(2);
 
             const loadedPost = await connection.manager
                 .createQueryBuilder(Post, "post")
@@ -245,15 +244,15 @@ describe("relations > custom-referenced-column-name", () => {
                 .where("post.id = :id", { id: 1 })
                 .getOne();
 
-            expect(loadedPost!.category).to.not.be.undefined;
-            expect(loadedPost!.category.id).to.be.equal(1);
+            expect(loadedPost!.category).not.toBeUndefined();
+            expect(loadedPost!.category.id).toEqual(1);
 
         })));
     });
 
     describe("one-to-one", () => {
 
-        it("should load related entity when relation use custom referenced column name", () => Promise.all(connections.map(async connection => {
+        test("should load related entity when relation use custom referenced column name", () => Promise.all(connections.map(async connection => {
 
             const tag1 = new Tag();
             tag1.name = "tag #1";
@@ -277,22 +276,22 @@ describe("relations > custom-referenced-column-name", () => {
                 .createQueryBuilder(Post, "post")
                 .getMany();
 
-            expect(loadedPosts![0].tagName).to.not.be.undefined;
-            expect(loadedPosts![0].tagName).to.be.equal("tag #1");
-            expect(loadedPosts![1].tagName).to.not.be.undefined;
-            expect(loadedPosts![1].tagName).to.be.equal("tag #2");
+            expect(loadedPosts![0].tagName).not.toBeUndefined();
+            expect(loadedPosts![0].tagName).toEqual("tag #1");
+            expect(loadedPosts![1].tagName).not.toBeUndefined();
+            expect(loadedPosts![1].tagName).toEqual("tag #2");
 
             const loadedPost = await connection.manager
                 .createQueryBuilder(Post, "post")
                 .where("post.id = :id", { id: 1 })
                 .getOne();
 
-            expect(loadedPost!.tagName).to.not.be.undefined;
-            expect(loadedPost!.tagName).to.be.equal("tag #1");
+            expect(loadedPost!.tagName).not.toBeUndefined();
+            expect(loadedPost!.tagName).toEqual("tag #1");
 
         })));
 
-        it("should load related entity when relation defined without column name", () => Promise.all(connections.map(async connection => {
+        test("should load related entity when relation defined without column name", () => Promise.all(connections.map(async connection => {
 
             const tag1 = new Tag();
             tag1.name = "tag #1";
@@ -317,8 +316,8 @@ describe("relations > custom-referenced-column-name", () => {
                 .leftJoinAndSelect("post.tagWithEmptyJoinCol", "tagWithEmptyJoinCol")
                 .getMany();
 
-            expect(loadedPosts![0].tagWithEmptyJoinCol.id).to.be.equal(1);
-            expect(loadedPosts![1].tagWithEmptyJoinCol.id).to.be.equal(2);
+            expect(loadedPosts![0].tagWithEmptyJoinCol.id).toEqual(1);
+            expect(loadedPosts![1].tagWithEmptyJoinCol.id).toEqual(2);
 
             const loadedPost = await connection.manager
                 .createQueryBuilder(Post, "post")
@@ -326,11 +325,11 @@ describe("relations > custom-referenced-column-name", () => {
                 .where("post.id = :id", { id: 1 })
                 .getOne();
 
-            expect(loadedPost!.tagWithEmptyJoinCol.id).to.be.equal(1);
+            expect(loadedPost!.tagWithEmptyJoinCol.id).toEqual(1);
 
         })));
 
-        it("should load related entity when relation defined without reference column name", () => Promise.all(connections.map(async connection => {
+        test("should load related entity when relation defined without reference column name", () => Promise.all(connections.map(async connection => {
 
             const tag1 = new Tag();
             tag1.name = "tag #1";
@@ -354,19 +353,19 @@ describe("relations > custom-referenced-column-name", () => {
                 .createQueryBuilder(Post, "post")
                 .getMany();
 
-            expect(loadedPosts![0].tagId).to.be.equal(1);
-            expect(loadedPosts![1].tagId).to.be.equal(2);
+            expect(loadedPosts![0].tagId).toEqual(1);
+            expect(loadedPosts![1].tagId).toEqual(2);
 
             const loadedPost = await connection.manager
                 .createQueryBuilder(Post, "post")
                 .where("post.id = :id", { id: 1 })
                 .getOne();
 
-            expect(loadedPost!.tagId).to.be.equal(1);
+            expect(loadedPost!.tagId).toEqual(1);
 
         })));
 
-        it("should load related entity when relation defined without column name", () => Promise.all(connections.map(async connection => {
+        test("should load related entity when relation defined without column name", () => Promise.all(connections.map(async connection => {
 
             const tag1 = new Tag();
             tag1.name = "tag #1";
@@ -391,8 +390,8 @@ describe("relations > custom-referenced-column-name", () => {
                 .leftJoinAndSelect("post.tagWithoutColName", "tagWithoutColName")
                 .getMany();
 
-            expect(loadedPosts![0].tagWithoutColName.id).to.be.equal(1);
-            expect(loadedPosts![1].tagWithoutColName.id).to.be.equal(2);
+            expect(loadedPosts![0].tagWithoutColName.id).toEqual(1);
+            expect(loadedPosts![1].tagWithoutColName.id).toEqual(2);
 
             const loadedPost = await connection.manager
                 .createQueryBuilder(Post, "post")
@@ -400,11 +399,11 @@ describe("relations > custom-referenced-column-name", () => {
                 .where("post.id = :id", { id: 1 })
                 .getOne();
 
-            expect(loadedPost!.tagWithoutColName.id).to.be.equal(1);
+            expect(loadedPost!.tagWithoutColName.id).toEqual(1);
 
         })));
 
-        it("should load related entity when relation defined without reference column name and relation does not have relation column in entity", () => Promise.all(connections.map(async connection => {
+        test("should load related entity when relation defined without reference column name and relation does not have relation column in entity", () => Promise.all(connections.map(async connection => {
 
             const tag1 = new Tag();
             tag1.name = "tag #1";
@@ -429,10 +428,10 @@ describe("relations > custom-referenced-column-name", () => {
                 .leftJoinAndSelect("post.tagWithoutRefColName2", "tagWithoutRefColName2")
                 .getMany();
 
-            expect(loadedPosts![0].tagWithoutRefColName2).to.not.be.undefined;
-            expect(loadedPosts![0].tagWithoutRefColName2.id).to.be.equal(1);
-            expect(loadedPosts![1].tagWithoutRefColName2).to.not.be.undefined;
-            expect(loadedPosts![1].tagWithoutRefColName2.id).to.be.equal(2);
+            expect(loadedPosts![0].tagWithoutRefColName2).not.toBeUndefined();
+            expect(loadedPosts![0].tagWithoutRefColName2.id).toEqual(1);
+            expect(loadedPosts![1].tagWithoutRefColName2).not.toBeUndefined();
+            expect(loadedPosts![1].tagWithoutRefColName2.id).toEqual(2);
 
             const loadedPost = await connection.manager
                 .createQueryBuilder(Post, "post")
@@ -440,12 +439,12 @@ describe("relations > custom-referenced-column-name", () => {
                 .where("post.id = :id", { id: 1 })
                 .getOne();
 
-            expect(loadedPost!.tagWithoutRefColName2).to.not.be.undefined;
-            expect(loadedPost!.tagWithoutRefColName2.id).to.be.equal(1);
+            expect(loadedPost!.tagWithoutRefColName2).not.toBeUndefined();
+            expect(loadedPost!.tagWithoutRefColName2.id).toEqual(1);
 
         })));
 
-        it("should persist relation when relation sets via join column", () => Promise.all(connections.map(async connection => {
+        test("should persist relation when relation sets via join column", () => Promise.all(connections.map(async connection => {
 
             const tag1 = new Tag();
             tag1.name = "tag #1";
@@ -470,10 +469,10 @@ describe("relations > custom-referenced-column-name", () => {
                 .leftJoinAndSelect("post.tag", "tag")
                 .getMany();
 
-            expect(loadedPosts![0].tag).to.not.be.undefined;
-            expect(loadedPosts![0].tag.id).to.be.equal(1);
-            expect(loadedPosts![1].tag).to.not.be.undefined;
-            expect(loadedPosts![1].tag.id).to.be.equal(2);
+            expect(loadedPosts![0].tag).not.toBeUndefined();
+            expect(loadedPosts![0].tag.id).toEqual(1);
+            expect(loadedPosts![1].tag).not.toBeUndefined();
+            expect(loadedPosts![1].tag.id).toEqual(2);
 
             const loadedPost = await connection.manager
                 .createQueryBuilder(Post, "post")
@@ -481,8 +480,8 @@ describe("relations > custom-referenced-column-name", () => {
                 .where("post.id = :id", { id: 1 })
                 .getOne();
 
-            expect(loadedPost!.tag).to.not.be.undefined;
-            expect(loadedPost!.tag.id).to.be.equal(1);
+            expect(loadedPost!.tag).not.toBeUndefined();
+            expect(loadedPost!.tag.id).toEqual(1);
 
         })));
     });
