@@ -1,24 +1,27 @@
 import "reflect-metadata";
-import {expect} from "chai";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
-import {Connection} from "../../../../src/connection/Connection";
+import {Connection} from "../../../../src";
 import {User} from "./entity/User";
 import {SqlServerDriver} from "../../../../src/driver/sqlserver/SqlServerDriver";
 import {Photo} from "./entity/Photo";
 import {AbstractSqliteDriver} from "../../../../src/driver/sqlite-abstract/AbstractSqliteDriver";
 import {OracleDriver} from "../../../../src/driver/oracle/OracleDriver";
+import {
+    closeTestingConnections,
+    createTestingConnections,
+    reloadTestingDatabases
+} from "../../../../test/utils/test-utils";
 
 describe("query builder > insert", () => {
     
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
         dropSchema: true
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should perform insertion correctly", () => Promise.all(connections.map(async connection => {
+    test("should perform insertion correctly", () => Promise.all(connections.map(async connection => {
 
         const user = new User();
         user.name = "Alex Messer";
@@ -44,7 +47,7 @@ describe("query builder > insert", () => {
             .execute();
 
         const users = await connection.getRepository(User).find();
-        users.should.be.eql([
+        expect(users).toEqual([
             { id: 1, name: "Alex Messer" },
             { id: 2, name: "Dima Zotov" },
             { id: 3, name: "Muhammad Mirzoev" }
@@ -52,7 +55,7 @@ describe("query builder > insert", () => {
 
     })));
 
-    it("should perform bulk insertion correctly", () => Promise.all(connections.map(async connection => {
+    test("should perform bulk insertion correctly", () => Promise.all(connections.map(async connection => {
         // it is skipped for Oracle because it does not support bulk insertion
         if (connection.driver instanceof OracleDriver)
             return;
@@ -68,7 +71,7 @@ describe("query builder > insert", () => {
             .execute();
 
         const users = await connection.getRepository(User).find();
-        users.should.be.eql([
+        expect(users).toEqual([
             { id: 1, name: "Umed Khudoiberdiev" },
             { id: 2, name: "Bakhrom Baubekov" },
             { id: 3, name: "Bakhodur Kandikov" }
@@ -76,7 +79,7 @@ describe("query builder > insert", () => {
 
     })));
 
-    it("should be able to use sql functions", () => Promise.all(connections.map(async connection => {
+    test("should be able to use sql functions", () => Promise.all(connections.map(async connection => {
 
         await connection.createQueryBuilder()
             .insert()
@@ -87,12 +90,12 @@ describe("query builder > insert", () => {
             .execute();
 
         const loadedUser1 = await connection.getRepository(User).findOne({ name: "Dima" });
-        expect(loadedUser1).to.exist;
-        loadedUser1!.name.should.be.equal("Dima");
+        expect(loadedUser1).toBeDefined();
+        expect(loadedUser1!.name).toEqual("Dima");
 
     })));
 
-    it("should be able to insert entities with different properties set even inside embeds", () => Promise.all(connections.map(async connection => {
+    test("should be able to insert entities with different properties set even inside embeds", () => Promise.all(connections.map(async connection => {
         // this test is skipped for sqlite based drivers because it does not support DEFAULT values in insertions,
         // also it is skipped for Oracle because it does not support bulk insertion
         if (connection.driver instanceof AbstractSqliteDriver || connection.driver instanceof OracleDriver)
@@ -115,8 +118,8 @@ describe("query builder > insert", () => {
             .execute();
 
         const loadedPhoto1 = await connection.getRepository(Photo).findOne({ url: "1.jpg" });
-        expect(loadedPhoto1).to.exist;
-        loadedPhoto1!.should.be.eql({
+        expect(loadedPhoto1).toBeDefined();
+        expect(loadedPhoto1)!.toEqual({
             id: 1,
             url: "1.jpg",
             counters: {
@@ -127,8 +130,8 @@ describe("query builder > insert", () => {
         });
 
         const loadedPhoto2 = await connection.getRepository(Photo).findOne({ url: "2.jpg" });
-        expect(loadedPhoto2).to.exist;
-        loadedPhoto2!.should.be.eql({
+        expect(loadedPhoto2).toBeDefined();
+        expect(loadedPhoto2)!.toEqual({
             id: 2,
             url: "2.jpg",
             counters: {
