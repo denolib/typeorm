@@ -1,23 +1,21 @@
 import "reflect-metadata";
-import {expect} from "chai";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../test/utils/test-utils";
-import {Connection} from "../../../../src/connection/Connection";
+import {Connection} from "../../../../src";
 import {Post} from "./entity/Post";
 import {User} from "./model/User";
-import {EntityNotFoundError} from "../../../../src/error/EntityNotFoundError";
 import {UserEntity} from "./schema/UserEntity";
 
 describe("repository > find methods", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [Post, UserEntity],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
     describe("count", function () {
-        it("should return a full count when no criteria given", () => Promise.all(connections.map(async connection => {
+        test("should return a full count when no criteria given", () => Promise.all(connections.map(async connection => {
             const postRepository            = connection.getRepository(Post);
             const promises: Promise<Post>[] = [];
             for (let i = 0; i < 100; i++) {
@@ -29,14 +27,14 @@ describe("repository > find methods", () => {
             }
 
             const savedPosts = await Promise.all(promises);
-            savedPosts.length.should.be.equal(100); // check if they all are saved
+            expect(savedPosts.length).toEqual(100); // check if they all are saved
 
             // check count method
             const count = await postRepository.count({ order: { id: "ASC" }});
-            count.should.be.equal(100);
+            expect(count).toEqual(100);
         })));
 
-        it("should return a count of posts that match given criteria", () => Promise.all(connections.map(async connection => {
+        test("should return a count of posts that match given criteria", () => Promise.all(connections.map(async connection => {
             const postRepository = connection.getRepository(Post);
             const promises: Promise<Post>[] = [];
             for (let i = 1; i <= 100; i++) {
@@ -48,17 +46,17 @@ describe("repository > find methods", () => {
             }
 
             const savedPosts = await Promise.all(promises);
-            savedPosts.length.should.be.equal(100); // check if they all are saved
+            expect(savedPosts.length).toEqual(100); // check if they all are saved
 
             // check count method
             const count = await postRepository.count({
                 where: { categoryName: "odd" },
                 order: { id: "ASC" }
             });
-            count.should.be.equal(50);
+            expect(count).toEqual(50);
         })));
 
-        it("should return a count of posts that match given multiple criteria", () => Promise.all(connections.map(async connection => {
+        test("should return a count of posts that match given multiple criteria", () => Promise.all(connections.map(async connection => {
             const postRepository            = connection.getRepository(Post);
             const promises: Promise<Post>[] = [];
             for (let i = 1; i <= 100; i++) {
@@ -71,17 +69,17 @@ describe("repository > find methods", () => {
             }
 
             const savedPosts = await Promise.all(promises);
-            savedPosts.length.should.be.equal(100); // check if they all are saved
+            expect(savedPosts.length).toEqual(100); // check if they all are saved
 
             // check count method
             const count = await postRepository.count({
                 where: { categoryName: "odd", isNew: true },
                 order: { id: "ASC" }
             });
-            count.should.be.equal(5);
+            expect(count).toEqual(5);
         })));
 
-        it("should return a count of posts that match given find options", () => Promise.all(connections.map(async connection => {
+        test("should return a count of posts that match given find options", () => Promise.all(connections.map(async connection => {
             const postRepository            = connection.getRepository(Post);
             const promises: Promise<Post>[] = [];
             for (let i = 1; i <= 100; i++) {
@@ -94,14 +92,14 @@ describe("repository > find methods", () => {
             }
 
             const savedPosts = await Promise.all(promises);
-            savedPosts.length.should.be.equal(100); // check if they all are saved
+            expect(savedPosts.length).toEqual(100); // check if they all are saved
 
             // check count method
             const count = await postRepository.count();
-            count.should.be.equal(100);
+            expect(count).toEqual(100);
         })));
 
-        it("should return a count of posts that match both criteria and find options", () => Promise.all(connections.map(async connection => {
+        test("should return a count of posts that match both criteria and find options", () => Promise.all(connections.map(async connection => {
             const postRepository            = connection.getRepository(Post);
             const promises: Promise<Post>[] = [];
             for (let i = 1; i <= 100; i++) {
@@ -114,7 +112,7 @@ describe("repository > find methods", () => {
             }
 
             const savedPosts = await Promise.all(promises);
-            savedPosts.length.should.be.equal(100); // check if they all are saved
+            expect(savedPosts.length).toEqual(100); // check if they all are saved
 
             // check count method
             const count = await postRepository.count({
@@ -123,14 +121,14 @@ describe("repository > find methods", () => {
                 take:  2,
                 order: { id: "ASC" }
             });
-            count.should.be.equal(5);
+            expect(count).toEqual(5);
         })));
         
     });
 
     describe("find and findAndCount", function() {
 
-        it("should return everything when no criteria given", () => Promise.all(connections.map(async connection => {
+        test("should return everything when no criteria given", () => Promise.all(connections.map(async connection => {
             const postRepository = connection.getRepository(Post);
             const promises: Promise<Post>[] = [];
             for (let i = 0; i < 100; i++) {
@@ -142,29 +140,29 @@ describe("repository > find methods", () => {
             }
 
             const savedPosts = await Promise.all(promises);
-            savedPosts.length.should.be.equal(100); // check if they all are saved
+            expect(savedPosts.length).toEqual(100); // check if they all are saved
 
             // check find method
             const loadedPosts = await postRepository.find({ order: { id: "ASC" }});
-            loadedPosts.should.be.instanceOf(Array);
-            loadedPosts.length.should.be.equal(100);
-            loadedPosts[0].id.should.be.equal(0);
-            loadedPosts[0].title.should.be.equal("post #0");
-            loadedPosts[99].id.should.be.equal(99);
-            loadedPosts[99].title.should.be.equal("post #99");
+            expect(loadedPosts).toBeInstanceOf(Array);
+            expect(loadedPosts.length).toEqual(100);
+            expect(loadedPosts[0].id).toEqual(0);
+            expect(loadedPosts[0].title).toEqual("post #0");
+            expect(loadedPosts[99].id).toEqual(99);
+            expect(loadedPosts[99].title).toEqual("post #99");
 
             // check findAndCount method
             let [loadedPosts2, count] = await postRepository.findAndCount({ order: { id: "ASC" }});
-            count.should.be.equal(100);
-            loadedPosts2.should.be.instanceOf(Array);
-            loadedPosts2.length.should.be.equal(100);
-            loadedPosts2[0].id.should.be.equal(0);
-            loadedPosts2[0].title.should.be.equal("post #0");
-            loadedPosts2[99].id.should.be.equal(99);
-            loadedPosts2[99].title.should.be.equal("post #99");
+            expect(count).toEqual(100);
+            expect(loadedPosts2).toBeInstanceOf(Array);
+            expect(loadedPosts2.length).toEqual(100);
+            expect(loadedPosts2[0].id).toEqual(0);
+            expect(loadedPosts2[0].title).toEqual("post #0");
+            expect(loadedPosts2[99].id).toEqual(99);
+            expect(loadedPosts2[99].title).toEqual("post #99");
         })));
 
-        it("should return posts that match given criteria", () => Promise.all(connections.map(async connection => {
+        test("should return posts that match given criteria", () => Promise.all(connections.map(async connection => {
             const postRepository = connection.getRepository(Post);
             const promises: Promise<Post>[] = [];
             for (let i = 1; i <= 100; i++) {
@@ -176,35 +174,35 @@ describe("repository > find methods", () => {
             }
 
             const savedPosts = await Promise.all(promises);
-            savedPosts.length.should.be.equal(100); // check if they all are saved
+            expect(savedPosts.length).toEqual(100); // check if they all are saved
 
             // check find method
             const loadedPosts = await postRepository.find({
                 where: { categoryName: "odd" },
                 order: { id: "ASC" }
             });
-            loadedPosts.should.be.instanceOf(Array);
-            loadedPosts.length.should.be.equal(50);
-            loadedPosts[0].id.should.be.equal(1);
-            loadedPosts[0].title.should.be.equal("post #1");
-            loadedPosts[49].id.should.be.equal(99);
-            loadedPosts[49].title.should.be.equal("post #99");
+            expect(loadedPosts).toBeInstanceOf(Array);
+            expect(loadedPosts.length).toEqual(50);
+            expect(loadedPosts[0].id).toEqual(1);
+            expect(loadedPosts[0].title).toEqual("post #1");
+            expect(loadedPosts[49].id).toEqual(99);
+            expect(loadedPosts[49].title).toEqual("post #99");
 
             // check findAndCount method
             let [loadedPosts2, count] = await postRepository.findAndCount({
                 where: { categoryName: "odd" },
                 order: { id: "ASC" }
             });
-            count.should.be.equal(50);
-            loadedPosts2.should.be.instanceOf(Array);
-            loadedPosts2.length.should.be.equal(50);
-            loadedPosts2[0].id.should.be.equal(1);
-            loadedPosts2[0].title.should.be.equal("post #1");
-            loadedPosts2[49].id.should.be.equal(99);
-            loadedPosts2[49].title.should.be.equal("post #99");
+            expect(count).toEqual(50);
+            expect(loadedPosts2).toBeInstanceOf(Array);
+            expect(loadedPosts2.length).toEqual(50);
+            expect(loadedPosts2[0].id).toEqual(1);
+            expect(loadedPosts2[0].title).toEqual("post #1");
+            expect(loadedPosts2[49].id).toEqual(99);
+            expect(loadedPosts2[49].title).toEqual("post #99");
         })));
 
-        it("should return posts that match given multiple criteria", () => Promise.all(connections.map(async connection => {
+        test("should return posts that match given multiple criteria", () => Promise.all(connections.map(async connection => {
             const postRepository = connection.getRepository(Post);
             const promises: Promise<Post>[] = [];
             for (let i = 1; i <= 100; i++) {
@@ -217,35 +215,35 @@ describe("repository > find methods", () => {
             }
 
             const savedPosts = await Promise.all(promises);
-            savedPosts.length.should.be.equal(100); // check if they all are saved
+            expect(savedPosts.length).toEqual(100); // check if they all are saved
 
             // check find method
             const loadedPosts = await postRepository.find({
                 where: { categoryName: "odd", isNew: true },
                 order: { id: "ASC" }
             });
-            loadedPosts.should.be.instanceOf(Array);
-            loadedPosts.length.should.be.equal(5);
-            loadedPosts[0].id.should.be.equal(91);
-            loadedPosts[0].title.should.be.equal("post #91");
-            loadedPosts[4].id.should.be.equal(99);
-            loadedPosts[4].title.should.be.equal("post #99");
+            expect(loadedPosts).toBeInstanceOf(Array);
+            expect(loadedPosts.length).toEqual(5);
+            expect(loadedPosts[0].id).toEqual(91);
+            expect(loadedPosts[0].title).toEqual("post #91");
+            expect(loadedPosts[4].id).toEqual(99);
+            expect(loadedPosts[4].title).toEqual("post #99");
 
             // check findAndCount method
             let [loadedPosts2, count] = await postRepository.findAndCount({
                 where: { categoryName: "odd", isNew: true },
                 order: { id: "ASC" }
             });
-            count.should.be.equal(5);
-            loadedPosts2.should.be.instanceOf(Array);
-            loadedPosts2.length.should.be.equal(5);
-            loadedPosts2[0].id.should.be.equal(91);
-            loadedPosts2[0].title.should.be.equal("post #91");
-            loadedPosts2[4].id.should.be.equal(99);
-            loadedPosts2[4].title.should.be.equal("post #99");
+            expect(count).toEqual(5);
+            expect(loadedPosts2).toBeInstanceOf(Array);
+            expect(loadedPosts2.length).toEqual(5);
+            expect(loadedPosts2[0].id).toEqual(91);
+            expect(loadedPosts2[0].title).toEqual("post #91");
+            expect(loadedPosts2[4].id).toEqual(99);
+            expect(loadedPosts2[4].title).toEqual("post #99");
         })));
 
-        it("should return posts that match given find options", () => Promise.all(connections.map(async connection => {
+        test("should return posts that match given find options", () => Promise.all(connections.map(async connection => {
             const postRepository = connection.getRepository(Post);
             const promises: Promise<Post>[] = [];
             for (let i = 1; i <= 100; i++) {
@@ -258,7 +256,7 @@ describe("repository > find methods", () => {
             }
 
             const savedPosts = await Promise.all(promises);
-            savedPosts.length.should.be.equal(100); // check if they all are saved
+            expect(savedPosts.length).toEqual(100); // check if they all are saved
 
             // check find method
             const loadedPosts = await postRepository.createQueryBuilder("post")
@@ -269,12 +267,12 @@ describe("repository > find methods", () => {
                 })
                 .orderBy("post.id", "ASC")
                 .getMany();
-            loadedPosts.should.be.instanceOf(Array);
-            loadedPosts.length.should.be.equal(5);
-            loadedPosts[0].id.should.be.equal(92);
-            loadedPosts[0].title.should.be.equal("new post #92");
-            loadedPosts[4].id.should.be.equal(100);
-            loadedPosts[4].title.should.be.equal("new post #100");
+            expect(loadedPosts).toBeInstanceOf(Array);
+            expect(loadedPosts.length).toEqual(5);
+            expect(loadedPosts[0].id).toEqual(92);
+            expect(loadedPosts[0].title).toEqual("new post #92");
+            expect(loadedPosts[4].id).toEqual(100);
+            expect(loadedPosts[4].title).toEqual("new post #100");
 
             // check findAndCount method
             const [loadedPosts2, count] = await postRepository.createQueryBuilder("post")
@@ -285,16 +283,16 @@ describe("repository > find methods", () => {
                 })
                 .orderBy("post.id", "ASC")
                 .getManyAndCount();
-            count.should.be.equal(5);
-            loadedPosts2.should.be.instanceOf(Array);
-            loadedPosts2.length.should.be.equal(5);
-            loadedPosts2[0].id.should.be.equal(92);
-            loadedPosts2[0].title.should.be.equal("new post #92");
-            loadedPosts2[4].id.should.be.equal(100);
-            loadedPosts2[4].title.should.be.equal("new post #100");
+            expect(count).toEqual(5);
+            expect(loadedPosts2).toBeInstanceOf(Array);
+            expect(loadedPosts2.length).toEqual(5);
+            expect(loadedPosts2[0].id).toEqual(92);
+            expect(loadedPosts2[0].title).toEqual("new post #92");
+            expect(loadedPosts2[4].id).toEqual(100);
+            expect(loadedPosts2[4].title).toEqual("new post #100");
         })));
 
-        it("should return posts that match both criteria and find options", () => Promise.all(connections.map(async connection => {
+        test("should return posts that match both criteria and find options", () => Promise.all(connections.map(async connection => {
             const postRepository = connection.getRepository(Post);
             const promises: Promise<Post>[] = [];
             for (let i = 1; i <= 100; i++) {
@@ -307,7 +305,7 @@ describe("repository > find methods", () => {
             }
 
             const savedPosts = await Promise.all(promises);
-            savedPosts.length.should.be.equal(100); // check if they all are saved
+            expect(savedPosts.length).toEqual(100); // check if they all are saved
 
             // check find method
             const loadedPosts = await postRepository.find({
@@ -321,12 +319,12 @@ describe("repository > find methods", () => {
                     id: "ASC"
                 }
             });
-            loadedPosts.should.be.instanceOf(Array);
-            loadedPosts.length.should.be.equal(2);
-            loadedPosts[0].id.should.be.equal(94);
-            loadedPosts[0].title.should.be.equal("new post #94");
-            loadedPosts[1].id.should.be.equal(96);
-            loadedPosts[1].title.should.be.equal("new post #96");
+            expect(loadedPosts).toBeInstanceOf(Array);
+            expect(loadedPosts.length).toEqual(2);
+            expect(loadedPosts[0].id).toEqual(94);
+            expect(loadedPosts[0].title).toEqual("new post #94");
+            expect(loadedPosts[1].id).toEqual(96);
+            expect(loadedPosts[1].title).toEqual("new post #96");
 
             // check findAndCount method
             let [loadedPosts2, count] = await postRepository.findAndCount({
@@ -340,20 +338,20 @@ describe("repository > find methods", () => {
                     id: "ASC"
                 }
             });
-            count.should.be.equal(5);
-            loadedPosts2.should.be.instanceOf(Array);
-            loadedPosts2.length.should.be.equal(2);
-            loadedPosts2[0].id.should.be.equal(94);
-            loadedPosts2[0].title.should.be.equal("new post #94");
-            loadedPosts2[1].id.should.be.equal(96);
-            loadedPosts2[1].title.should.be.equal("new post #96");
+            expect(count).toEqual(5);
+            expect(loadedPosts2).toBeInstanceOf(Array);
+            expect(loadedPosts2.length).toEqual(2);
+            expect(loadedPosts2[0].id).toEqual(94);
+            expect(loadedPosts2[0].title).toEqual("new post #94");
+            expect(loadedPosts2[1].id).toEqual(96);
+            expect(loadedPosts2[1].title).toEqual("new post #96");
         })));
 
     });
 
     describe("findOne", function() {
 
-        it("should return first when no criteria given", () => Promise.all(connections.map(async connection => {
+        test("should return first when no criteria given", () => Promise.all(connections.map(async connection => {
             const userRepository = connection.getRepository<User>("User");
             const promises: Promise<User>[] = [];
             for (let i = 0; i < 100; i++) {
@@ -366,15 +364,15 @@ describe("repository > find methods", () => {
             }
 
             const savedUsers = await Promise.all(promises);
-            savedUsers.length.should.be.equal(100); // check if they all are saved
+            expect(savedUsers.length).toEqual(100); // check if they all are saved
 
             const loadedUser = (await userRepository.findOne({ order: { id: "ASC" }}))!;
-            loadedUser.id.should.be.equal(0);
-            loadedUser.firstName.should.be.equal("name #0");
-            loadedUser.secondName.should.be.equal("Doe");
+            expect(loadedUser.id).toEqual(0);
+            expect(loadedUser.firstName).toEqual("name #0");
+            expect(loadedUser.secondName).toEqual("Doe");
         })));
 
-        it("should return when criteria given", () => Promise.all(connections.map(async connection => {
+        test("should return when criteria given", () => Promise.all(connections.map(async connection => {
             const userRepository = connection.getRepository<User>("User");
             const promises: Promise<User>[] = [];
             for (let i = 0; i < 100; i++) {
@@ -387,15 +385,15 @@ describe("repository > find methods", () => {
             }
 
             const savedUsers = await Promise.all(promises);
-            savedUsers.length.should.be.equal(100); // check if they all are saved
+            expect(savedUsers.length).toEqual(100); // check if they all are saved
 
             const loadedUser = (await userRepository.findOne({ where: { firstName: "name #1" }, order: { id: "ASC" } }))!;
-            loadedUser.id.should.be.equal(1);
-            loadedUser.firstName.should.be.equal("name #1");
-            loadedUser.secondName.should.be.equal("Doe");
+            expect(loadedUser.id).toEqual(1);
+            expect(loadedUser.firstName).toEqual("name #1");
+            expect(loadedUser.secondName).toEqual("Doe");
         })));
 
-        it("should return when find options given", () => Promise.all(connections.map(async connection => {
+        test("should return when find options given", () => Promise.all(connections.map(async connection => {
             const userRepository = connection.getRepository<User>("User");
             const promises: Promise<User>[] = [];
             for (let i = 0; i < 100; i++) {
@@ -408,7 +406,7 @@ describe("repository > find methods", () => {
             }
 
             const savedUsers = await Promise.all(promises);
-            savedUsers.length.should.be.equal(100); // check if they all are saved
+            expect(savedUsers.length).toEqual(100); // check if they all are saved
 
             const loadedUser = await userRepository.findOne({
                 where: {
@@ -419,16 +417,16 @@ describe("repository > find methods", () => {
                     id: "ASC"
                 }
             });
-            loadedUser!.id.should.be.equal(99);
-            loadedUser!.firstName.should.be.equal("name #99");
-            loadedUser!.secondName.should.be.equal("Doe");
+            expect(loadedUser!.id).toEqual(99);
+            expect(loadedUser!.firstName).toEqual("name #99");
+            expect(loadedUser!.secondName).toEqual("Doe");
         })));
 
     });
 
     describe("findOne", function() {
 
-        it("should return entity by a given id", () => Promise.all(connections.map(async connection => {
+        test("should return entity by a given id", () => Promise.all(connections.map(async connection => {
             const userRepository = connection.getRepository<User>("User");
             const promises: Promise<User>[] = [];
             for (let i = 0; i < 100; i++) {
@@ -441,25 +439,25 @@ describe("repository > find methods", () => {
             }
 
             const savedUsers = await Promise.all(promises);
-            savedUsers.length.should.be.equal(100); // check if they all are saved
+            expect(savedUsers.length).toEqual(100); // check if they all are saved
 
             let loadedUser = (await userRepository.findOne(0))!;
-            loadedUser.id.should.be.equal(0);
-            loadedUser.firstName.should.be.equal("name #0");
-            loadedUser.secondName.should.be.equal("Doe");
+            expect(loadedUser.id).toEqual(0);
+            expect(loadedUser.firstName).toEqual("name #0");
+            expect(loadedUser.secondName).toEqual("Doe");
 
             loadedUser = (await userRepository.findOne(1))!;
-            loadedUser.id.should.be.equal(1);
-            loadedUser.firstName.should.be.equal("name #1");
-            loadedUser.secondName.should.be.equal("Doe");
+            expect(loadedUser.id).toEqual(1);
+            expect(loadedUser.firstName).toEqual("name #1");
+            expect(loadedUser.secondName).toEqual("Doe");
 
             loadedUser = (await userRepository.findOne(99))!;
-            loadedUser.id.should.be.equal(99);
-            loadedUser.firstName.should.be.equal("name #99");
-            loadedUser.secondName.should.be.equal("Doe");
+            expect(loadedUser.id).toEqual(99);
+            expect(loadedUser.firstName).toEqual("name #99");
+            expect(loadedUser.secondName).toEqual("Doe");
         })));
 
-        it("should return entity by a given id and find options", () => Promise.all(connections.map(async connection => {
+        test("should return entity by a given id and find options", () => Promise.all(connections.map(async connection => {
             const userRepository = connection.getRepository<User>("User");
             const promises: Promise<User>[] = [];
             for (let i = 0; i < 100; i++) {
@@ -472,30 +470,30 @@ describe("repository > find methods", () => {
             }
 
             const savedUsers = await Promise.all(promises);
-            savedUsers.length.should.be.equal(100); // check if they all are saved
+            expect(savedUsers.length).toEqual(100); // check if they all are saved
 
             let loadedUser = await userRepository.findOne(0, {
                 where: {
                     secondName: "Doe"
                 }
             });
-            loadedUser!.id.should.be.equal(0);
-            loadedUser!.firstName.should.be.equal("name #0");
-            loadedUser!.secondName.should.be.equal("Doe");
+            expect(loadedUser!.id).toEqual(0);
+            expect(loadedUser!.firstName).toEqual("name #0");
+            expect(loadedUser!.secondName).toEqual("Doe");
 
             loadedUser = await userRepository.findOne(1, {
                 where: {
                     secondName: "Dorian"
                 }
             });
-            expect(loadedUser).to.be.undefined;
+            expect(loadedUser).toBeUndefined();
         })));
 
     });
 
     describe("findByIds", function() {
 
-        it("should return entities by given ids", () => Promise.all(connections.map(async connection => {
+        test("should return entities by given ids", () => Promise.all(connections.map(async connection => {
             const userRepository = connection.getRepository<User>("User");
 
             const users = [1, 2, 3, 4, 5].map(id => {
@@ -507,19 +505,19 @@ describe("repository > find methods", () => {
             });
 
             const savedUsers = await userRepository.save(users);
-            savedUsers.length.should.be.equal(users.length); // check if they all are saved
+            expect(savedUsers.length).toEqual(users.length); // check if they all are saved
 
             const loadIds = [1, 2, 4];
             const loadedUsers = (await userRepository.findByIds(loadIds))!;
 
-            loadedUsers.map(user => user.id).should.be.eql(loadIds);
+            expect(loadedUsers.map(user => user.id)).toEqual(loadIds);
         })));
 
     });
 
     describe("findOneOrFail", function() {
 
-        it("should return entity by a given id", () => Promise.all(connections.map(async connection => {
+        test("should return entity by a given id", () => Promise.all(connections.map(async connection => {
             const userRepository = connection.getRepository<User>("User");
             const promises: Promise<User>[] = [];
             for (let i = 0; i < 100; i++) {
@@ -532,25 +530,25 @@ describe("repository > find methods", () => {
             }
 
             const savedUsers = await Promise.all(promises);
-            savedUsers.length.should.be.equal(100); // check if they all are saved
+            expect(savedUsers.length).toEqual(100); // check if they all are saved
 
             let loadedUser = (await userRepository.findOneOrFail(0))!;
-            loadedUser.id.should.be.equal(0);
-            loadedUser.firstName.should.be.equal("name #0");
-            loadedUser.secondName.should.be.equal("Doe");
+            expect(loadedUser.id).toEqual(0);
+            expect(loadedUser.firstName).toEqual("name #0");
+            expect(loadedUser.secondName).toEqual("Doe");
 
             loadedUser = (await userRepository.findOneOrFail(1))!;
-            loadedUser.id.should.be.equal(1);
-            loadedUser.firstName.should.be.equal("name #1");
-            loadedUser.secondName.should.be.equal("Doe");
+            expect(loadedUser.id).toEqual(1);
+            expect(loadedUser.firstName).toEqual("name #1");
+            expect(loadedUser.secondName).toEqual("Doe");
 
             loadedUser = (await userRepository.findOneOrFail(99))!;
-            loadedUser.id.should.be.equal(99);
-            loadedUser.firstName.should.be.equal("name #99");
-            loadedUser.secondName.should.be.equal("Doe");
+            expect(loadedUser.id).toEqual(99);
+            expect(loadedUser.firstName).toEqual("name #99");
+            expect(loadedUser.secondName).toEqual("Doe");
         })));
 
-        it("should return entity by a given id and find options", () => Promise.all(connections.map(async connection => {
+        test("should return entity by a given id and find options", () => Promise.all(connections.map(async connection => {
             const userRepository = connection.getRepository<User>("User");
             const promises: Promise<User>[] = [];
             for (let i = 0; i < 100; i++) {
@@ -563,25 +561,27 @@ describe("repository > find methods", () => {
             }
 
             const savedUsers = await Promise.all(promises);
-            savedUsers.length.should.be.equal(100); // check if they all are saved
+            expect(savedUsers.length).toEqual(100); // check if they all are saved
 
             let loadedUser = await userRepository.findOneOrFail(0, {
                 where: {
                     secondName: "Doe"
                 }
             });
-            loadedUser!.id.should.be.equal(0);
-            loadedUser!.firstName.should.be.equal("name #0");
-            loadedUser!.secondName.should.be.equal("Doe");
+            expect(loadedUser!.id).toEqual(0);
+            expect(loadedUser!.firstName).toEqual("name #0");
+            expect(loadedUser!.secondName).toEqual("Doe");
 
-            await userRepository.findOneOrFail(1, {
-                where: {
-                    secondName: "Dorian"
-                }
-            }).should.eventually.be.rejectedWith(EntityNotFoundError);
+            await expect(
+                userRepository
+                    .findOneOrFail(1, {
+                        where: {
+                            secondName: "Dorian"
+                        }
+                    })).rejects.toBeDefined();
         })));
 
-        it("should throw an error if nothing was found", () => Promise.all(connections.map(async connection => {
+        test("should throw an error if nothing was found", () => Promise.all(connections.map(async connection => {
             const userRepository = connection.getRepository<User>("User");
             const promises: Promise<User>[] = [];
             for (let i = 0; i < 100; i++) {
@@ -594,9 +594,12 @@ describe("repository > find methods", () => {
             }
 
             const savedUsers = await Promise.all(promises);
-            savedUsers.length.should.be.equal(100); // check if they all are saved
+            expect(savedUsers.length).toEqual(100); // check if they all are saved
 
-            await userRepository.findOneOrFail(100).should.eventually.be.rejectedWith(EntityNotFoundError);
+            await expect(
+                userRepository
+                    .findOneOrFail(100)
+            ).rejects.toBeDefined();
         })));
     });
 
