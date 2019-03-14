@@ -1,20 +1,19 @@
 import "reflect-metadata";
-import {expect} from "chai";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
-import {Connection} from "../../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../test/utils/test-utils";
+import {Connection} from "../../../../src";
 import {User} from "./entity/User";
-import {Brackets} from "../../../../src/query-builder/Brackets";
+import {Brackets} from "../../../../src";
 
 describe("query builder > brackets", () => {
     
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should put brackets correctly into WHERE expression", () => Promise.all(connections.map(async connection => {
+    test("should put brackets correctly into WHERE expression", () => Promise.all(connections.map(async connection => {
 
         const user1 = new User();
         user1.firstName = "Timber";
@@ -46,7 +45,7 @@ describe("query builder > brackets", () => {
             }))
             .getMany();
 
-        expect(users.length).to.be.equal(3);
+        expect(users.length).toEqual(3);
 
     })));
 
