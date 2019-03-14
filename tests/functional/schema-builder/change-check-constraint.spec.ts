@@ -1,6 +1,6 @@
 import "reflect-metadata";
-import {Connection} from "../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
+import {Connection} from "../../../src";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
 import {PromiseUtils} from "../../../src";
 import {Teacher} from "./entity/Teacher";
 import {Post} from "./entity/Post";
@@ -10,7 +10,7 @@ import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver";
 describe("schema builder > change check constraint", () => {
 
     let connections: Connection[];
-    before(async () => {
+    beforeAll(async () => {
         connections = await createTestingConnections({
             entities: [__dirname + "/entity/*{.js,.ts}"],
             schemaCreate: true,
@@ -18,9 +18,9 @@ describe("schema builder > change check constraint", () => {
         });
     });
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should correctly add new check constraint", () => PromiseUtils.runInSequence(connections, async connection => {
+    test("should correctly add new check constraint", () => PromiseUtils.runInSequence(connections, async connection => {
         // Mysql does not support check constraints.
         if (connection.driver instanceof MysqlDriver)
             return;
@@ -42,10 +42,10 @@ describe("schema builder > change check constraint", () => {
         const table = await queryRunner.getTable("teacher");
         await queryRunner.release();
 
-        table!.checks.length.should.be.equal(1);
+        expect(table!.checks.length).toEqual(1);
     }));
 
-    it("should correctly change check", () => PromiseUtils.runInSequence(connections, async connection => {
+    test("should correctly change check", () => PromiseUtils.runInSequence(connections, async connection => {
         // Mysql does not support check constraints.
         if (connection.driver instanceof MysqlDriver)
             return;
@@ -60,10 +60,10 @@ describe("schema builder > change check constraint", () => {
         const table = await queryRunner.getTable("post");
         await queryRunner.release();
 
-        table!.checks[0].expression!.indexOf("2000").should.be.not.equal(-1);
+        expect(table!.checks[0].expression!.indexOf("2000")).not.toEqual(-1);
     }));
 
-    it("should correctly drop removed check", () => PromiseUtils.runInSequence(connections, async connection => {
+    test("should correctly drop removed check", () => PromiseUtils.runInSequence(connections, async connection => {
         // Mysql does not support check constraints.
         if (connection.driver instanceof MysqlDriver)
             return;
@@ -77,7 +77,7 @@ describe("schema builder > change check constraint", () => {
         const table = await queryRunner.getTable("post");
         await queryRunner.release();
 
-        table!.checks.length.should.be.equal(0);
+        expect(table!.checks.length).toEqual(0);
     }));
 
 });

@@ -1,32 +1,31 @@
 import "reflect-metadata";
-import {expect} from "chai";
-import {Connection} from "../../../src/connection/Connection";
+import {Connection} from "../../../src";
 import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver";
-import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils";
+import {closeTestingConnections, createTestingConnections} from "../../../test/utils/test-utils";
 import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver";
 
 describe("schema builder > create table", () => {
 
     let connections: Connection[];
-    before(async () => {
+    beforeAll(async () => {
         connections = await createTestingConnections({
             entities: [__dirname + "/entity/*{.js,.ts}"],
             dropSchema: true,
         });
     });
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should correctly create tables with all dependencies", () => Promise.all(connections.map(async connection => {
+    test("should correctly create tables with all dependencies", () => Promise.all(connections.map(async connection => {
 
         const queryRunner = connection.createQueryRunner();
         let postTable = await queryRunner.getTable("post");
         let teacherTable = await queryRunner.getTable("teacher");
         let studentTable = await queryRunner.getTable("student");
         let facultyTable = await queryRunner.getTable("faculty");
-        expect(postTable).to.be.undefined;
-        expect(teacherTable).to.be.undefined;
-        expect(studentTable).to.be.undefined;
-        expect(facultyTable).to.be.undefined;
+        expect(postTable).toBeUndefined();
+        expect(teacherTable).toBeUndefined();
+        expect(studentTable).toBeUndefined();
+        expect(facultyTable).toBeUndefined();
 
         await connection.synchronize();
 
@@ -34,34 +33,34 @@ describe("schema builder > create table", () => {
         const idColumn = postTable!.findColumnByName("id");
         const versionColumn = postTable!.findColumnByName("version");
         const nameColumn = postTable!.findColumnByName("name");
-        postTable!.should.exist;
+        expect(postTable)!.toBeDefined();
 
         if (connection.driver instanceof MysqlDriver) {
-            postTable!.indices.length.should.be.equal(2);
+            expect(postTable!.indices.length).toEqual(2);
         } else {
-            postTable!.uniques.length.should.be.equal(2);
-            postTable!.checks.length.should.be.equal(1);
+            expect(postTable!.uniques.length).toEqual(2);
+            expect(postTable!.checks.length).toEqual(1);
         }
 
-        idColumn!.isPrimary.should.be.true;
-        versionColumn!.isUnique.should.be.true;
-        nameColumn!.default!.should.be.exist;
+        expect(idColumn!.isPrimary).toBeTruthy();
+        expect(versionColumn!.isUnique).toBeTruthy();
+        expect(nameColumn!.default)!.toBeDefined();
 
         teacherTable = await queryRunner.getTable("teacher");
-        teacherTable!.should.exist;
+        expect(teacherTable)!.toBeDefined();
 
         studentTable = await queryRunner.getTable("student");
-        studentTable!.should.exist;
-        studentTable!.foreignKeys.length.should.be.equal(2);
+        expect(studentTable)!.toBeDefined();
+        expect(studentTable!.foreignKeys.length).toEqual(2);
         // CockroachDB also stores indices for relation columns
         if (connection.driver instanceof CockroachDriver) {
-            studentTable!.indices.length.should.be.equal(3);
+            expect(studentTable!.indices.length).toEqual(3);
         } else {
-            studentTable!.indices.length.should.be.equal(1);
+            expect(studentTable!.indices.length).toEqual(1);
         }
 
         facultyTable = await queryRunner.getTable("faculty");
-        facultyTable!.should.exist;
+        expect(facultyTable)!.toBeDefined();
 
         await queryRunner.release();
     })));

@@ -1,14 +1,14 @@
 import "reflect-metadata";
-import {Connection} from "../../../src/connection/Connection";
+import {Connection} from "../../../src";
 import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver";
 import {UniqueMetadata} from "../../../src/metadata/UniqueMetadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
 import {ForeignKeyMetadata} from "../../../src/metadata/ForeignKeyMetadata";
 
 describe("schema builder > create foreign key", () => {
 
     let connections: Connection[];
-    before(async () => {
+    beforeAll(async () => {
         connections = await createTestingConnections({
             entities: [__dirname + "/entity/*{.js,.ts}"],
             schemaCreate: true,
@@ -16,9 +16,9 @@ describe("schema builder > create foreign key", () => {
         });
     });
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should correctly create foreign key", () => Promise.all(connections.map(async connection => {
+    test("should correctly create foreign key", () => Promise.all(connections.map(async connection => {
         const categoryMetadata = connection.getMetadata("category");
         const postMetadata = connection.getMetadata("post");
         const columns = categoryMetadata.columns.filter(column => ["postText", "postTag"].indexOf(column.propertyName) !== -1);
@@ -52,8 +52,8 @@ describe("schema builder > create foreign key", () => {
         const table = await queryRunner.getTable("category");
         await queryRunner.release();
 
-        table!.foreignKeys.length.should.be.equal(1);
-        table!.indices.length.should.be.equal(0);
+        expect(table!.foreignKeys.length).toEqual(1);
+        expect(table!.indices.length).toEqual(0);
 
     })));
 

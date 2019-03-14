@@ -1,6 +1,6 @@
 import "reflect-metadata";
-import {Connection} from "../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
+import {Connection} from "../../../src";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
 import {PromiseUtils} from "../../../src";
 import {Teacher} from "./entity/Teacher";
 import {Post} from "./entity/Post";
@@ -10,7 +10,7 @@ import {PostgresDriver} from "../../../src/driver/postgres/PostgresDriver";
 describe("schema builder > change exclusion constraint", () => {
 
     let connections: Connection[];
-    before(async () => {
+    beforeAll(async () => {
         connections = await createTestingConnections({
             entities: [__dirname + "/entity/*{.js,.ts}"],
             schemaCreate: true,
@@ -18,9 +18,9 @@ describe("schema builder > change exclusion constraint", () => {
         });
     });
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should correctly add new exclusion constraint", () => PromiseUtils.runInSequence(connections, async connection => {
+    test("should correctly add new exclusion constraint", () => PromiseUtils.runInSequence(connections, async connection => {
         // Only PostgreSQL supports exclusion constraints.
         if (!(connection.driver instanceof PostgresDriver))
             return;
@@ -42,10 +42,10 @@ describe("schema builder > change exclusion constraint", () => {
         const table = await queryRunner.getTable("teacher");
         await queryRunner.release();
 
-        table!.exclusions.length.should.be.equal(1);
+        expect(table!.exclusions.length).toEqual(1);
     }));
 
-    it("should correctly change exclusion", () => PromiseUtils.runInSequence(connections, async connection => {
+    test("should correctly change exclusion", () => PromiseUtils.runInSequence(connections, async connection => {
         // Only PostgreSQL supports exclusion constraints.
         if (!(connection.driver instanceof PostgresDriver))
             return;
@@ -60,10 +60,10 @@ describe("schema builder > change exclusion constraint", () => {
         const table = await queryRunner.getTable("post");
         await queryRunner.release();
 
-        table!.exclusions[0].expression!.indexOf("tag").should.be.not.equal(-1);
+        expect(table!.exclusions[0].expression!.indexOf("tag")).not.toEqual(-1);
     }));
 
-    it("should correctly drop removed exclusion", () => PromiseUtils.runInSequence(connections, async connection => {
+    test("should correctly drop removed exclusion", () => PromiseUtils.runInSequence(connections, async connection => {
         // Only PostgreSQL supports exclusion constraints.
         if (!(connection.driver instanceof PostgresDriver))
             return;
@@ -77,7 +77,7 @@ describe("schema builder > change exclusion constraint", () => {
         const table = await queryRunner.getTable("post");
         await queryRunner.release();
 
-        table!.exclusions.length.should.be.equal(0);
+        expect(table!.exclusions.length).toEqual(0);
     }));
 
 });

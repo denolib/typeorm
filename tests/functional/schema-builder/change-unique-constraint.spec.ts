@@ -1,6 +1,6 @@
 import "reflect-metadata";
-import {Connection} from "../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
+import {Connection} from "../../../src";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
 import {PromiseUtils} from "../../../src";
 import {Teacher} from "./entity/Teacher";
 import {UniqueMetadata} from "../../../src/metadata/UniqueMetadata";
@@ -12,7 +12,7 @@ import {IndexMetadata} from "../../../src/metadata/IndexMetadata";
 describe("schema builder > change unique constraint", () => {
 
     let connections: Connection[];
-    before(async () => {
+    beforeAll(async () => {
         connections = await createTestingConnections({
             entities: [__dirname + "/entity/*{.js,.ts}"],
             schemaCreate: true,
@@ -20,9 +20,9 @@ describe("schema builder > change unique constraint", () => {
         });
     });
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should correctly add new unique constraint", () => PromiseUtils.runInSequence(connections, async connection => {
+    test("should correctly add new unique constraint", () => PromiseUtils.runInSequence(connections, async connection => {
         const teacherMetadata = connection.getMetadata(Teacher);
         const nameColumn = teacherMetadata.findColumnWithPropertyName("name")!;
         let uniqueIndexMetadata: IndexMetadata|undefined = undefined;
@@ -61,14 +61,14 @@ describe("schema builder > change unique constraint", () => {
         await queryRunner.release();
 
         if (connection.driver instanceof MysqlDriver) {
-            table!.indices.length.should.be.equal(1);
-            table!.indices[0].isUnique!.should.be.true;
+            expect(table!.indices.length).toEqual(1);
+            expect(table!.indices[0].isUnique)!.toBeTruthy();
 
             // revert changes
             teacherMetadata.indices.splice(teacherMetadata.indices.indexOf(uniqueIndexMetadata!), 1);
 
         } else {
-            table!.uniques.length.should.be.equal(1);
+            expect(table!.uniques.length).toEqual(1);
 
             // revert changes
             teacherMetadata.uniques.splice(teacherMetadata.uniques.indexOf(uniqueMetadata!), 1);
@@ -100,7 +100,7 @@ describe("schema builder > change unique constraint", () => {
 
         if (connection.driver instanceof MysqlDriver) {
             const tableIndex = table!.indices.find(index => index.columnNames.length === 2 && index.isUnique === true);
-            tableIndex!.name!.should.be.equal("changed_unique");
+            expect(tableIndex!.name)!.toEqual("changed_unique");
 
             // revert changes
             const uniqueIndexMetadata = postMetadata.indices.find(i => i.name === "changed_unique");
@@ -108,7 +108,7 @@ describe("schema builder > change unique constraint", () => {
 
         } else {
             const tableUnique = table!.uniques.find(unique => unique.columnNames.length === 2);
-            tableUnique!.name!.should.be.equal("changed_unique");
+            expect(tableUnique!.name)!.toEqual("changed_unique");
 
             // revert changes
             const uniqueMetadata = postMetadata.uniques.find(i => i.name === "changed_unique");
@@ -117,7 +117,7 @@ describe("schema builder > change unique constraint", () => {
 
     }));
 
-    it("should correctly drop removed unique constraint", () => PromiseUtils.runInSequence(connections, async connection => {
+    test("should correctly drop removed unique constraint", () => PromiseUtils.runInSequence(connections, async connection => {
         const postMetadata = connection.getMetadata(Post);
 
         // Mysql stores unique constraints as unique indices.
@@ -137,10 +137,10 @@ describe("schema builder > change unique constraint", () => {
         await queryRunner.release();
 
         if (connection.driver instanceof MysqlDriver) {
-            table!.indices.length.should.be.equal(1);
+            expect(table!.indices.length).toEqual(1);
 
         } else {
-            table!.uniques.length.should.be.equal(1);
+            expect(table!.uniques.length).toEqual(1);
         }
     }));
 

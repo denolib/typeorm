@@ -1,22 +1,21 @@
 import "reflect-metadata";
-import {Connection} from "../../../src/connection/Connection";
+import {Connection} from "../../../src";
 import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver";
-import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils";
-import {expect} from "chai";
+import {closeTestingConnections, createTestingConnections} from "../../../test/utils/test-utils";
 
 describe("schema builder > drop column", () => {
 
     let connections: Connection[];
-    before(async () => {
+    beforeAll(async () => {
         connections = await createTestingConnections({
             entities: [__dirname + "/entity/*{.js,.ts}"],
             schemaCreate: true,
             dropSchema: true,
         });
     });
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should correctly drop column", () => Promise.all(connections.map(async connection => {
+    test("should correctly drop column", () => Promise.all(connections.map(async connection => {
 
         // TODO: https://github.com/cockroachdb/cockroach/issues/34710
         if (connection.driver instanceof CockroachDriver)
@@ -39,10 +38,10 @@ describe("schema builder > drop column", () => {
         const studentTable = await queryRunner.getTable("student");
         await queryRunner.release();
 
-        expect(studentTable!.findColumnByName("name")).to.be.undefined;
-        expect(studentTable!.findColumnByName("faculty")).to.be.undefined;
-        studentTable!.indices.length.should.be.equal(0);
-        studentTable!.foreignKeys.length.should.be.equal(1);
+        expect(studentTable!.findColumnByName("name")).toBeUndefined();
+        expect(studentTable!.findColumnByName("faculty")).toBeUndefined();
+        expect(studentTable!.indices.length).toEqual(0);
+        expect(studentTable!.foreignKeys.length).toEqual(1);
 
     })));
 });

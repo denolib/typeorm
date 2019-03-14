@@ -1,6 +1,6 @@
 import "reflect-metadata";
-import {Connection} from "../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
+import {Connection} from "../../../src";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
 import {PostgresDriver} from "../../../src/driver/postgres/PostgresDriver";
 import {SqlServerDriver} from "../../../src/driver/sqlserver/SqlServerDriver";
 import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver";
@@ -9,7 +9,7 @@ import {ForeignKeyMetadata} from "../../../src/metadata/ForeignKeyMetadata";
 describe("schema builder > custom-db-and-schema-sync", () => {
 
     let connections: Connection[];
-    before(async () => {
+    beforeAll(async () => {
         connections = await createTestingConnections({
             entities: [__dirname + "/entity/*{.js,.ts}"],
             enabledDrivers: ["mysql", "mssql", "postgres"],
@@ -17,9 +17,9 @@ describe("schema builder > custom-db-and-schema-sync", () => {
         });
     });
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should correctly sync tables with custom schema and database", () => Promise.all(connections.map(async connection => {
+    test("should correctly sync tables with custom schema and database", () => Promise.all(connections.map(async connection => {
         const queryRunner = connection.createQueryRunner();
         const photoMetadata = connection.getMetadata("photo");
         const albumMetadata = connection.getMetadata("album");
@@ -69,8 +69,8 @@ describe("schema builder > custom-db-and-schema-sync", () => {
         // create foreign key
         let albumTable = await queryRunner.getTable(albumMetadata.tablePath);
         let photoTable = await queryRunner.getTable(photoMetadata.tablePath);
-        albumTable!.should.be.exist;
-        photoTable!.should.be.exist;
+        expect(albumTable)!.toBeDefined();
+        expect(photoTable)!.toBeDefined();
 
         const columns = photoMetadata.columns.filter(column => column.propertyName === "albumId");
         const referencedColumns = albumMetadata.columns.filter(column => column.propertyName === "id");
@@ -86,7 +86,7 @@ describe("schema builder > custom-db-and-schema-sync", () => {
         await connection.synchronize();
 
         photoTable = await queryRunner.getTable(photoMetadata.tablePath);
-        photoTable!.foreignKeys.length.should.be.equal(1);
+        expect(photoTable!.foreignKeys.length).toEqual(1);
 
         // drop foreign key
         photoMetadata.foreignKeys = [];

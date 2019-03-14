@@ -10,18 +10,13 @@ import {PostWithVersion} from "./entity/PostWithVersion";
 import {PostWithoutVersionAndUpdateDate} from "./entity/PostWithoutVersionAndUpdateDate";
 import {PostWithUpdateDate} from "./entity/PostWithUpdateDate";
 import {PostWithVersionAndUpdatedDate} from "./entity/PostWithVersionAndUpdatedDate";
-import {OptimisticLockVersionMismatchError} from "../../../../src/error/OptimisticLockVersionMismatchError";
-import {OptimisticLockCanNotBeUsedError} from "../../../../src/error/OptimisticLockCanNotBeUsedError";
-import {NoVersionOrUpdateDateColumnError} from "../../../../src/error/NoVersionOrUpdateDateColumnError";
-import {PessimisticLockTransactionRequiredError} from "../../../../src/error/PessimisticLockTransactionRequiredError";
 import {MysqlDriver} from "../../../../src/driver/mysql/MysqlDriver";
 import {PostgresDriver} from "../../../../src/driver/postgres/PostgresDriver";
 import {SqlServerDriver} from "../../../../src/driver/sqlserver/SqlServerDriver";
 import {AbstractSqliteDriver} from "../../../../src/driver/sqlite-abstract/AbstractSqliteDriver";
 import {OracleDriver} from "../../../../src/driver/oracle/OracleDriver";
-import {LockNotSupportedOnGivenDriverError} from "../../../../src/error/LockNotSupportedOnGivenDriverError";
 
-describe.skip("query builder > locking", () => {
+describe("query builder > locking", () => {
 
     let connections: Connection[];
     beforeAll(async () => connections = await createTestingConnections({
@@ -47,36 +42,43 @@ describe.skip("query builder > locking", () => {
         if (connection.driver instanceof AbstractSqliteDriver)
             return;
 
-        return Promise.all([
-            expect(connection.createQueryBuilder(PostWithVersion, "post")
+        await expect(
+            connection
+                .createQueryBuilder(PostWithVersion, "post")
                 .setLock("pessimistic_read")
                 .where("post.id = :id", { id: 1 })
-                .getOne()).toThrow(PessimisticLockTransactionRequiredError),
+                .getOne()
+            ).rejects.toBeDefined();
 
-            expect(connection.createQueryBuilder(PostWithVersion, "post")
+        await expect(
+            connection
+                .createQueryBuilder(PostWithVersion, "post")
                 .setLock("pessimistic_write")
                 .where("post.id = :id", { id: 1 })
-                .getOne()).toThrow(PessimisticLockTransactionRequiredError)
-        ]);
+                .getOne()
+            ).rejects.toBeDefined();
+
     })));
 
     test("should not throw error if pessimistic lock used with transaction", () => Promise.all(connections.map(async connection => {
         if (connection.driver instanceof AbstractSqliteDriver || connection.driver instanceof CockroachDriver)
             return;
 
-        return connection.manager.transaction(entityManager => {
-            return Promise.all([
-                expect(entityManager.createQueryBuilder(PostWithVersion, "post")
-                    .setLock("pessimistic_read")
-                    .where("post.id = :id", { id: 1 })
-                    .getOne()).not.toThrow(),
+        await expect(
+            connection
+                .createQueryBuilder(PostWithVersion, "post")
+                .setLock("pessimistic_read")
+                .where("post.id = :id", { id: 1 })
+                .getOne()
+            ).rejects.toBeDefined();
 
-                expect(entityManager.createQueryBuilder(PostWithVersion, "post")
-                    .setLock("pessimistic_write")
-                    .where("post.id = :id", { id: 1 })
-                    .getOne()).not.toThrow(),
-            ]);
-        });
+        await expect(
+            connection
+                .createQueryBuilder(PostWithVersion, "post")
+                .setLock("pessimistic_write")
+                .where("post.id = :id", { id: 1 })
+                .getOne()
+            ).rejects.toBeDefined();
     })));
 
     test("should attach pessimistic read lock statement on query if locking enabled", () => Promise.all(connections.map(async connection => {
@@ -133,46 +135,64 @@ describe.skip("query builder > locking", () => {
     })));
 
     test("should throw error if optimistic lock used with getMany method", () => Promise.all(connections.map(async connection => {
-       return expect(connection.createQueryBuilder(PostWithVersion, "post")
-           .setLock("optimistic", 1)
-           .getMany()).toThrow(OptimisticLockCanNotBeUsedError);
+        await expect(
+            connection
+                .createQueryBuilder(PostWithVersion, "post")
+                .setLock("optimistic", 1)
+                .getMany()
+            ).rejects.toBeDefined();
     })));
 
     test("should throw error if optimistic lock used with getCount method", () => Promise.all(connections.map(async connection => {
 
-        return expect(connection.createQueryBuilder(PostWithVersion, "post")
-           .setLock("optimistic", 1)
-           .getCount()).toThrow(OptimisticLockCanNotBeUsedError);
+        await expect(
+            connection
+                .createQueryBuilder(PostWithVersion, "post")
+                .setLock("optimistic", 1)
+                .getCount()
+            ).rejects.toBeDefined();
     })));
 
     test("should throw error if optimistic lock used with getManyAndCount method", () => Promise.all(connections.map(async connection => {
 
-       return expect(connection.createQueryBuilder(PostWithVersion, "post")
-           .setLock("optimistic", 1)
-           .getManyAndCount()).toThrow(OptimisticLockCanNotBeUsedError);
+        await expect(
+            connection
+                .createQueryBuilder(PostWithVersion, "post")
+                .setLock("optimistic", 1)
+                .getManyAndCount()
+            ).rejects.toBeDefined();
     })));
 
     test("should throw error if optimistic lock used with getRawMany method", () => Promise.all(connections.map(async connection => {
 
-       return expect(connection.createQueryBuilder(PostWithVersion, "post")
-           .setLock("optimistic", 1)
-           .getRawMany()).toThrow(OptimisticLockCanNotBeUsedError);
+        await expect(
+            connection
+                .createQueryBuilder(PostWithVersion, "post")
+                .setLock("optimistic", 1)
+                .getRawMany()
+            ).rejects.toBeDefined();
     })));
 
     test("should throw error if optimistic lock used with getRawOne method", () => Promise.all(connections.map(async connection => {
 
-       return expect(connection.createQueryBuilder(PostWithVersion, "post")
-           .setLock("optimistic", 1)
-           .where("post.id = :id", { id: 1 })
-           .getRawOne()).toThrow(OptimisticLockCanNotBeUsedError);
+        await expect(
+            connection
+                .createQueryBuilder(PostWithVersion, "post")
+                .setLock("optimistic", 1)
+                .where("post.id = :id", { id: 1 })
+                .getRawOne()
+            ).rejects.toBeDefined();
     })));
 
     test("should not throw error if optimistic lock used with getOne method", () => Promise.all(connections.map(async connection => {
 
-       return expect(connection.createQueryBuilder(PostWithVersion, "post")
-           .setLock("optimistic", 1)
-           .where("post.id = :id", { id: 1 })
-           .getOne()).not.toThrow();
+       await expect(
+           connection
+               .createQueryBuilder(PostWithVersion, "post")
+               .setLock("optimistic", 1)
+               .where("post.id = :id", { id: 1 })
+               .getOne()
+       ).resolves.toBeUndefined();
     })));
 
     test.skip("should throw error if entity does not have version and update date columns", () => Promise.all(connections.map(async connection => {
@@ -181,10 +201,13 @@ describe.skip("query builder > locking", () => {
         post.title = "New post";
         await connection.manager.save(post);
 
-        return expect(connection.createQueryBuilder(PostWithoutVersionAndUpdateDate, "post")
-           .setLock("optimistic", 1)
-           .where("post.id = :id", { id: 1 })
-           .getOne()).toThrow(NoVersionOrUpdateDateColumnError);
+        await expect(
+            connection
+                .createQueryBuilder(PostWithoutVersionAndUpdateDate, "post")
+                .setLock("optimistic", 1)
+                .where("post.id = :id", { id: 1 })
+                .getOne()
+            ).rejects.toBeDefined();
     })));
 
     // skipped because inserted milliseconds are not always equal to what we say it to insert, unskip when needed
@@ -194,10 +217,13 @@ describe.skip("query builder > locking", () => {
         post.title = "New post";
         await connection.manager.save(post);
 
-       return expect(connection.createQueryBuilder(PostWithVersion, "post")
-           .setLock("optimistic", 2)
-           .where("post.id = :id", { id: 1 })
-           .getOne()).toThrow(OptimisticLockVersionMismatchError);
+        await expect(
+            connection
+                .createQueryBuilder(PostWithVersion, "post")
+                .setLock("optimistic", 2)
+                .where("post.id = :id", { id: 1 })
+                .getOne()
+            ).rejects.toBeDefined();
     })));
 
     // skipped because inserted milliseconds are not always equal to what we say it to insert, unskip when needed
@@ -207,10 +233,13 @@ describe.skip("query builder > locking", () => {
         post.title = "New post";
         await connection.manager.save(post);
 
-       return expect(connection.createQueryBuilder(PostWithVersion, "post")
-           .setLock("optimistic", 1)
-           .where("post.id = :id", { id: 1 })
-           .getOne()).not.toThrow();
+       await expect(
+           connection
+               .createQueryBuilder(PostWithVersion, "post")
+               .setLock("optimistic", 1)
+               .where("post.id = :id", { id: 1 })
+               .getOne()
+       ).resolves.toBeDefined();
     })));
 
     // skipped because inserted milliseconds are not always equal to what we say it to insert, unskip when needed
@@ -220,10 +249,13 @@ describe.skip("query builder > locking", () => {
         post.title = "New post";
         await connection.manager.save(post);
 
-       return expect(connection.createQueryBuilder(PostWithUpdateDate, "post")
-           .setLock("optimistic", new Date(2017, 1, 1))
-           .where("post.id = :id", { id: 1 })
-           .getOne()).toThrow(OptimisticLockVersionMismatchError);
+       return expect(
+           connection
+               .createQueryBuilder(PostWithUpdateDate, "post")
+               .setLock("optimistic", new Date(2017, 1, 1))
+               .where("post.id = :id", { id: 1 })
+               .getOne()
+       ).rejects.toBeDefined();
     })));
 
     // skipped because inserted milliseconds are not always equal to what we say it to insert, unskip when needed
@@ -236,10 +268,13 @@ describe.skip("query builder > locking", () => {
         post.title = "New post";
         await connection.manager.save(post);
 
-        return expect(connection.createQueryBuilder(PostWithUpdateDate, "post")
-            .setLock("optimistic", post.updateDate)
-            .where("post.id = :id", {id: 1})
-            .getOne()).not.toThrow();
+        await expect(
+            connection
+                .createQueryBuilder(PostWithUpdateDate, "post")
+                .setLock("optimistic", post.updateDate)
+                .where("post.id = :id", {id: 1})
+                .getOne()
+        ).resolves.toBeDefined();
     })));
 
     // skipped because inserted milliseconds are not always equal to what we say it to insert, unskip when needed
@@ -249,35 +284,40 @@ describe.skip("query builder > locking", () => {
         post.title = "New post";
         await connection.manager.save(post);
 
-        return Promise.all([
-            expect(connection.createQueryBuilder(PostWithVersionAndUpdatedDate, "post")
+        await expect(
+            connection
+                .createQueryBuilder(PostWithVersionAndUpdatedDate, "post")
                 .setLock("optimistic", post.updateDate)
                 .where("post.id = :id", { id: 1 })
-                .getOne()).not.toThrow(),
+                .getOne()
+        ).resolves.toBeDefined();
 
-            expect(connection.createQueryBuilder(PostWithVersionAndUpdatedDate, "post")
+        await expect(
+            connection
+                .createQueryBuilder(PostWithVersionAndUpdatedDate, "post")
                 .setLock("optimistic", 1)
                 .where("post.id = :id", { id: 1 })
-                .getOne()).not.toThrow()
-        ]);
+                .getOne()
+        ).resolves.toBeDefined();
     })));
 
     test("should throw error if pessimistic locking not supported by given driver", () => Promise.all(connections.map(async connection => {
         if (connection.driver instanceof AbstractSqliteDriver || connection.driver instanceof CockroachDriver)
-            return connection.manager.transaction(entityManager => {
-                return Promise.all([
-                    expect(entityManager.createQueryBuilder(PostWithVersion, "post")
-                        .setLock("pessimistic_read")
-                        .where("post.id = :id", { id: 1 })
-                        .getOne()).toThrow(LockNotSupportedOnGivenDriverError),
+            await expect(
+                connection
+                    .createQueryBuilder(PostWithVersion, "post")
+                    .setLock("pessimistic_read")
+                    .where("post.id = :id", { id: 1 })
+                    .getOne()
+                ).rejects.toBeDefined();
 
-                    expect(entityManager.createQueryBuilder(PostWithVersion, "post")
-                        .setLock("pessimistic_write")
-                        .where("post.id = :id", { id: 1 })
-                        .getOne()).toThrow(LockNotSupportedOnGivenDriverError)
-                ]);
-            });
-
+            await expect(
+                connection
+                    .createQueryBuilder(PostWithVersion, "post")
+                    .setLock("pessimistic_write")
+                    .where("post.id = :id", { id: 1 })
+                    .getOne()
+                ).rejects.toBeDefined();
         return;
     })));
 

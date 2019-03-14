@@ -1,8 +1,7 @@
 import "reflect-metadata";
-import {Connection} from "../../../src/connection/Connection";
+import {Connection} from "../../../src";
 import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {expect} from "chai";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
 import {PromiseUtils} from "../../../src";
 import {AbstractSqliteDriver} from "../../../src/driver/sqlite-abstract/AbstractSqliteDriver";
 import {PostgresDriver} from "../../../src/driver/postgres/PostgresDriver";
@@ -15,7 +14,7 @@ import {OracleDriver} from "../../../src/driver/oracle/OracleDriver";
 describe("schema builder > change column", () => {
 
     let connections: Connection[];
-    before(async () => {
+    beforeAll(async () => {
         connections = await createTestingConnections({
             entities: [__dirname + "/entity/*{.js,.ts}"],
             schemaCreate: true,
@@ -23,9 +22,9 @@ describe("schema builder > change column", () => {
         });
     });
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should correctly change column name", () => PromiseUtils.runInSequence(connections, async connection => {
+    test("should correctly change column name", () => PromiseUtils.runInSequence(connections, async connection => {
         const postMetadata = connection.getMetadata(Post);
         const nameColumn = postMetadata.findColumnWithPropertyName("name")!;
         nameColumn.propertyName = "title";
@@ -37,15 +36,15 @@ describe("schema builder > change column", () => {
         const postTable = await queryRunner.getTable("post");
         await queryRunner.release();
 
-        expect(postTable!.findColumnByName("name")).to.be.undefined;
-        postTable!.findColumnByName("title")!.should.be.exist;
+        expect(postTable!.findColumnByName("name")).toBeUndefined();
+        expect(postTable!.findColumnByName("title"))!.toBeDefined();
 
         // revert changes
         nameColumn.propertyName = "name";
         nameColumn.build(connection);
     }));
 
-    it("should correctly change column length", () => PromiseUtils.runInSequence(connections, async connection => {
+    test("should correctly change column length", () => PromiseUtils.runInSequence(connections, async connection => {
         const postMetadata = connection.getMetadata(Post);
         const nameColumn = postMetadata.findColumnWithPropertyName("name")!;
         const textColumn = postMetadata.findColumnWithPropertyName("text")!;
@@ -58,13 +57,13 @@ describe("schema builder > change column", () => {
         const postTable = await queryRunner.getTable("post");
         await queryRunner.release();
 
-        postTable!.findColumnByName("name")!.length.should.be.equal("500");
-        postTable!.findColumnByName("text")!.length.should.be.equal("300");
+        expect(postTable!.findColumnByName("name")!.length).toEqual("500");
+        expect(postTable!.findColumnByName("text")!.length).toEqual("300");
 
         if (connection.driver instanceof MysqlDriver) {
-            postTable!.indices.length.should.be.equal(2);
+            expect(postTable!.indices.length).toEqual(2);
         } else {
-            postTable!.uniques.length.should.be.equal(2);
+            expect(postTable!.uniques.length).toEqual(2);
         }
 
         // revert changes
@@ -72,7 +71,7 @@ describe("schema builder > change column", () => {
         textColumn.length = "255";
     }));
 
-    it("should correctly change column type", () => PromiseUtils.runInSequence(connections, async connection => {
+    test("should correctly change column type", () => PromiseUtils.runInSequence(connections, async connection => {
 
         // TODO: https://github.com/cockroachdb/cockroach/issues/34710
         if (connection.driver instanceof CockroachDriver)
@@ -93,14 +92,14 @@ describe("schema builder > change column", () => {
         const postVersionTable = await queryRunner.getTable("post_version");
         await queryRunner.release();
 
-        postVersionTable!.foreignKeys.length.should.be.equal(1);
+        expect(postVersionTable!.foreignKeys.length).toEqual(1);
 
         // revert changes
         versionColumn.type = "varchar";
         postVersionColumn.type = "varchar";
     }));
 
-    it("should correctly make column primary and generated", () => PromiseUtils.runInSequence(connections, async connection => {
+    test("should correctly make column primary and generated", () => PromiseUtils.runInSequence(connections, async connection => {
         // CockroachDB does not allow changing PK
         if (connection.driver instanceof CockroachDriver)
             return;
@@ -122,12 +121,12 @@ describe("schema builder > change column", () => {
         const postTable = await queryRunner.getTable("post");
         await queryRunner.release();
 
-        postTable!.findColumnByName("id")!.isGenerated.should.be.true;
-        postTable!.findColumnByName("id")!.generationStrategy!.should.be.equal("increment");
+        expect(postTable!.findColumnByName("id")!.isGenerated).toBeTruthy();
+        expect(postTable!.findColumnByName("id")!.generationStrategy)!.toEqual("increment");
 
         // SQLite does not support AUTOINCREMENT with composite primary keys
         if (!(connection.driver instanceof AbstractSqliteDriver) && !(connection.driver instanceof OracleDriver))
-            postTable!.findColumnByName("version")!.isPrimary.should.be.true;
+            expect(postTable!.findColumnByName("version")!.isPrimary).toBeTruthy();
 
         // revert changes
         idColumn.isGenerated = false;
@@ -135,7 +134,7 @@ describe("schema builder > change column", () => {
         versionColumn.isPrimary = false;
     }));
 
-    it("should correctly change column `isGenerated` property when column is on foreign key", () => PromiseUtils.runInSequence(connections, async connection => {
+    test("should correctly change column `isGenerated` property when column is on foreign key", () => PromiseUtils.runInSequence(connections, async connection => {
         const teacherMetadata = connection.getMetadata("teacher");
         const idColumn = teacherMetadata.findColumnWithPropertyName("id")!;
         idColumn.isGenerated = false;
@@ -147,8 +146,8 @@ describe("schema builder > change column", () => {
         const teacherTable = await queryRunner.getTable("teacher");
         await queryRunner.release();
 
-        teacherTable!.findColumnByName("id")!.isGenerated.should.be.false;
-        expect(teacherTable!.findColumnByName("id")!.generationStrategy).to.be.undefined;
+        expect(teacherTable!.findColumnByName("id")!.isGenerated).toBeFalsy();
+        expect(teacherTable!.findColumnByName("id")!.generationStrategy).toBeUndefined();
 
         // revert changes
         idColumn.isGenerated = true;
@@ -156,7 +155,7 @@ describe("schema builder > change column", () => {
 
     }));
 
-    it("should correctly change non-generated column on to uuid-generated column", () => PromiseUtils.runInSequence(connections, async connection => {
+    test("should correctly change non-generated column on to uuid-generated column", () => PromiseUtils.runInSequence(connections, async connection => {
         // CockroachDB does not allow changing PK
         if (connection.driver instanceof CockroachDriver)
             return;
@@ -186,13 +185,13 @@ describe("schema builder > change column", () => {
         await queryRunner.release();
 
         if (connection.driver instanceof PostgresDriver || connection.driver instanceof SqlServerDriver || connection.driver instanceof CockroachDriver) {
-            postTable!.findColumnByName("id")!.isGenerated.should.be.true;
-            postTable!.findColumnByName("id")!.generationStrategy!.should.be.equal("uuid");
+            expect(postTable!.findColumnByName("id")!.isGenerated).toBeTruthy();
+            expect(postTable!.findColumnByName("id")!.generationStrategy)!.toEqual("uuid");
 
         } else {
             // other driver does not natively supports uuid type
-            postTable!.findColumnByName("id")!.isGenerated.should.be.false;
-            expect(postTable!.findColumnByName("id")!.generationStrategy).to.be.undefined;
+            expect(postTable!.findColumnByName("id")!.isGenerated).toBeFalsy();
+            expect(postTable!.findColumnByName("id")!.generationStrategy).toBeUndefined();
         }
 
         // revert changes
@@ -204,7 +203,7 @@ describe("schema builder > change column", () => {
 
     }));
 
-    it("should correctly change generated column generation strategy", () => PromiseUtils.runInSequence(connections, async connection => {
+    test("should correctly change generated column generation strategy", () => PromiseUtils.runInSequence(connections, async connection => {
         // CockroachDB does not allow changing PK
         if (connection.driver instanceof CockroachDriver)
             return;
@@ -234,13 +233,13 @@ describe("schema builder > change column", () => {
         await queryRunner.release();
 
         if (connection.driver instanceof PostgresDriver || connection.driver instanceof SqlServerDriver) {
-            teacherTable!.findColumnByName("id")!.isGenerated.should.be.true;
-            teacherTable!.findColumnByName("id")!.generationStrategy!.should.be.equal("uuid");
+            expect(teacherTable!.findColumnByName("id")!.isGenerated).toBeTruthy();
+            expect(teacherTable!.findColumnByName("id")!.generationStrategy)!.toEqual("uuid");
 
         } else {
             // other driver does not natively supports uuid type
-            teacherTable!.findColumnByName("id")!.isGenerated.should.be.false;
-            expect(teacherTable!.findColumnByName("id")!.generationStrategy).to.be.undefined;
+            expect(teacherTable!.findColumnByName("id")!.isGenerated).toBeFalsy();
+            expect(teacherTable!.findColumnByName("id")!.generationStrategy).toBeUndefined();
         }
 
         // revert changes
