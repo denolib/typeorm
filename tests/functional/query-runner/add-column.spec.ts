@@ -1,25 +1,24 @@
 import "reflect-metadata";
-import {expect} from "chai";
-import {Connection} from "../../../src/connection/Connection";
+import {Connection} from "../../../src";
 import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver";
-import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils";
-import {TableColumn} from "../../../src/schema-builder/table/TableColumn";
+import {closeTestingConnections, createTestingConnections} from "../../../test/utils/test-utils";
+import {TableColumn} from "../../../src";
 import {AbstractSqliteDriver} from "../../../src/driver/sqlite-abstract/AbstractSqliteDriver";
 import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver";
 
 describe("query runner > add column", () => {
 
     let connections: Connection[];
-    before(async () => {
+    beforeAll(async () => {
         connections = await createTestingConnections({
             entities: [__dirname + "/entity/*{.js,.ts}"],
             schemaCreate: true,
             dropSchema: true,
         });
     });
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should correctly add column and revert add", () => Promise.all(connections.map(async connection => {
+    test("should correctly add column and revert add", () => Promise.all(connections.map(async connection => {
 
         const queryRunner = connection.createQueryRunner();
 
@@ -53,30 +52,30 @@ describe("query runner > add column", () => {
 
         table = await queryRunner.getTable("post");
         column1 = table!.findColumnByName("secondId")!;
-        column1!.should.be.exist;
-        column1!.isUnique.should.be.true;
-        column1!.isNullable.should.be.false;
+        expect(column1)!.toBeDefined();
+        expect(column1!.isUnique).toBeTruthy();
+        expect(column1!.isNullable).toBeFalsy();
 
         // CockroachDB does not support altering primary key constraint
         if (!(connection.driver instanceof CockroachDriver))
-            column1!.isPrimary.should.be.true;
+            expect(column1!.isPrimary).toBeTruthy();
 
         // MySql and Sqlite does not supports autoincrement composite primary keys.
         if (!(connection.driver instanceof MysqlDriver) && !(connection.driver instanceof AbstractSqliteDriver) && !(connection.driver instanceof CockroachDriver)) {
-            column1!.isGenerated.should.be.true;
-            column1!.generationStrategy!.should.be.equal("increment");
+            expect(column1!.isGenerated).toBeTruthy();
+            expect(column1!.generationStrategy)!.toEqual("increment");
         }
 
         column2 = table!.findColumnByName("description")!;
-        column2.should.be.exist;
-        column2.length.should.be.equal("100");
-        column2!.default!.should.be.equal("'this is description'");
+        expect(column2).toBeDefined();
+        expect(column2.length).toEqual("100");
+        expect(column2!.default)!.toEqual("'this is description'");
 
         await queryRunner.executeMemoryDownSql();
 
         table = await queryRunner.getTable("post");
-        expect(table!.findColumnByName("secondId")).to.be.undefined;
-        expect(table!.findColumnByName("description")).to.be.undefined;
+        expect(table!.findColumnByName("secondId")).toBeUndefined();
+        expect(table!.findColumnByName("description")).toBeUndefined();
 
         await queryRunner.release();
     })));

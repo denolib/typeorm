@@ -1,11 +1,11 @@
 import "reflect-metadata";
-import {Connection} from "../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
+import {Connection} from "../../../src";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
 
 describe("query runner > create and drop schema", () => {
 
     let connections: Connection[];
-    before(async () => {
+    beforeAll(async () => {
         connections = await createTestingConnections({
             entities: [__dirname + "/entity/*{.js,.ts}"],
             enabledDrivers: ["mssql", "postgres"],
@@ -13,24 +13,24 @@ describe("query runner > create and drop schema", () => {
         });
     });
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should correctly create and drop schema and revert it", () => Promise.all(connections.map(async connection => {
+    test("should correctly create and drop schema and revert it", () => Promise.all(connections.map(async connection => {
 
         const queryRunner = connection.createQueryRunner();
 
         await queryRunner.createSchema("myTestSchema", true);
         let hasSchema = await queryRunner.hasSchema("myTestSchema");
-        hasSchema.should.be.true;
+        expect(hasSchema).toBeTruthy();
 
         await queryRunner.dropSchema("myTestSchema");
         hasSchema = await queryRunner.hasSchema("myTestSchema");
-        hasSchema.should.be.false;
+        expect(hasSchema).toBeFalsy();
 
         await queryRunner.executeMemoryDownSql();
 
         hasSchema = await queryRunner.hasSchema("myTestSchema");
-        hasSchema.should.be.false;
+        expect(hasSchema).toBeFalsy();
 
         await queryRunner.release();
     })));

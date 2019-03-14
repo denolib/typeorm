@@ -1,22 +1,21 @@
 import "reflect-metadata";
-import {expect} from "chai";
-import {Connection} from "../../../src/connection/Connection";
+import {Connection} from "../../../src";
 import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver";
-import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils";
+import {closeTestingConnections, createTestingConnections} from "../../../test/utils/test-utils";
 
 describe("query runner > drop column", () => {
 
     let connections: Connection[];
-    before(async () => {
+    beforeAll(async () => {
         connections = await createTestingConnections({
             entities: [__dirname + "/entity/*{.js,.ts}"],
             schemaCreate: true,
             dropSchema: true,
         });
     });
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should correctly drop column and revert drop", () => Promise.all(connections.map(async connection => {
+    test("should correctly drop column and revert drop", () => Promise.all(connections.map(async connection => {
 
         const queryRunner = connection.createQueryRunner();
 
@@ -24,9 +23,9 @@ describe("query runner > drop column", () => {
         const idColumn = table!.findColumnByName("id")!;
         const nameColumn = table!.findColumnByName("name")!;
         const versionColumn = table!.findColumnByName("version")!;
-        idColumn!.should.be.exist;
-        nameColumn!.should.be.exist;
-        versionColumn!.should.be.exist;
+        expect(idColumn)!.toBeDefined();
+        expect(nameColumn)!.toBeDefined();
+        expect(versionColumn)!.toBeDefined();
 
         // In Sqlite 'dropColumns' method is more optimal than 'dropColumn', because it recreate table just once,
         // without all removed columns. In other drivers it's no difference between these methods, because 'dropColumns'
@@ -39,17 +38,17 @@ describe("query runner > drop column", () => {
         }
 
         table = await queryRunner.getTable("post");
-        expect(table!.findColumnByName("name")).to.be.undefined;
-        expect(table!.findColumnByName("version")).to.be.undefined;
+        expect(table!.findColumnByName("name")).toBeUndefined();
+        expect(table!.findColumnByName("version")).toBeUndefined();
         if (!(connection.driver instanceof CockroachDriver))
-            expect(table!.findColumnByName("id")).to.be.undefined;
+            expect(table!.findColumnByName("id")).toBeUndefined();
 
         await queryRunner.executeMemoryDownSql();
 
         table = await queryRunner.getTable("post");
-        table!.findColumnByName("id")!.should.be.exist;
-        table!.findColumnByName("name")!.should.be.exist;
-        table!.findColumnByName("version")!.should.be.exist;
+        expect(table!.findColumnByName("id"))!.toBeDefined();
+        expect(table!.findColumnByName("name"))!.toBeDefined();
+        expect(table!.findColumnByName("version"))!.toBeDefined();
 
         await queryRunner.release();
     })));

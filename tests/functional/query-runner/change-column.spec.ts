@@ -1,23 +1,22 @@
 import "reflect-metadata";
-import {expect} from "chai";
-import {Connection} from "../../../src/connection/Connection";
+import {Connection} from "../../../src";
 import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver";
-import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils";
+import {closeTestingConnections, createTestingConnections} from "../../../test/utils/test-utils";
 import {AbstractSqliteDriver} from "../../../src/driver/sqlite-abstract/AbstractSqliteDriver";
 
 describe("query runner > change column", () => {
 
     let connections: Connection[];
-    before(async () => {
+    beforeAll(async () => {
         connections = await createTestingConnections({
             entities: [__dirname + "/entity/*{.js,.ts}"],
             schemaCreate: true,
             dropSchema: true,
         });
     });
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should correctly change column and revert change", () => Promise.all(connections.map(async connection => {
+    test("should correctly change column and revert change", () => Promise.all(connections.map(async connection => {
 
         // CockroachDB does not allow changing primary columns and renaming constraints
         if (connection.driver instanceof CockroachDriver)
@@ -27,8 +26,8 @@ describe("query runner > change column", () => {
         let table = await queryRunner.getTable("post");
 
         const nameColumn = table!.findColumnByName("name")!;
-        nameColumn!.default!.should.exist;
-        nameColumn!.isUnique.should.be.false;
+        expect(nameColumn!.default)!.toBeDefined();
+        expect(nameColumn!.isUnique).toBeFalsy();
 
         const changedNameColumn = nameColumn.clone();
         changedNameColumn.default = undefined;
@@ -38,13 +37,13 @@ describe("query runner > change column", () => {
         await queryRunner.changeColumn(table!, nameColumn, changedNameColumn);
 
         table = await queryRunner.getTable("post");
-        expect(table!.findColumnByName("name")!.default).to.be.undefined;
-        table!.findColumnByName("name")!.isUnique.should.be.true;
-        table!.findColumnByName("name")!.isNullable.should.be.true;
+        expect(table!.findColumnByName("name")!.default).toBeUndefined();
+        expect(table!.findColumnByName("name")!.isUnique).toBeTruthy();
+        expect(table!.findColumnByName("name")!.isNullable).toBeTruthy();
 
         // SQLite does not impose any length restrictions
         if (!(connection.driver instanceof AbstractSqliteDriver))
-            table!.findColumnByName("name")!.length!.should.be.equal("500");
+            expect(table!.findColumnByName("name")!.length)!.toEqual("500");
 
         const textColumn = table!.findColumnByName("text")!;
         const changedTextColumn = textColumn.clone();
@@ -55,8 +54,8 @@ describe("query runner > change column", () => {
 
         // column name was changed to 'description'
         table = await queryRunner.getTable("post");
-        table!.findColumnByName("description")!.isPrimary.should.be.true;
-        table!.findColumnByName("description")!.default!.should.exist;
+        expect(table!.findColumnByName("description")!.isPrimary).toBeTruthy();
+        expect(table!.findColumnByName("description")!.default)!.toBeDefined();
 
         let idColumn = table!.findColumnByName("id")!;
         let changedIdColumn = idColumn.clone();
@@ -64,22 +63,22 @@ describe("query runner > change column", () => {
         await queryRunner.changeColumn(table!, idColumn, changedIdColumn);
 
         table = await queryRunner.getTable("post");
-        table!.findColumnByName("id")!.isPrimary.should.be.false;
+        expect(table!.findColumnByName("id")!.isPrimary).toBeFalsy();
 
         await queryRunner.executeMemoryDownSql();
 
         table = await queryRunner.getTable("post");
-        table!.findColumnByName("id")!.isPrimary.should.be.true;
-        table!.findColumnByName("name")!.default!.should.exist;
-        table!.findColumnByName("name")!.isUnique.should.be.false;
-        table!.findColumnByName("name")!.isNullable.should.be.false;
-        table!.findColumnByName("text")!.isPrimary.should.be.false;
-        expect(table!.findColumnByName("text")!.default).to.be.undefined;
+        expect(table!.findColumnByName("id")!.isPrimary).toBeTruthy();
+        expect(table!.findColumnByName("name")!.default)!.toBeDefined();
+        expect(table!.findColumnByName("name")!.isUnique).toBeFalsy();
+        expect(table!.findColumnByName("name")!.isNullable).toBeFalsy();
+        expect(table!.findColumnByName("text")!.isPrimary).toBeFalsy();
+        expect(table!.findColumnByName("text")!.default).toBeUndefined();
 
         await queryRunner.release();
     })));
 
-    it("should correctly change column 'isGenerated' property and revert change", () => Promise.all(connections.map(async connection => {
+    test("should correctly change column 'isGenerated' property and revert change", () => Promise.all(connections.map(async connection => {
 
         // CockroachDB does not allow changing generated columns in existent tables
         if (connection.driver instanceof CockroachDriver)
@@ -95,15 +94,15 @@ describe("query runner > change column", () => {
         await queryRunner.changeColumn(table!, idColumn, changedIdColumn);
 
         table = await queryRunner.getTable("post");
-        table!.findColumnByName("id")!.isGenerated.should.be.true;
-        table!.findColumnByName("id")!.generationStrategy!.should.be.equal("increment");
+        expect(table!.findColumnByName("id")!.isGenerated).toBeTruthy();
+        expect(table!.findColumnByName("id")!.generationStrategy)!.toEqual("increment");
 
         await queryRunner.executeMemoryDownSql();
         queryRunner.clearSqlMemory();
 
         table = await queryRunner.getTable("post");
-        table!.findColumnByName("id")!.isGenerated.should.be.false;
-        expect(table!.findColumnByName("id")!.generationStrategy).to.be.undefined;
+        expect(table!.findColumnByName("id")!.isGenerated).toBeFalsy();
+        expect(table!.findColumnByName("id")!.generationStrategy).toBeUndefined();
 
         table = await queryRunner.getTable("post");
         idColumn = table!.findColumnByName("id")!;
@@ -121,15 +120,15 @@ describe("query runner > change column", () => {
         await queryRunner.changeColumn(table!, idColumn, changedIdColumn);
 
         table = await queryRunner.getTable("post");
-        table!.findColumnByName("id")!.isGenerated.should.be.true;
-        table!.findColumnByName("id")!.generationStrategy!.should.be.equal("increment");
+        expect(table!.findColumnByName("id")!.isGenerated).toBeTruthy();
+        expect(table!.findColumnByName("id")!.generationStrategy)!.toEqual("increment");
 
         await queryRunner.executeMemoryDownSql();
         queryRunner.clearSqlMemory();
 
         table = await queryRunner.getTable("post");
-        table!.findColumnByName("id")!.isGenerated.should.be.false;
-        expect(table!.findColumnByName("id")!.generationStrategy).to.be.undefined;
+        expect(table!.findColumnByName("id")!.isGenerated).toBeFalsy();
+        expect(table!.findColumnByName("id")!.generationStrategy).toBeUndefined();
 
         await queryRunner.release();
 

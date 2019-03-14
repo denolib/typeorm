@@ -1,9 +1,8 @@
 import "reflect-metadata";
-import {expect} from "chai";
-import {Connection} from "../../../src/connection/Connection";
+import {Connection} from "../../../src";
 import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver";
-import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils";
-import {Table} from "../../../src/schema-builder/table/Table";
+import {closeTestingConnections, createTestingConnections} from "../../../test/utils/test-utils";
+import {Table} from "../../../src";
 import {TableOptions} from "../../../src/schema-builder/options/TableOptions";
 import {Post} from "./entity/Post";
 import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver";
@@ -14,15 +13,15 @@ import {Photo} from "./entity/Photo";
 describe("query runner > create table", () => {
 
     let connections: Connection[];
-    before(async () => {
+    beforeAll(async () => {
         connections = await createTestingConnections({
             entities: [__dirname + "/entity/*{.js,.ts}"],
             dropSchema: true,
         });
     });
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should correctly create table from simple object and revert creation", () => Promise.all(connections.map(async connection => {
+    test("should correctly create table from simple object and revert creation", () => Promise.all(connections.map(async connection => {
 
         const queryRunner = connection.createQueryRunner();
         const options: TableOptions = {
@@ -49,24 +48,24 @@ describe("query runner > create table", () => {
         let table = await queryRunner.getTable("category");
         const idColumn = table!.findColumnByName("id");
         const nameColumn = table!.findColumnByName("name");
-        idColumn!.should.be.exist;
-        idColumn!.isPrimary.should.be.true;
-        idColumn!.isGenerated.should.be.true;
-        idColumn!.generationStrategy!.should.be.equal("increment");
-        nameColumn!.should.be.exist;
-        nameColumn!.isUnique.should.be.true;
-        table!.should.exist;
+        expect(idColumn)!.toBeDefined();
+        expect(idColumn!.isPrimary).toBeTruthy();
+        expect(idColumn!.isGenerated).toBeTruthy();
+        expect(idColumn!.generationStrategy)!.toEqual("increment");
+        expect(nameColumn)!.toBeDefined();
+        expect(nameColumn!.isUnique).toBeTruthy();
+        expect(table)!.toBeDefined();
         if (!(connection.driver instanceof MysqlDriver))
-            table!.uniques.length.should.be.equal(1);
+            expect(table!.uniques.length).toEqual(1);
 
         await queryRunner.executeMemoryDownSql();
         table = await queryRunner.getTable("category");
-        expect(table).to.be.undefined;
+        expect(table).toBeUndefined();
 
         await queryRunner.release();
     })));
 
-    it("should correctly create table from Entity", () => Promise.all(connections.map(async connection => {
+    test("should correctly create table from Entity", () => Promise.all(connections.map(async connection => {
 
         const queryRunner = connection.createQueryRunner();
         const metadata = connection.getMetadata(Post);
@@ -77,20 +76,20 @@ describe("query runner > create table", () => {
         const idColumn = table!.findColumnByName("id");
         const versionColumn = table!.findColumnByName("version");
         const nameColumn = table!.findColumnByName("name");
-        table!.should.exist;
+        expect(table)!.toBeDefined();
         if (!(connection.driver instanceof MysqlDriver)) {
-            table!.uniques.length.should.be.equal(2);
-            table!.checks.length.should.be.equal(1);
+            expect(table!.uniques.length).toEqual(2);
+            expect(table!.checks.length).toEqual(1);
         }
 
-        idColumn!.isPrimary.should.be.true;
-        versionColumn!.isUnique.should.be.true;
-        nameColumn!.default!.should.be.exist;
+        expect(idColumn!.isPrimary).toBeTruthy();
+        expect(versionColumn!.isUnique).toBeTruthy();
+        expect(nameColumn!.default)!.toBeDefined();
 
         await queryRunner.release();
     })));
 
-    it("should correctly create table with all dependencies and revert creation", () => Promise.all(connections.map(async connection => {
+    test("should correctly create table with all dependencies and revert creation", () => Promise.all(connections.map(async connection => {
 
         const queryRunner = connection.createQueryRunner();
 
@@ -212,62 +211,62 @@ describe("query runner > create table", () => {
         let personTable = await queryRunner.getTable("person");
         const personIdColumn = personTable!.findColumnByName("id");
         const personUserIdColumn = personTable!.findColumnByName("id");
-        personIdColumn!.isPrimary.should.be.true;
-        personUserIdColumn!.isPrimary.should.be.true;
-        personTable!.should.exist;
+        expect(personIdColumn!.isPrimary).toBeTruthy();
+        expect(personUserIdColumn!.isPrimary).toBeTruthy();
+        expect(personTable)!.toBeDefined();
 
         let questionTable = await queryRunner.getTable("question");
         const questionIdColumn = questionTable!.findColumnByName("id");
-        questionIdColumn!.isPrimary.should.be.true;
-        questionIdColumn!.isGenerated.should.be.true;
-        questionIdColumn!.generationStrategy!.should.be.equal("increment");
-        questionTable!.should.exist;
+        expect(questionIdColumn!.isPrimary).toBeTruthy();
+        expect(questionIdColumn!.isGenerated).toBeTruthy();
+        expect(questionIdColumn!.generationStrategy)!.toEqual("increment");
+        expect(questionTable)!.toBeDefined();
 
         if (connection.driver instanceof MysqlDriver) {
             // MySql driver does not have unique and check constraints.
             // all unique constraints is unique indexes.
-            questionTable!.uniques.length.should.be.equal(0);
-            questionTable!.indices.length.should.be.equal(2);
+            expect(questionTable!.uniques.length).toEqual(0);
+            expect(questionTable!.indices.length).toEqual(2);
 
         } else if (connection.driver instanceof CockroachDriver) {
             // CockroachDB stores unique indices as UNIQUE constraints
-            questionTable!.uniques.length.should.be.equal(2);
-            questionTable!.uniques[0].columnNames.length.should.be.equal(2);
-            questionTable!.uniques[1].columnNames.length.should.be.equal(2);
-            questionTable!.indices.length.should.be.equal(0);
-            questionTable!.checks.length.should.be.equal(1);
+            expect(questionTable!.uniques.length).toEqual(2);
+            expect(questionTable!.uniques[0].columnNames.length).toEqual(2);
+            expect(questionTable!.uniques[1].columnNames.length).toEqual(2);
+            expect(questionTable!.indices.length).toEqual(0);
+            expect(questionTable!.checks.length).toEqual(1);
 
         } else {
-            questionTable!.uniques.length.should.be.equal(1);
-            questionTable!.uniques[0].columnNames.length.should.be.equal(2);
-            questionTable!.indices.length.should.be.equal(1);
-            questionTable!.indices[0].columnNames.length.should.be.equal(2);
-            questionTable!.checks.length.should.be.equal(1);
+            expect(questionTable!.uniques.length).toEqual(1);
+            expect(questionTable!.uniques[0].columnNames.length).toEqual(2);
+            expect(questionTable!.indices.length).toEqual(1);
+            expect(questionTable!.indices[0].columnNames.length).toEqual(2);
+            expect(questionTable!.checks.length).toEqual(1);
         }
 
-        questionTable!.foreignKeys.length.should.be.equal(1);
-        questionTable!.foreignKeys[0].columnNames.length.should.be.equal(2);
-        questionTable!.foreignKeys[0].referencedColumnNames.length.should.be.equal(2);
+        expect(questionTable!.foreignKeys.length).toEqual(1);
+        expect(questionTable!.foreignKeys[0].columnNames.length).toEqual(2);
+        expect(questionTable!.foreignKeys[0].referencedColumnNames.length).toEqual(2);
 
         let categoryTable = await queryRunner.getTable("category");
         const categoryTableIdColumn = categoryTable!.findColumnByName("id");
-        categoryTableIdColumn!.isPrimary.should.be.true;
-        categoryTableIdColumn!.isGenerated.should.be.true;
-        categoryTableIdColumn!.generationStrategy!.should.be.equal("increment");
-        categoryTable!.should.exist;
-        categoryTable!.foreignKeys.length.should.be.equal(1);
+        expect(categoryTableIdColumn!.isPrimary).toBeTruthy();
+        expect(categoryTableIdColumn!.isGenerated).toBeTruthy();
+        expect(categoryTableIdColumn!.generationStrategy)!.toEqual("increment");
+        expect(categoryTable)!.toBeDefined();
+        expect(categoryTable!.foreignKeys.length).toEqual(1);
 
         if (connection.driver instanceof MysqlDriver) {
             // MySql driver does not have unique constraints. All unique constraints is unique indexes.
-            categoryTable!.indices.length.should.be.equal(3);
+            expect(categoryTable!.indices.length).toEqual(3);
 
         } else if (connection.driver instanceof OracleDriver) {
             // Oracle does not allow to put index on primary or unique columns.
-            categoryTable!.indices.length.should.be.equal(0);
+            expect(categoryTable!.indices.length).toEqual(0);
 
         } else {
-            categoryTable!.uniques.length.should.be.equal(3);
-            categoryTable!.indices.length.should.be.equal(1);
+            expect(categoryTable!.uniques.length).toEqual(3);
+            expect(categoryTable!.indices.length).toEqual(1);
         }
 
         await queryRunner.executeMemoryDownSql();
@@ -275,14 +274,14 @@ describe("query runner > create table", () => {
         questionTable = await queryRunner.getTable("question");
         categoryTable = await queryRunner.getTable("category");
         personTable = await queryRunner.getTable("person");
-        expect(questionTable).to.be.undefined;
-        expect(categoryTable).to.be.undefined;
-        expect(personTable).to.be.undefined;
+        expect(questionTable).toBeUndefined();
+        expect(categoryTable).toBeUndefined();
+        expect(personTable).toBeUndefined();
 
         await queryRunner.release();
     })));
 
-    it("should correctly create table with different `Unique` definitions", () => Promise.all(connections.map(async connection => {
+    test("should correctly create table with different `Unique` definitions", () => Promise.all(connections.map(async connection => {
 
         const queryRunner = connection.createQueryRunner();
         const metadata = connection.getMetadata(Photo);
@@ -295,34 +294,34 @@ describe("query runner > create table", () => {
         const descriptionColumn = table!.findColumnByName("description");
         const textColumn = table!.findColumnByName("text");
 
-        table!.should.exist;
-        nameColumn!.isUnique.should.be.true;
-        descriptionColumn!.isUnique.should.be.true;
+        expect(table)!.toBeDefined();
+        expect(nameColumn!.isUnique).toBeTruthy();
+        expect(descriptionColumn!.isUnique).toBeTruthy();
 
         if (connection.driver instanceof MysqlDriver) {
-            table!.uniques.length.should.be.equal(0);
-            table!.indices.length.should.be.equal(4);
-            tagColumn!.isUnique.should.be.true;
-            textColumn!.isUnique.should.be.true;
+            expect(table!.uniques.length).toEqual(0);
+            expect(table!.indices.length).toEqual(4);
+            expect(tagColumn!.isUnique).toBeTruthy();
+            expect(textColumn!.isUnique).toBeTruthy();
 
         } else if (connection.driver instanceof CockroachDriver) {
             // CockroachDB stores unique indices as UNIQUE constraints
-            table!.uniques.length.should.be.equal(4);
-            table!.indices.length.should.be.equal(0);
-            tagColumn!.isUnique.should.be.true;
-            textColumn!.isUnique.should.be.true;
+            expect(table!.uniques.length).toEqual(4);
+            expect(table!.indices.length).toEqual(0);
+            expect(tagColumn!.isUnique).toBeTruthy();
+            expect(textColumn!.isUnique).toBeTruthy();
 
         } else {
-            table!.uniques.length.should.be.equal(2);
-            table!.indices.length.should.be.equal(2);
-            tagColumn!.isUnique.should.be.false;
-            textColumn!.isUnique.should.be.false;
+            expect(table!.uniques.length).toEqual(2);
+            expect(table!.indices.length).toEqual(2);
+            expect(tagColumn!.isUnique).toBeFalsy();
+            expect(textColumn!.isUnique).toBeFalsy();
         }
 
         await queryRunner.executeMemoryDownSql();
 
         table = await queryRunner.getTable("photo");
-        expect(table).to.be.undefined;
+        expect(table).toBeUndefined();
 
         await queryRunner.release();
     })));

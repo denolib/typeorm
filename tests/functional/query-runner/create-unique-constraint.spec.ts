@@ -1,13 +1,13 @@
 import "reflect-metadata";
-import {Connection} from "../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Table} from "../../../src/schema-builder/table/Table";
+import {Connection} from "../../../src";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Table} from "../../../src";
 import {TableUnique} from "../../../src/schema-builder/table/TableUnique";
 
 describe("query runner > create unique constraint", () => {
 
     let connections: Connection[];
-    before(async () => {
+    beforeAll(async () => {
         connections = await createTestingConnections({
             entities: [__dirname + "/entity/*{.js,.ts}"],
             enabledDrivers: ["mssql", "postgres", "sqlite", "oracle", "cockroachdb"], // mysql does not supports unique constraints
@@ -16,9 +16,9 @@ describe("query runner > create unique constraint", () => {
         });
     });
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should correctly create unique constraint and revert creation", () => Promise.all(connections.map(async connection => {
+    test("should correctly create unique constraint and revert creation", () => Promise.all(connections.map(async connection => {
 
         const queryRunner = connection.createQueryRunner();
         await queryRunner.createTable(new Table({
@@ -65,26 +65,26 @@ describe("query runner > create unique constraint", () => {
         await queryRunner.createUniqueConstraint("question", questionUniqueConstraint);
 
         let categoryTable = await queryRunner.getTable("category");
-        categoryTable!.findColumnByName("name")!.isUnique.should.be.true;
-        categoryTable!.uniques.length.should.be.equal(1);
+        expect(categoryTable!.findColumnByName("name")!.isUnique).toBeTruthy();
+        expect(categoryTable!.uniques.length).toEqual(1);
 
         let questionTable = await queryRunner.getTable("question");
         // when unique constraint defined on multiple columns. each of this columns must be non-unique,
         // because they are unique only in complex.
-        questionTable!.findColumnByName("name")!.isUnique.should.be.false;
-        questionTable!.findColumnByName("description")!.isUnique.should.be.false;
-        questionTable!.uniques.length.should.be.equal(1);
+        expect(questionTable!.findColumnByName("name")!.isUnique).toBeFalsy();
+        expect(questionTable!.findColumnByName("description")!.isUnique).toBeFalsy();
+        expect(questionTable!.uniques.length).toEqual(1);
 
         await queryRunner.executeMemoryDownSql();
 
         categoryTable = await queryRunner.getTable("category");
-        categoryTable!.findColumnByName("name")!.isUnique.should.be.false;
-        categoryTable!.uniques.length.should.be.equal(0);
+        expect(categoryTable!.findColumnByName("name")!.isUnique).toBeFalsy();
+        expect(categoryTable!.uniques.length).toEqual(0);
 
         questionTable = await queryRunner.getTable("question");
-        questionTable!.findColumnByName("name")!.isUnique.should.be.false;
-        questionTable!.findColumnByName("description")!.isUnique.should.be.false;
-        questionTable!.uniques.length.should.be.equal(0);
+        expect(questionTable!.findColumnByName("name")!.isUnique).toBeFalsy();
+        expect(questionTable!.findColumnByName("description")!.isUnique).toBeFalsy();
+        expect(questionTable!.uniques.length).toEqual(0);
 
         await queryRunner.release();
     })));

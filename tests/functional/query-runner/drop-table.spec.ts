@@ -1,50 +1,49 @@
 import "reflect-metadata";
-import {expect} from "chai";
-import {Connection} from "../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
+import {Connection} from "../../../src";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
 
 describe("query runner > drop table", () => {
 
     let connections: Connection[];
-    before(async () => {
+    beforeAll(async () => {
         connections = await createTestingConnections({
             entities: [__dirname + "/entity/*{.js,.ts}"],
             schemaCreate: true,
         });
     });
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should correctly drop table without relations and revert drop", () => Promise.all(connections.map(async connection => {
+    test("should correctly drop table without relations and revert drop", () => Promise.all(connections.map(async connection => {
 
         const queryRunner = connection.createQueryRunner();
 
         let table = await queryRunner.getTable("post");
-        table!.should.exist;
+        expect(table)!.toBeDefined();
 
         await queryRunner.dropTable("post");
 
         table = await queryRunner.getTable("post");
-        expect(table).to.be.undefined;
+        expect(table).toBeUndefined();
 
         await queryRunner.executeMemoryDownSql();
 
         table = await queryRunner.getTable("post");
-        table!.should.exist;
+        expect(table)!.toBeDefined();
 
         await queryRunner.release();
     })));
 
-    it("should correctly drop table with relations and revert drop", () => Promise.all(connections.map(async connection => {
+    test("should correctly drop table with relations and revert drop", () => Promise.all(connections.map(async connection => {
 
         const queryRunner = connection.createQueryRunner();
 
         let studentTable = await queryRunner.getTable("student");
         let teacherTable = await queryRunner.getTable("teacher");
         let facultyTable = await queryRunner.getTable("faculty");
-        studentTable!.should.exist;
-        teacherTable!.should.exist;
-        facultyTable!.should.exist;
+        expect(studentTable)!.toBeDefined();
+        expect(teacherTable)!.toBeDefined();
+        expect(facultyTable)!.toBeDefined();
 
         await queryRunner.dropTable(studentTable!);
         await queryRunner.dropTable(teacherTable!);
@@ -53,18 +52,18 @@ describe("query runner > drop table", () => {
         studentTable = await queryRunner.getTable("student");
         teacherTable = await queryRunner.getTable("teacher");
         facultyTable = await queryRunner.getTable("faculty");
-        expect(studentTable).to.be.undefined;
-        expect(teacherTable).to.be.undefined;
-        expect(facultyTable).to.be.undefined;
+        expect(studentTable).toBeUndefined();
+        expect(teacherTable).toBeUndefined();
+        expect(facultyTable).toBeUndefined();
 
         await queryRunner.executeMemoryDownSql();
 
         studentTable = await queryRunner.getTable("student");
         teacherTable = await queryRunner.getTable("teacher");
         facultyTable = await queryRunner.getTable("faculty");
-        studentTable!.should.exist;
-        teacherTable!.should.exist;
-        facultyTable!.should.exist;
+        expect(studentTable)!.toBeDefined();
+        expect(teacherTable)!.toBeDefined();
+        expect(facultyTable)!.toBeDefined();
 
         await queryRunner.release();
     })));

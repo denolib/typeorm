@@ -1,24 +1,24 @@
 import "reflect-metadata";
 import {Connection} from "../../../src";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
+import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
 import {Table} from "../../../src";
-import {TableExclusion} from "../../../src/schema-builder/table/TableExclusion";
+import {TableIndex} from "../../../src";
 
-describe("query runner > create exclusion constraint", () => {
+describe("query runner > create index", () => {
 
     let connections: Connection[];
-    before(async () => {
+    beforeAll(async () => {
         connections = await createTestingConnections({
             entities: [__dirname + "/entity/*{.js,.ts}"],
-            enabledDrivers: ["postgres"], // Only PostgreSQL supports exclusion constraints.
             schemaCreate: true,
             dropSchema: true,
         });
     });
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should correctly create exclusion constraint and revert creation", () => Promise.all(connections.map(async connection => {
+    test("should correctly create index and revert creation", () => Promise.all(connections.map(async connection => {
 
         const queryRunner = connection.createQueryRunner();
         await queryRunner.createTable(new Table({
@@ -36,10 +36,6 @@ describe("query runner > create exclusion constraint", () => {
                 {
                     name: "description",
                     type: "varchar",
-                },
-                {
-                    name: "version",
-                    type: "int",
                 }
             ]
         }), true);
@@ -47,18 +43,28 @@ describe("query runner > create exclusion constraint", () => {
         // clear sqls in memory to avoid removing tables when down queries executed.
         queryRunner.clearSqlMemory();
 
-        const driver = connection.driver;
-        const exclusion1 = new TableExclusion({ expression: `USING gist (${driver.escape("name")} WITH =)` });
-        const exclusion2 = new TableExclusion({ expression: `USING gist (${driver.escape("id")} WITH =)` });
-        await queryRunner.createExclusionConstraints("question", [exclusion1, exclusion2]);
+        const index = new TableIndex({ columnNames: ["name", "description"] });
+        await queryRunner.createIndex("question", index);
+
+        const uniqueIndex = new TableIndex({ columnNames: ["description"], isUnique: true });
+        await queryRunner.createIndex("question", uniqueIndex);
 
         let table = await queryRunner.getTable("question");
-        table!.exclusions.length.should.be.equal(2);
+
+        // CockroachDB stores unique indices as UNIQUE constraints
+        if (connection.driver instanceof CockroachDriver) {
+            expect(table!.indices.length).toEqual(1);
+            expect(table!.uniques.length).toEqual(1);
+
+        } else {
+            expect(table!.indices.length).toEqual(2);
+        }
 
         await queryRunner.executeMemoryDownSql();
 
         table = await queryRunner.getTable("question");
-        table!.exclusions.length.should.be.equal(0);
+        expect(table!.indices.length).toEqual(0);
+        expect(table!.uniques.length).toEqual(0);
 
         await queryRunner.release();
     })));

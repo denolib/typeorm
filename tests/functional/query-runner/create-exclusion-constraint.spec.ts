@@ -1,28 +1,28 @@
 import "reflect-metadata";
 import {Connection} from "../../../src";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
 import {Table} from "../../../src";
-import {TableCheck} from "../../../src/schema-builder/table/TableCheck";
-import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver";
+import {TableExclusion} from "../../../src/schema-builder/table/TableExclusion";
+import {
+    closeTestingConnections,
+    createTestingConnections,
+    reloadTestingDatabases
+} from "../../../test/utils/test-utils";
 
-describe("query runner > create check constraint", () => {
+describe("query runner > create exclusion constraint", () => {
 
     let connections: Connection[];
-    before(async () => {
+    beforeAll(async () => {
         connections = await createTestingConnections({
             entities: [__dirname + "/entity/*{.js,.ts}"],
+            enabledDrivers: ["postgres"], // Only PostgreSQL supports exclusion constraints.
             schemaCreate: true,
             dropSchema: true,
         });
     });
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should correctly create check constraint and revert creation", () => Promise.all(connections.map(async connection => {
-
-        // Mysql does not support check constraints.
-        if (connection.driver instanceof MysqlDriver)
-            return;
+    test("should correctly create exclusion constraint and revert creation", () => Promise.all(connections.map(async connection => {
 
         const queryRunner = connection.createQueryRunner();
         await queryRunner.createTable(new Table({
@@ -52,18 +52,17 @@ describe("query runner > create check constraint", () => {
         queryRunner.clearSqlMemory();
 
         const driver = connection.driver;
-        const check1 = new TableCheck({ expression: `${driver.escape("name")} <> 'asd' AND ${driver.escape("description")} <> 'test'` });
-        const check2 = new TableCheck({ expression: `(${driver.escape("id")} < 0 AND ${driver.escape("version")} < 9999) OR (${driver.escape("id")} > 9999 AND ${driver.escape("version")} < 888)` });
-        const check3 = new TableCheck({ expression: `${driver.escape("id")} + ${driver.escape("version")} > 0` });
-        await queryRunner.createCheckConstraints("question", [check1, check2, check3]);
+        const exclusion1 = new TableExclusion({ expression: `USING gist (${driver.escape("name")} WITH =)` });
+        const exclusion2 = new TableExclusion({ expression: `USING gist (${driver.escape("id")} WITH =)` });
+        await queryRunner.createExclusionConstraints("question", [exclusion1, exclusion2]);
 
         let table = await queryRunner.getTable("question");
-        table!.checks.length.should.be.equal(3);
+        expect(table!.exclusions.length).toEqual(2);
 
         await queryRunner.executeMemoryDownSql();
 
         table = await queryRunner.getTable("question");
-        table!.checks.length.should.be.equal(0);
+        expect(table!.exclusions.length).toEqual(0);
 
         await queryRunner.release();
     })));

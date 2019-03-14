@@ -1,13 +1,13 @@
 import "reflect-metadata";
-import {Connection} from "../../../src/connection/Connection";
+import {Connection} from "../../../src";
 import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Table} from "../../../src/schema-builder/table/Table";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Table} from "../../../src";
 
 describe("query runner > create primary key", () => {
 
     let connections: Connection[];
-    before(async () => {
+    beforeAll(async () => {
         connections = await createTestingConnections({
             entities: [__dirname + "/entity/*{.js,.ts}"],
             schemaCreate: true,
@@ -15,9 +15,9 @@ describe("query runner > create primary key", () => {
         });
     });
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should correctly create primary key and revert creation", () => Promise.all(connections.map(async connection => {
+    test("should correctly create primary key and revert creation", () => Promise.all(connections.map(async connection => {
 
         // CockroachDB does not allow altering primary key
         if (connection.driver instanceof CockroachDriver)
@@ -63,20 +63,20 @@ describe("query runner > create primary key", () => {
         await queryRunner.createPrimaryKey("person", ["id", "userId"]);
 
         let categoryTable = await queryRunner.getTable("category");
-        categoryTable!.findColumnByName("id")!.isPrimary.should.be.true;
+        expect(categoryTable!.findColumnByName("id")!.isPrimary).toBeTruthy();
 
         let personTable = await queryRunner.getTable("person");
-        personTable!.findColumnByName("id")!.isPrimary.should.be.true;
-        personTable!.findColumnByName("userId")!.isPrimary.should.be.true;
+        expect(personTable!.findColumnByName("id")!.isPrimary).toBeTruthy();
+        expect(personTable!.findColumnByName("userId")!.isPrimary).toBeTruthy();
 
         await queryRunner.executeMemoryDownSql();
 
         categoryTable = await queryRunner.getTable("category");
-        categoryTable!.findColumnByName("id")!.isPrimary.should.be.false;
+        expect(categoryTable!.findColumnByName("id")!.isPrimary).toBeFalsy();
 
         personTable = await queryRunner.getTable("person");
-        personTable!.findColumnByName("id")!.isPrimary.should.be.false;
-        personTable!.findColumnByName("userId")!.isPrimary.should.be.false;
+        expect(personTable!.findColumnByName("id")!.isPrimary).toBeFalsy();
+        expect(personTable!.findColumnByName("userId")!.isPrimary).toBeFalsy();
 
         await queryRunner.release();
     })));

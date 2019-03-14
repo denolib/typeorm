@@ -1,14 +1,14 @@
 import "reflect-metadata";
-import {Connection} from "../../../src/connection/Connection";
+import {Connection} from "../../../src";
 import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Table} from "../../../src/schema-builder/table/Table";
-import {TableForeignKey} from "../../../src/schema-builder/table/TableForeignKey";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Table} from "../../../src";
+import {TableForeignKey} from "../../../src";
 
 describe("query runner > create foreign key", () => {
 
     let connections: Connection[];
-    before(async () => {
+    beforeAll(async () => {
         connections = await createTestingConnections({
             entities: [__dirname + "/entity/*{.js,.ts}"],
             schemaCreate: true,
@@ -16,9 +16,9 @@ describe("query runner > create foreign key", () => {
         });
     });
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should correctly create foreign key and revert creation", () => Promise.all(connections.map(async connection => {
+    test("should correctly create foreign key and revert creation", () => Promise.all(connections.map(async connection => {
 
         const queryRunner = connection.createQueryRunner();
         await queryRunner.createTable(new Table({
@@ -68,11 +68,11 @@ describe("query runner > create foreign key", () => {
         await queryRunner.createForeignKey("answer", foreignKey);
 
         let table = await queryRunner.getTable("answer");
-        table!.foreignKeys.length.should.be.equal(1);
+        expect(table!.foreignKeys.length).toEqual(1);
         await queryRunner.executeMemoryDownSql();
 
         table = await queryRunner.getTable("answer");
-        table!.foreignKeys.length.should.be.equal(0);
+        expect(table!.foreignKeys.length).toEqual(0);
 
         await queryRunner.release();
     })));

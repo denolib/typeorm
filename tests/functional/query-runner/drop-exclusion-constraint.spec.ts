@@ -1,11 +1,11 @@
 import "reflect-metadata";
-import {Connection} from "../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
+import {Connection} from "../../../src";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
 
 describe("query runner > drop exclusion constraint", () => {
 
     let connections: Connection[];
-    before(async () => {
+    beforeAll(async () => {
         connections = await createTestingConnections({
             entities: [__dirname + "/entity/*{.js,.ts}"],
             enabledDrivers: ["postgres"], // Only PostgreSQL supports exclusion constraints.
@@ -14,24 +14,24 @@ describe("query runner > drop exclusion constraint", () => {
         });
     });
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should correctly drop exclusion constraint and revert drop", () => Promise.all(connections.map(async connection => {
+    test("should correctly drop exclusion constraint and revert drop", () => Promise.all(connections.map(async connection => {
 
         const queryRunner = connection.createQueryRunner();
 
         let table = await queryRunner.getTable("post");
-        table!.exclusions.length.should.be.equal(1);
+        expect(table!.exclusions.length).toEqual(1);
 
         await queryRunner.dropExclusionConstraint(table!, table!.exclusions[0]);
 
         table = await queryRunner.getTable("post");
-        table!.exclusions.length.should.be.equal(0);
+        expect(table!.exclusions.length).toEqual(0);
 
         await queryRunner.executeMemoryDownSql();
 
         table = await queryRunner.getTable("post");
-        table!.exclusions.length.should.be.equal(1);
+        expect(table!.exclusions.length).toEqual(1);
 
         await queryRunner.release();
     })));

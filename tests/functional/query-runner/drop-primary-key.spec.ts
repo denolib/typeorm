@@ -1,12 +1,12 @@
 import "reflect-metadata";
-import {Connection} from "../../../src/connection/Connection";
+import {Connection} from "../../../src";
 import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
 
 describe("query runner > drop primary key", () => {
 
     let connections: Connection[];
-    before(async () => {
+    beforeAll(async () => {
         connections = await createTestingConnections({
             entities: [__dirname + "/entity/*{.js,.ts}"],
             schemaCreate: true,
@@ -14,9 +14,9 @@ describe("query runner > drop primary key", () => {
         });
     });
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should correctly drop primary key and revert drop", () => Promise.all(connections.map(async connection => {
+    test("should correctly drop primary key and revert drop", () => Promise.all(connections.map(async connection => {
 
         // CockroachDB does not allow dropping primary key
         if (connection.driver instanceof CockroachDriver)
@@ -25,17 +25,17 @@ describe("query runner > drop primary key", () => {
         const queryRunner = connection.createQueryRunner();
 
         let table = await queryRunner.getTable("post");
-        table!.findColumnByName("id")!.isPrimary.should.be.true;
+        expect(table!.findColumnByName("id")!.isPrimary).toBeTruthy();
 
         await queryRunner.dropPrimaryKey(table!);
 
         table = await queryRunner.getTable("post");
-        table!.findColumnByName("id")!.isPrimary.should.be.false;
+        expect(table!.findColumnByName("id")!.isPrimary).toBeFalsy();
 
         await queryRunner.executeMemoryDownSql();
 
         table = await queryRunner.getTable("post");
-        table!.findColumnByName("id")!.isPrimary.should.be.true;
+        expect(table!.findColumnByName("id")!.isPrimary).toBeTruthy();
 
         await queryRunner.release();
     })));

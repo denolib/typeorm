@@ -1,12 +1,12 @@
 import "reflect-metadata";
-import {Connection} from "../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
+import {Connection} from "../../../src";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
 import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver";
 
 describe("query runner > drop check constraint", () => {
 
     let connections: Connection[];
-    before(async () => {
+    beforeAll(async () => {
         connections = await createTestingConnections({
             entities: [__dirname + "/entity/*{.js,.ts}"],
             schemaCreate: true,
@@ -14,9 +14,9 @@ describe("query runner > drop check constraint", () => {
         });
     });
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should correctly drop check constraint and revert drop", () => Promise.all(connections.map(async connection => {
+    test("should correctly drop check constraint and revert drop", () => Promise.all(connections.map(async connection => {
 
         // Mysql does not support check constraints.
         if (connection.driver instanceof MysqlDriver)
@@ -25,17 +25,17 @@ describe("query runner > drop check constraint", () => {
         const queryRunner = connection.createQueryRunner();
 
         let table = await queryRunner.getTable("post");
-        table!.checks.length.should.be.equal(1);
+        expect(table!.checks.length).toEqual(1);
 
         await queryRunner.dropCheckConstraint(table!, table!.checks[0]);
 
         table = await queryRunner.getTable("post");
-        table!.checks.length.should.be.equal(0);
+        expect(table!.checks.length).toEqual(0);
 
         await queryRunner.executeMemoryDownSql();
 
         table = await queryRunner.getTable("post");
-        table!.checks.length.should.be.equal(1);
+        expect(table!.checks.length).toEqual(1);
 
         await queryRunner.release();
     })));
