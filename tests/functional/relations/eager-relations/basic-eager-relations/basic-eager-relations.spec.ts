@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import {Connection} from "../../../../../src/connection/Connection";
+import {Connection} from "../../../../../src";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../../test/utils/test-utils";
 import {User} from "./entity/User";
 import {Profile} from "./entity/Profile";
@@ -10,11 +10,11 @@ import {Category} from "./entity/Category";
 describe("relations > eager relations > basic", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
     async function prepareData(connection: Connection) {
         const profile = new Profile();
@@ -56,11 +56,11 @@ describe("relations > eager relations > basic", () => {
         await connection.manager.save(editor);
     }
 
-    it("should load all eager relations when object is loaded", () => Promise.all(connections.map(async connection => {
+    test("should load all eager relations when object is loaded", () => Promise.all(connections.map(async connection => {
         await prepareData(connection);
 
         const loadedPost = await connection.manager.findOne(Post, 1);
-        loadedPost!.should.be.eql({
+        expect(loadedPost)!.toEqual({
             id: 1,
             title: "about eager relations",
             categories1: [{
@@ -101,7 +101,7 @@ describe("relations > eager relations > basic", () => {
 
     })));
 
-    it("should not load eager relations when query builder is used", () => Promise.all(connections.map(async connection => {
+    test("should not load eager relations when query builder is used", () => Promise.all(connections.map(async connection => {
         await prepareData(connection);
 
         const loadedPost = await connection.manager
@@ -109,7 +109,7 @@ describe("relations > eager relations > basic", () => {
             .where("post.id = :id", { id: 1 })
             .getOne();
 
-        loadedPost!.should.be.eql({
+        expect(loadedPost)!.toEqual({
             id: 1,
             title: "about eager relations"
         });
