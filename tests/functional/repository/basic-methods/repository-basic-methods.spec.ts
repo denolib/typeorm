@@ -1,14 +1,14 @@
 import "reflect-metadata";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../test/utils/test-utils";
-import {Connection} from "../../../../src/connection/Connection";
+import {Connection} from "../../../../src";
 import {Post} from "./entity/Post";
-import {QueryBuilder} from "../../../../src/query-builder/QueryBuilder";
+import {QueryBuilder} from "../../../../src";
 import {User} from "./model/User";
 import questionSchema from "./model-schema/QuestionSchema";
 import {Question} from "./model/Question";
 import {Blog} from "./entity/Blog";
 import {Category} from "./entity/Category";
-import {DeepPartial} from "../../../../src/common/DeepPartial";
+import {DeepPartial} from "../../../../src";
 import {EntitySchema} from "../../../../src";
 
 describe("repository > basic methods", () => {
@@ -25,189 +25,189 @@ describe("repository > basic methods", () => {
     const QuestionEntity = new EntitySchema<any>(questionSchema as any);
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [Post, Blog, Category, UserEntity, QuestionEntity],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
     describe("target", function() {
 
-        it("should return instance of the object it manages", () => connections.forEach(connection => {
+        test("should return instance of the object it manages", () => connections.forEach(connection => {
             const postRepository = connection.getRepository(Post);
-            postRepository.target.should.be.equal(Post);
+            expect(postRepository.target).toEqual(Post);
             const userRepository = connection.getRepository<User>("User");
-            userRepository.target.should.be.equal("User");
+            expect(userRepository.target).toEqual("User");
             const questionRepository = connection.getRepository<Question>("Question");
-            questionRepository.target.should.be.instanceOf(Function);
+            expect(questionRepository.target).toBeInstanceOf(Function);
         }));
 
     });
     
     describe("hasId", function() {
 
-        it("should return true if entity has an id", () => connections.forEach(connection => {
+        test("should return true if entity has an id", () => connections.forEach(connection => {
             const postRepository = connection.getRepository(Post);
             const userRepository = connection.getRepository("User");
 
             const postWithId = new Post();
             postWithId.id = 1;
             postWithId.title = "Hello post";
-            postRepository.hasId(postWithId).should.be.equal(true);
+            expect(postRepository.hasId(postWithId)).toEqual(true);
 
             const postWithZeroId = new Post();
             postWithZeroId.id = 0;
             postWithZeroId.title = "Hello post";
-            postRepository.hasId(postWithZeroId).should.be.equal(true);
+            expect(postRepository.hasId(postWithZeroId)).toEqual(true);
 
             const userWithId: User = {
                 id: 1,
                 firstName: "Jonh",
                 secondName: "Doe"
             };
-            userRepository.hasId(userWithId).should.be.equal(true);
+            expect(userRepository.hasId(userWithId)).toEqual(true);
 
             const userWithZeroId: User = {
                 id: 1,
                 firstName: "Jonh",
                 secondName: "Doe"
             };
-            userRepository.hasId(userWithZeroId).should.be.equal(true);
+            expect(userRepository.hasId(userWithZeroId)).toEqual(true);
 
         }));
 
-        it("should return false if entity does not have an id", () => connections.forEach(connection => {
+        test("should return false if entity does not have an id", () => connections.forEach(connection => {
             const postRepository = connection.getRepository(Post);
             const userRepository = connection.getRepository("User");
 
-            postRepository.hasId(null as any).should.be.equal(false);
-            postRepository.hasId(undefined as any).should.be.equal(false);
+            expect(postRepository.hasId(null as any)).toEqual(false);
+            expect(postRepository.hasId(undefined as any)).toEqual(false);
 
             const postWithoutId = new Post();
             postWithoutId.title = "Hello post";
-            postRepository.hasId(postWithoutId).should.be.equal(false);
+            expect(postRepository.hasId(postWithoutId)).toEqual(false);
 
             const postWithUndefinedId = new Post();
             postWithUndefinedId.id = undefined;
             postWithUndefinedId.title = "Hello post";
-            postRepository.hasId(postWithUndefinedId).should.be.equal(false);
+            expect(postRepository.hasId(postWithUndefinedId)).toEqual(false);
 
             const postWithNullId = new Post();
             postWithNullId.id = null;
             postWithNullId.title = "Hello post";
-            postRepository.hasId(postWithNullId).should.be.equal(false);
+            expect(postRepository.hasId(postWithNullId)).toEqual(false);
 
             const postWithEmptyId = new Post();
             postWithEmptyId.id = "";
             postWithEmptyId.title = "Hello post";
-            postRepository.hasId(postWithEmptyId).should.be.equal(false);
+            expect(postRepository.hasId(postWithEmptyId)).toEqual(false);
 
             const userWithoutId: User = {
                 firstName: "Jonh",
                 secondName: "Doe"
             };
-            userRepository.hasId(userWithoutId).should.be.equal(false);
+            expect(userRepository.hasId(userWithoutId)).toEqual(false);
 
             const userWithNullId: User = {
                 id: null,
                 firstName: "Jonh",
                 secondName: "Doe"
             };
-            userRepository.hasId(userWithNullId).should.be.equal(false);
+            expect(userRepository.hasId(userWithNullId)).toEqual(false);
 
             const userWithUndefinedId: User = {
                 id: undefined,
                 firstName: "Jonh",
                 secondName: "Doe"
             };
-            userRepository.hasId(userWithUndefinedId).should.be.equal(false);
+            expect(userRepository.hasId(userWithUndefinedId)).toEqual(false);
         }));
 
     });
 
     describe("createQueryBuilder", function() {
 
-        it("should create a new query builder with the given alias", () => connections.forEach(connection => {
+        test("should create a new query builder with the given alias", () => connections.forEach(connection => {
             const postRepository = connection.getRepository(Post);
             const postQb = postRepository.createQueryBuilder("post");
-            postQb.should.be.instanceOf(QueryBuilder);
-            postQb.alias.should.be.equal("post");
+            expect(postQb).toBeInstanceOf(QueryBuilder);
+            expect(postQb.alias).toEqual("post");
             const userRepository = connection.getRepository("User");
             const userQb = userRepository.createQueryBuilder("user");
-            userQb.should.be.instanceOf(QueryBuilder);
-            userQb.alias.should.be.equal("user");
+            expect(userQb).toBeInstanceOf(QueryBuilder);
+            expect(userQb.alias).toEqual("user");
             const questionRepository = connection.getRepository("Question");
             const questionQb = questionRepository.createQueryBuilder("question");
-            questionQb.should.be.instanceOf(QueryBuilder);
-            questionQb.alias.should.be.equal("question");
+            expect(questionQb).toBeInstanceOf(QueryBuilder);
+            expect(questionQb.alias).toEqual("question");
         }));
 
     });
 
     describe("create", function() {
 
-        it("should create a new instance of the object we are working with", () => connections.forEach(connection => {
+        test("should create a new instance of the object we are working with", () => connections.forEach(connection => {
             const repository = connection.getRepository(Post);
-            repository.create().should.be.instanceOf(Post);
+            expect(repository.create()).toBeInstanceOf(Post);
         }));
 
-        it("should create a new empty object if entity schema is used", () => connections.forEach(connection => {
+        test("should create a new empty object if entity schema is used", () => connections.forEach(connection => {
             const repository = connection.getRepository("User");
-            repository.create().should.be.eql({});
+            expect(repository.create()).toEqual({});
         }));
 
-        it("should create a new empty object if entity schema with a target is used", () => connections.forEach(connection => {
+        test("should create a new empty object if entity schema with a target is used", () => connections.forEach(connection => {
             const repository = connection.getRepository<Question>("Question");
-            repository.create().should.not.be.undefined;
-            repository.create().should.not.be.null;
-            repository.create().type.should.be.equal("question"); // make sure this is our Question function
+            expect(repository.create()).not.toBeUndefined();
+            expect(repository.create()).not.toBeNull();
+            expect(repository.create().type).toEqual("question"); // make sure this is our Question function
         }));
 
-        it("should create an entity and copy to it all properties of the given plain object if its given", () => connections.forEach(connection => {
+        test("should create an entity and copy to it all properties of the given plain object if its given", () => connections.forEach(connection => {
             const postRepository = connection.getRepository(Post);
             const userRepository = connection.getRepository<User>("User");
             const questionRepository = connection.getRepository<Question>("Question");
 
             const plainPost = { id: 2, title: "Hello post" };
             const post = postRepository.create(plainPost);
-            post.should.be.instanceOf(Post);
-            (post.id as number).should.be.equal(2);
-            post.title.should.be.equal("Hello post");
+            expect(post).toBeInstanceOf(Post);
+            expect((post.id as number)).toEqual(2);
+            expect( post.title).toEqual("Hello post");
 
             const plainUser = { id: 3, firstName: "John", secondName: "Doe" };
             const user = userRepository.create(plainUser);
-            (user.id as number).should.be.equal(3);
-            (user.firstName as string).should.be.equal("John");
-            (user.secondName as string).should.be.equal("Doe");
+            expect((user.id as number)).toEqual(3);
+            expect((user.firstName as string)).toEqual("John");
+            expect((user.secondName as string)).toEqual("Doe");
 
             const plainQuestion = { id: 3, title: "What is better?" };
             const question = questionRepository.create(plainQuestion);
-            (question.id as number).should.be.equal(3);
-            (question.title as string).should.be.equal("What is better?");
+            expect((question.id as number)).toEqual(3);
+            expect((question.title as string)).toEqual("What is better?");
         }));
 
     });
 
     describe("createMany", function() {
 
-        it("should create entities and copy to them all properties of the given plain object if its given", () => connections.forEach(connection => {
+        test("should create entities and copy to them all properties of the given plain object if its given", () => connections.forEach(connection => {
             const postRepository = connection.getRepository(Post);
             const plainPosts = [{ id: 2, title: "Hello post" }, { id: 3, title: "Bye post" }];
             const posts = postRepository.create(plainPosts);
-            posts.length.should.be.equal(2);
-            posts[0].should.be.instanceOf(Post);
-            (posts[0].id as number).should.be.equal(2);
-            posts[0].title.should.be.equal("Hello post");
-            posts[1].should.be.instanceOf(Post);
-            (posts[1].id as number).should.be.equal(3);
-            posts[1].title.should.be.equal("Bye post");
+            expect(posts.length).toEqual(2);
+            expect(posts[0]).toBeInstanceOf(Post);
+            expect((posts[0].id as number)).toEqual(2);
+            expect(posts[0].title).toEqual("Hello post");
+            expect(posts[1]).toBeInstanceOf(Post);
+            expect((posts[1].id as number)).toEqual(3);
+            expect(posts[1].title).toEqual("Bye post");
         }));
 
     });
 
     describe("preload", function() {
 
-        it("should preload entity from the given object with only id", () => Promise.all(connections.map(async connection => {
+        test("should preload entity from the given object with only id", () => Promise.all(connections.map(async connection => {
             const blogRepository = connection.getRepository(Blog);
             const categoryRepository = connection.getRepository(Category);
 
@@ -226,10 +226,10 @@ describe("repository > basic methods", () => {
             // and preload it
             const plainBlogWithId = { id: 1 };
             const preloadedBlog = await blogRepository.preload(plainBlogWithId);
-            preloadedBlog!.should.be.instanceOf(Blog);
-            preloadedBlog!.id.should.be.equal(1);
-            preloadedBlog!.title.should.be.equal("About people");
-            preloadedBlog!.text.should.be.equal("Blog about good people");
+            expect(preloadedBlog)!.toBeInstanceOf(Blog);
+            expect(preloadedBlog!.id).toEqual(1);
+            expect(preloadedBlog!.title).toEqual("About people");
+            expect(preloadedBlog!.text).toEqual("Blog about good people");
         })));
 
         it("should preload entity and all relations given in the object", () => Promise.all(connections.map(async connection => {
@@ -251,19 +251,19 @@ describe("repository > basic methods", () => {
             // and preload it
             const plainBlogWithId = { id: 1, categories: [{ id: 1 }] };
             const preloadedBlog = await blogRepository.preload(plainBlogWithId);
-            preloadedBlog!.should.be.instanceOf(Blog);
-            preloadedBlog!.id.should.be.equal(1);
-            preloadedBlog!.title.should.be.equal("About people");
-            preloadedBlog!.text.should.be.equal("Blog about good people");
-            preloadedBlog!.categories[0].id.should.be.equal(1);
-            preloadedBlog!.categories[0].name.should.be.equal("people");
+            expect(preloadedBlog)!.toBeInstanceOf(Blog);
+            expect(preloadedBlog!.id).toEqual(1);
+            expect(preloadedBlog!.title).toEqual("About people");
+            expect(preloadedBlog!.text).toEqual("Blog about good people");
+            expect(preloadedBlog!.categories[0].id).toEqual(1);
+            expect(preloadedBlog!.categories[0].name).toEqual("people");
         })));
 
     });
 
     describe("merge", function() {
 
-        it("should merge multiple entities", () => Promise.all(connections.map(async connection => {
+        test("should merge multiple entities", () => Promise.all(connections.map(async connection => {
             const blogRepository = connection.getRepository(Blog);
 
             const originalEntity = new Blog();
@@ -284,17 +284,17 @@ describe("repository > basic methods", () => {
 
             const mergedBlog = blogRepository.merge(originalEntity, blog1, blog2, blog3);
 
-            mergedBlog.should.be.instanceOf(Blog);
-            mergedBlog.should.be.equal(originalEntity);
-            mergedBlog.should.not.be.equal(blog1);
-            mergedBlog.should.not.be.equal(blog2);
-            mergedBlog.should.not.be.equal(blog3);
-            mergedBlog.title.should.be.equal("First Blog");
-            mergedBlog.text.should.be.equal("text is from second blog");
-            mergedBlog.categories[0].name.should.be.equal("category from third blog");
+            expect(mergedBlog).toBeInstanceOf(Blog);
+            expect(mergedBlog).toEqual(originalEntity);
+            expect(mergedBlog).not.toEqual(blog1);
+            expect(mergedBlog).not.toEqual(blog2);
+            expect(mergedBlog).not.toEqual(blog3);
+            expect(mergedBlog.title).toEqual("First Blog");
+            expect(mergedBlog.text).toEqual("text is from second blog");
+            expect(mergedBlog.categories[0].name).toEqual("category from third blog");
         })));
 
-        it("should merge both entities and plain objects", () => Promise.all(connections.map(async connection => {
+        test("should merge both entities and plain objects", () => Promise.all(connections.map(async connection => {
             const blogRepository = connection.getRepository(Blog);
 
             const originalEntity = new Blog();
@@ -311,20 +311,20 @@ describe("repository > basic methods", () => {
 
             const mergedBlog = blogRepository.merge(originalEntity, blog1, blog2, blog3);
 
-            mergedBlog.should.be.instanceOf(Blog);
-            mergedBlog.should.be.equal(originalEntity);
-            mergedBlog.should.not.be.equal(blog1);
-            mergedBlog.should.not.be.equal(blog2);
-            mergedBlog.should.not.be.equal(blog3);
-            mergedBlog.title.should.be.equal("First Blog");
-            mergedBlog.text.should.be.equal("text is from second blog");
-            mergedBlog.categories[0].name.should.be.equal("category from third blog");
+            expect(mergedBlog).toBeInstanceOf(Blog);
+            expect(mergedBlog).toEqual(originalEntity);
+            expect(mergedBlog).not.toEqual(blog1);
+            expect(mergedBlog).not.toEqual(blog2);
+            expect(mergedBlog).not.toEqual(blog3);
+            expect(mergedBlog.title).toEqual("First Blog");
+            expect(mergedBlog.text).toEqual("text is from second blog");
+            expect(mergedBlog.categories[0].name).toEqual("category from third blog");
         })));
 
     });
 
     describe("save", function () {
-        it("should update existing entity using transformers", async () => {
+        test("should update existing entity using transformers", async () => {
             const connection = connections.find((c: Connection) => c.name === "sqlite");
             if (!connection || (connection.options as any).skip === true) {
                 return;
@@ -341,25 +341,25 @@ describe("repository > basic methods", () => {
             await postRepository.save(post);
 
             const dbPost = await postRepository.findOne(post.id) as Post;
-            dbPost.should.be.instanceOf(Post);
-            dbPost.dateAdded.should.be.instanceOf(Date);
-            dbPost.dateAdded.getTime().should.be.equal(date.getTime());
+            expect(dbPost).toBeInstanceOf(Post);
+            expect(dbPost.dateAdded).toBeInstanceOf(Date);
+            expect(dbPost.dateAdded.getTime()).toEqual(date.getTime());
 
             dbPost.title = "New title";
             const saved = await postRepository.save(dbPost);
 
-            saved.should.be.instanceOf(Post);
-            
-            saved.id!.should.be.equal(1);
-            saved.title.should.be.equal("New title");
-            saved.dateAdded.should.be.instanceof(Date);
-            saved.dateAdded.getTime().should.be.equal(date.getTime());
+            expect(saved).toBeInstanceOf(Post);
+
+            expect(saved.id)!.toEqual(1);
+            expect(saved.title).toEqual("New title");
+            expect(saved.dateAdded).toBeInstanceOf(Date);
+            expect(saved.dateAdded.getTime()).toEqual(date.getTime());
         });
     });
 
     describe("preload also should also implement merge functionality", function() {
 
-        it("if we preload entity from the plain object and merge preloaded object with plain object we'll have an object from the db with the replaced properties by a plain object's properties", () => Promise.all(connections.map(async connection => {
+        test("if we preload entity from the plain object and merge preloaded object with plain object we'll have an object from the db with the replaced properties by a plain object's properties", () => Promise.all(connections.map(async connection => {
             const blogRepository = connection.getRepository(Blog);
             const categoryRepository = connection.getRepository(Category);
 
@@ -387,21 +387,21 @@ describe("repository > basic methods", () => {
                 categories: [ { id: 1 }, { id: 2, name: "insects" } ]
             };
             const preloadedBlog = await blogRepository.preload(plainBlogWithId);
-            preloadedBlog!.should.be.instanceOf(Blog);
-            preloadedBlog!.id.should.be.equal(1);
-            preloadedBlog!.title.should.be.equal("changed title about people");
-            preloadedBlog!.text.should.be.equal("Blog about good people");
-            preloadedBlog!.categories[0].id.should.be.equal(1);
-            preloadedBlog!.categories[0].name.should.be.equal("people");
-            preloadedBlog!.categories[1].id.should.be.equal(2);
-            preloadedBlog!.categories[1].name.should.be.equal("insects");
+            expect(preloadedBlog)!.toBeInstanceOf(Blog);
+            expect(preloadedBlog!.id).toEqual(1);
+            expect(preloadedBlog!.title).toEqual("changed title about people");
+            expect(preloadedBlog!.text).toEqual("Blog about good people");
+            expect(preloadedBlog!.categories[0].id).toEqual(1);
+            expect(preloadedBlog!.categories[0].name).toEqual("people");
+            expect(preloadedBlog!.categories[1].id).toEqual(2);
+            expect(preloadedBlog!.categories[1].name).toEqual("insects");
         })));
 
     });
 
     describe("query", function() {
 
-        it("should execute the query natively and it should return the result", () => Promise.all(connections.map(async connection => {
+        test("should execute the query natively and it should return the result", () => Promise.all(connections.map(async connection => {
             const repository = connection.getRepository(Blog);
             const promises: Promise<Blog>[] = [];
             for (let i = 0; i < 5; i++) { // todo: should pass with 50 items. find the problem
@@ -416,27 +416,27 @@ describe("repository > basic methods", () => {
             const query = `SELECT MAX(${connection.driver.escape("blog")}.${connection.driver.escape("counter")}) as ${connection.driver.escape("max")} ` +
                 ` FROM ${connection.driver.escape("blog")} ${connection.driver.escape("blog")}`;
             const result = await repository.query(query);
-            result[0].should.not.be.undefined;
-            result[0].max.should.not.be.undefined;
+            expect(result[0]).not.toBeUndefined();
+            expect(result[0].max).not.toBeUndefined();
         })));
 
     });
 
     /*describe.skip("transaction", function() {
 
-        it("executed queries must success", () => Promise.all(connections.map(async connection => {
+        test("executed queries must success", () => Promise.all(connections.map(async connection => {
             const repository = connection.getRepository(Blog);
             let blogs = await repository.find();
-            blogs.should.be.eql([]);
+            expect(blogs).toEqual([]);
 
             const blog = new Blog();
             blog.title = "hello blog title";
             blog.text = "hello blog text";
             await repository.save(blog);
-            blogs.should.be.eql([]);
+            expect(blogs).toEqual([]);
 
             blogs = await repository.find();
-            blogs.length.should.be.equal(1);
+            expect(blogs.length).toEqual(1);
 
             await repository.transaction(async () => {
                 const promises: Promise<Blog>[] = [];
@@ -450,26 +450,26 @@ describe("repository > basic methods", () => {
                 await Promise.all(promises);
 
                 blogs = await repository.find();
-                blogs.length.should.be.equal(101);
+                expect(blogs.length).toEqual(101);
             });
 
             blogs = await repository.find();
-            blogs.length.should.be.equal(101);
+            expect(blogs.length).toEqual(101);
         })));
 
-        it("executed queries must rollback in the case if error in transaction", () => Promise.all(connections.map(async connection => {
+        test("executed queries must rollback in the case if error in transaction", () => Promise.all(connections.map(async connection => {
             const repository = connection.getRepository(Blog);
             let blogs = await repository.find();
-            blogs.should.be.eql([]);
+            expect(blogs).toEqual([]);
 
             const blog = new Blog();
             blog.title = "hello blog title";
             blog.text = "hello blog text";
             await repository.save(blog);
-            blogs.should.be.eql([]);
+            expect(blogs).toEqual([]);
 
             blogs = await repository.find();
-            blogs.length.should.be.equal(1);
+            expect(blogs.length).toEqual(1);
 
             await repository.transaction(async () => {
                 const promises: Promise<Blog>[] = [];
@@ -483,14 +483,14 @@ describe("repository > basic methods", () => {
                 await Promise.all(promises);
 
                 blogs = await repository.find();
-                blogs.length.should.be.equal(101);
+                expect(blogs.length).toEqual(101);
 
                 // now send the query that will crash all for us
                 throw new Error("this error will cancel all persist operations");
-            }).should.be.rejected;
+            }).rejected;
 
             blogs = await repository.find();
-            blogs.length.should.be.equal(1);
+            expect(blogs.length).toEqual(1);
         })));
 
     });*/
