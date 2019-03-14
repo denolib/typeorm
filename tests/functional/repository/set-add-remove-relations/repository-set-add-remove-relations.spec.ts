@@ -1,6 +1,5 @@
 import "reflect-metadata";
-import {expect} from "chai";
-import {Connection} from "../../../../src/connection/Connection";
+import {Connection} from "../../../../src";
 import {Post} from "./entity/Post";
 import {Category} from "./entity/Category";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../test/utils/test-utils";
@@ -13,17 +12,17 @@ describe.skip("repository > set/add/remove relation methods", function() {
     // -------------------------------------------------------------------------
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
     // -------------------------------------------------------------------------
     // Specifications
     // -------------------------------------------------------------------------
 
-    it("add elements to many-to-many from owner side", () => Promise.all(connections.map(async connection => {
+    test("add elements to many-to-many from owner side", () => Promise.all(connections.map(async connection => {
 
         const postRepository = connection.getRepository(Post);
         const categoryRepository = connection.getRepository(Category);
@@ -56,14 +55,14 @@ describe.skip("repository > set/add/remove relation methods", function() {
             }
         });
 
-        expect(loadedPost!).not.to.be.undefined;
-        expect(loadedPost!.manyCategories).not.to.be.undefined;
-        expect(loadedPost!.manyCategories![0]).not.to.be.undefined;
-        expect(loadedPost!.manyCategories![1]).not.to.be.undefined;
+        expect(loadedPost!).not.toBeUndefined();
+        expect(loadedPost!.manyCategories).not.toBeUndefined();
+        expect(loadedPost!.manyCategories![0]).not.toBeUndefined();
+        expect(loadedPost!.manyCategories![1]).not.toBeUndefined();
 
     })));
 
-    it("add elements to many-to-many from inverse side", () => Promise.all(connections.map(async connection => {
+    test("add elements to many-to-many from inverse side", () => Promise.all(connections.map(async connection => {
 
         const postRepository = connection.getRepository(Post);
         const categoryRepository = connection.getRepository(Category);
@@ -94,10 +93,10 @@ describe.skip("repository > set/add/remove relation methods", function() {
             }
         );
 
-        expect(loadedCategory).not.to.be.undefined;
-        expect(loadedCategory!.manyPosts).not.to.be.undefined;
-        expect(loadedCategory!.manyPosts![0]).not.to.be.undefined;
-        expect(loadedCategory!.manyPosts![1]).not.to.be.undefined;
+        expect(loadedCategory).not.toBeUndefined();
+        expect(loadedCategory!.manyPosts).not.toBeUndefined();
+        expect(loadedCategory!.manyPosts![0]).not.toBeUndefined();
+        expect(loadedCategory!.manyPosts![1]).not.toBeUndefined();
     })));
 
     it("remove elements to many-to-many from owner side", () => Promise.all(connections.map(async connection => {
@@ -137,14 +136,14 @@ describe.skip("repository > set/add/remove relation methods", function() {
             }
         });
 
-        expect(loadedPost!).not.to.be.undefined;
-        expect(loadedPost!.manyCategories).not.to.be.undefined;
-        loadedPost!.manyCategories.length.should.be.equal(1);
-        loadedPost!.manyCategories![0].name.should.be.equal("Kids");
+        expect(loadedPost!).not.toBeUndefined();
+        expect(loadedPost!.manyCategories).not.toBeUndefined();
+        expect(loadedPost!.manyCategories.length).toEqual(1);
+        expect(loadedPost!.manyCategories![0].name).toEqual("Kids");
 
     })));
 
-    it("remove elements to many-to-many from inverse side", () => Promise.all(connections.map(async connection => {
+    test("remove elements to many-to-many from inverse side", () => Promise.all(connections.map(async connection => {
 
         const postRepository = connection.getRepository(Post);
         const categoryRepository = connection.getRepository(Category);
@@ -181,14 +180,14 @@ describe.skip("repository > set/add/remove relation methods", function() {
             }
         });
 
-        expect(loadedCategory!).not.to.be.undefined;
-        expect(loadedCategory!.manyPosts).not.to.be.undefined;
-        loadedCategory!.manyPosts.length.should.be.equal(1);
-        loadedCategory!.manyPosts[0].title.should.be.equal("post #2");
+        expect(loadedCategory!).not.toBeUndefined();
+        expect(loadedCategory!.manyPosts).not.toBeUndefined();
+        expect(loadedCategory!.manyPosts.length).toEqual(1);
+        expect(loadedCategory!.manyPosts[0].title).toEqual("post #2");
     })));
 
     // todo: fix this test later
-    it("set element to one-to-many relation", () => Promise.all(connections.map(async connection => {
+    test("set element to one-to-many relation", () => Promise.all(connections.map(async connection => {
 
         const postRepository = connection.getRepository(Post);
         const categoryRepository = connection.getRepository(Category);
@@ -214,13 +213,13 @@ describe.skip("repository > set/add/remove relation methods", function() {
             }
         });
 
-        expect(loadedPost!).not.to.be.undefined;
-        expect(loadedPost!.categories).not.to.be.undefined;
-        expect(loadedPost!.categories![0]).not.to.be.undefined;
+        expect(loadedPost!).not.toBeUndefined();
+        expect(loadedPost!.categories).not.toBeUndefined();
+        expect(loadedPost!.categories![0]).not.toBeUndefined();
 
     })));
 
-    it("set element to many-to-one relation", () => Promise.all(connections.map(async connection => {
+    test("set element to many-to-one relation", () => Promise.all(connections.map(async connection => {
 
         const postRepository = connection.getRepository(Post);
         const categoryRepository = connection.getRepository(Category);
@@ -246,11 +245,11 @@ describe.skip("repository > set/add/remove relation methods", function() {
             }
         });
 
-        expect(loadedCategory!).not.to.be.undefined;
-        expect(loadedCategory!.post).not.to.be.undefined;
+        expect(loadedCategory!).not.toBeUndefined();
+        expect(loadedCategory!.post).not.toBeUndefined();
     })));
 
-    it("set element to NULL in one-to-many relation", () => Promise.all(connections.map(async connection => {
+    test("set element to NULL in one-to-many relation", () => Promise.all(connections.map(async connection => {
 
         const postRepository = connection.getRepository(Post);
         const categoryRepository = connection.getRepository(Category);
@@ -277,11 +276,11 @@ describe.skip("repository > set/add/remove relation methods", function() {
             }
         });
 
-        expect(loadedPost!).not.to.be.undefined;
-        expect(loadedPost!.categories).to.be.eql([]);
+        expect(loadedPost!).not.toBeUndefined();
+        expect(loadedPost!.categories).toEqual([]);
     })));
 
-    it("set element to NULL in many-to-one relation", () => Promise.all(connections.map(async connection => {
+    test("set element to NULL in many-to-one relation", () => Promise.all(connections.map(async connection => {
 
         const postRepository = connection.getRepository(Post);
         const categoryRepository = connection.getRepository(Category);
@@ -308,8 +307,8 @@ describe.skip("repository > set/add/remove relation methods", function() {
             }
         });
 
-        expect(loadedCategory).not.to.be.undefined;
-        expect(loadedCategory!.post).to.be.undefined;
+        expect(loadedCategory).not.toBeUndefined();
+        expect(loadedCategory!.post).toBeUndefined();
 
     })));
 

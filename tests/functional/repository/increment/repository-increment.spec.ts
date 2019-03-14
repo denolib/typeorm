@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { closeTestingConnections, createTestingConnections, reloadTestingDatabases } from "../../../../test/utils/test-utils";
-import { Connection } from "../../../../src/connection/Connection";
+import { Connection } from "../../../../src";
 import { UpdateResult } from "../../../../src";
 import { Post } from "./entity/Post";
 import { PostBigInt } from "./entity/PostBigInt";
@@ -11,13 +11,13 @@ describe("repository > increment method", () => {
     describe("basic", () => {
 
         let connections: Connection[];
-        before(async () => connections = await createTestingConnections({
+        beforeAll(async () => connections = await createTestingConnections({
             entities: [Post]
         }));
         beforeEach(() => reloadTestingDatabases(connections));
-        after(() => closeTestingConnections(connections));
+        afterAll(() => closeTestingConnections(connections));
 
-        it("should increment value", () => Promise.all(connections.map(async connection => {
+        test("should increment value", () => Promise.all(connections.map(async connection => {
 
             // save few dummy posts
             const post1 = new Post();
@@ -42,13 +42,13 @@ describe("repository > increment method", () => {
 
             // load and check counter
             const loadedPost1 = await connection.manager.findOne(Post, 1);
-            loadedPost1!.counter.should.be.equal(2);
+            expect(loadedPost1!.counter).toEqual(2);
 
             const loadedPost2 = await connection.manager.findOne(Post, 2);
-            loadedPost2!.counter.should.be.equal(4);
+            expect(loadedPost2!.counter).toEqual(4);
         })));
 
-        it("should accept string as input and increment value", () => Promise.all(connections.map(async connection => {
+        test("should accept string as input and increment value", () => Promise.all(connections.map(async connection => {
 
             // save few dummy posts
             const post1 = new Post();
@@ -73,13 +73,13 @@ describe("repository > increment method", () => {
 
             // load and check counter
             const loadedPost1 = await connection.manager.findOne(Post, 1);
-            loadedPost1!.counter.should.be.equal(23);
+            expect(loadedPost1!.counter).toEqual(23);
 
             const loadedPost2 = await connection.manager.findOne(Post, 2);
-            loadedPost2!.counter.should.be.equal(34);
+            expect(loadedPost2!.counter).toEqual(34);
         })));
 
-        it("should return UpdateResult", () => Promise.all(connections.map(async connection => {
+        test("should return UpdateResult", () => Promise.all(connections.map(async connection => {
 
             // save few dummy posts
             const post1 = new Post();
@@ -93,11 +93,11 @@ describe("repository > increment method", () => {
                 .getRepository(Post)
                 .increment({ id: 1 }, "counter", 22);
 
-            result.should.be.an.instanceOf(UpdateResult);
+            expect(result).toBeInstanceOf(UpdateResult);
 
         })));
 
-        it("should throw an error if column property path was not found", () => Promise.all(connections.map(async connection => {
+        test("should throw an error if column property path was not found", () => Promise.all(connections.map(async connection => {
 
             // save few dummy posts
             const post1 = new Post();
@@ -111,14 +111,15 @@ describe("repository > increment method", () => {
             await connection.manager.save([post1, post2]);
 
             // increment counter of post 1
-            await connection
-                .getRepository(Post)
-                .increment({ id: 1 }, "unknownProperty", 1)
-                .should.be.rejected;
+            await expect(
+                connection
+                    .getRepository(Post)
+                    .increment({ id: 1 }, "unknownProperty", 1)
+            ).rejects.toBeDefined();
 
         })));
 
-        it("should throw an error if input value is not number", () => Promise.all(connections.map(async connection => {
+        test("should throw an error if input value is not number", () => Promise.all(connections.map(async connection => {
 
             // save few dummy posts
             const post1 = new Post();
@@ -132,10 +133,11 @@ describe("repository > increment method", () => {
             await connection.manager.save([post1, post2]);
 
             // increment counter of post 1
-            await connection
-                .getRepository(Post)
-                .increment({ id: 1 }, "counter", "12abc")
-                .should.be.rejected;
+            await expect(
+                connection
+                    .getRepository(Post)
+                    .increment({ id: 1 }, "counter", "12abc")
+            ).rejects.toBeDefined();
 
         })));
 
@@ -144,15 +146,15 @@ describe("repository > increment method", () => {
     describe("bigint", () => {
 
         let connections: Connection[];
-        before(async () => connections = await createTestingConnections({
+        beforeAll(async () => connections = await createTestingConnections({
             entities: [PostBigInt],
             enabledDrivers: ["mysql", "mariadb", "postgres"],
             // logging: true
         }));
         beforeEach(() => reloadTestingDatabases(connections));
-        after(() => closeTestingConnections(connections));
+        afterAll(() => closeTestingConnections(connections));
 
-        it("should increment value", () => Promise.all(connections.map(async connection => {
+        test("should increment value", () => Promise.all(connections.map(async connection => {
 
             // save few dummy posts
             const postBigInt1 = new PostBigInt();
@@ -177,10 +179,10 @@ describe("repository > increment method", () => {
 
             // load and check counter
             const loadedPost1 = await connection.manager.findOne(PostBigInt, 1);
-            loadedPost1!.counter.should.be.equal("9000000000000000001");
+            expect(loadedPost1!.counter).toEqual("9000000000000000001");
 
             const loadedPost2 = await connection.manager.findOne(PostBigInt, 2);
-            loadedPost2!.counter.should.be.equal("9000000000000000002");
+            expect(loadedPost2!.counter).toEqual("9000000000000000002");
 
         })));
 
@@ -190,13 +192,13 @@ describe("repository > increment method", () => {
     describe("embeded entities", () => {
 
         let connections: Connection[];
-        before(async () => connections = await createTestingConnections({
+        beforeAll(async () => connections = await createTestingConnections({
             entities: [UserWithEmbededEntity],
         }));
         beforeEach(() => reloadTestingDatabases(connections));
-        after(() => closeTestingConnections(connections));
+        afterAll(() => closeTestingConnections(connections));
 
-        it("should increment value", () => Promise.all(connections.map(async connection => {
+        test("should increment value", () => Promise.all(connections.map(async connection => {
 
             const userWithEmbededEntity = new UserWithEmbededEntity();
             userWithEmbededEntity.id = 1;
@@ -207,7 +209,7 @@ describe("repository > increment method", () => {
                 .increment({ id: 1 }, "friend.sent", 5);
 
             const loadedUser = await connection.manager.findOne(UserWithEmbededEntity, 1);
-            loadedUser!.friend.sent.should.be.equal(5);
+            expect(loadedUser!.friend.sent).toEqual(5);
 
         })));
 
