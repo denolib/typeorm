@@ -1,7 +1,6 @@
 import "reflect-metadata";
-import {expect} from "chai";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../../test/utils/test-utils";
-import {Connection} from "../../../../../src/connection/Connection";
+import {Connection} from "../../../../../src";
 import {User} from "./entity/User";
 import {EventMember} from "./entity/EventMember";
 import {Event} from "./entity/Event";
@@ -10,13 +9,13 @@ import {Person} from "./entity/Person";
 describe("relations > multiple-primary-keys > other-cases", () => {
     
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should load related entity when entity uses relation ids as primary id", () => Promise.all(connections.map(async connection => {
+    test("should load related entity when entity uses relation ids as primary id", () => Promise.all(connections.map(async connection => {
 
         const user1 = new User();
         user1.name = "Alice";
@@ -79,24 +78,24 @@ describe("relations > multiple-primary-keys > other-cases", () => {
             .orderBy("event.id, user.id")
             .getMany();
 
-        expect(loadedEvents[0].author).to.not.be.undefined;
-        expect(loadedEvents[0].author.fullName).to.be.equal("Alice A");
-        expect(loadedEvents[0].author.user).to.not.be.undefined;
-        expect(loadedEvents[0].author.user.id).to.be.equal(1);
-        expect(loadedEvents[0].members).to.not.be.eql([]);
-        expect(loadedEvents[0].members[0].user.id).to.be.equal(1);
-        expect(loadedEvents[0].members[0].user.name).to.be.equal("Alice");
-        expect(loadedEvents[0].members[1].user.id).to.be.equal(2);
-        expect(loadedEvents[0].members[1].user.name).to.be.equal("Bob");
-        expect(loadedEvents[1].author).to.not.be.undefined;
-        expect(loadedEvents[1].author.fullName).to.be.equal("Bob B");
-        expect(loadedEvents[1].author.user).to.not.be.undefined;
-        expect(loadedEvents[1].author.user.id).to.be.equal(2);
-        expect(loadedEvents[1].members).to.not.be.eql([]);
-        expect(loadedEvents[1].members[0].user.id).to.be.equal(1);
-        expect(loadedEvents[1].members[0].user.name).to.be.equal("Alice");
-        expect(loadedEvents[1].members[1].user.id).to.be.equal(3);
-        expect(loadedEvents[1].members[1].user.name).to.be.equal("Clara");
+        expect(loadedEvents[0].author).not.toBeUndefined();
+        expect(loadedEvents[0].author.fullName).toEqual("Alice A");
+        expect(loadedEvents[0].author.user).not.toBeUndefined();
+        expect(loadedEvents[0].author.user.id).toEqual(1);
+        expect(loadedEvents[0].members).not.toEqual([]);
+        expect(loadedEvents[0].members[0].user.id).toEqual(1);
+        expect(loadedEvents[0].members[0].user.name).toEqual("Alice");
+        expect(loadedEvents[0].members[1].user.id).toEqual(2);
+        expect(loadedEvents[0].members[1].user.name).toEqual("Bob");
+        expect(loadedEvents[1].author).not.toBeUndefined();
+        expect(loadedEvents[1].author.fullName).toEqual("Bob B");
+        expect(loadedEvents[1].author.user).not.toBeUndefined();
+        expect(loadedEvents[1].author.user.id).toEqual(2);
+        expect(loadedEvents[1].members).not.toEqual([]);
+        expect(loadedEvents[1].members[0].user.id).toEqual(1);
+        expect(loadedEvents[1].members[0].user.name).toEqual("Alice");
+        expect(loadedEvents[1].members[1].user.id).toEqual(3);
+        expect(loadedEvents[1].members[1].user.name).toEqual("Clara");
 
         const loadedUsers = await connection.manager
             .createQueryBuilder(User, "user")
@@ -105,17 +104,17 @@ describe("relations > multiple-primary-keys > other-cases", () => {
             .orderBy("user.id, event.id")
             .getMany();
 
-        expect(loadedUsers[0].members).to.not.be.eql([]);
-        expect(loadedUsers[0].members[0].event.id).to.be.equal(1);
-        expect(loadedUsers[0].members[0].event.name).to.be.equal("Event #1");
-        expect(loadedUsers[0].members[1].event.id).to.be.equal(2);
-        expect(loadedUsers[0].members[1].event.name).to.be.equal("Event #2");
-        expect(loadedUsers[1].members).to.not.be.eql([]);
-        expect(loadedUsers[1].members[0].event.id).to.be.equal(1);
-        expect(loadedUsers[1].members[0].event.name).to.be.equal("Event #1");
-        expect(loadedUsers[2].members).to.not.be.eql([]);
-        expect(loadedUsers[2].members[0].event.id).to.be.equal(2);
-        expect(loadedUsers[2].members[0].event.name).to.be.equal("Event #2");
+        expect(loadedUsers[0].members).not.toEqual([]);
+        expect(loadedUsers[0].members[0].event.id).toEqual(1);
+        expect(loadedUsers[0].members[0].event.name).toEqual("Event #1");
+        expect(loadedUsers[0].members[1].event.id).toEqual(2);
+        expect(loadedUsers[0].members[1].event.name).toEqual("Event #2");
+        expect(loadedUsers[1].members).not.toEqual([]);
+        expect(loadedUsers[1].members[0].event.id).toEqual(1);
+        expect(loadedUsers[1].members[0].event.name).toEqual("Event #1");
+        expect(loadedUsers[2].members).not.toEqual([]);
+        expect(loadedUsers[2].members[0].event.id).toEqual(2);
+        expect(loadedUsers[2].members[0].event.name).toEqual("Event #2");
 
     })));
 
