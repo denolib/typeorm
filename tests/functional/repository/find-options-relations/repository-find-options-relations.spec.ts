@@ -1,12 +1,11 @@
 import "reflect-metadata";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../test/utils/test-utils";
-import {Connection} from "../../../../src/connection/Connection";
+import {Connection} from "../../../../src";
 import {User} from "./entity/User";
 import {Category} from "./entity/Category";
 import {Post} from "./entity/Post";
 import {Photo} from "./entity/Photo";
 import {Counters} from "./entity/Counters";
-import {FindRelationsNotFoundError} from "../../../../src/error/FindRelationsNotFoundError";
 
 describe("repository > find options > relations", () => {
 
@@ -15,11 +14,11 @@ describe("repository > find options > relations", () => {
     // -------------------------------------------------------------------------
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
     // -------------------------------------------------------------------------
     // Setup
@@ -85,9 +84,9 @@ describe("repository > find options > relations", () => {
     // Specifications
     // -------------------------------------------------------------------------
 
-    it("should not any relations if they are not specified", () => Promise.all(connections.map(async connection => {
+    test("should not any relations if they are not specified", () => Promise.all(connections.map(async connection => {
         const loadedPost = await connection.getRepository(Post).findOne(1);
-        loadedPost!.should.be.eql({
+        expect(loadedPost)!.toEqual({
             id: 1,
             title: "About Timber",
             counters: {
@@ -97,13 +96,14 @@ describe("repository > find options > relations", () => {
         });
     })));
 
-    it("should load specified relations case 1", () => Promise.all(connections.map(async connection => {
+    test("should load specified relations case 1", () => Promise.all(connections.map(async connection => {
         const loadedPost = await connection.getRepository(Post).findOne(1, { relations: ["photos"] });
-        loadedPost!.id.should.be.equal(1);
-        loadedPost!.title.should.be.equal("About Timber");
-        loadedPost!.counters.commentCount.should.be.equal(1);
-        loadedPost!.counters.stars.should.be.equal(101);
-        loadedPost!.photos.should.deep.include({
+        expect(loadedPost!.id).toEqual(1);
+        expect(loadedPost!.title).toEqual("About Timber");
+        expect(loadedPost!.counters.commentCount).toEqual(1);
+        expect(loadedPost!.counters.stars).toEqual(101);
+
+        expect(loadedPost!.photos).toContainEqual({
             id: 1,
             filename: "photo1.jpg",
             counters: {
@@ -111,7 +111,7 @@ describe("repository > find options > relations", () => {
                 commentCount: 19
             }
         });
-        loadedPost!.photos.should.deep.include({
+        expect(loadedPost!.photos).toContainEqual({
             id: 2,
             filename: "photo2.jpg",
             counters: {
@@ -119,7 +119,7 @@ describe("repository > find options > relations", () => {
                 commentCount: 20
             }
         });
-        loadedPost!.photos.should.deep.include({
+        expect(loadedPost!.photos).toContainEqual({
             id: 3,
             filename: "photo3.jpg",
             counters: {
@@ -129,13 +129,13 @@ describe("repository > find options > relations", () => {
         });
     })));
 
-    it("should load specified relations case 2", () => Promise.all(connections.map(async connection => {
+    test("should load specified relations case 2", () => Promise.all(connections.map(async connection => {
         const loadedPost = await connection.getRepository(Post).findOne(1, { relations: ["photos", "user", "categories"] });
-        loadedPost!.id.should.be.equal(1);
-        loadedPost!.title.should.be.equal("About Timber");
-        loadedPost!.counters.commentCount.should.be.equal(1);
-        loadedPost!.counters.stars.should.be.equal(101);
-        loadedPost!.photos.should.deep.include({
+        expect(loadedPost!.id).toEqual(1);
+        expect(loadedPost!.title).toEqual("About Timber");
+        expect(loadedPost!.counters.commentCount).toEqual(1);
+        expect(loadedPost!.counters.stars).toEqual(101);
+        expect(loadedPost!.photos).toContainEqual({
             id: 1,
             filename: "photo1.jpg",
             counters: {
@@ -143,7 +143,7 @@ describe("repository > find options > relations", () => {
                 commentCount: 19
             }
         });
-        loadedPost!.photos.should.deep.include({
+        expect(loadedPost!.photos).toContainEqual({
             id: 2,
             filename: "photo2.jpg",
             counters: {
@@ -151,7 +151,7 @@ describe("repository > find options > relations", () => {
                 commentCount: 20
             }
         });
-        loadedPost!.photos.should.deep.include({
+        expect(loadedPost!.photos).toContainEqual({
             id: 3,
             filename: "photo3.jpg",
             counters: {
@@ -159,27 +159,27 @@ describe("repository > find options > relations", () => {
                 commentCount: 21
             }
         });
-        loadedPost!.user.should.be.eql({
+        expect(loadedPost!.user).toEqual({
             id: 1,
             name: "Timber"
         });
-        loadedPost!.categories.should.deep.include({
+        expect(loadedPost!.categories).toContainEqual({
             id: 1,
             name: "category1"
         });
-        loadedPost!.categories.should.deep.include({
+        expect(loadedPost!.categories).toContainEqual({
             id: 2,
             name: "category2"
         });
     })));
 
-    it("should load specified relations and their sub-relations case 1", () => Promise.all(connections.map(async connection => {
+    test("should load specified relations and their sub-relations case 1", () => Promise.all(connections.map(async connection => {
         const loadedPost = await connection.getRepository(Post).findOne(1, { relations: ["photos", "user", "categories", "photos.user"] });
-        loadedPost!.id.should.be.equal(1);
-        loadedPost!.title.should.be.equal("About Timber");
-        loadedPost!.counters.commentCount.should.be.equal(1);
-        loadedPost!.counters.stars.should.be.equal(101);
-        loadedPost!.photos.should.deep.include({
+        expect(loadedPost!.id).toEqual(1);
+        expect(loadedPost!.title).toEqual("About Timber");
+        expect(loadedPost!.counters.commentCount).toEqual(1);
+        expect(loadedPost!.counters.stars).toEqual(101);
+        expect(loadedPost!.photos).toContainEqual({
             id: 1,
             filename: "photo1.jpg",
             counters: {
@@ -191,7 +191,7 @@ describe("repository > find options > relations", () => {
                 name: "Photo Timber"
             }
         });
-        loadedPost!.photos.should.deep.include({
+        expect(loadedPost!.photos).toContainEqual({
             id: 2,
             filename: "photo2.jpg",
             counters: {
@@ -200,7 +200,7 @@ describe("repository > find options > relations", () => {
             },
             user: null
         });
-        loadedPost!.photos.should.deep.include({
+        expect(loadedPost!.photos).toContainEqual({
             id: 3,
             filename: "photo3.jpg",
             counters: {
@@ -209,27 +209,27 @@ describe("repository > find options > relations", () => {
             },
             user: null
         });
-        loadedPost!.user.should.be.eql({
+        expect(loadedPost!.user).toEqual({
             id: 1,
             name: "Timber"
         });
-        loadedPost!.categories.should.deep.include({
+        expect(loadedPost!.categories).toContainEqual({
             id: 1,
             name: "category1"
         });
-        loadedPost!.categories.should.deep.include({
+        expect(loadedPost!.categories).toContainEqual({
             id: 2,
             name: "category2"
         });
     })));
 
-    it("should load specified relations and their sub-relations case 2", () => Promise.all(connections.map(async connection => {
+    test("should load specified relations and their sub-relations case 2", () => Promise.all(connections.map(async connection => {
         const loadedPost = await connection.getRepository(Post).findOne(1, { relations: ["photos", "user", "photos.user", "counters.author"] });
-        loadedPost!.id.should.be.equal(1);
-        loadedPost!.title.should.be.equal("About Timber");
-        loadedPost!.counters.commentCount.should.be.equal(1);
-        loadedPost!.counters.stars.should.be.equal(101);
-        loadedPost!.photos.should.deep.include({
+        expect(loadedPost!.id).toEqual(1);
+        expect(loadedPost!.title).toEqual("About Timber");
+        expect(loadedPost!.counters.commentCount).toEqual(1);
+        expect(loadedPost!.counters.stars).toEqual(101);
+        expect(loadedPost!.photos).toContainEqual({
             id: 1,
             filename: "photo1.jpg",
             counters: {
@@ -241,7 +241,7 @@ describe("repository > find options > relations", () => {
                 name: "Photo Timber"
             }
         });
-        loadedPost!.photos.should.deep.include({
+        expect(loadedPost!.photos).toContainEqual({
             id: 2,
             filename: "photo2.jpg",
             counters: {
@@ -250,7 +250,7 @@ describe("repository > find options > relations", () => {
             },
             user: null
         });
-        loadedPost!.photos.should.deep.include({
+        expect(loadedPost!.photos).toContainEqual({
             id: 3,
             filename: "photo3.jpg",
             counters: {
@@ -259,23 +259,23 @@ describe("repository > find options > relations", () => {
             },
             user: null
         });
-        loadedPost!.user.should.be.eql({
+        expect(loadedPost!.user).toEqual({
             id: 1,
             name: "Timber"
         });
-        loadedPost!.counters.author.should.be.eql({
+        expect(loadedPost!.counters.author).toEqual({
             id: 2,
             name: "Post Counters Timber"
         });
     })));
 
-    it("should load specified relations and their sub-relations case 3", () => Promise.all(connections.map(async connection => {
+    test("should load specified relations and their sub-relations case 3", () => Promise.all(connections.map(async connection => {
         const loadedPost = await connection.getRepository(Post).findOne(1, { relations: ["photos", "user", "photos.user", "counters.author", "photos.counters.author"] });
-        loadedPost!.id.should.be.equal(1);
-        loadedPost!.title.should.be.equal("About Timber");
-        loadedPost!.counters.commentCount.should.be.equal(1);
-        loadedPost!.counters.stars.should.be.equal(101);
-        loadedPost!.photos.should.deep.include({
+        expect(loadedPost!.id).toEqual(1);
+        expect(loadedPost!.title).toEqual("About Timber");
+        expect(loadedPost!.counters.commentCount).toEqual(1);
+        expect(loadedPost!.counters.stars).toEqual(101);
+        expect(loadedPost!.photos).toContainEqual({
             id: 1,
             filename: "photo1.jpg",
             counters: {
@@ -291,7 +291,7 @@ describe("repository > find options > relations", () => {
                 name: "Photo Timber"
             }
         });
-        loadedPost!.photos.should.deep.include({
+        expect(loadedPost!.photos).toContainEqual({
             id: 2,
             filename: "photo2.jpg",
             counters: {
@@ -301,7 +301,7 @@ describe("repository > find options > relations", () => {
             },
             user: null
         });
-        loadedPost!.photos.should.deep.include({
+        expect(loadedPost!.photos).toContainEqual({
             id: 3,
             filename: "photo3.jpg",
             counters: {
@@ -311,38 +311,62 @@ describe("repository > find options > relations", () => {
             },
             user: null
         });
-        loadedPost!.user.should.be.eql({
+        expect(loadedPost!.user).toEqual({
             id: 1,
             name: "Timber"
         });
-        loadedPost!.counters.author.should.be.eql({
+        expect(loadedPost!.counters.author).toEqual({
             id: 2,
             name: "Post Counters Timber"
         });
     })));
 
-    it("should throw error if specified relations were not found case 1", () => Promise.all(connections.map(async connection => {
-        await connection.getRepository(Post).findOne(1, { relations: ["photos2"] }).should.eventually.be.rejectedWith(FindRelationsNotFoundError);
+    test("should throw error if specified relations were not found case 1", () => Promise.all(connections.map(async connection => {
+        await expect(
+            connection
+                .getRepository(Post)
+                .findOne(1, { relations: ["photos2"] })
+        ).rejects.toBeDefined();
     })));
 
-    it("should throw error if specified relations were not found case 2", () => Promise.all(connections.map(async connection => {
-        await connection.getRepository(Post).findOne(1, { relations: ["photos", "counters.author2"] }).should.eventually.be.rejectedWith(FindRelationsNotFoundError);
+    test("should throw error if specified relations were not found case 2", () => Promise.all(connections.map(async connection => {
+        await expect(
+            connection
+                .getRepository(Post)
+                .findOne(1, { relations: ["photos", "counters.author2"] })
+        ).rejects.toBeDefined();
     })));
 
-    it("should throw error if specified relations were not found case 3", () => Promise.all(connections.map(async connection => {
-        await connection.getRepository(Post).findOne(1, { relations: ["photos", "counters2.author"] }).should.eventually.be.rejectedWith(FindRelationsNotFoundError);
+    test("should throw error if specified relations were not found case 3", () => Promise.all(connections.map(async connection => {
+        await await expect(
+            connection
+                .getRepository(Post)
+                .findOne(1, { relations: ["photos", "counters2.author"] })
+        ).rejects.toBeDefined();
     })));
 
-    it("should throw error if specified relations were not found case 4", () => Promise.all(connections.map(async connection => {
-        await connection.getRepository(Post).findOne(1, { relations: ["photos", "photos.user.haha"] }).should.eventually.be.rejectedWith(FindRelationsNotFoundError);
+    test("should throw error if specified relations were not found case 4", () => Promise.all(connections.map(async connection => {
+        await await expect(
+            connection
+                .getRepository(Post)
+                .findOne(1, { relations: ["photos", "photos.user.haha"] })
+        ).rejects.toBeDefined();
     })));
 
-    it("should throw error if specified relations were not found case 5", () => Promise.all(connections.map(async connection => {
-        await connection.getRepository(Post).findOne(1, { relations: ["questions"] }).should.eventually.be.rejectedWith(FindRelationsNotFoundError);
+    test("should throw error if specified relations were not found case 5", () => Promise.all(connections.map(async connection => {
+        await await expect(
+            connection
+                .getRepository(Post)
+                .findOne(1, { relations: ["questions"] })
+        ).rejects.toBeDefined();
     })));
 
-    it("should throw error if specified relations were not found case 6", () => Promise.all(connections.map(async connection => {
-        await connection.getRepository(Post).findOne(1, { relations: ["questions.haha"] }).should.eventually.be.rejectedWith(FindRelationsNotFoundError);
+    test("should throw error if specified relations were not found case 6", () => Promise.all(connections.map(async connection => {
+        await await expect(
+            connection
+                .getRepository(Post)
+                .findOne(1, { relations: ["questions.haha"] })
+        ).rejects.toBeDefined();
     })));
 
 });
