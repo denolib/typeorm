@@ -1,11 +1,9 @@
 import "reflect-metadata";
-import {expect} from "chai";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
-import {Connection} from "../../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../test/utils/test-utils";
+import {Connection} from "../../../../src";
 import {User} from "./entity/User";
 import {MysqlDriver} from "../../../../src/driver/mysql/MysqlDriver";
 import {SqlServerDriver} from "../../../../src/driver/sqlserver/SqlServerDriver";
-import {LimitOnUpdateNotSupportedError} from "../../../../src/error/LimitOnUpdateNotSupportedError";
 import {Photo} from "./entity/Photo";
 import {EntityColumnNotFound} from "../../../../src/error/EntityColumnNotFound";
 import {UpdateValuesMissingError} from "../../../../src/error/UpdateValuesMissingError";
@@ -13,13 +11,13 @@ import {UpdateValuesMissingError} from "../../../../src/error/UpdateValuesMissin
 describe("query builder > update", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should perform updation correctly", () => Promise.all(connections.map(async connection => {
+    test("should perform updation correctly", () => Promise.all(connections.map(async connection => {
 
         const user = new User();
         user.name = "Alex Messer";
@@ -33,8 +31,8 @@ describe("query builder > update", () => {
             .execute();
 
         const loadedUser1 = await connection.getRepository(User).findOne({ name: "Dima Zotov" });
-        expect(loadedUser1).to.exist;
-        loadedUser1!.name.should.be.equal("Dima Zotov");
+        expect(loadedUser1).toBeDefined();
+        expect(loadedUser1!.name).toEqual("Dima Zotov");
 
         await connection.getRepository(User)
             .createQueryBuilder("myUser")
@@ -44,12 +42,12 @@ describe("query builder > update", () => {
             .execute();
 
         const loadedUser2 = await connection.getRepository(User).findOne({ name: "Muhammad Mirzoev" });
-        expect(loadedUser2).to.exist;
-        loadedUser2!.name.should.be.equal("Muhammad Mirzoev");
+        expect(loadedUser2).toBeDefined();
+        expect(loadedUser2!.name).toEqual("Muhammad Mirzoev");
 
     })));
 
-    it("should be able to use sql functions", () => Promise.all(connections.map(async connection => {
+    test("should be able to use sql functions", () => Promise.all(connections.map(async connection => {
 
         const user = new User();
         user.name = "Alex Messer";
@@ -66,12 +64,12 @@ describe("query builder > update", () => {
 
 
         const loadedUser1 = await connection.getRepository(User).findOne({ name: "Dima" });
-        expect(loadedUser1).to.exist;
-        loadedUser1!.name.should.be.equal("Dima");
+        expect(loadedUser1).toBeDefined();
+        expect(loadedUser1!.name).toEqual("Dima");
 
     })));
 
-    it("should update and escape properly", () => Promise.all(connections.map(async connection => {
+    test("should update and escape properly", () => Promise.all(connections.map(async connection => {
 
         const user = new User();
         user.name = "Dima";
@@ -88,12 +86,12 @@ describe("query builder > update", () => {
             .execute();
 
         const loadedUser1 = await connection.getRepository(User).findOne({ likesCount: 2 });
-        expect(loadedUser1).to.exist;
-        loadedUser1!.name.should.be.equal("Dima");
+        expect(loadedUser1).toBeDefined();
+        expect(loadedUser1!.name).toEqual("Dima");
 
     })));
 
-    it("should update properties inside embeds as well", () => Promise.all(connections.map(async connection => {
+    test("should update properties inside embeds as well", () => Promise.all(connections.map(async connection => {
 
         // save few photos
         await connection.manager.save(Photo, {
@@ -130,8 +128,8 @@ describe("query builder > update", () => {
             .execute();
 
         const loadedPhoto1 = await connection.getRepository(Photo).findOne({ url: "1.jpg" });
-        expect(loadedPhoto1).to.exist;
-        loadedPhoto1!.should.be.eql({
+        expect(loadedPhoto1).toBeDefined();
+        expect(loadedPhoto1)!.toEqual({
             id: 1,
             url: "1.jpg",
             counters: {
@@ -142,8 +140,8 @@ describe("query builder > update", () => {
         });
 
         const loadedPhoto2 = await connection.getRepository(Photo).findOne({ url: "2.jpg" });
-        expect(loadedPhoto2).to.exist;
-        loadedPhoto2!.should.be.eql({
+        expect(loadedPhoto2).toBeDefined();
+        expect(loadedPhoto2)!.toEqual({
             id: 2,
             url: "2.jpg",
             counters: {
@@ -155,7 +153,7 @@ describe("query builder > update", () => {
 
     })));
 
-    it("should perform update with limit correctly", () => Promise.all(connections.map(async connection => {
+    test("should perform update with limit correctly", () => Promise.all(connections.map(async connection => {
 
         const user1 = new User();
         user1.name = "Alex Messer";
@@ -177,18 +175,21 @@ describe("query builder > update", () => {
             .execute();
 
             const loadedUsers = await connection.getRepository(User).find({ name: nameToFind });
-            expect(loadedUsers).to.exist;
-            loadedUsers!.length.should.be.equal(limitNum);
+            expect(loadedUsers).toBeDefined();
+            expect(loadedUsers!.length).toEqual(limitNum);
         } else {
-            await connection.createQueryBuilder()
-            .update(User)
-            .set({ name: nameToFind })
-            .limit(limitNum)
-            .execute().should.be.rejectedWith(LimitOnUpdateNotSupportedError);
+            await expect(
+                connection
+                    .createQueryBuilder()
+                    .update(User)
+                    .set({ name: nameToFind })
+                    .limit(limitNum)
+                    .execute()
+            ).rejects.toBeDefined();
         }
     })));
 
-    it("should throw error when update value is missing", () => Promise.all(connections.map(async connection => {
+    test("should throw error when update value is missing", () => Promise.all(connections.map(async connection => {
 
         const user = new User();
         user.name = "Alex Messer";
@@ -204,11 +205,11 @@ describe("query builder > update", () => {
         } catch (err) {
             error = err;
         }
-        expect(error).to.be.an.instanceof(UpdateValuesMissingError);
+        expect(error).toBeInstanceOf(UpdateValuesMissingError);
 
     })));
 
-    it("should throw error when update value is missing 2", () => Promise.all(connections.map(async connection => {
+    test("should throw error when update value is missing 2", () => Promise.all(connections.map(async connection => {
 
         const user = new User();
         user.name = "Alex Messer";
@@ -224,11 +225,11 @@ describe("query builder > update", () => {
         } catch (err) {
             error = err;
         }
-        expect(error).to.be.an.instanceof(UpdateValuesMissingError);
+        expect(error).toBeInstanceOf(UpdateValuesMissingError);
 
     })));
 
-    it("should throw error when update property in set method is unknown", () => Promise.all(connections.map(async connection => {
+    test("should throw error when update property in set method is unknown", () => Promise.all(connections.map(async connection => {
 
         const user = new User();
         user.name = "Alex Messer";
@@ -245,7 +246,7 @@ describe("query builder > update", () => {
         } catch (err) {
             error = err;
         }
-        expect(error).to.be.an.instanceof(EntityColumnNotFound);
+        expect(error).toBeInstanceOf(EntityColumnNotFound);
 
     })));
 
