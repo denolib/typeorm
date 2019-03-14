@@ -1,20 +1,23 @@
 import "reflect-metadata";
-import {expect} from "chai";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
-import {Connection} from "../../../../src/connection/Connection";
+import {Connection} from "../../../../src";
 import {User} from "./entity/User";
 import {Photo} from "./entity/Photo";
+import {
+    closeTestingConnections,
+    createTestingConnections,
+    reloadTestingDatabases
+} from "../../../../test/utils/test-utils";
 
 describe("query builder > delete", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should perform deletion correctly", () => Promise.all(connections.map(async connection => {
+    test("should perform deletion correctly", () => Promise.all(connections.map(async connection => {
 
         const user1 = new User();
         user1.name = "Alex Messer";
@@ -27,7 +30,7 @@ describe("query builder > delete", () => {
             .execute();
 
         const loadedUser1 = await connection.getRepository(User).findOne({ name: "Dima Zotov" });
-        expect(loadedUser1).to.not.exist;
+        expect(loadedUser1).toBeUndefined();
 
         const user2 = new User();
         user2.name = "Alex Messer";
@@ -40,11 +43,11 @@ describe("query builder > delete", () => {
             .execute();
 
         const loadedUser2 = await connection.getRepository(User).findOne({ name: "Dima Zotov" });
-        expect(loadedUser2).to.not.exist;
+        expect(loadedUser2).toBeUndefined();
 
     })));
 
-    it("should be able to delete entities by embed criteria", () => Promise.all(connections.map(async connection => {
+    test("should be able to delete entities by embed criteria", () => Promise.all(connections.map(async connection => {
 
         // save few photos
         await connection.manager.save(Photo, { url: "1.jpg" });
@@ -60,8 +63,8 @@ describe("query builder > delete", () => {
 
         // make sure photo with likes = 2 exist
         const loadedPhoto1 = await connection.getRepository(Photo).findOne({ counters: { likes: 2 } });
-        expect(loadedPhoto1).to.exist;
-        loadedPhoto1!.should.be.eql({
+        expect(loadedPhoto1).toBeDefined();
+        expect(loadedPhoto1)!.toEqual({
             id: 2,
             url: "2.jpg",
             counters: {
@@ -83,16 +86,16 @@ describe("query builder > delete", () => {
             .execute();
 
         const loadedPhoto2 = await connection.getRepository(Photo).findOne({ url: "1.jpg" });
-        expect(loadedPhoto2).to.exist;
+        expect(loadedPhoto2).toBeDefined();
 
         const loadedPhoto3 = await connection.getRepository(Photo).findOne({ url: "2.jpg" });
-        expect(loadedPhoto3).not.to.exist;
+        expect(loadedPhoto3).toBeUndefined();
 
         const loadedPhoto4 = await connection.getRepository(Photo).findOne({ url: "3.jpg" });
-        expect(loadedPhoto4).to.exist;
+        expect(loadedPhoto4).toBeDefined();
     })));
 
-    it("should return correct delete result", () => Promise.all(connections.map(async connection => {
+    test("should return correct delete result", () => Promise.all(connections.map(async connection => {
 
         // don't run test for sqlite and sqljs as they don't return affected rows
         if (connection.name === "sqlite" || connection.name === "sqljs")
@@ -110,7 +113,7 @@ describe("query builder > delete", () => {
             .from(User)
             .execute();
 
-        expect(result.affected).to.equal(2);
+        expect(result.affected).toEqual(2);
     })));
 
 });
