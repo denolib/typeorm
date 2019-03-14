@@ -1,6 +1,5 @@
 import "reflect-metadata";
-import {expect} from "chai";
-import {Connection} from "../../../../src/connection/Connection";
+import {Connection} from "../../../../src";
 import {Post} from "./entity/Post";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../test/utils/test-utils";
 
@@ -11,17 +10,17 @@ describe("repository > deleteById methods", function() {
     // -------------------------------------------------------------------------
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
     // -------------------------------------------------------------------------
     // Specifications
     // -------------------------------------------------------------------------
 
-    it("remove using deleteById method should delete successfully", () => Promise.all(connections.map(async connection => {
+    test("remove using deleteById method should delete successfully", () => Promise.all(connections.map(async connection => {
         const postRepository = connection.getRepository(Post);
 
         // save a new posts
@@ -48,14 +47,14 @@ describe("repository > deleteById methods", function() {
         const loadedPosts = await postRepository.find();
 
         // assert
-        loadedPosts.length.should.be.equal(3);
-        expect(loadedPosts.find(p => p.id === 1)).to.be.undefined;
-        expect(loadedPosts.find(p => p.id === 2)).not.to.be.undefined;
-        expect(loadedPosts.find(p => p.id === 3)).not.to.be.undefined;
-        expect(loadedPosts.find(p => p.id === 4)).not.to.be.undefined;
+        expect(loadedPosts.length).toEqual(3);
+        expect(loadedPosts.find(p => p.id === 1)).toBeUndefined();
+        expect(loadedPosts.find(p => p.id === 2)).not.toBeUndefined();
+        expect(loadedPosts.find(p => p.id === 3)).not.toBeUndefined();
+        expect(loadedPosts.find(p => p.id === 4)).not.toBeUndefined();
     })));
 
-    it("remove using removeByIds method should delete successfully",  () => Promise.all(connections.map(async connection => {
+    test("remove using removeByIds method should delete successfully",  () => Promise.all(connections.map(async connection => {
         const postRepository = connection.getRepository(Post);
 
         // save a new posts
@@ -82,11 +81,11 @@ describe("repository > deleteById methods", function() {
         const loadedPosts = await postRepository.find();
 
         // assert
-        loadedPosts.length.should.be.equal(2);
-        expect(loadedPosts.find(p => p.id === 1)).not.to.be.undefined;
-        expect(loadedPosts.find(p => p.id === 2)).to.be.undefined;
-        expect(loadedPosts.find(p => p.id === 3)).to.be.undefined;
-        expect(loadedPosts.find(p => p.id === 4)).not.to.be.undefined;
+        expect(loadedPosts.length).toEqual(2);
+        expect(loadedPosts.find(p => p.id === 1)).not.toBeUndefined();
+        expect(loadedPosts.find(p => p.id === 2)).toBeUndefined();
+        expect(loadedPosts.find(p => p.id === 3)).toBeUndefined();
+        expect(loadedPosts.find(p => p.id === 4)).not.toBeUndefined();
     })));
 
 });
