@@ -1,21 +1,21 @@
 import "reflect-metadata";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../test/utils/test-utils";
-import {Connection} from "../../../../src/connection/Connection";
+import {Connection} from "../../../../src";
 import {Post} from "./entity/Post";
 import {Category} from "./entity/Category";
 
 describe("relations > relation with primary key", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
     describe("many-to-one with primary key in relation", function() {
 
-        it("should work perfectly", () => Promise.all(connections.map(async connection => {
+        test("should work perfectly", () => Promise.all(connections.map(async connection => {
 
             // create first category and post and save them
             const category1 = new Category();
@@ -50,7 +50,7 @@ describe("relations > relation with primary key", () => {
                 }
             });
 
-            posts.should.be.eql([{
+            expect(posts).toEqual([{
                 title: "Hello Post #1",
                 category: {
                     id: 1,
