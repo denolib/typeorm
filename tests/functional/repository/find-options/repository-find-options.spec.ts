@@ -1,7 +1,6 @@
 import "reflect-metadata";
-import {expect} from "chai";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases, sleep} from "../../../../test/utils/test-utils";
-import {Connection} from "../../../../src/connection/Connection";
+import {Connection} from "../../../../src";
 import {User} from "./entity/User";
 import {Category} from "./entity/Category";
 import {Post} from "./entity/Post";
@@ -10,14 +9,14 @@ import {Photo} from "./entity/Photo";
 describe("repository > find options", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
         enabledDrivers: ["sqlite"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should load relations", () => Promise.all(connections.map(async connection => {
+    test("should load relations", () => Promise.all(connections.map(async connection => {
 
         const user = new User();
         user.name = "Alex Messer";
@@ -36,7 +35,7 @@ describe("repository > find options", () => {
         const loadedPost = await connection.getRepository(Post).findOne({
             relations: ["author", "categories"]
         });
-        expect(loadedPost).to.be.eql({
+        expect(loadedPost).toEqual({
             id: 1,
             title: "About Alex Messer",
             author: {
@@ -51,7 +50,7 @@ describe("repository > find options", () => {
 
     })));
 
-    it("should select specific columns", () => Promise.all(connections.map(async connection => {
+    test("should select specific columns", () => Promise.all(connections.map(async connection => {
 
         const category = new Category();
         category.name = "Bears";
@@ -93,21 +92,25 @@ describe("repository > find options", () => {
         //     .leftJoin("photo.categories", "category")
         //     .getMany();
 
-        expect(loadedPhoto).to.be.eql({
+        expect(loadedPhoto).toEqual({
             name: "Me and Bears 5"
         });
 
-        expect(loadedPhotos1).to.have.deep.members(photos.map(photo => ({
-            filename: photo.filename,
-            views: photo.views,
-        })));
+        photos.forEach(photo => {
+            expect(loadedPhotos1).toContainEqual({
+                filename: photo.filename,
+                views: photo.views,
+            });
+        });
 
-        expect(loadedPhotos2).to.have.deep.members(photos.map(photo => ({
-            id: photo.id,
-            name: photo.name,
-            description: photo.description,
-            categories,
-        })));
+        photos.forEach(photo => {
+            expect(loadedPhotos2).toContainEqual({
+                id: photo.id,
+                name: photo.name,
+                description: photo.description,
+                categories: photo.categories,
+            });
+        });
 
         // expect(loadedPhotos3).to.have.deep.members(photos.map(photo => ({
         //     name: photo.name,
@@ -118,7 +121,7 @@ describe("repository > find options", () => {
         // })));
     })));
 
-    it("should select by given conditions", () => Promise.all(connections.map(async connection => {
+    test("should select by given conditions", () => Promise.all(connections.map(async connection => {
 
         const category1 = new Category();
         category1.name = "Bears";
@@ -138,7 +141,7 @@ describe("repository > find options", () => {
             }
         });
 
-        expect(loadedCategories1).to.be.eql([{
+        expect(loadedCategories1).toEqual([{
             id: 1,
             name: "Bears"
         }]);
@@ -151,7 +154,7 @@ describe("repository > find options", () => {
             }]
         });
 
-        expect(loadedCategories2).to.be.eql([{
+        expect(loadedCategories2).toEqual([{
             id: 1,
             name: "Bears"
         }, {
@@ -163,17 +166,16 @@ describe("repository > find options", () => {
 
 });
 
-
 describe("repository > find options > cache", () => {
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
         cache: true
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("repository should cache results properly", () => Promise.all(connections.map(async connection => {
+    test("repository should cache results properly", () => Promise.all(connections.map(async connection => {
 
         // first prepare data - insert users
         const user1 = new User();
@@ -192,7 +194,7 @@ describe("repository > find options > cache", () => {
         const users1 = await connection.getRepository(User)
             .find({cache: true});
 
-        expect(users1.length).to.be.equal(3);
+        expect(users1.length).toEqual(3);
 
         // insert new entity
         const user4 = new User();
@@ -202,12 +204,12 @@ describe("repository > find options > cache", () => {
         // without cache it must return really how many there entities are
         const users2 = await connection.getRepository(User).find();
 
-        expect(users2.length).to.be.equal(4);
+        expect(users2.length).toEqual(4);
 
         // but with cache enabled it must not return newly inserted entity since cache is not expired yet
         const users3 = await connection.getRepository(User)
             .find({cache: true});
-        expect(users3.length).to.be.equal(3);
+        expect(users3.length).toEqual(3);
 
         // give some time for cache to expire
         await sleep(1000);
@@ -215,7 +217,7 @@ describe("repository > find options > cache", () => {
         // now, when our cache has expired we check if we have new user inserted even with cache enabled
         const users4 = await connection.getRepository(User)
             .find({cache: true});
-        expect(users4.length).to.be.equal(4);
+        expect(users4.length).toEqual(4);
 
     })));
 });
