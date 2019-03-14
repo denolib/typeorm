@@ -1,7 +1,6 @@
 import "reflect-metadata";
-import {expect} from "chai";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../../test/utils/test-utils";
-import {Connection} from "../../../../../src/connection/Connection";
+import {Connection} from "../../../../../src";
 import {Category} from "./entity/Category";
 import {Post} from "./entity/Post";
 import {Tag} from "./entity/Tag";
@@ -9,15 +8,15 @@ import {Tag} from "./entity/Tag";
 describe("relations > multiple-primary-keys > one-to-one", () => {
     
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
     describe("owning side", () => {
 
-        it("should load related entity when JoinColumn is specified without options", () => Promise.all(connections.map(async connection => {
+        test("should load related entity when JoinColumn is specified without options", () => Promise.all(connections.map(async connection => {
 
             const category1 = new Category();
             category1.name = "cars";
@@ -49,12 +48,12 @@ describe("relations > multiple-primary-keys > one-to-one", () => {
                 .orderBy("post.id")
                 .getMany();
 
-            expect(loadedPosts[0].category).to.not.be.undefined;
-            expect(loadedPosts[0].category.name).to.be.equal("cars");
-            expect(loadedPosts[0].category.type).to.be.equal("common-category");
-            expect(loadedPosts[1].category).to.not.be.undefined;
-            expect(loadedPosts[1].category.name).to.be.equal("airplanes");
-            expect(loadedPosts[1].category.type).to.be.equal("common-category");
+            expect(loadedPosts[0].category).not.toBeUndefined();
+            expect(loadedPosts[0].category.name).toEqual("cars");
+            expect(loadedPosts[0].category.type).toEqual("common-category");
+            expect(loadedPosts[1].category).not.toBeUndefined();
+            expect(loadedPosts[1].category.name).toEqual("airplanes");
+            expect(loadedPosts[1].category.type).toEqual("common-category");
 
             const loadedPost = await connection.manager
                 .createQueryBuilder(Post, "post")
@@ -62,13 +61,13 @@ describe("relations > multiple-primary-keys > one-to-one", () => {
                 .where("post.id = :id", {id: 1})
                 .getOne();
 
-            expect(loadedPost!.category).to.not.be.undefined;
-            expect(loadedPost!.category.name).to.be.equal("cars");
-            expect(loadedPost!.category.type).to.be.equal("common-category");
+            expect(loadedPost!.category).not.toBeUndefined();
+            expect(loadedPost!.category.name).toEqual("cars");
+            expect(loadedPost!.category.type).toEqual("common-category");
 
         })));
 
-        it("should load related entity when JoinColumn is specified with options", () => Promise.all(connections.map(async connection => {
+        test("should load related entity when JoinColumn is specified with options", () => Promise.all(connections.map(async connection => {
 
             const category1 = new Category();
             category1.name = "cars";
@@ -100,12 +99,12 @@ describe("relations > multiple-primary-keys > one-to-one", () => {
                 .orderBy("post.id")
                 .getMany();
 
-            expect(loadedPosts[0].categoryWithOptions).to.not.be.eql([]);
-            expect(loadedPosts[0].categoryWithOptions.name).to.be.equal("cars");
-            expect(loadedPosts[0].categoryWithOptions.type).to.be.equal("common-category");
-            expect(loadedPosts[1].categoryWithOptions).to.not.be.eql([]);
-            expect(loadedPosts[1].categoryWithOptions.name).to.be.equal("airplanes");
-            expect(loadedPosts[1].categoryWithOptions.type).to.be.equal("common-category");
+            expect(loadedPosts[0].categoryWithOptions).not.toEqual([]);
+            expect(loadedPosts[0].categoryWithOptions.name).toEqual("cars");
+            expect(loadedPosts[0].categoryWithOptions.type).toEqual("common-category");
+            expect(loadedPosts[1].categoryWithOptions).not.toEqual([]);
+            expect(loadedPosts[1].categoryWithOptions.name).toEqual("airplanes");
+            expect(loadedPosts[1].categoryWithOptions.type).toEqual("common-category");
 
             const loadedPost = await connection.manager
                 .createQueryBuilder(Post, "post")
@@ -113,13 +112,13 @@ describe("relations > multiple-primary-keys > one-to-one", () => {
                 .where("post.id = :id", { id: 1 })
                 .getOne();
 
-            expect(loadedPost!.categoryWithOptions).to.not.be.eql([]);
-            expect(loadedPost!.categoryWithOptions.name).to.be.equal("cars");
-            expect(loadedPost!.categoryWithOptions.type).to.be.equal("common-category");
+            expect(loadedPost!.categoryWithOptions).not.toEqual([]);
+            expect(loadedPost!.categoryWithOptions.name).toEqual("cars");
+            expect(loadedPost!.categoryWithOptions.type).toEqual("common-category");
 
         })));
 
-        it("should load related entity when JoinColumn references on to non-primary columns", () => Promise.all(connections.map(async connection => {
+        test("should load related entity when JoinColumn references on to non-primary columns", () => Promise.all(connections.map(async connection => {
 
             const category1 = new Category();
             category1.name = "cars";
@@ -153,13 +152,13 @@ describe("relations > multiple-primary-keys > one-to-one", () => {
                 .orderBy("post.id")
                 .getMany();
 
-            expect(loadedPosts[0].categoryWithNonPKColumns).to.not.be.eql([]);
-            expect(loadedPosts[0].categoryWithNonPKColumns.code).to.be.equal(1);
-            expect(loadedPosts[0].categoryWithNonPKColumns.version).to.be.equal(1);
-            expect(loadedPosts[0].categoryWithNonPKColumns.description).to.be.equal("category about cars");
-            expect(loadedPosts[1].categoryWithNonPKColumns).to.not.be.eql([]);
-            expect(loadedPosts[1].categoryWithNonPKColumns.code).to.be.equal(2);
-            expect(loadedPosts[1].categoryWithNonPKColumns.version).to.be.equal(1);
+            expect(loadedPosts[0].categoryWithNonPKColumns).not.toEqual([]);
+            expect(loadedPosts[0].categoryWithNonPKColumns.code).toEqual(1);
+            expect(loadedPosts[0].categoryWithNonPKColumns.version).toEqual(1);
+            expect(loadedPosts[0].categoryWithNonPKColumns.description).toEqual("category about cars");
+            expect(loadedPosts[1].categoryWithNonPKColumns).not.toEqual([]);
+            expect(loadedPosts[1].categoryWithNonPKColumns.code).toEqual(2);
+            expect(loadedPosts[1].categoryWithNonPKColumns.version).toEqual(1);
 
             const loadedPost = await connection.manager
                 .createQueryBuilder(Post, "post")
@@ -167,14 +166,14 @@ describe("relations > multiple-primary-keys > one-to-one", () => {
                 .where("post.id = :id", { id: 1 })
                 .getOne();
 
-            expect(loadedPost!.categoryWithNonPKColumns).to.not.be.eql([]);
-            expect(loadedPost!.categoryWithNonPKColumns.code).to.be.equal(1);
-            expect(loadedPost!.categoryWithNonPKColumns.version).to.be.equal(1);
-            expect(loadedPost!.categoryWithNonPKColumns.description).to.be.equal("category about cars");
+            expect(loadedPost!.categoryWithNonPKColumns).not.toEqual([]);
+            expect(loadedPost!.categoryWithNonPKColumns.code).toEqual(1);
+            expect(loadedPost!.categoryWithNonPKColumns.version).toEqual(1);
+            expect(loadedPost!.categoryWithNonPKColumns.description).toEqual("category about cars");
 
         })));
 
-        it("should load related entity when both entities have multiple primary columns and JoinColumn defined without options", () => Promise.all(connections.map(async connection => {
+        test("should load related entity when both entities have multiple primary columns and JoinColumn defined without options", () => Promise.all(connections.map(async connection => {
 
             const category1 = new Category();
             category1.name = "cars";
@@ -210,12 +209,12 @@ describe("relations > multiple-primary-keys > one-to-one", () => {
                 .orderBy("tag.code, category.code")
                 .getMany();
 
-            expect(loadedTags[0].category).to.not.be.undefined;
-            expect(loadedTags[0].category.name).to.be.equal("cars");
-            expect(loadedTags[0].category.type).to.be.equal("common-category");
-            expect(loadedTags[1].category).to.not.be.undefined;
-            expect(loadedTags[1].category.name).to.be.equal("airplanes");
-            expect(loadedTags[1].category.type).to.be.equal("common-category");
+            expect(loadedTags[0].category).not.toBeUndefined();
+            expect(loadedTags[0].category.name).toEqual("cars");
+            expect(loadedTags[0].category.type).toEqual("common-category");
+            expect(loadedTags[1].category).not.toBeUndefined();
+            expect(loadedTags[1].category.name).toEqual("airplanes");
+            expect(loadedTags[1].category.type).toEqual("common-category");
 
             const loadedTag = await connection.manager
                 .createQueryBuilder(Tag, "tag")
@@ -224,13 +223,13 @@ describe("relations > multiple-primary-keys > one-to-one", () => {
                 .where("tag.code = :code", { code: 1 })
                 .getOne();
 
-            expect(loadedTag!.category).to.not.be.undefined;
-            expect(loadedTag!.category.name).to.be.equal("cars");
-            expect(loadedTag!.category.type).to.be.equal("common-category");
+            expect(loadedTag!.category).not.toBeUndefined();
+            expect(loadedTag!.category.name).toEqual("cars");
+            expect(loadedTag!.category.type).toEqual("common-category");
 
         })));
 
-        it("should load related entity when both entities have multiple primary columns and JoinColumn defined with options", () => Promise.all(connections.map(async connection => {
+        test("should load related entity when both entities have multiple primary columns and JoinColumn defined with options", () => Promise.all(connections.map(async connection => {
 
             const category1 = new Category();
             category1.name = "cars";
@@ -266,12 +265,12 @@ describe("relations > multiple-primary-keys > one-to-one", () => {
                 .orderBy("tag.code, category.code")
                 .getMany();
 
-            expect(loadedTags[0].categoryWithOptions).to.not.be.eql([]);
-            expect(loadedTags[0].categoryWithOptions.name).to.be.equal("cars");
-            expect(loadedTags[0].categoryWithOptions.type).to.be.equal("common-category");
-            expect(loadedTags[1].categoryWithOptions).to.not.be.eql([]);
-            expect(loadedTags[1].categoryWithOptions.name).to.be.equal("airplanes");
-            expect(loadedTags[1].categoryWithOptions.type).to.be.equal("common-category");
+            expect(loadedTags[0].categoryWithOptions).not.toEqual([]);
+            expect(loadedTags[0].categoryWithOptions.name).toEqual("cars");
+            expect(loadedTags[0].categoryWithOptions.type).toEqual("common-category");
+            expect(loadedTags[1].categoryWithOptions).not.toEqual([]);
+            expect(loadedTags[1].categoryWithOptions.name).toEqual("airplanes");
+            expect(loadedTags[1].categoryWithOptions.type).toEqual("common-category");
 
             const loadedTag = await connection.manager
                 .createQueryBuilder(Tag, "tag")
@@ -280,13 +279,13 @@ describe("relations > multiple-primary-keys > one-to-one", () => {
                 .where("tag.code = :code", { code: 1 })
                 .getOne();
 
-            expect(loadedTag!.categoryWithOptions).to.not.be.eql([]);
-            expect(loadedTag!.categoryWithOptions.name).to.be.equal("cars");
-            expect(loadedTag!.categoryWithOptions.type).to.be.equal("common-category");
+            expect(loadedTag!.categoryWithOptions).not.toEqual([]);
+            expect(loadedTag!.categoryWithOptions.name).toEqual("cars");
+            expect(loadedTag!.categoryWithOptions.type).toEqual("common-category");
 
         })));
 
-        it("should load related entity when both entities have multiple primary columns and JoinColumn references on to non-primary columns", () => Promise.all(connections.map(async connection => {
+        test("should load related entity when both entities have multiple primary columns and JoinColumn references on to non-primary columns", () => Promise.all(connections.map(async connection => {
 
             const category1 = new Category();
             category1.name = "cars";
@@ -324,12 +323,12 @@ describe("relations > multiple-primary-keys > one-to-one", () => {
                 .orderBy("tag.code, category.code")
                 .getMany();
 
-            expect(loadedTags[0].categoryWithNonPKColumns).to.not.be.eql([]);
-            expect(loadedTags[0].categoryWithNonPKColumns.name).to.be.equal("cars");
-            expect(loadedTags[0].categoryWithNonPKColumns.type).to.be.equal("common-category");
-            expect(loadedTags[1].categoryWithNonPKColumns).to.not.be.eql([]);
-            expect(loadedTags[1].categoryWithNonPKColumns.name).to.be.equal("airplanes");
-            expect(loadedTags[1].categoryWithNonPKColumns.type).to.be.equal("common-category");
+            expect(loadedTags[0].categoryWithNonPKColumns).not.toEqual([]);
+            expect(loadedTags[0].categoryWithNonPKColumns.name).toEqual("cars");
+            expect(loadedTags[0].categoryWithNonPKColumns.type).toEqual("common-category");
+            expect(loadedTags[1].categoryWithNonPKColumns).not.toEqual([]);
+            expect(loadedTags[1].categoryWithNonPKColumns.name).toEqual("airplanes");
+            expect(loadedTags[1].categoryWithNonPKColumns.type).toEqual("common-category");
 
             const loadedTag = await connection.manager
                 .createQueryBuilder(Tag, "tag")
@@ -338,9 +337,9 @@ describe("relations > multiple-primary-keys > one-to-one", () => {
                 .where("tag.code = :code", { code: 1 })
                 .getOne();
 
-            expect(loadedTag!.categoryWithNonPKColumns).to.not.be.eql([]);
-            expect(loadedTag!.categoryWithNonPKColumns.name).to.be.equal("cars");
-            expect(loadedTag!.categoryWithNonPKColumns.type).to.be.equal("common-category");
+            expect(loadedTag!.categoryWithNonPKColumns).not.toEqual([]);
+            expect(loadedTag!.categoryWithNonPKColumns.name).toEqual("cars");
+            expect(loadedTag!.categoryWithNonPKColumns.type).toEqual("common-category");
 
         })));
 
@@ -348,7 +347,7 @@ describe("relations > multiple-primary-keys > one-to-one", () => {
 
     describe("inverse side", () => {
 
-        it("should load related entity when JoinColumn is specified without options", () => Promise.all(connections.map(async connection => {
+        test("should load related entity when JoinColumn is specified without options", () => Promise.all(connections.map(async connection => {
 
             const post1 = new Post();
             post1.title = "About BMW";
@@ -380,10 +379,10 @@ describe("relations > multiple-primary-keys > one-to-one", () => {
                 .orderBy("category.code, post.id")
                 .getMany();
 
-            expect(loadedCategories[0].post).to.not.be.undefined;
-            expect(loadedCategories[0].post.id).to.be.equal(1);
-            expect(loadedCategories[1].post).to.not.be.undefined;
-            expect(loadedCategories[1].post.id).to.be.equal(2);
+            expect(loadedCategories[0].post).not.toBeUndefined();
+            expect(loadedCategories[0].post.id).toEqual(1);
+            expect(loadedCategories[1].post).not.toBeUndefined();
+            expect(loadedCategories[1].post.id).toEqual(2);
 
             const loadedCategory = await connection.manager
                 .createQueryBuilder(Category, "category")
@@ -392,12 +391,12 @@ describe("relations > multiple-primary-keys > one-to-one", () => {
                 .where("category.code = :code", { code: 1 })
                 .getOne();
 
-            expect(loadedCategory!.post).to.not.be.undefined;
-            expect(loadedCategory!.post.id).to.be.equal(1);
+            expect(loadedCategory!.post).not.toBeUndefined();
+            expect(loadedCategory!.post.id).toEqual(1);
 
         })));
 
-        it("should load related entity when both entities have multiple primary columns and JoinColumn defined without options", () => Promise.all(connections.map(async connection => {
+        test("should load related entity when both entities have multiple primary columns and JoinColumn defined without options", () => Promise.all(connections.map(async connection => {
 
             const tag1 = new Tag();
             tag1.code = 1;
@@ -433,12 +432,12 @@ describe("relations > multiple-primary-keys > one-to-one", () => {
                 .orderBy("category.code, tag.code")
                 .getMany();
 
-            expect(loadedCategories[0].tag).to.not.be.undefined;
-            expect(loadedCategories[0].tag.title).to.be.equal("About BMW");
-            expect(loadedCategories[0].tag.description).to.be.equal("Tag about BMW");
-            expect(loadedCategories[1].tag).to.not.be.undefined;
-            expect(loadedCategories[1].tag.title).to.be.equal("About Boeing");
-            expect(loadedCategories[1].tag.description).to.be.equal("tag about Boeing");
+            expect(loadedCategories[0].tag).not.toBeUndefined();
+            expect(loadedCategories[0].tag.title).toEqual("About BMW");
+            expect(loadedCategories[0].tag.description).toEqual("Tag about BMW");
+            expect(loadedCategories[1].tag).not.toBeUndefined();
+            expect(loadedCategories[1].tag.title).toEqual("About Boeing");
+            expect(loadedCategories[1].tag.description).toEqual("tag about Boeing");
 
             const loadedCategory = await connection.manager
                 .createQueryBuilder(Category, "category")
@@ -447,13 +446,13 @@ describe("relations > multiple-primary-keys > one-to-one", () => {
                 .where("category.code = :code", { code: 1 })
                 .getOne();
 
-            expect(loadedCategory!.tag).to.not.be.undefined;
-            expect(loadedCategory!.tag.title).to.be.equal("About BMW");
-            expect(loadedCategory!.tag.description).to.be.equal("Tag about BMW");
+            expect(loadedCategory!.tag).not.toBeUndefined();
+            expect(loadedCategory!.tag.title).toEqual("About BMW");
+            expect(loadedCategory!.tag.description).toEqual("Tag about BMW");
 
         })));
 
-        it("should load related entity when both entities have multiple primary columns and JoinColumn defined with options", () => Promise.all(connections.map(async connection => {
+        test("should load related entity when both entities have multiple primary columns and JoinColumn defined with options", () => Promise.all(connections.map(async connection => {
 
             const tag1 = new Tag();
             tag1.code = 1;
@@ -489,12 +488,12 @@ describe("relations > multiple-primary-keys > one-to-one", () => {
                 .orderBy("category.code, tag.code")
                 .getMany();
 
-            expect(loadedCategories[0].tagWithOptions).to.not.be.eql([]);
-            expect(loadedCategories[0].tagWithOptions.title).to.be.equal("About BMW");
-            expect(loadedCategories[0].tagWithOptions.description).to.be.equal("Tag about BMW");
-            expect(loadedCategories[1].tagWithOptions).to.not.be.eql([]);
-            expect(loadedCategories[1].tagWithOptions.title).to.be.equal("About Boeing");
-            expect(loadedCategories[1].tagWithOptions.description).to.be.equal("tag about Boeing");
+            expect(loadedCategories[0].tagWithOptions).not.toEqual([]);
+            expect(loadedCategories[0].tagWithOptions.title).toEqual("About BMW");
+            expect(loadedCategories[0].tagWithOptions.description).toEqual("Tag about BMW");
+            expect(loadedCategories[1].tagWithOptions).not.toEqual([]);
+            expect(loadedCategories[1].tagWithOptions.title).toEqual("About Boeing");
+            expect(loadedCategories[1].tagWithOptions.description).toEqual("tag about Boeing");
 
             const loadedCategory = await connection.manager
                 .createQueryBuilder(Category, "category")
@@ -503,13 +502,13 @@ describe("relations > multiple-primary-keys > one-to-one", () => {
                 .where("category.code = :code", { code: 1 })
                 .getOne();
 
-            expect(loadedCategory!.tagWithOptions).to.not.be.eql([]);
-            expect(loadedCategory!.tagWithOptions.title).to.be.equal("About BMW");
-            expect(loadedCategory!.tagWithOptions.description).to.be.equal("Tag about BMW");
+            expect(loadedCategory!.tagWithOptions).not.toEqual([]);
+            expect(loadedCategory!.tagWithOptions.title).toEqual("About BMW");
+            expect(loadedCategory!.tagWithOptions.description).toEqual("Tag about BMW");
 
         })));
 
-        it("should load related entity when JoinColumns references on to non-primary columns", () => Promise.all(connections.map(async connection => {
+        test("should load related entity when JoinColumns references on to non-primary columns", () => Promise.all(connections.map(async connection => {
 
             const tag1 = new Tag();
             tag1.code = 1;
@@ -547,12 +546,12 @@ describe("relations > multiple-primary-keys > one-to-one", () => {
                 .orderBy("category.code, tag.code")
                 .getMany();
 
-            expect(loadedCategories[0].tagWithNonPKColumns).to.not.be.eql([]);
-            expect(loadedCategories[0].tagWithNonPKColumns.title).to.be.equal("About BMW");
-            expect(loadedCategories[0].tagWithNonPKColumns.description).to.be.equal("Tag about BMW");
-            expect(loadedCategories[1].tagWithNonPKColumns).to.not.be.eql([]);
-            expect(loadedCategories[1].tagWithNonPKColumns.title).to.be.equal("About Boeing");
-            expect(loadedCategories[1].tagWithNonPKColumns.description).to.be.equal("tag about Boeing");
+            expect(loadedCategories[0].tagWithNonPKColumns).not.toEqual([]);
+            expect(loadedCategories[0].tagWithNonPKColumns.title).toEqual("About BMW");
+            expect(loadedCategories[0].tagWithNonPKColumns.description).toEqual("Tag about BMW");
+            expect(loadedCategories[1].tagWithNonPKColumns).not.toEqual([]);
+            expect(loadedCategories[1].tagWithNonPKColumns.title).toEqual("About Boeing");
+            expect(loadedCategories[1].tagWithNonPKColumns.description).toEqual("tag about Boeing");
 
             const loadedCategory = await connection.manager
                 .createQueryBuilder(Category, "category")
@@ -561,13 +560,13 @@ describe("relations > multiple-primary-keys > one-to-one", () => {
                 .where("category.code = :code", { code: 1 })
                 .getOne();
 
-            expect(loadedCategory!.tagWithNonPKColumns).to.not.be.eql([]);
-            expect(loadedCategory!.tagWithNonPKColumns.title).to.be.equal("About BMW");
-            expect(loadedCategory!.tagWithNonPKColumns.description).to.be.equal("Tag about BMW");
+            expect(loadedCategory!.tagWithNonPKColumns).not.toEqual([]);
+            expect(loadedCategory!.tagWithNonPKColumns.title).toEqual("About BMW");
+            expect(loadedCategory!.tagWithNonPKColumns.description).toEqual("Tag about BMW");
 
         })));
 
-        it("should load related entity when both entities have multiple primary columns and JoinColumn defined with options", () => Promise.all(connections.map(async connection => {
+        test("should load related entity when both entities have multiple primary columns and JoinColumn defined with options", () => Promise.all(connections.map(async connection => {
 
             const tag1 = new Tag();
             tag1.code = 1;
@@ -603,12 +602,12 @@ describe("relations > multiple-primary-keys > one-to-one", () => {
                 .orderBy("category.code, tag.code")
                 .getMany();
 
-            expect(loadedCategories[0].tagWithOptions).to.not.be.eql([]);
-            expect(loadedCategories[0].tagWithOptions.title).to.be.equal("About BMW");
-            expect(loadedCategories[0].tagWithOptions.description).to.be.equal("Tag about BMW");
-            expect(loadedCategories[1].tagWithOptions).to.not.be.eql([]);
-            expect(loadedCategories[1].tagWithOptions.title).to.be.equal("About Boeing");
-            expect(loadedCategories[1].tagWithOptions.description).to.be.equal("tag about Boeing");
+            expect(loadedCategories[0].tagWithOptions).not.toEqual([]);
+            expect(loadedCategories[0].tagWithOptions.title).toEqual("About BMW");
+            expect(loadedCategories[0].tagWithOptions.description).toEqual("Tag about BMW");
+            expect(loadedCategories[1].tagWithOptions).not.toEqual([]);
+            expect(loadedCategories[1].tagWithOptions.title).toEqual("About Boeing");
+            expect(loadedCategories[1].tagWithOptions.description).toEqual("tag about Boeing");
 
             const loadedCategory = await connection.manager
                 .createQueryBuilder(Category, "category")
@@ -617,13 +616,13 @@ describe("relations > multiple-primary-keys > one-to-one", () => {
                 .where("category.code = :code", { code: 1 })
                 .getOne();
 
-            expect(loadedCategory!.tagWithOptions).to.not.be.eql([]);
-            expect(loadedCategory!.tagWithOptions.title).to.be.equal("About BMW");
-            expect(loadedCategory!.tagWithOptions.description).to.be.equal("Tag about BMW");
+            expect(loadedCategory!.tagWithOptions).not.toEqual([]);
+            expect(loadedCategory!.tagWithOptions.title).toEqual("About BMW");
+            expect(loadedCategory!.tagWithOptions.description).toEqual("Tag about BMW");
 
         })));
 
-        it("should load related entity when both entities have multiple primary columns and JoinColumn references on to non-primary columns", () => Promise.all(connections.map(async connection => {
+        test("should load related entity when both entities have multiple primary columns and JoinColumn references on to non-primary columns", () => Promise.all(connections.map(async connection => {
 
             const tag1 = new Tag();
             tag1.code = 1;
@@ -661,12 +660,12 @@ describe("relations > multiple-primary-keys > one-to-one", () => {
                 .orderBy("category.code, tag.code")
                 .getMany();
 
-            expect(loadedCategories[0].tagWithNonPKColumns).to.not.be.eql([]);
-            expect(loadedCategories[0].tagWithNonPKColumns.title).to.be.equal("About BMW");
-            expect(loadedCategories[0].tagWithNonPKColumns.description).to.be.equal("Tag about BMW");
-            expect(loadedCategories[1].tagWithNonPKColumns).to.not.be.eql([]);
-            expect(loadedCategories[1].tagWithNonPKColumns.title).to.be.equal("About Boeing");
-            expect(loadedCategories[1].tagWithNonPKColumns.description).to.be.equal("tag about Boeing");
+            expect(loadedCategories[0].tagWithNonPKColumns).not.toEqual([]);
+            expect(loadedCategories[0].tagWithNonPKColumns.title).toEqual("About BMW");
+            expect(loadedCategories[0].tagWithNonPKColumns.description).toEqual("Tag about BMW");
+            expect(loadedCategories[1].tagWithNonPKColumns).not.toEqual([]);
+            expect(loadedCategories[1].tagWithNonPKColumns.title).toEqual("About Boeing");
+            expect(loadedCategories[1].tagWithNonPKColumns.description).toEqual("tag about Boeing");
 
             const loadedCategory = await connection.manager
                 .createQueryBuilder(Category, "category")
@@ -675,9 +674,9 @@ describe("relations > multiple-primary-keys > one-to-one", () => {
                 .where("category.code = :code", { code: 1 })
                 .getOne();
 
-            expect(loadedCategory!.tagWithNonPKColumns).to.not.be.eql([]);
-            expect(loadedCategory!.tagWithNonPKColumns.title).to.be.equal("About BMW");
-            expect(loadedCategory!.tagWithNonPKColumns.description).to.be.equal("Tag about BMW");
+            expect(loadedCategory!.tagWithNonPKColumns).not.toEqual([]);
+            expect(loadedCategory!.tagWithNonPKColumns.title).toEqual("About BMW");
+            expect(loadedCategory!.tagWithNonPKColumns.description).toEqual("Tag about BMW");
 
         })));
 
