@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../../test/utils/test-utils";
-import {Connection} from "../../../../../src/connection/Connection";
+import {Connection} from "../../../../../src";
 import {
     Post,
 } from "./entity/Post";
@@ -17,12 +17,12 @@ describe("basic-lazy-relations", () => {
 
     let UserSchema: any, ProfileSchema: any;
     const appRoot = require("app-root-path");
-    const resourceDir = appRoot + "/test/functional/relations/lazy-relations/basic-lazy-relation/";
+    const resourceDir = appRoot + "/tests/functional/relations/lazy-relations/basic-lazy-relation/";
     UserSchema = new EntitySchema<any>(require(resourceDir + "schema/user.json"));
     ProfileSchema = new EntitySchema<any>(require(resourceDir + "schema/profile.json"));
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [
             Post,
             Category,
@@ -32,9 +32,9 @@ describe("basic-lazy-relations", () => {
         enabledDrivers: ["postgres"] // we can properly test lazy-relations only on one platform
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should persist and hydrate successfully on a relation without inverse side", () => Promise.all(connections.map(async connection => {
+    test("should persist and hydrate successfully on a relation without inverse side", () => Promise.all(connections.map(async connection => {
         const postRepository = connection.getRepository(Post);
         const categoryRepository = connection.getRepository(Category);
 
@@ -58,21 +58,21 @@ describe("basic-lazy-relations", () => {
 
         await postRepository.save(savedPost);
 
-        await savedPost.categories.should.eventually.be.eql([savedCategory1, savedCategory2, savedCategory3]);
+        expect(await savedPost.categories).toEqual([savedCategory1, savedCategory2, savedCategory3]);
 
         const post = (await postRepository.findOne(1))!;
-        post.title.should.be.equal("Hello post");
-        post.text.should.be.equal("This is post about post");
+        expect(post.title).toEqual("Hello post");
+        expect(post.text).toEqual("This is post about post");
 
         const categories = await post.categories;
-        categories.length.should.be.equal(3);
-        categories.should.deep.include({ id: 1, name: "kids" });
-        categories.should.deep.include({ id: 2, name: "people" });
-        categories.should.deep.include({ id: 3, name: "animals" });
+        expect(categories.length).toEqual(3);
+        expect(categories).toContainEqual({ id: 1, name: "kids" });
+        expect(categories).toContainEqual({ id: 2, name: "people" });
+        expect(categories).toContainEqual({ id: 3, name: "animals" });
     })));
 
 
-    it("should persist and hydrate successfully on a relation with inverse side", () => Promise.all(connections.map(async connection => {
+    test("should persist and hydrate successfully on a relation with inverse side", () => Promise.all(connections.map(async connection => {
         const postRepository = connection.getRepository(Post);
         const categoryRepository = connection.getRepository(Category);
 
@@ -96,20 +96,21 @@ describe("basic-lazy-relations", () => {
 
         await postRepository.save(savedPost);
 
-        await savedPost.twoSideCategories.should.eventually.be.eql([savedCategory1, savedCategory2, savedCategory3]);
+        expect(await savedPost.twoSideCategories).toEqual([savedCategory1, savedCategory2, savedCategory3]);
 
         const post = (await postRepository.findOne(1))!;
-        post.title.should.be.equal("Hello post");
-        post.text.should.be.equal("This is post about post");
+        expect(post.title).toEqual("Hello post");
+        expect(post.text).toEqual("This is post about post");
 
         const categories = await post.twoSideCategories;
-        categories.length.should.be.equal(3);
-        categories.should.deep.include({ id: 1, name: "kids" });
-        categories.should.deep.include({ id: 2, name: "people" });
-        categories.should.deep.include({ id: 3, name: "animals" });
+        expect(categories.length).toEqual(3);
+
+        expect(categories).toContainEqual({ id: 1, name: "kids" });
+        expect(categories).toContainEqual({ id: 2, name: "people" });
+        expect(categories).toContainEqual({ id: 3, name: "animals" });
 
         const category = (await categoryRepository.findOne(1))!;
-        category.name.should.be.equal("kids");
+        expect(category.name).toEqual("kids");
 
         const twoSidePosts = await category.twoSidePosts;
 
@@ -117,10 +118,10 @@ describe("basic-lazy-relations", () => {
         likePost.id = 1;
         likePost.title = "Hello post";
         likePost.text = "This is post about post";
-        twoSidePosts.should.deep.include(likePost);
+        expect(twoSidePosts).toContainEqual(likePost);
     })));
 
-    it("should persist and hydrate successfully on a one-to-one relation with inverse side loaded from entity schema", () => Promise.all(connections.map(async connection => {
+    test("should persist and hydrate successfully on a one-to-one relation with inverse side loaded from entity schema", () => Promise.all(connections.map(async connection => {
         const userRepository = connection.getRepository("User");
         const profileRepository = connection.getRepository("Profile");
 
@@ -134,18 +135,18 @@ describe("basic-lazy-relations", () => {
         newUser.profile = Promise.resolve(profile);
         await userRepository.save(newUser);
 
-        await newUser.profile.should.eventually.be.eql(profile);
+        expect(await newUser.profile).toEqual(profile);
 
         // const loadOptions: FindOptions = { alias: "user", innerJoinAndSelect };
         const loadedUser: any = await userRepository.findOne(1);
-        loadedUser.firstName.should.be.equal("Umed");
-        loadedUser.secondName.should.be.equal("San");
+        expect(loadedUser.firstName).toEqual("Umed");
+        expect(loadedUser.secondName).toEqual("San");
 
         const lazyLoadedProfile = await loadedUser.profile;
-        lazyLoadedProfile.country.should.be.equal("Japan");
+        expect(lazyLoadedProfile.country).toEqual("Japan");
     })));
 
-    it("should persist and hydrate successfully on a many-to-one relation without inverse side", () => Promise.all(connections.map(async connection => {
+    test("should persist and hydrate successfully on a many-to-one relation without inverse side", () => Promise.all(connections.map(async connection => {
 
         // create some fake posts and categories to make sure that there are several post ids in the db
         const fakePosts: Post[] = [];
@@ -179,10 +180,10 @@ describe("basic-lazy-relations", () => {
         const loadedPost = await connection.manager.findOne(Post, { where: { title: "post with great category" } });
         const loadedCategory = await loadedPost!.category;
 
-        loadedCategory.name.should.be.equal("category of great post");
+        expect(loadedCategory.name).toEqual("category of great post");
     })));
 
-    it("should persist and hydrate successfully on a many-to-one relation with inverse side", () => Promise.all(connections.map(async connection => {
+    test("should persist and hydrate successfully on a many-to-one relation with inverse side", () => Promise.all(connections.map(async connection => {
 
         // create some fake posts and categories to make sure that there are several post ids in the db
         const fakePosts: Post[] = [];
@@ -216,10 +217,10 @@ describe("basic-lazy-relations", () => {
         const loadedPost = await connection.manager.findOne(Post, { where: { title: "post with great category" } });
         const loadedCategory = await loadedPost!.twoSideCategory;
 
-        loadedCategory.name.should.be.equal("category of great post");
+        expect(loadedCategory.name).toEqual("category of great post");
     })));
 
-    it("should persist and hydrate successfully on a one-to-many relation", () => Promise.all(connections.map(async connection => {
+    test("should persist and hydrate successfully on a one-to-many relation", () => Promise.all(connections.map(async connection => {
 
         // create some fake posts and categories to make sure that there are several post ids in the db
         const fakePosts: Post[] = [];
@@ -252,10 +253,10 @@ describe("basic-lazy-relations", () => {
         const loadedCategory = await connection.manager.findOne(Category, { where: { name: "category of great post" } });
         const loadedPost = await loadedCategory!.twoSidePosts2;
 
-        loadedPost[0].title.should.be.equal("post with great category");
+        expect(loadedPost[0].title).toEqual("post with great category");
     })));
 
-    it("should persist and hydrate successfully on a one-to-one relation owner side", () => Promise.all(connections.map(async connection => {
+    test("should persist and hydrate successfully on a one-to-one relation owner side", () => Promise.all(connections.map(async connection => {
 
         // create some fake posts and categories to make sure that there are several post ids in the db
         const fakePosts: Post[] = [];
@@ -288,10 +289,10 @@ describe("basic-lazy-relations", () => {
         const loadedPost = await connection.manager.findOne(Post, { where: { title: "post with great category" } });
         const loadedCategory = await loadedPost!.oneCategory;
 
-        loadedCategory.name.should.be.equal("category of great post");
+        expect(loadedCategory.name).toEqual("category of great post");
     })));
 
-    it("should persist and hydrate successfully on a one-to-one relation inverse side", () => Promise.all(connections.map(async connection => {
+    test("should persist and hydrate successfully on a one-to-one relation inverse side", () => Promise.all(connections.map(async connection => {
 
         // create some fake posts and categories to make sure that there are several post ids in the db
         const fakePosts: Post[] = [];
@@ -323,10 +324,10 @@ describe("basic-lazy-relations", () => {
 
         const loadedCategory = await connection.manager.findOne(Category, { where: { name: "category of great post" } });
         const loadedPost = await loadedCategory!.onePost;
-        loadedPost.title.should.be.equal("post with great category");
+        expect(loadedPost.title).toEqual("post with great category");
     })));
 
-    it("should successfully load relations within a transaction", () => Promise.all(connections.filter((connection) => (new Set(["mysql", "sqlite", "postgres"])).has(connection.options.type)).map(async connection => {
+    test("should successfully load relations within a transaction", () => Promise.all(connections.filter((connection) => (new Set(["mysql", "sqlite", "postgres"])).has(connection.options.type)).map(async connection => {
         await connection.manager.transaction(async (manager) => {
             const category = new Category();
             category.name = "category of great post";
@@ -340,11 +341,11 @@ describe("basic-lazy-relations", () => {
 
             const loadedCategory = await manager.findOne(Category, { where: { name: "category of great post" } });
             const loadedPost = await loadedCategory!.onePost;
-            loadedPost.title.should.be.equal("post with great category");
+            expect(loadedPost.title).toEqual("post with great category");
         });
     })));
 
-    it("should successfully load relations outside a transaction with entity generated within a transaction", () => Promise.all(connections.filter((connection) => (new Set(["mysql", "sqlite", "postgres"])).has(connection.options.type)).map(async connection => {
+    test("should successfully load relations outside a transaction with entity generated within a transaction", () => Promise.all(connections.filter((connection) => (new Set(["mysql", "sqlite", "postgres"])).has(connection.options.type)).map(async connection => {
         const loadedCategory = await connection.manager.transaction(async (manager) => {
             const category = new Category();
             category.name = "category of great post";
@@ -359,6 +360,6 @@ describe("basic-lazy-relations", () => {
             return await manager.findOne(Category, { where: { name: "category of great post" } });
         });
         const loadedPost = await loadedCategory!.onePost;
-        loadedPost.title.should.be.equal("post with great category");
+        expect(loadedPost.title).toEqual("post with great category");
     })));
 });
