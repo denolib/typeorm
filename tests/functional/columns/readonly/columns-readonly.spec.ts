@@ -1,19 +1,18 @@
 import "reflect-metadata";
-import {expect} from "chai";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../test/utils/test-utils";
-import {Connection} from "../../../../src/connection/Connection";
+import {Connection} from "../../../../src";
 import {Post} from "./entity/Post";
 
 describe("columns > readonly functionality", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [Post],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should not update columns marked with readonly property", () => Promise.all(connections.map(async connection => {
+    test("should not update columns marked with readonly property", () => Promise.all(connections.map(async connection => {
 
         const postRepository = connection.getRepository(Post);
 
@@ -32,9 +31,9 @@ describe("columns > readonly functionality", () => {
 
         // check if all columns are updated except for readonly columns
         const loadedPost = await postRepository.findOne(post.id);
-        expect(loadedPost!.title).to.be.equal("About columns1");
-        expect(loadedPost!.text).to.be.equal("Some text about columns1");
-        expect(loadedPost!.authorName).to.be.equal("Umed1");
+        expect(loadedPost!.title).toEqual("About columns1");
+        expect(loadedPost!.text).toEqual("Some text about columns1");
+        expect(loadedPost!.authorName).toEqual("Umed1");
 
     })));
 
