@@ -1,21 +1,20 @@
 import "reflect-metadata";
 import {Post} from "./entity/Post";
 import {Counters} from "./entity/Counters";
-import {Connection} from "../../../../src/connection/Connection";
-import {expect} from "chai";
+import {Connection} from "../../../../src";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../test/utils/test-utils";
 import {Subcounters} from "./entity/Subcounters";
 
 describe("embedded > multiple-primary-columns-with-nested-embed", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should insert, load, update and remove entities with embeddeds when primary column defined in main and in embedded entities", () => Promise.all(connections.map(async connection => {
+    test("should insert, load, update and remove entities with embeddeds when primary column defined in main and in embedded entities", () => Promise.all(connections.map(async connection => {
 
         const postRepository = connection.getRepository(Post);
 
@@ -50,7 +49,7 @@ describe("embedded > multiple-primary-columns-with-nested-embed", () => {
             .orderBy("post.id")
             .getMany();
 
-        expect(loadedPosts[0].should.be.eql(
+        expect(loadedPosts[0]).toEqual(
             {
                 id: 1,
                 title: "About cars",
@@ -65,8 +64,8 @@ describe("embedded > multiple-primary-columns-with-nested-embed", () => {
                     }
                 }
             }
-        ));
-        expect(loadedPosts[1].should.be.eql(
+        );
+        expect(loadedPosts[1]).toEqual(
             {
                 id: 2,
                 title: "About airplanes",
@@ -81,10 +80,10 @@ describe("embedded > multiple-primary-columns-with-nested-embed", () => {
                     }
                 }
             }
-        ));
+        );
 
         const loadedPost = (await postRepository.findOne({ id: 1, counters: { code: 1, subcounters: { version: 1 } } }))!;
-        expect(loadedPost.should.be.eql(
+        expect(loadedPost).toEqual(
             {
                 id: 1,
                 title: "About cars",
@@ -99,14 +98,14 @@ describe("embedded > multiple-primary-columns-with-nested-embed", () => {
                     }
                 }
             }
-        ));
+        );
 
         loadedPost.counters.favorites += 1;
         loadedPost.counters.subcounters.watches += 1;
         await postRepository.save(loadedPost);
 
         const loadedPost2 = (await postRepository.findOne({ id: 1, counters: { code: 1, subcounters: { version: 1 } } }))!;
-        expect(loadedPost2.should.be.eql(
+        expect(loadedPost2).toEqual(
             {
                 id: 1,
                 title: "About cars",
@@ -121,13 +120,13 @@ describe("embedded > multiple-primary-columns-with-nested-embed", () => {
                     }
                 }
             }
-        ));
+        );
 
         await postRepository.remove(loadedPost2);
 
         const loadedPosts2 = (await postRepository.find())!;
-        expect(loadedPosts2.length).to.be.equal(1);
-        expect(loadedPosts2[0].title).to.be.equal("About airplanes");
+        expect(loadedPosts2.length).toEqual(1);
+        expect(loadedPosts2[0].title).toEqual("About airplanes");
     })));
 
 });
