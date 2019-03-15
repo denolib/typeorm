@@ -7,22 +7,22 @@ import {Post} from "./model/Post";
 describe("entity schemas > target option", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [PostEntity],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should create instance of the target", () => Promise.all(connections.map(async connection => {
+    test("should create instance of the target", () => Promise.all(connections.map(async connection => {
         const postRepository = connection.getRepository(Post);
         const post = postRepository.create({
             title: "First Post",
             text: "About first post",
         });
-        post.should.be.instanceof(Post);
+        expect(post).toBeInstanceOf(Post);
     })));
 
-    it("should find instances of the target", () => Promise.all(connections.map(async connection => {
+    test("should find instances of the target", () => Promise.all(connections.map(async connection => {
         const postRepository = connection.getRepository(Post);
         const post = new Post();
         post.title = "First Post";
@@ -30,7 +30,7 @@ describe("entity schemas > target option", () => {
         await postRepository.save(post);
 
         const loadedPost = await postRepository.findOne({ title: "First Post" });
-        loadedPost!.should.be.instanceof(Post);
+        expect(loadedPost)!.toBeInstanceOf(Post);
     })));
 
 });
