@@ -1,19 +1,19 @@
 import "reflect-metadata";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {Connection} from "../../../src";
 import {Post} from "./entity/Post";
 import {Category} from "./entity/Category";
 
 describe("other issues > update relational column on relation change", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should update relational column when relation is inserted", () => Promise.all(connections.map(async function(connection) {
+    test("should update relational column when relation is inserted", () => Promise.all(connections.map(async function(connection) {
 
         const category1 = new Category();
         category1.name = "category #1";
@@ -26,8 +26,8 @@ describe("other issues > update relational column on relation change", () => {
         post.categories = [category1, category2];
         await connection.manager.save(post);
 
-        category1.postId.should.be.equal(1);
-        category2.postId.should.be.equal(1);
+        expect(category1.postId).toEqual(1);
+        expect(category2.postId).toEqual(1);
 
         const post2 = new Post();
         post2.title = "post #2";
@@ -41,8 +41,8 @@ describe("other issues > update relational column on relation change", () => {
         category2.post = post3;
         await connection.manager.save([category1, category2]);
 
-        category1.postId.should.be.equal(2);
-        category2.postId.should.be.equal(3);
+        expect(category1.postId).toEqual(2);
+        expect(category2.postId).toEqual(3);
     })));
 
 });
