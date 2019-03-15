@@ -1,8 +1,7 @@
 import "reflect-metadata";
-import {expect} from "chai";
 import {CockroachDriver} from "../../../../../src/driver/cockroachdb/CockroachDriver";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../../test/utils/test-utils";
-import {Connection} from "../../../../../src/connection/Connection";
+import {Connection} from "../../../../../src";
 import {Category} from "./entity/Category";
 import {Post} from "./entity/Post";
 import {Image} from "./entity/Image";
@@ -10,13 +9,13 @@ import {Image} from "./entity/Image";
 describe("query builder > relation-count-decorator-many-to-many > many-to-many", () => {
     
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should load relation count on owner side", () => Promise.all(connections.map(async connection => {
+    test("should load relation count on owner side", () => Promise.all(connections.map(async connection => {
 
         const category1 = new Category();
         category1.id = 1;
@@ -60,18 +59,18 @@ describe("query builder > relation-count-decorator-many-to-many > many-to-many",
             .orderBy("post.id")
             .getMany();
 
-        expect(loadedPosts![0].categoryCount).to.be.equal(3);
-        expect(loadedPosts![1].categoryCount).to.be.equal(2);
+        expect(loadedPosts![0].categoryCount).toEqual(3);
+        expect(loadedPosts![1].categoryCount).toEqual(2);
 
         let loadedPost = await connection.manager
             .createQueryBuilder(Post, "post")
             .where("post.id = :id", { id: 1 })
             .getOne();
 
-        expect(loadedPost!.categoryCount).to.be.equal(3);
+        expect(loadedPost!.categoryCount).toEqual(3);
     })));
 
-    it("should load relation count on owner side with limitation", () => Promise.all(connections.map(async connection => {
+    test("should load relation count on owner side with limitation", () => Promise.all(connections.map(async connection => {
 
         const category1 = new Category();
         category1.id = 1;
@@ -127,11 +126,11 @@ describe("query builder > relation-count-decorator-many-to-many > many-to-many",
             .limit(2)
             .getMany();
 
-        expect(loadedPosts![0].categoryCount).to.be.equal(3);
-        expect(loadedPosts![1].categoryCount).to.be.equal(2);
+        expect(loadedPosts![0].categoryCount).toEqual(3);
+        expect(loadedPosts![1].categoryCount).toEqual(2);
     })));
 
-    it("should load relation count on owner side with additional conditions", () => Promise.all(connections.map(async connection => {
+    test("should load relation count on owner side with additional conditions", () => Promise.all(connections.map(async connection => {
 
         const image1 = new Image();
         image1.id = 1;
@@ -195,14 +194,14 @@ describe("query builder > relation-count-decorator-many-to-many > many-to-many",
             .addOrderBy("post.id, categories.id")
             .getMany();
 
-        expect(loadedPosts![0].categoryCount).to.be.equal(3);
-        expect(loadedPosts![0].removedCategoryCount).to.be.equal(1);
-        expect(loadedPosts![0].categories[0].imageCount).to.be.equal(2);
-        expect(loadedPosts![0].categories[0].removedImageCount).to.be.equal(1);
-        expect(loadedPosts![0].categories[1].imageCount).to.be.equal(0);
-        expect(loadedPosts![0].categories[2].imageCount).to.be.equal(0);
-        expect(loadedPosts![1].categoryCount).to.be.equal(2);
-        expect(loadedPosts![1].categories[0].imageCount).to.be.equal(1);
+        expect(loadedPosts![0].categoryCount).toEqual(3);
+        expect(loadedPosts![0].removedCategoryCount).toEqual(1);
+        expect(loadedPosts![0].categories[0].imageCount).toEqual(2);
+        expect(loadedPosts![0].categories[0].removedImageCount).toEqual(1);
+        expect(loadedPosts![0].categories[1].imageCount).toEqual(0);
+        expect(loadedPosts![0].categories[2].imageCount).toEqual(0);
+        expect(loadedPosts![1].categoryCount).toEqual(2);
+        expect(loadedPosts![1].categories[0].imageCount).toEqual(1);
 
         let loadedPost = await connection.manager
             .createQueryBuilder(Post, "post")
@@ -211,13 +210,13 @@ describe("query builder > relation-count-decorator-many-to-many > many-to-many",
             .addOrderBy("post.id, categories.id")
             .getOne();
 
-        expect(loadedPost!.categoryCount).to.be.equal(3);
-        expect(loadedPost!.removedCategoryCount).to.be.equal(1);
-        expect(loadedPost!.categories[0].imageCount).to.be.equal(2);
-        expect(loadedPost!.categories[0].removedImageCount).to.be.equal(1);
+        expect(loadedPost!.categoryCount).toEqual(3);
+        expect(loadedPost!.removedCategoryCount).toEqual(1);
+        expect(loadedPost!.categories[0].imageCount).toEqual(2);
+        expect(loadedPost!.categories[0].removedImageCount).toEqual(1);
     })));
 
-    it("should load relation count on both sides of relation", () => Promise.all(connections.map(async connection => {
+    test("should load relation count on both sides of relation", () => Promise.all(connections.map(async connection => {
 
         // todo: issue with GROUP BY
         if (connection.driver instanceof CockroachDriver)
@@ -258,13 +257,13 @@ describe("query builder > relation-count-decorator-many-to-many > many-to-many",
 
         // console.log(loadedPosts);
 
-        expect(loadedPosts![0].categoryCount).to.be.equal(3);
-        expect(loadedPosts![0].categories[0].postCount).to.be.equal(2);
-        expect(loadedPosts![0].categories[1].postCount).to.be.equal(1);
-        expect(loadedPosts![0].categories[2].postCount).to.be.equal(2);
-        expect(loadedPosts![1].categoryCount).to.be.equal(2);
-        expect(loadedPosts![1].categories[0].postCount).to.be.equal(2);
-        expect(loadedPosts![1].categories[1].postCount).to.be.equal(2);
+        expect(loadedPosts![0].categoryCount).toEqual(3);
+        expect(loadedPosts![0].categories[0].postCount).toEqual(2);
+        expect(loadedPosts![0].categories[1].postCount).toEqual(1);
+        expect(loadedPosts![0].categories[2].postCount).toEqual(2);
+        expect(loadedPosts![1].categoryCount).toEqual(2);
+        expect(loadedPosts![1].categories[0].postCount).toEqual(2);
+        expect(loadedPosts![1].categories[1].postCount).toEqual(2);
 
         let loadedPost = await connection.manager
             .createQueryBuilder(Post, "post")
@@ -273,13 +272,13 @@ describe("query builder > relation-count-decorator-many-to-many > many-to-many",
             .addOrderBy("post.id, categories.id")
             .getOne();
 
-        expect(loadedPost!.categoryCount).to.be.equal(3);
-        expect(loadedPost!.categories[0].postCount).to.be.equal(2);
-        expect(loadedPost!.categories[1].postCount).to.be.equal(1);
-        expect(loadedPost!.categories[2].postCount).to.be.equal(2);
+        expect(loadedPost!.categoryCount).toEqual(3);
+        expect(loadedPost!.categories[0].postCount).toEqual(2);
+        expect(loadedPost!.categories[1].postCount).toEqual(1);
+        expect(loadedPost!.categories[2].postCount).toEqual(2);
     })));
 
-    it("should load relation count on inverse side", () => Promise.all(connections.map(async connection => {
+    test("should load relation count on inverse side", () => Promise.all(connections.map(async connection => {
 
         const category1 = new Category();
         category1.id = 1;
@@ -326,18 +325,18 @@ describe("query builder > relation-count-decorator-many-to-many > many-to-many",
             .orderBy("category.id")
             .getMany();
 
-        expect(loadedCategories![0].postCount).to.be.equal(3);
-        expect(loadedCategories![1].postCount).to.be.equal(2);
+        expect(loadedCategories![0].postCount).toEqual(3);
+        expect(loadedCategories![1].postCount).toEqual(2);
 
         let loadedCategory = await connection.manager
             .createQueryBuilder(Category, "category")
             .where("category.id = :id", { id: 1 })
             .getOne();
 
-        expect(loadedCategory!.postCount).to.be.equal(3);
+        expect(loadedCategory!.postCount).toEqual(3);
     })));
 
-    it("should load relation count on inverse side with limitation", () => Promise.all(connections.map(async connection => {
+    test("should load relation count on inverse side with limitation", () => Promise.all(connections.map(async connection => {
 
         const category1 = new Category();
         category1.id = 1;
@@ -396,11 +395,11 @@ describe("query builder > relation-count-decorator-many-to-many > many-to-many",
             .limit(2)
             .getMany();
 
-        expect(loadedCategories![0].postCount).to.be.equal(3);
-        expect(loadedCategories![1].postCount).to.be.equal(2);
+        expect(loadedCategories![0].postCount).toEqual(3);
+        expect(loadedCategories![1].postCount).toEqual(2);
     })));
 
-    it("should load relation count on inverse side with additional conditions", () => Promise.all(connections.map(async connection => {
+    test("should load relation count on inverse side with additional conditions", () => Promise.all(connections.map(async connection => {
 
         const category1 = new Category();
         category1.id = 1;
@@ -449,17 +448,17 @@ describe("query builder > relation-count-decorator-many-to-many > many-to-many",
             .orderBy("category.id")
             .getMany();
 
-        expect(loadedCategories![0].postCount).to.be.equal(3);
-        expect(loadedCategories![0].removedPostCount).to.be.equal(2);
-        expect(loadedCategories![1].postCount).to.be.equal(2);
+        expect(loadedCategories![0].postCount).toEqual(3);
+        expect(loadedCategories![0].removedPostCount).toEqual(2);
+        expect(loadedCategories![1].postCount).toEqual(2);
 
         let loadedCategory = await connection.manager
             .createQueryBuilder(Category, "category")
             .where("category.id = :id", { id: 1 })
             .getOne();
 
-        expect(loadedCategory!.postCount).to.be.equal(3);
-        expect(loadedCategory!.removedPostCount).to.be.equal(2);
+        expect(loadedCategory!.postCount).toEqual(3);
+        expect(loadedCategory!.removedPostCount).toEqual(2);
     })));
 
 });
