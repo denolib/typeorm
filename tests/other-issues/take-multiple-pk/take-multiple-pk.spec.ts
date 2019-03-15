@@ -1,8 +1,5 @@
 import "reflect-metadata";
-
-import {expect} from "chai";
-
-import {Connection} from "../../../src/connection/Connection";
+import {Connection} from "../../../src";
 import {
   closeTestingConnections,
   createTestingConnections,
@@ -13,16 +10,16 @@ import {User} from "./entity/User";
 
 describe("other issues > using take with multiple primary keys", () => {
   let connections: Connection[];
-  before(
+  beforeAll(
     async () =>
       (connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
       }))
   );
   beforeEach(() => reloadTestingDatabases(connections));
-  after(() => closeTestingConnections(connections));
+  afterAll(() => closeTestingConnections(connections));
 
-  it("should persist successfully and return persisted entity", () =>
+  test("should persist successfully and return persisted entity", () =>
     Promise.all(
       connections.map(async function(connection) {
         // generate bulk array of users with roles
@@ -44,7 +41,7 @@ describe("other issues > using take with multiple primary keys", () => {
 
         await Promise.all(promises);
 
-        expect(true).to.be.true;
+        expect(true).toBeTruthy();
 
         // check if ordering by main object works correctly
 
@@ -55,18 +52,18 @@ describe("other issues > using take with multiple primary keys", () => {
           .orderBy("user.id", "DESC")
           .getMany();
 
-        expect(loadedUsers1).not.to.be.undefined;
-        loadedUsers1.length.should.be.equal(10);
-        loadedUsers1[0].id.should.be.equal(100);
-        loadedUsers1[1].id.should.be.equal(99);
-        loadedUsers1[2].id.should.be.equal(98);
-        loadedUsers1[3].id.should.be.equal(97);
-        loadedUsers1[4].id.should.be.equal(96);
-        loadedUsers1[5].id.should.be.equal(95);
-        loadedUsers1[6].id.should.be.equal(94);
-        loadedUsers1[7].id.should.be.equal(93);
-        loadedUsers1[8].id.should.be.equal(92);
-        loadedUsers1[9].id.should.be.equal(91);
+        expect(loadedUsers1).not.toBeUndefined();
+        expect(loadedUsers1.length).toEqual(10);
+        expect(loadedUsers1[0].id).toEqual(100);
+        expect(loadedUsers1[1].id).toEqual(99);
+        expect(loadedUsers1[2].id).toEqual(98);
+        expect(loadedUsers1[3].id).toEqual(97);
+        expect(loadedUsers1[4].id).toEqual(96);
+        expect(loadedUsers1[5].id).toEqual(95);
+        expect(loadedUsers1[6].id).toEqual(94);
+        expect(loadedUsers1[7].id).toEqual(93);
+        expect(loadedUsers1[8].id).toEqual(92);
+        expect(loadedUsers1[9].id).toEqual(91);
 
         const lefties = await connection.manager
           .createQueryBuilder(User, "user")
@@ -76,14 +73,14 @@ describe("other issues > using take with multiple primary keys", () => {
           .orderBy("user.id", "DESC")
           .getMany();
 
-        expect(lefties).not.to.be.undefined;
-        lefties.length.should.be.equal(5);
-        lefties[0].id.should.be.equal(100);
-        lefties[1].id.should.be.equal(90);
-        lefties[2].id.should.be.equal(80);
-        lefties[3].id.should.be.equal(70);
-        lefties[4].id.should.be.equal(60);
-        lefties[0].roles.length.should.be.equal(5);
+        expect(lefties).not.toBeUndefined();
+        expect(lefties.length).toEqual(5);
+        expect(lefties[0].id).toEqual(100);
+        expect(lefties[1].id).toEqual(90);
+        expect(lefties[2].id).toEqual(80);
+        expect(lefties[3].id).toEqual(70);
+        expect(lefties[4].id).toEqual(60);
+        expect(lefties[0].roles.length).toEqual(5);
       })
     ));
 });
