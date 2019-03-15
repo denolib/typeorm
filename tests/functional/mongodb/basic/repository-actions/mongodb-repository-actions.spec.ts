@@ -1,36 +1,39 @@
 import "reflect-metadata";
-import {expect} from "chai";
-import {Connection} from "../../../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils";
+import {Connection} from "../../../../../src";
 import {Post} from "./entity/Post";
+import {
+    closeTestingConnections,
+    createTestingConnections,
+    reloadTestingDatabases
+} from "../../../../../test/utils/test-utils";
 
 describe("mongodb > basic repository actions", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [Post],
         enabledDrivers: ["mongodb"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("create should create instance of same entity", () => Promise.all(connections.map(async connection => {
+    test("create should create instance of same entity", () => Promise.all(connections.map(async connection => {
         const postRepository = connection.getRepository(Post);
-        postRepository.create().should.be.instanceOf(Post);
+        expect(postRepository.create()).toBeInstanceOf(Post);
     })));
 
-    it("create should be able to fill data from the given object", () => Promise.all(connections.map(async connection => {
+    test("create should be able to fill data from the given object", () => Promise.all(connections.map(async connection => {
         const postRepository = connection.getRepository(Post);
         const post = postRepository.create({
             title: "This is created post",
             text: "All about this post"
         });
-        post.should.be.instanceOf(Post);
-        post.title.should.be.equal("This is created post");
-        post.text.should.be.equal("All about this post");
+        expect(post).toBeInstanceOf(Post);
+        expect(post.title).toEqual("This is created post");
+        expect(post.text).toEqual("All about this post");
     })));
 
-    it("merge should merge all given partial objects into given source entity", () => Promise.all(connections.map(async connection => {
+    test("merge should merge all given partial objects into given source entity", () => Promise.all(connections.map(async connection => {
         const postRepository = connection.getRepository(Post);
         const post = postRepository.create({
             title: "This is created post",
@@ -40,46 +43,46 @@ describe("mongodb > basic repository actions", () => {
             { title: "This is updated post" },
             { text: "And its text is updated as well" }
         );
-        mergedPost.should.be.instanceOf(Post);
-        mergedPost.should.be.equal(post);
-        mergedPost.title.should.be.equal("This is updated post");
-        mergedPost.text.should.be.equal("And its text is updated as well");
+        expect(mergedPost).toBeInstanceOf(Post);
+        expect(mergedPost).toEqual(post);
+        expect(mergedPost.title).toEqual("This is updated post");
+        expect(mergedPost.text).toEqual("And its text is updated as well");
     })));
 
-    it("target should be valid", () => Promise.all(connections.map(async connection => {
+    test("target should be valid", () => Promise.all(connections.map(async connection => {
         const postRepository = connection.getRepository(Post);
-        expect(postRepository.target).not.to.be.undefined;
-        postRepository.target.should.be.eql(Post);
+        expect(postRepository.target).toBeDefined();
+        expect(postRepository.target).toEqual(Post);
     })));
 
-    it("should persist entity successfully and after persistence have generated object id", () => Promise.all(connections.map(async connection => {
-        const postRepository = connection.getRepository(Post);
-        const post = new Post();
-        post.title = "Post #1";
-        post.text = "Everything about post!";
-        await postRepository.save(post);
-
-        expect(post.id).not.to.be.undefined;
-    })));
-
-    it("hasId should return true if id really has an id", () => Promise.all(connections.map(async connection => {
+    test("should persist entity successfully and after persistence have generated object id", () => Promise.all(connections.map(async connection => {
         const postRepository = connection.getRepository(Post);
         const post = new Post();
         post.title = "Post #1";
         post.text = "Everything about post!";
         await postRepository.save(post);
 
-        expect(post.id).not.to.be.undefined;
+        expect(post.id).toBeDefined();
+    })));
+
+    test("hasId should return true if id really has an id", () => Promise.all(connections.map(async connection => {
+        const postRepository = connection.getRepository(Post);
+        const post = new Post();
+        post.title = "Post #1";
+        post.text = "Everything about post!";
+        await postRepository.save(post);
+
+        expect(post.id).toBeDefined();
         postRepository.hasId(post).should.be.true;
     })));
 
-    it("unsupported methods should throw exception", () => Promise.all(connections.map(async connection => {
+    test("unsupported methods should throw exception", () => Promise.all(connections.map(async connection => {
         const postRepository = connection.getRepository(Post);
-        expect(() => postRepository.createQueryBuilder("post")).to.throw(Error);
-        expect(() => postRepository.query("SELECT * FROM POSTS")).to.throw(Error);
+        expect(() => postRepository.createQueryBuilder("post")).toThrow(Error);
+        expect(() => postRepository.query("SELECT * FROM POSTS")).toThrow(Error);
     })));
 
-    it("should return persisted objects using find* methods", () => Promise.all(connections.map(async connection => {
+    test("should return persisted objects using find* methods", () => Promise.all(connections.map(async connection => {
         const postRepository = connection.getRepository(Post);
 
         const post1 = new Post();
@@ -104,58 +107,58 @@ describe("mongodb > basic repository actions", () => {
 
         // assert.findOne method
         const loadedPost1 = await postRepository.findOne(post1.id);
-        expect(loadedPost1!.id).to.be.eql(post1.id);
-        expect(loadedPost1!.title).to.be.equal("First Post");
-        expect(loadedPost1!.text).to.be.equal("Everything about first post");
+        expect(loadedPost1!.id).toEqual(post1.id);
+        expect(loadedPost1!.title).toEqual("First Post");
+        expect(loadedPost1!.text).toEqual("Everything about first post");
 
         // assert findOne method
         const loadedPost2 = await postRepository.findOne({ title: "Second Post" });
-        expect(loadedPost2!.id).to.be.eql(post2.id);
-        expect(loadedPost2!.title).to.be.equal("Second Post");
-        expect(loadedPost2!.text).to.be.equal("Everything about second post");
+        expect(loadedPost2!.id).toEqual(post2.id);
+        expect(loadedPost2!.title).toEqual("Second Post");
+        expect(loadedPost2!.text).toEqual("Everything about second post");
 
         // assert findByIds method
         const loadedPost3 = await postRepository.findByIds([
             post1.id,
             post2.id
         ]);
-        expect(loadedPost3[0]!.id).to.be.eql(post1.id);
-        expect(loadedPost3[0]!.title).to.be.equal("First Post");
-        expect(loadedPost3[0]!.text).to.be.equal("Everything about first post");
-        expect(loadedPost3[1].id).to.be.eql(post2.id);
-        expect(loadedPost3[1].title).to.be.equal("Second Post");
-        expect(loadedPost3[1].text).to.be.equal("Everything about second post");
+        expect(loadedPost3[0]!.id).toEqual(post1.id);
+        expect(loadedPost3[0]!.title).toEqual("First Post");
+        expect(loadedPost3[0]!.text).toEqual("Everything about first post");
+        expect(loadedPost3[1].id).toEqual(post2.id);
+        expect(loadedPost3[1].title).toEqual("Second Post");
+        expect(loadedPost3[1].text).toEqual("Everything about second post");
 
         // assert find method
         const loadedPosts1 = await postRepository.find({
             skip: 10,
             take: 10
         });
-        loadedPosts1.length.should.be.equal(10);
-        expect(loadedPosts1[0]!.id).not.to.be.undefined;
-        expect(loadedPosts1[0]!.title).not.to.be.undefined;
-        expect(loadedPosts1[0]!.text).not.to.be.undefined;
-        expect(loadedPosts1[9]!.id).not.to.be.undefined;
-        expect(loadedPosts1[9]!.title).not.to.be.undefined;
-        expect(loadedPosts1[9]!.text).not.to.be.undefined;
+        expect(loadedPosts1.length).toEqual(10);
+        expect(loadedPosts1[0]!.id).toBeDefined();
+        expect(loadedPosts1[0]!.title).toBeDefined();
+        expect(loadedPosts1[0]!.text).toBeDefined();
+        expect(loadedPosts1[9]!.id).toBeDefined();
+        expect(loadedPosts1[9]!.title).toBeDefined();
+        expect(loadedPosts1[9]!.text).toBeDefined();
 
         // assert find method
         const [loadedPosts2, loadedPosts2Count] = await postRepository.findAndCount({
             skip: 5,
             take: 5
         });
-        loadedPosts2.length.should.be.equal(5);
-        loadedPosts2Count.should.be.equal(52);
-        expect(loadedPosts2[0]!.id).not.to.be.undefined;
-        expect(loadedPosts2[0]!.title).not.to.be.undefined;
-        expect(loadedPosts2[0]!.text).not.to.be.undefined;
-        expect(loadedPosts2[4]!.id).not.to.be.undefined;
-        expect(loadedPosts2[4]!.title).not.to.be.undefined;
-        expect(loadedPosts2[4]!.text).not.to.be.undefined;
+        expect(loadedPosts2.length).toEqual(5);
+        expect(loadedPosts2Count).toEqual(52);
+        expect(loadedPosts2[0]!.id).toBeDefined();
+        expect(loadedPosts2[0]!.title).toBeDefined();
+        expect(loadedPosts2[0]!.text).toBeDefined();
+        expect(loadedPosts2[4]!.id).toBeDefined();
+        expect(loadedPosts2[4]!.title).toBeDefined();
+        expect(loadedPosts2[4]!.text).toBeDefined();
 
     })));
 
-    it("should sort entities in a query", () => Promise.all(connections.map(async connection => {
+    test("should sort entities in a query", () => Promise.all(connections.map(async connection => {
         const postRepository = connection.getRepository(Post);
 
         // save few posts
@@ -177,9 +180,10 @@ describe("mongodb > basic repository actions", () => {
         });
 
 
-        queryPostsAsc.length.should.be.equal(10);
+        expect(queryPostsAsc.length).toEqual(10);
+
         for (let i = 0; i < 10; i++) {
-            expect(queryPostsAsc[i]!.index).eq(i);
+            expect(queryPostsAsc[i]!.index).toEqual(i);
         }
 
         // DESCENDANT SORTING
@@ -187,14 +191,15 @@ describe("mongodb > basic repository actions", () => {
             order: { index: "DESC" }
         });
 
-        queryPostsDesc.length.should.be.equal(10);
+        expect(queryPostsDesc.length).toEqual(10);
+
         for (let j = 0; j < 10; j++) {
-            expect(queryPostsDesc[j]!.index).eq(9 - j);
+            expect(queryPostsDesc[j]!.index).toEqual(9 - j);
         }
 
     })));
 
-    it("clear should remove all persisted entities", () => Promise.all(connections.map(async connection => {
+    test("clear should remove all persisted entities", () => Promise.all(connections.map(async connection => {
         const postRepository = connection.getRepository(Post);
 
         // save few posts
@@ -208,17 +213,17 @@ describe("mongodb > basic repository actions", () => {
         await postRepository.save(posts);
 
         const [loadedPosts, postsCount] = await postRepository.findAndCount();
-        expect(postsCount).to.be.equal(50);
-        loadedPosts.length.should.be.equal(50);
+        expect(postsCount).toEqual(50);
+        expect(loadedPosts.length).toEqual(50);
 
         await postRepository.clear();
 
         const [loadedPostsAfterClear, postsCountAfterClear] = await postRepository.findAndCount();
-        expect(postsCountAfterClear).to.be.equal(0);
+        expect(postsCountAfterClear).toEqual(0);
         loadedPostsAfterClear.should.be.eql([]);
     })));
 
-    it("remove should remove given entity", () => Promise.all(connections.map(async connection => {
+    test("remove should remove given entity", () => Promise.all(connections.map(async connection => {
         const postRepository = connection.getRepository(Post);
 
         const post1 = new Post();
@@ -236,11 +241,11 @@ describe("mongodb > basic repository actions", () => {
         await postRepository.remove(post2);
 
         const [loadedPostsAfterClear, postsCountAfterClear] = await postRepository.findAndCount();
-        expect(postsCountAfterClear).to.be.equal(0);
+        expect(postsCountAfterClear).toEqual(0);
         loadedPostsAfterClear.should.be.eql([]);
     })));
 
-    it("clear should remove all persisted entities", () => Promise.all(connections.map(async connection => {
+    test("clear should remove all persisted entities", () => Promise.all(connections.map(async connection => {
         const postRepository = connection.getRepository(Post);
 
         // save few posts
@@ -254,17 +259,17 @@ describe("mongodb > basic repository actions", () => {
         await postRepository.save(posts);
 
         const [loadedPosts, postsCount] = await postRepository.findAndCount();
-        expect(postsCount).to.be.equal(50);
-        loadedPosts.length.should.be.equal(50);
+        expect(postsCount).toEqual(50);
+        expect(loadedPosts.length).toEqual(50);
 
         await postRepository.clear();
 
         const [loadedPostsAfterClear, postsCountAfterClear] = await postRepository.findAndCount();
-        expect(postsCountAfterClear).to.be.equal(0);
+        expect(postsCountAfterClear).toEqual(0);
         loadedPostsAfterClear.should.be.eql([]);
     })));
 
-    it("preload should pre-load given object", () => Promise.all(connections.map(async connection => {
+    test("preload should pre-load given object", () => Promise.all(connections.map(async connection => {
         const postRepository = connection.getRepository(Post);
 
         // save a post first
@@ -279,10 +284,10 @@ describe("mongodb > basic repository actions", () => {
             title: "This is updated post"
         });
         // console.log(post);
-        post!.should.be.instanceOf(Post);
-        post!.id.should.be.equal(postToSave.id);
-        post!.title.should.be.equal("This is updated post");
-        post!.text.should.be.equal("Everything about first post");
+        expect(post)!.toBeInstanceOf(Post);
+        expect(post!.id).toEqual(postToSave.id);
+        expect(post!.title).toEqual("This is updated post");
+        expect(post!.text).toEqual("Everything about first post");
     })));
 
 });
