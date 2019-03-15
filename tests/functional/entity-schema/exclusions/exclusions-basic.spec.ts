@@ -1,19 +1,19 @@
 import "reflect-metadata";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../test/utils/test-utils";
-import {Connection} from "../../../../src/connection/Connection";
+import {Connection} from "../../../../src";
 import {MeetingSchema} from "./entity/Meeting";
 import {PostgresDriver} from "../../../../src/driver/postgres/PostgresDriver";
 
 describe("entity-schema > exclusions", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [<any>MeetingSchema],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should create an exclusion constraint", () => Promise.all(connections.map(async connection => {
+    test("should create an exclusion constraint", () => Promise.all(connections.map(async connection => {
         // Only PostgreSQL supports exclusion constraints.
         if (!(connection.driver instanceof PostgresDriver))
             return;
@@ -22,7 +22,7 @@ describe("entity-schema > exclusions", () => {
         const table = await queryRunner.getTable("meeting");
         await queryRunner.release();
 
-        table!.exclusions.length.should.be.equal(1);
+        expect(table!.exclusions.length).toEqual(1);
 
     })));
 
