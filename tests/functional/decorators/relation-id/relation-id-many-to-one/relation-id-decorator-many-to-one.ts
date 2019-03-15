@@ -1,11 +1,11 @@
 import "reflect-metadata";
 import {expect} from "chai";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../../test/utils/test-utils";
 import {Connection} from "../../../../../src/connection/Connection";
-import {Category} from "./entity/Category";
 import {Post} from "./entity/Post";
+import {Category} from "./entity/Category";
 
-describe("decorators > relation-id > one-to-one", () => {
+describe("decorators > relation-id-decorator > many-to-one", () => {
     
     let connections: Connection[];
     before(async () => connections = await createTestingConnections({
@@ -14,7 +14,7 @@ describe("decorators > relation-id > one-to-one", () => {
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
 
-    it("should load ids when loadRelationIdAndMap used on owner side", () => Promise.all(connections.map(async connection => {
+    it("should load ids when RelationId decorator used", () => Promise.all(connections.map(async connection => {
 
         const category1 = new Category();
         category1.id = 1;
@@ -38,7 +38,7 @@ describe("decorators > relation-id > one-to-one", () => {
 
         const post1 = new Post();
         post1.id = 1;
-        post1.title = "about BMW";
+        post1.title = "about BWM";
         post1.category = category1;
         post1.categoryByName = categoryByName1;
         await connection.manager.save(post1);
@@ -52,7 +52,7 @@ describe("decorators > relation-id > one-to-one", () => {
 
         let loadedPosts = await connection.manager
             .createQueryBuilder(Post, "post")
-            .addOrderBy("post.id")
+            .orderBy("post.id")
             .getMany();
 
         expect(loadedPosts![0].categoryId).to.not.be.undefined;
@@ -73,49 +73,6 @@ describe("decorators > relation-id > one-to-one", () => {
         expect(loadedPost!.categoryId).to.be.equal(1);
         expect(loadedPost!.categoryName).to.not.be.undefined;
         expect(loadedPost!.categoryName).to.be.equal("BMW");
-    })));
-
-    it("should load id when loadRelationIdAndMap used on inverse side", () => Promise.all(connections.map(async connection => {
-
-        const category1 = new Category();
-        category1.id = 1;
-        category1.name = "cars";
-        await connection.manager.save(category1);
-
-        const category2 = new Category();
-        category2.id = 2;
-        category2.name = "airplanes";
-        await connection.manager.save(category2);
-
-        const post1 = new Post();
-        post1.id = 1;
-        post1.title = "about BMW";
-        post1.category2 = category1;
-        await connection.manager.save(post1);
-
-        const post2 = new Post();
-        post2.id = 2;
-        post2.title = "about Boeing";
-        post2.category2 = category2;
-        await connection.manager.save(post2);
-
-        let loadedCategories = await connection.manager
-            .createQueryBuilder(Category, "category")
-            .addOrderBy("category.id")
-            .getMany();
-
-        expect(loadedCategories![0].postId).to.not.be.undefined;
-        expect(loadedCategories![0].postId).to.be.equal(1);
-        expect(loadedCategories![1].postId).to.not.be.undefined;
-        expect(loadedCategories![1].postId).to.be.equal(2);
-
-        let loadedCategory = await connection.manager
-            .createQueryBuilder(Category, "category")
-            .where("category.id = :id", { id: 1 })
-            .getOne();
-
-        expect(loadedCategory!.postId).to.not.be.undefined;
-        expect(loadedCategory!.postId).to.be.equal(1);
     })));
 
 });

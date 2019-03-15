@@ -1,6 +1,6 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
-import {Connection} from "../../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../test/utils/test-utils";
+import {Connection} from "../../../../src";
 import {Post} from "./entity/Post";
 import {Counters} from "./entity/Counters";
 
@@ -15,7 +15,7 @@ describe("decorators > embedded", () => {
 
     describe("basic functionality", function() {
 
-        it("should persist and load entities with embeddeds properly", () => Promise.all(connections.map(async connection => {
+        test("should persist and load entities with embeddeds properly", () => Promise.all(connections.map(async connection => {
             const postRepository = connection.getRepository(Post);
 
             const post = new Post();
@@ -30,10 +30,10 @@ describe("decorators > embedded", () => {
 
             // now load it
             const loadedPost = (await postRepository.findOne(post.id))!;
-            loadedPost.id.should.be.equal(post.id);
-            loadedPost.title.should.be.equal("Hello post");
-            loadedPost.text.should.be.equal("This is text about the post");
-            loadedPost.counters.should.be.eql({
+            expect(loadedPost.id).toEqual(post.id);
+            expect(loadedPost.title).toEqual("Hello post");
+            expect(loadedPost.text).toEqual("This is text about the post");
+            expect(loadedPost.counters).toEqual({
                 comments: 5,
                 favorites: 2,
                 likes: 1
@@ -41,7 +41,7 @@ describe("decorators > embedded", () => {
 
         })));
 
-        it("should be used with prop", () => Promise.all(connections.map(async connection => {
+        test("should be used with prop", () => Promise.all(connections.map(async connection => {
             const postRepository = connection.getRepository(Post);
 
             const post1 = new Post();
@@ -70,7 +70,7 @@ describe("decorators > embedded", () => {
                 .orderBy("post.counters.comments", "DESC")
                 .getMany();
 
-            sortedPosts1.should.be.eql([{
+            expect(sortedPosts1).toEqual([{
                 id: post2.id,
                 title: "Hello post #2",
                 text: "This is text about the post",
@@ -96,7 +96,7 @@ describe("decorators > embedded", () => {
                 .orderBy("post.counters.favorites", "DESC")
                 .getMany();
 
-            sortedPosts2.should.be.eql([{
+            expect(sortedPosts2).toEqual([{
                 id: post1.id,
                 title: "Hello post #1",
                 text: "This is text about the post",
