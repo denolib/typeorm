@@ -1,22 +1,21 @@
 import "reflect-metadata";
 import { closeTestingConnections, createTestingConnections, reloadTestingDatabases } from "../../../../test/utils/test-utils";
-import { Connection } from "../../../../src/connection/Connection";
+import { Connection } from "../../../../src";
 import { Post } from "./entity/Post";
-import { expect } from "chai";
 import {PostInformation} from "./entity/PostInformation";
 import {PostCounter} from "./entity/PostCounter";
 
 describe("other issues > entity listeners must work in optional embeddeds as well", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
         enabledDrivers: ["postgres"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("getters and setters should work correctly", () => Promise.all(connections.map(async connection => {
+    test("getters and setters should work correctly", () => Promise.all(connections.map(async connection => {
 
         const post1 = new Post();
         post1.title = "First title";
@@ -42,19 +41,19 @@ describe("other issues > entity listeners must work in optional embeddeds as wel
             .orderBy("post.id")
             .getMany();
 
-        expect(loadedPosts[0]).not.to.be.undefined;
-        expect(loadedPosts[0]!.title).not.to.be.undefined;
-        expect(loadedPosts[0]!.text).not.to.be.undefined;
-        loadedPosts[0]!.title.should.be.equal("First title");
-        loadedPosts[0]!.text.should.be.equal("About this post");
+        expect(loadedPosts[0]).not.toBeUndefined();
+        expect(loadedPosts[0]!.title).not.toBeUndefined();
+        expect(loadedPosts[0]!.text).not.toBeUndefined();
+        expect(loadedPosts[0]!.title).toEqual("First title");
+        expect(loadedPosts[0]!.text).toEqual("About this post");
 
-        expect(loadedPosts[1]).not.to.be.undefined;
-        loadedPosts[1]!.title.should.be.equal("Second title");
-        loadedPosts[1]!.information!.description!.should.be.equal("default post description");
+        expect(loadedPosts[1]).not.toBeUndefined();
+        expect(loadedPosts[1]!.title).toEqual("Second title");
+        expect(loadedPosts[1]!.information!.description)!.toEqual("default post description");
 
-        expect(loadedPosts[2]).not.to.be.undefined;
-        loadedPosts[2]!.title.should.be.equal("Third title");
-        loadedPosts[2]!.information!.counters!.likes!.should.be.equal(0);
+        expect(loadedPosts[2]).not.toBeUndefined();
+        expect(loadedPosts[2]!.title).toEqual("Third title");
+        expect(loadedPosts[2]!.information!.counters!.likes)!.toEqual(0);
 
     })));
 
