@@ -102,7 +102,7 @@ export class ColumnMetadata {
     /**
      * Specifies generation strategy if this column will use auto increment.
      */
-    generationStrategy?: "uuid"|"increment";
+    generationStrategy?: "uuid"|"increment"|"rowid";
 
     /**
      * Column comment.
@@ -145,8 +145,11 @@ export class ColumnMetadata {
 
     /**
      * Array of possible enumerated values.
+     *
+     * `postgres` and `mysql` store enum values as strings but we want to keep support
+     * for numeric and heterogeneous based typescript enums, so we need (string|number)[]
      */
-    enum?: any[];
+    enum?: (string|number)[];
 
     /**
      * Generated column expression. Supports only in MySQL.
@@ -348,10 +351,10 @@ export class ColumnMetadata {
         if (options.args.options.precision !== undefined)
             this.precision = options.args.options.precision;
         if (options.args.options.enum) {
-            if (options.args.options.enum instanceof Object) {
-                this.enum = Object.keys(options.args.options.enum).map(key => {
-                    return (options.args.options.enum as ObjectLiteral)[key];
-                });
+            if (options.args.options.enum instanceof Object && !Array.isArray(options.args.options.enum)) {
+                this.enum = Object.keys(options.args.options.enum)
+                    .filter(key => isNaN(+key))     // remove numeric keys - typescript numeric enum types generate them
+                    .map(key => (options.args.options.enum as ObjectLiteral)[key]);
 
             } else {
                 this.enum = options.args.options.enum;
@@ -442,7 +445,7 @@ export class ColumnMetadata {
                 }
 
                 // this is bugfix for #720 when increment number is bigint we need to make sure its a string
-                if (this.generationStrategy === "increment" && this.type === "bigint")
+                if ((this.generationStrategy === "increment" || this.generationStrategy === "rowid") && this.type === "bigint")
                     value = String(value);
 
                 map[useDatabaseName ? this.databaseName : this.propertyName] = value;
@@ -453,7 +456,7 @@ export class ColumnMetadata {
         } else { // no embeds - no problems. Simply return column property name and its value of the entity
 
             // this is bugfix for #720 when increment number is bigint we need to make sure its a string
-            if (this.generationStrategy === "increment" && this.type === "bigint")
+            if ((this.generationStrategy === "increment" || this.generationStrategy === "rowid") && this.type === "bigint")
                 value = String(value);
 
             return { [useDatabaseName ? this.databaseName : this.propertyName]: value };
@@ -531,7 +534,7 @@ export class ColumnMetadata {
      * If column is in embedded (or recursive embedded) it extracts its value from there.
      */
      getEntityValue(entity: ObjectLiteral, transform: boolean = false): any|undefined {
-        // if (entity === undefined || entity === null) return undefined; // uncomment if needed
+        if (entity === undefined || entity === null) return undefined;
 
         // extract column value from embeddeds of entity if column is in embedded
         let value: any = undefined;

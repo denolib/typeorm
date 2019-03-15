@@ -7,11 +7,12 @@ import {RelationMetadataArgs} from "../metadata-args/RelationMetadataArgs";
 import {JoinColumnMetadataArgs} from "../metadata-args/JoinColumnMetadataArgs";
 import {JoinTableMetadataArgs} from "../metadata-args/JoinTableMetadataArgs";
 import {JoinTableOptions} from "../decorator/options/JoinTableOptions";
-import {JoinTableMultipleColumnsOptions} from "../decorator/options/JoinTableMuplipleColumnsOptions";
+import {JoinTableMultipleColumnsOptions} from "../decorator/options/JoinTableMultipleColumnsOptions";
 import {ColumnMode} from "../metadata-args/types/ColumnMode";
 import {GeneratedMetadataArgs} from "../metadata-args/GeneratedMetadataArgs";
 import {UniqueMetadataArgs} from "../metadata-args/UniqueMetadataArgs";
 import {CheckMetadataArgs} from "../metadata-args/CheckMetadataArgs";
+import {ExclusionMetadataArgs} from "../metadata-args/ExclusionMetadataArgs";
 
 /**
  * Transforms entity schema into metadata args storage.
@@ -211,6 +212,18 @@ export class EntitySchemaTransformer {
                         expression: check.expression
                     };
                     metadataArgsStorage.checks.push(checkAgrs);
+                });
+            }
+
+            // add exclusion metadata args from the schema
+            if (options.exclusions) {
+                options.exclusions.forEach(exclusion => {
+                    const exclusionArgs: ExclusionMetadataArgs = {
+                        target: options.target || options.name,
+                        name: exclusion.name,
+                        expression: exclusion.expression
+                    };
+                    metadataArgsStorage.exclusions.push(exclusionArgs);
                 });
             }
 

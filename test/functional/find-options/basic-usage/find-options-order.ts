@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import {Connection} from "../../../../src";
+import {Connection, Not} from "../../../../src";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
 import {Post} from "./entity/Post";
 import {prepareData} from "./find-options-test-utils";
@@ -185,6 +185,9 @@ describe("find options > order", () => {
         await prepareData(connection.manager);
 
         const posts = await connection.createQueryBuilder(Post, "post").setFindOptions({
+            where: {
+                text: Not("About post #1")
+            },
             order: {
                 author: {
                     photos: {
@@ -195,7 +198,6 @@ describe("find options > order", () => {
         }).getMany();
         posts.should.be.eql([
             { id: 3, title: "Post #3", text: "About post #3", counters: { likes: 1 } },
-            { id: 1, title: "Post #1", text: "About post #1", counters: { likes: 1 } },
             { id: 2, title: "Post #2", text: "About post #2", counters: { likes: 2 } },
         ]);
     })));
@@ -248,6 +250,9 @@ describe("find options > order", () => {
         await prepareData(connection.manager);
 
         const posts = await connection.createQueryBuilder(Post, "post").setFindOptions({
+            where: {
+                text: Not("About post #2")
+            },
             order: {
                 counters: {
                     likedUsers: {
@@ -257,7 +262,6 @@ describe("find options > order", () => {
             }
         }).getMany();
         posts.should.be.eql([
-            { id: 2, title: "Post #2", text: "About post #2", counters: { likes: 2 } },
             { id: 3, title: "Post #3", text: "About post #3", counters: { likes: 1 } },
             { id: 1, title: "Post #1", text: "About post #1", counters: { likes: 1 } },
         ]);

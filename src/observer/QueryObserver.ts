@@ -8,7 +8,7 @@ import {
     RemoveEvent,
     UpdateEvent
 } from "../index";
-import Observable = require("zen-observable");
+import * as Observable from "zen-observable";
 
 // todo: we probably need operation-level subscribers
 // todo: right now if we save 1000 entities within a single save call its going to call this code 1000 times
@@ -67,7 +67,7 @@ export class QueryObserver {
             // we find entities matching our query
             switch (this.type) {
                 case "find":
-                    this.connection.manager.find(this.metadata.target, this.options as any).then(entities => {
+                    this.connection.manager.find(this.metadata.target as any, this.options as any).then(entities => {
                         subscriptionObserver.next(entities);
                         this.lastEmitEntities = entities;
                         this.connection.subscribers.push(this.subscriber);
@@ -75,7 +75,7 @@ export class QueryObserver {
                     break;
 
                 case "findOne":
-                    this.connection.manager.findOne(this.metadata.target, this.options as any).then(entity => {
+                    this.connection.manager.findOne(this.metadata.target as any, this.options as any).then(entity => {
                         subscriptionObserver.next(entity);
                         this.lastEmitEntity = entity;
                         this.connection.subscribers.push(this.subscriber);
@@ -83,7 +83,7 @@ export class QueryObserver {
                     break;
 
                 case "findAndCount":
-                    this.connection.manager.findAndCount(this.metadata.target, this.options as any).then(([entities, count]) => {
+                    this.connection.manager.findAndCount(this.metadata.target as any, this.options as any).then(([entities, count]) => {
                         subscriptionObserver.next([entities, count]);
                         this.lastEmitCount = count;
                         this.lastEmitEntities = entities;
@@ -92,7 +92,7 @@ export class QueryObserver {
                     break;
 
                 case "count":
-                    this.connection.manager.count(this.metadata.target, this.options as any, { observers: false }).then(count => {
+                    this.connection.manager.count(this.metadata.target as any, this.options as any, { observers: false }).then(count => {
                         subscriptionObserver.next(count);
                         this.lastEmitCount = count;
                         this.connection.subscribers.push(this.subscriber);

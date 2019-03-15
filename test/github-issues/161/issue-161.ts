@@ -31,7 +31,7 @@ describe("github issues > #161 joinAndSelect can't find entity from inverse side
             relations: ["request"]
         });
 
-        expect(loadedTicketWithRequest).not.to.be.empty;
+        expect(loadedTicketWithRequest).not.to.be.undefined;
         loadedTicketWithRequest!.should.be.eql({
             id: 1,
             name: "ticket #1",

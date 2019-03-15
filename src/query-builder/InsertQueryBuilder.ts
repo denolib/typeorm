@@ -1,8 +1,9 @@
+import {CockroachDriver} from "../driver/cockroachdb/CockroachDriver";
 import {ObserverExecutor} from "../observer/ObserverExecutor";
 import {QueryBuilder} from "./QueryBuilder";
 import {ObjectLiteral} from "../common/ObjectLiteral";
 import {ObjectType} from "../common/ObjectType";
-import {QueryPartialEntity} from "./QueryPartialEntity";
+import {QueryDeepPartialEntity} from "./QueryPartialEntity";
 import {SqlServerDriver} from "../driver/sqlserver/SqlServerDriver";
 import {PostgresDriver} from "../driver/postgres/PostgresDriver";
 import {MysqlDriver} from "../driver/mysql/MysqlDriver";
@@ -159,7 +160,7 @@ export class InsertQueryBuilder<Entity> extends QueryBuilder<Entity> {
     /**
      * Values needs to be inserted into table.
      */
-    values(values: QueryPartialEntity<Entity>|QueryPartialEntity<Entity>[]): this {
+    values(values: QueryDeepPartialEntity<Entity>|QueryDeepPartialEntity<Entity>[]): this {
         this.expressionMap.valuesSet = values;
         return this;
     }
@@ -236,6 +237,36 @@ export class InsertQueryBuilder<Entity> extends QueryBuilder<Entity> {
         return this;
     }
 
+    /**
+     * Adds additional ignore statement supported in databases.
+     */
+    orIgnore(statement: string | boolean = true): this {
+        this.expressionMap.onIgnore = statement;
+        return this;
+    }
+
+    /**
+     * Adds additional update statement supported in databases.
+     */
+    orUpdate(statement?: { columns?: string[], overwrite?: string[], conflict_target?: string | string[] }): this {
+      this.expressionMap.onUpdate = {};
+      if (statement && statement.conflict_target instanceof Array)
+          this.expressionMap.onUpdate.conflict = ` ( ${statement.conflict_target.join(", ")} ) `;
+      if (statement && typeof statement.conflict_target === "string")
+          this.expressionMap.onUpdate.conflict = ` ON CONSTRAINT ${statement.conflict_target} `;
+      if (statement && statement.columns instanceof Array)
+          this.expressionMap.onUpdate.columns = statement.columns.map(column => `${column} = :${column}`).join(", ");
+      if (statement && statement.overwrite instanceof Array) {
+        if (this.connection.driver instanceof MysqlDriver) {
+          this.expressionMap.onUpdate.overwrite = statement.overwrite.map(column => `${column} = VALUES(${column})`).join(", ");
+        } else if (this.connection.driver instanceof PostgresDriver) {
+          this.expressionMap.onUpdate.overwrite = statement.overwrite.map(column => `${column} = EXCLUDED.${column}`).join(", ");
+        }
+      }
+      return this;
+  }
+
+
     // -------------------------------------------------------------------------
     // Protected Methods
     // -------------------------------------------------------------------------
@@ -244,14 +275,17 @@ export class InsertQueryBuilder<Entity> extends QueryBuilder<Entity> {
      * Creates INSERT express used to perform insert query.
      */
     protected createInsertExpression() {
-
         const tableName = this.getTableName(this.getMainTableName());
         const valuesExpression = this.createValuesExpression(); // its important to get values before returning expression because oracle rely on native parameters and ordering of them is important
         const returningExpression = this.createReturningExpression();
         const columnsExpression = this.createColumnNamesExpression();
+        let query = "INSERT ";
 
-        // generate INSERT query
-        let query = `INSERT INTO ${tableName}`;
+        if (this.connection.driver instanceof MysqlDriver) {
+          query += `${this.expressionMap.onIgnore ? " IGNORE " : ""}`;
+        }
+
+        query += `INTO ${tableName}`;
 
         // add columns expression
         if (columnsExpression) {
@@ -276,13 +310,24 @@ export class InsertQueryBuilder<Entity> extends QueryBuilder<Entity> {
                 query += ` DEFAULT VALUES`;
             }
         }
-
-        if (this.expressionMap.onConflict && this.connection.driver instanceof PostgresDriver) {
-            query += ` ON CONFLICT ` + this.expressionMap.onConflict;
+        if (this.connection.driver instanceof PostgresDriver || this.connection.driver instanceof AbstractSqliteDriver) {
+          query += `${this.expressionMap.onIgnore ? " ON CONFLICT DO NOTHING " : ""}`;
+          query += `${this.expressionMap.onConflict ? " ON CONFLICT " + this.expressionMap.onConflict : ""}`;
+          if (this.expressionMap.onUpdate) {
+            const { overwrite, columns, conflict } = this.expressionMap.onUpdate;
+            query += `${columns ? " ON CONFLICT " + conflict + " DO UPDATE SET " + columns : ""}`;
+            query += `${overwrite ? " ON CONFLICT " + conflict + " DO UPDATE SET " + overwrite : ""}`;
+          }
+        } else if (this.connection.driver instanceof MysqlDriver) {
+            if (this.expressionMap.onUpdate) {
+              const { overwrite, columns } = this.expressionMap.onUpdate;
+              query += `${columns ? " ON DUPLICATE KEY UPDATE " + columns : ""}`;
+              query += `${overwrite ? " ON DUPLICATE KEY UPDATE " + overwrite : ""}`;
+            }
         }
 
         // add RETURNING expression
-        if (returningExpression && (this.connection.driver instanceof PostgresDriver || this.connection.driver instanceof OracleDriver)) {
+        if (returningExpression && (this.connection.driver instanceof PostgresDriver || this.connection.driver instanceof OracleDriver || this.connection.driver instanceof CockroachDriver)) {
             query += ` RETURNING ${returningExpression}`;
         }
 

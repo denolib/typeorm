@@ -16,6 +16,7 @@ import {BaseQueryRunner} from "../../query-runner/BaseQueryRunner";
 import {OrmUtils} from "../../util/OrmUtils";
 import {TableCheck} from "../../schema-builder/table/TableCheck";
 import {IsolationLevel} from "../types/IsolationLevel";
+import {TableExclusion} from "../../schema-builder/table/TableExclusion";
 
 /**
  * Runs queries on a single sqlite database connection.
@@ -80,7 +81,7 @@ export abstract class AbstractSqliteQueryRunner extends BaseQueryRunner implemen
         }
 
         this.isTransactionActive = true;
-        
+
         if (isolationLevel) {
             if (isolationLevel !== "READ UNCOMMITTED" && isolationLevel !== "SERIALIZABLE") {
                 throw new Error(`SQLite only supports SERIALIZABLE and READ UNCOMMITTED isolation`);
@@ -557,6 +558,34 @@ export abstract class AbstractSqliteQueryRunner extends BaseQueryRunner implemen
     }
 
     /**
+     * Creates a new exclusion constraint.
+     */
+    async createExclusionConstraint(tableOrName: Table|string, exclusionConstraint: TableExclusion): Promise<void> {
+        throw new Error(`Sqlite does not support exclusion constraints.`);
+    }
+
+    /**
+     * Creates a new exclusion constraints.
+     */
+    async createExclusionConstraints(tableOrName: Table|string, exclusionConstraints: TableExclusion[]): Promise<void> {
+        throw new Error(`Sqlite does not support exclusion constraints.`);
+    }
+
+    /**
+     * Drops exclusion constraint.
+     */
+    async dropExclusionConstraint(tableOrName: Table|string, exclusionOrName: TableExclusion|string): Promise<void> {
+        throw new Error(`Sqlite does not support exclusion constraints.`);
+    }
+
+    /**
+     * Drops exclusion constraints.
+     */
+    async dropExclusionConstraints(tableOrName: Table|string, exclusionConstraints: TableExclusion[]): Promise<void> {
+        throw new Error(`Sqlite does not support exclusion constraints.`);
+    }
+
+    /**
      * Creates a new foreign key.
      */
     async createForeignKey(tableOrName: Table|string, foreignKey: TableForeignKey): Promise<void> {
@@ -717,8 +746,9 @@ export abstract class AbstractSqliteQueryRunner extends BaseQueryRunner implemen
             // find column name with auto increment
             let autoIncrementColumnName: string|undefined = undefined;
             const tableSql: string = dbTable["sql"];
-            if (tableSql.indexOf("AUTOINCREMENT") !== -1) {
-                autoIncrementColumnName = tableSql.substr(0, tableSql.indexOf("AUTOINCREMENT"));
+            let autoIncrementIndex = tableSql.toUpperCase().indexOf("AUTOINCREMENT");
+            if (autoIncrementIndex !== -1) {
+                autoIncrementColumnName = tableSql.substr(0, autoIncrementIndex);
                 const comma = autoIncrementColumnName.lastIndexOf(",");
                 const bracket = autoIncrementColumnName.lastIndexOf("(");
                 if (comma !== -1) {
@@ -746,6 +776,16 @@ export abstract class AbstractSqliteQueryRunner extends BaseQueryRunner implemen
                 tableColumn.isGenerated = autoIncrementColumnName === dbColumn["name"];
                 if (tableColumn.isGenerated) {
                     tableColumn.generationStrategy = "increment";
+                }
+
+                if (tableColumn.type === "varchar") {
+                    // Check if this is an enum
+                    const enumMatch = sql.match(new RegExp("\"(" + tableColumn.name + ")\" varchar CHECK\\s*\\(\\s*\\1\\s+IN\\s*\\(('[^']+'(?:\\s*,\\s*'[^']+')+)\\s*\\)\\s*\\)"));
+                    if (enumMatch) {
+                        // This is an enum
+                        tableColumn.type = "simple-enum";
+                        tableColumn.enum = enumMatch[2].substr(1, enumMatch[2].length - 2).split("','");
+                    }
                 }
 
                 // parse datatype and attempt to retrieve length
@@ -958,6 +998,8 @@ export abstract class AbstractSqliteQueryRunner extends BaseQueryRunner implemen
             c += " " + this.connection.driver.createFullType(column);
         }
 
+        if (column.enum)
+            c += " CHECK( " + column.name + " IN (" + column.enum.map(val => "'" + val + "'").join(",") + ") )";
         if (column.isPrimary && !skipPrimary)
             c += " PRIMARY KEY";
         if (column.isGenerated === true && column.generationStrategy === "increment") // don't use skipPrimary here since updates can update already exist primary without auto inc.

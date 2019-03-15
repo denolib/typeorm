@@ -1,3 +1,4 @@
+import {CockroachDriver} from "../driver/cockroachdb/CockroachDriver";
 import {ObserverExecutor} from "../observer/ObserverExecutor";
 import {QueryBuilder} from "./QueryBuilder";
 import {ObjectLiteral} from "../common/ObjectLiteral";
@@ -18,6 +19,9 @@ import {AbstractSqliteDriver} from "../driver/sqlite-abstract/AbstractSqliteDriv
 import {OrderByCondition} from "../find-options/OrderByCondition";
 import {LimitOnUpdateNotSupportedError} from "../error/LimitOnUpdateNotSupportedError";
 import {OracleDriver} from "../driver/oracle/OracleDriver";
+import {UpdateValuesMissingError} from "../error/UpdateValuesMissingError";
+import {EntityColumnNotFound} from "../error/EntityColumnNotFound";
+import {QueryDeepPartialEntity} from "./QueryPartialEntity";
 
 /**
  * Allows to build complex sql queries in a fashion way and execute those queries.
@@ -137,7 +141,7 @@ export class UpdateQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
     /**
      * Values needs to be updated.
      */
-    set(values: ObjectLiteral): this {
+    set(values: QueryDeepPartialEntity<Entity>): this {
         this.expressionMap.valuesSet = values;
         return this;
     }
@@ -373,6 +377,11 @@ export class UpdateQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
             EntityMetadata.createPropertyPath(metadata, valuesSet).forEach(propertyPath => {
                 // todo: make this and other query builder to work with properly with tables without metadata
                 const columns = metadata.findColumnsWithPropertyPath(propertyPath);
+
+                if (columns.length <= 0) {
+                    throw new EntityColumnNotFound(propertyPath);
+                }
+
                 columns.forEach(column => {
 
                     // skip weird cases when we send wrong relations in update map
@@ -390,7 +399,9 @@ export class UpdateQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
                     if (column.referencedColumn && value instanceof Object) {
                         value = column.referencedColumn.getEntityValue(value);
                     }
-                    value = this.connection.driver.preparePersistentValue(value, column);
+                    else if (!(value instanceof Function)) {
+                        value = this.connection.driver.preparePersistentValue(value, column);
+                    }
 
                     // todo: duplication zone
                     if (value instanceof Function) { // support for SQL expressions in update query
@@ -461,6 +472,10 @@ export class UpdateQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
             });
         }
 
+        if (updateColumnAndValues.length <= 0) {
+            throw new UpdateValuesMissingError();
+        }
+
         // we re-write parameters this way because we want our "UPDATE ... SET" parameters to be first in the list of "nativeParameters"
         // because some drivers like mysql depend on order of parameters
         if (this.connection.driver instanceof MysqlDriver ||
@@ -474,7 +489,7 @@ export class UpdateQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
         const returningExpression = this.createReturningExpression();
 
         // generate and return sql update query
-        if (returningExpression && (this.connection.driver instanceof PostgresDriver || this.connection.driver instanceof OracleDriver)) {
+        if (returningExpression && (this.connection.driver instanceof PostgresDriver || this.connection.driver instanceof OracleDriver || this.connection.driver instanceof CockroachDriver)) {
             return `UPDATE ${this.getTableName(this.getMainTableName())} SET ${updateColumnAndValues.join(", ")}${whereExpression} RETURNING ${returningExpression}`;
 
         } else if (returningExpression && this.connection.driver instanceof SqlServerDriver) {
@@ -528,7 +543,7 @@ export class UpdateQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
         if (this.expressionMap.valuesSet instanceof Object)
             return this.expressionMap.valuesSet;
 
-        throw new Error(`Cannot perform update query because update values are not defined. Call "qb.set(...)" method to specify inserted values.`);
+        throw new UpdateValuesMissingError();
     }
 
 }

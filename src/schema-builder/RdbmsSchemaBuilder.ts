@@ -1,3 +1,4 @@
+import {CockroachDriver} from "../driver/cockroachdb/CockroachDriver";
 import {Table} from "./table/Table";
 import {TableColumn} from "./table/TableColumn";
 import {TableForeignKey} from "./table/TableForeignKey";
@@ -16,6 +17,7 @@ import {SqlServerDriver} from "../driver/sqlserver/SqlServerDriver";
 import {MysqlDriver} from "../driver/mysql/MysqlDriver";
 import {TableUnique} from "./table/TableUnique";
 import {TableCheck} from "./table/TableCheck";
+import {TableExclusion} from "./table/TableExclusion";
 
 /**
  * Creates complete tables schemas in the database based on the entity metadatas.
@@ -58,7 +60,10 @@ export class RdbmsSchemaBuilder implements SchemaBuilder {
      */
     async build(): Promise<void> {
         this.queryRunner = this.connection.createQueryRunner("master");
-        await this.queryRunner.startTransaction();
+        // CockroachDB implements asynchronous schema sync operations which can not been executed in transaction.
+        // E.g. if you try to DROP column and ADD it again in the same transaction, crdb throws error.
+        if (!(this.connection.driver instanceof CockroachDriver))
+            await this.queryRunner.startTransaction();
         try {
             const tablePaths = this.entityToSyncMetadatas.map(metadata => metadata.tablePath);
             await this.queryRunner.getTables(tablePaths);
@@ -68,12 +73,14 @@ export class RdbmsSchemaBuilder implements SchemaBuilder {
             if (this.connection.queryResultCache)
                 await this.connection.queryResultCache.synchronize(this.queryRunner);
 
-            await this.queryRunner.commitTransaction();
+            if (!(this.connection.driver instanceof CockroachDriver))
+                await this.queryRunner.commitTransaction();
 
         } catch (error) {
 
             try { // we throw original error even if rollback thrown an error
-                await this.queryRunner.rollbackTransaction();
+                if (!(this.connection.driver instanceof CockroachDriver))
+                    await this.queryRunner.rollbackTransaction();
             } catch (rollbackError) { }
             throw error;
 
@@ -127,6 +134,7 @@ export class RdbmsSchemaBuilder implements SchemaBuilder {
         await this.dropOldForeignKeys();
         await this.dropOldIndices();
         await this.dropOldChecks();
+        await this.dropOldExclusions();
         await this.dropCompositeUniqueConstraints();
         // await this.renameTables();
         await this.renameColumns();
@@ -137,6 +145,7 @@ export class RdbmsSchemaBuilder implements SchemaBuilder {
         await this.updateExistColumns();
         await this.createNewIndices();
         await this.createNewChecks();
+        await this.createNewExclusions();
         await this.createCompositeUniqueConstraints();
         await this.createForeignKeys();
     }
@@ -155,8 +164,8 @@ export class RdbmsSchemaBuilder implements SchemaBuilder {
             const tableForeignKeysToDrop = table.foreignKeys.filter(tableForeignKey => {
                 const metadataFK = metadata.foreignKeys.find(metadataForeignKey => metadataForeignKey.name === tableForeignKey.name);
                 return !metadataFK
-                    || metadataFK.onDelete && metadataFK.onDelete !== tableForeignKey.onDelete
-                    || metadataFK.onUpdate && metadataFK.onUpdate !== tableForeignKey.onUpdate;
+                    || (metadataFK.onDelete && metadataFK.onDelete !== tableForeignKey.onDelete)
+                    || (metadataFK.onUpdate && metadataFK.onUpdate !== tableForeignKey.onUpdate);
             });
             if (tableForeignKeysToDrop.length === 0)
                 return;
@@ -300,6 +309,28 @@ export class RdbmsSchemaBuilder implements SchemaBuilder {
 
             this.connection.logger.logSchemaBuild(`dropping old unique constraint: ${compositeUniques.map(unique => `"${unique.name}"`).join(", ")} from table "${table.name}"`);
             await this.queryRunner.dropUniqueConstraints(table, compositeUniques);
+        });
+    }
+
+    protected async dropOldExclusions(): Promise<void> {
+        // Only PostgreSQL supports exclusion constraints
+        if (!(this.connection.driver instanceof PostgresDriver))
+            return;
+
+        await PromiseUtils.runInSequence(this.entityToSyncMetadatas, async metadata => {
+            const table = this.queryRunner.loadedTables.find(table => table.name === metadata.tablePath);
+            if (!table)
+                return;
+
+            const oldExclusions = table.exclusions.filter(tableExclusion => {
+                return !metadata.exclusions.find(exclusionMetadata => exclusionMetadata.name === tableExclusion.name);
+            });
+
+            if (oldExclusions.length === 0)
+                return;
+
+            this.connection.logger.logSchemaBuild(`dropping old exclusion constraint: ${oldExclusions.map(exclusion => `"${exclusion.name}"`).join(", ")} from table "${table.name}"`);
+            await this.queryRunner.dropExclusionConstraints(table, oldExclusions);
         });
     }
 
@@ -509,6 +540,31 @@ export class RdbmsSchemaBuilder implements SchemaBuilder {
 
             this.connection.logger.logSchemaBuild(`adding new unique constraints: ${compositeUniques.map(unique => `"${unique.name}"`).join(", ")} in table "${table.name}"`);
             await this.queryRunner.createUniqueConstraints(table, compositeUniques);
+        });
+    }
+
+    /**
+     * Creates exclusions which are missing in db yet.
+     */
+    protected async createNewExclusions(): Promise<void> {
+        // Only PostgreSQL supports exclusion constraints
+        if (!(this.connection.driver instanceof PostgresDriver))
+            return;
+
+        await PromiseUtils.runInSequence(this.entityToSyncMetadatas, async metadata => {
+            const table = this.queryRunner.loadedTables.find(table => table.name === metadata.tablePath);
+            if (!table)
+                return;
+
+            const newExclusions = metadata.exclusions
+            .filter(exclusionMetadata => !table.exclusions.find(tableExclusion => tableExclusion.name === exclusionMetadata.name))
+            .map(exclusionMetadata => TableExclusion.create(exclusionMetadata));
+
+            if (newExclusions.length === 0)
+                return;
+
+            this.connection.logger.logSchemaBuild(`adding new exclusion constraints: ${newExclusions.map(exclusion => `"${exclusion.name}"`).join(", ")} in table "${table.name}"`);
+            await this.queryRunner.createExclusionConstraints(table, newExclusions);
         });
     }
 

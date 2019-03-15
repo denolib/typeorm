@@ -4,7 +4,9 @@
 export type FindOperatorType =
     | "not"
     | "lessThan"
+    | "lessThanOrEqual"
     | "moreThan"
+    | "moreThanOrEqual"
     | "equal"
     | "between"
     | "in"

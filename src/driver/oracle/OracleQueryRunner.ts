@@ -17,6 +17,7 @@ import {OrmUtils} from "../../util/OrmUtils";
 import {TableCheck} from "../../schema-builder/table/TableCheck";
 import {ColumnType, PromiseUtils} from "../../index";
 import {IsolationLevel} from "../types/IsolationLevel";
+import {TableExclusion} from "../../schema-builder/table/TableExclusion";
 
 /**
  * Runs queries on a single oracle database connection.
@@ -936,6 +937,34 @@ export class OracleQueryRunner extends BaseQueryRunner implements QueryRunner {
     }
 
     /**
+     * Creates a new exclusion constraint.
+     */
+    async createExclusionConstraint(tableOrName: Table|string, exclusionConstraint: TableExclusion): Promise<void> {
+        throw new Error(`Oracle does not support exclusion constraints.`);
+    }
+
+    /**
+     * Creates a new exclusion constraints.
+     */
+    async createExclusionConstraints(tableOrName: Table|string, exclusionConstraints: TableExclusion[]): Promise<void> {
+        throw new Error(`Oracle does not support exclusion constraints.`);
+    }
+
+    /**
+     * Drops exclusion constraint.
+     */
+    async dropExclusionConstraint(tableOrName: Table|string, exclusionOrName: TableExclusion|string): Promise<void> {
+        throw new Error(`Oracle does not support exclusion constraints.`);
+    }
+
+    /**
+     * Drops exclusion constraints.
+     */
+    async dropExclusionConstraints(tableOrName: Table|string, exclusionConstraints: TableExclusion[]): Promise<void> {
+        throw new Error(`Oracle does not support exclusion constraints.`);
+    }
+
+    /**
      * Creates a new foreign key.
      */
     async createForeignKey(tableOrName: Table|string, foreignKey: TableForeignKey): Promise<void> {
@@ -1304,7 +1333,7 @@ export class OracleQueryRunner extends BaseQueryRunner implements QueryRunner {
      */
     protected createIndexSql(table: Table, index: TableIndex): string {
         const columns = index.columnNames.map(columnName => `"${columnName}"`).join(", ");
-        return `CREATE ${index.isUnique ? "UNIQUE " : ""}INDEX "${index.name}" ON "${table.name}"(${columns})`;
+        return `CREATE ${index.isUnique ? "UNIQUE " : ""}INDEX "${index.name}" ON "${table.name}" (${columns})`;
     }
 
     /**

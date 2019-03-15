@@ -5,6 +5,7 @@ import {ObjectLiteral} from "../common/ObjectLiteral";
 import {ColumnMetadata} from "./ColumnMetadata";
 import {EmbeddedMetadata} from "./EmbeddedMetadata";
 import {RelationMetadataArgs} from "../metadata-args/RelationMetadataArgs";
+import {OnUpdateType} from "./types/OnUpdateType";
 import {OnDeleteType} from "./types/OnDeleteType";
 import {PropertyTypeFactory} from "./types/PropertyTypeInFunction";
 
@@ -131,6 +132,11 @@ export class RelationMetadata {
      * What to do with a relation on deletion of the row containing a foreign key.
      */
     onDelete?: OnDeleteType;
+
+    /**
+     * What to do with a relation on update of the row containing a foreign key.
+     */
+    onUpdate?: OnUpdateType;
 
     /**
      * Gets the property's type to which this relation is applied.
@@ -264,6 +270,7 @@ export class RelationMetadata {
         this.isCascadeRemove = args.options.cascade === true || (args.options.cascade instanceof Array && args.options.cascade.indexOf("remove") !== -1);
         this.isNullable = args.options.nullable === false ? false : true;
         this.onDelete = args.options.onDelete;
+        this.onUpdate = args.options.onUpdate;
         this.isEager = args.options.eager || false;
         this.persistenceEnabled = args.options.persistence === false ? false : true;
         this.isTreeParent = args.isTreeParent || false;
@@ -317,7 +324,7 @@ export class RelationMetadata {
      * If column is in embedded (or recursive embedded) it extracts its value from there.
      */
     getEntityValue(entity: ObjectLiteral, getLazyRelationsPromiseValue: boolean = false): any|undefined {
-
+        if (entity === null || entity === undefined) return undefined;
         // extract column value from embeddeds of entity if column is in embedded
         if (this.embeddedMetadata) {
 

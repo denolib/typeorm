@@ -1,16 +1,18 @@
+import {Repository} from "./Repository";
+import {FindOptions, FindOptionsWhere, getConnection} from "../index";
 import {DeepPartial} from "../common/DeepPartial";
 import {ObjectType} from "../common/ObjectType";
 import {Connection} from "../connection/Connection";
 import {ObjectID} from "../driver/mongodb/typings";
-import {FindExtraOptions, FindOptions, FindOptionsWhere, getConnection} from "../index";
 import {DeleteResult} from "../query-builder/result/DeleteResult";
 import {InsertResult} from "../query-builder/result/InsertResult";
 import {UpdateResult} from "../query-builder/result/UpdateResult";
 import {SelectQueryBuilder} from "../query-builder/SelectQueryBuilder";
 import {RemoveOptions} from "./RemoveOptions";
-import {Repository} from "./Repository";
 import {SaveOptions} from "./SaveOptions";
-import Observable = require("zen-observable");
+import {ObjectUtils} from "../util/ObjectUtils";
+import {QueryDeepPartialEntity} from "../query-builder/QueryPartialEntity";
+import * as Observable from "zen-observable";
 
 /**
  * Base abstract entity for all entities, used in ActiveRecord patterns.
@@ -61,7 +63,7 @@ export class BaseEntity {
         const base: any = this.constructor;
         const newestEntity: BaseEntity = await base.getRepository().findOneOrFail(base.getId(this));
 
-        Object.assign(this, newestEntity);
+        ObjectUtils.assign(this, newestEntity);
     }
 
     // -------------------------------------------------------------------------
@@ -200,7 +202,7 @@ export class BaseEntity {
      * Executes fast and efficient INSERT query.
      * Does not check if entity exist in the database, so query will fail if duplicate entity is being inserted.
      */
-    static insert<T extends BaseEntity>(this: ObjectType<T>, entity: DeepPartial<T>|DeepPartial<T>[], options?: SaveOptions): Promise<InsertResult> {
+    static insert<T extends BaseEntity>(this: ObjectType<T>, entity: QueryDeepPartialEntity<T>|QueryDeepPartialEntity<T>[], options?: SaveOptions): Promise<InsertResult> {
         return (this as any).getRepository().insert(entity, options);
     }
 
@@ -210,7 +212,7 @@ export class BaseEntity {
      * Executes fast and efficient UPDATE query.
      * Does not check if entity exist in the database.
      */
-    static update<T extends BaseEntity>(this: ObjectType<T>, criteria: string|string[]|number|number[]|Date|Date[]|ObjectID|ObjectID[]|FindOptionsWhere<T>, partialEntity: DeepPartial<T>, options?: SaveOptions): Promise<UpdateResult> {
+    static update<T extends BaseEntity>(this: ObjectType<T>, criteria: string|string[]|number|number[]|Date|Date[]|ObjectID|ObjectID[]|FindOptionsWhere<T>, partialEntity: QueryDeepPartialEntity<T>, options?: SaveOptions): Promise<UpdateResult> {
         return (this as any).getRepository().update(criteria, partialEntity, options);
     }
 
@@ -225,10 +227,20 @@ export class BaseEntity {
     }
 
     /**
+     * Counts entities that match given options.
+     */
+    static count<T extends BaseEntity>(this: ObjectType<T>, options?: FindOptionsWhere<T>): Promise<number>;
+
+    /**
      * Counts entities that match given conditions.
      */
-    static count<T extends BaseEntity>(this: ObjectType<T>, conditions?: FindOptionsWhere<T>, options?: FindExtraOptions): Promise<number> {
-        return (this as any).getRepository().count(conditions, options);
+    static count<T extends BaseEntity>(this: ObjectType<T>, conditions?: FindOptions<T>): Promise<number>;
+
+    /**
+     * Counts entities that match given find options or conditions.
+     */
+    static count<T extends BaseEntity>(this: ObjectType<T>, optionsOrConditions?: FindOptions<T>|FindOptionsWhere<T>): Promise<number> {
+        return (this as any).getRepository().count(optionsOrConditions as any);
     }
 
     /**
@@ -326,12 +338,12 @@ export class BaseEntity {
     /**
      * Finds first entity that matches given conditions.
      */
-    static findOneOrFail<T extends BaseEntity>(this: ObjectType<T>, conditions?: DeepPartial<T>, options?: FindOptions<T>): Promise<T>;
+    static findOneOrFail<T extends BaseEntity>(this: ObjectType<T>, conditions?: FindOptionsWhere<T>, options?: FindOptions<T>): Promise<T>;
 
     /**
      * Finds first entity that matches given conditions.
      */
-    static findOneOrFail<T extends BaseEntity>(this: ObjectType<T>, optionsOrConditions?: string|number|Date|ObjectID|FindOptions<T>|DeepPartial<T>, maybeOptions?: FindOptions<T>): Promise<T> {
+    static findOneOrFail<T extends BaseEntity>(this: ObjectType<T>, optionsOrConditions?: string|number|Date|ObjectID|FindOptions<T>|FindOptionsWhere<T>, maybeOptions?: FindOptions<T>): Promise<T> {
         return (this as any).getRepository().findOneOrFail(optionsOrConditions as any, maybeOptions);
     }
 

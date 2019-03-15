@@ -45,7 +45,7 @@ createConnection({
 
 **Don't forget to include reflect-metadata**
     
-In your main html page, you need to include refllect-metadata:
+In your main html page, you need to include reflect-metadata:
 
 ```html
 <script src="./node_modules/reflect-metadata/Reflect.js"></script>
@@ -61,16 +61,28 @@ For an example how to use TypeORM in Cordova see [typeorm/cordova-example](https
 ## React Native
 TypeORM is able to on React Native apps using the [react-native-sqlite-storage](https://github.com/andpor/react-native-sqlite-storage) plugin. For an example see [typeom/react-native-example](https://github.com/typeorm/react-native-example).
 
-# Expo
+## Expo
 
-TypeORM is able to run on Expo apps using the [Expo SQLite API](https://docs.expo.io/versions/latest/sdk/sqlite.html).
+TypeORM is able to run on Expo apps using the [Expo SQLite API](https://docs.expo.io/versions/latest/sdk/sqlite.html). For an example how to use TypeORM in Expo see [typeorm/react-native-example](https://github.com/typeorm/react-native-example).
 
 ## NativeScript
 
-### Installation
-
 1. `tns install webpack` (read below why webpack is required)
 2. `tns plugin add nativescript-sqlite`
+3. Create Database connection in your app's entry point
+    ```typescript
+    import driver from 'nativescript-sqlite'
+
+    const connection = await createConnection({
+        database: 'test.db',
+        type: 'nativescript',
+        driver,
+        entities: [
+            Todo //... whatever entities you have
+        ],
+        logging: true
+    })
+    ```
 
 Note: This works only with NativeScript 4.x and above
 
@@ -79,9 +91,4 @@ The `typeorm/browser` package is raw ES7 code with `import/export`
 which will **NOT** run as it is. It has to be bundled.
 Please use the `tns run --bundle` method_
 
-### Example
-
-https://github.com/championswimmer/nativescript-vue-typeorm-sample
------
-
-Please feel free to join a community and help us with new features and supporting a new platform!
+Checkout example [here](https://github.com/championswimmer/nativescript-vue-typeorm-sample)!

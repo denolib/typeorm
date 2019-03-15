@@ -11,7 +11,7 @@ describe("github issues > #1972 STI problem - empty columns", () => {
     before(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
-    
+
     beforeEach(() => reloadTestingDatabases(connections));
 
     after(() => closeTestingConnections(connections));

@@ -13,13 +13,13 @@ import {QueryRunnerProviderAlreadyReleasedError} from "../error/QueryRunnerProvi
 import {RepositoryNotFoundError} from "../error/RepositoryNotFoundError";
 import {RepositoryNotTreeError} from "../error/RepositoryNotTreeError";
 import {TreeRepositoryNotSupportedError} from "../error/TreeRepositoryNotSupportedError";
+import {QueryDeepPartialEntity} from "../query-builder/QueryPartialEntity";
 import {FindExtraOptions, FindOptions, FindOptionsWhere} from "../find-options/FindOptions";
 import {FindOptionsUtils} from "../find-options/FindOptionsUtils";
 import {EntitySchema, getMetadataArgsStorage, In} from "../index";
 import {ObserverExecutor} from "../observer/ObserverExecutor";
 import {QueryObserver} from "../observer/QueryObserver";
 import {EntityPersistExecutor} from "../persistence/EntityPersistExecutor";
-import {QueryPartialEntity} from "../query-builder/QueryPartialEntity";
 import {DeleteResult} from "../query-builder/result/DeleteResult";
 import {InsertResult} from "../query-builder/result/InsertResult";
 import {UpdateResult} from "../query-builder/result/UpdateResult";
@@ -34,7 +34,8 @@ import {Repository} from "../repository/Repository";
 import {RepositoryFactory} from "../repository/RepositoryFactory";
 import {SaveOptions} from "../repository/SaveOptions";
 import {TreeRepository} from "../repository/TreeRepository";
-import Observable = require("zen-observable");
+import {ObjectUtils} from "../util/ObjectUtils";
+import * as Observable from "zen-observable";
 
 /**
  * Entity manager supposed to work with any entity, automatically find its repository and call its methods,
@@ -80,7 +81,7 @@ export class EntityManager {
         if (queryRunner) {
             this.queryRunner = queryRunner;
             // dynamic: this.queryRunner = manager;
-            Object.assign(this.queryRunner, { manager: this });
+            ObjectUtils.assign(this.queryRunner, { manager: this });
         }
     }
 
@@ -92,11 +93,21 @@ export class EntityManager {
      * Wraps given function execution (and all operations made there) in a transaction.
      * All database operations must be executed using provided entity manager.
      */
-    async transaction<T>(runInTransaction: (entityManger: EntityManager) => Promise<T>): Promise<T>;
-    async transaction<T>(isolationLevel: IsolationLevel, runInTransaction: (entityManger: EntityManager) => Promise<T>): Promise<T>;
+    async transaction<T>(runInTransaction: (entityManager: EntityManager) => Promise<T>): Promise<T>;
+
+    /**
+     * Wraps given function execution (and all operations made there) in a transaction.
+     * All database operations must be executed using provided entity manager.
+     */
+    async transaction<T>(isolationLevel: IsolationLevel, runInTransaction: (entityManager: EntityManager) => Promise<T>): Promise<T>;
+
+    /**
+     * Wraps given function execution (and all operations made there) in a transaction.
+     * All database operations must be executed using provided entity manager.
+     */
     async transaction<T>(
-        isolationOrRunInTransaction: IsolationLevel | ((entityManger: EntityManager) => Promise<T>),
-        runInTransactionParam?: (entityManger: EntityManager) => Promise<T>
+        isolationOrRunInTransaction: IsolationLevel | ((entityManager: EntityManager) => Promise<T>),
+        runInTransactionParam?: (entityManager: EntityManager) => Promise<T>
     ): Promise<T> {
 
         const isolation = typeof isolationOrRunInTransaction === "string" ? isolationOrRunInTransaction : undefined;
@@ -152,7 +163,17 @@ export class EntityManager {
     /**
      * Creates a new query builder that can be used to build a sql query.
      */
-    createQueryBuilder<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|Function|string, alias: string, queryRunner?: QueryRunner): SelectQueryBuilder<Entity>;
+    createQueryBuilder<Entity>(entityClass: ObjectType<Entity>, alias: string, queryRunner?: QueryRunner): SelectQueryBuilder<Entity>;
+
+    /**
+     * Creates a new query builder that can be used to build a sql query.
+     */
+    createQueryBuilder<Entity>(entityClass: EntitySchema<Entity>, alias: string, queryRunner?: QueryRunner): SelectQueryBuilder<Entity>;
+
+    /**
+     * Creates a new query builder that can be used to build a sql query.
+     */
+    createQueryBuilder<Entity>(entityName: string, alias: string, queryRunner?: QueryRunner): SelectQueryBuilder<Entity>;
 
     /**
      * Creates a new query builder that can be used to build a sql query.
@@ -162,9 +183,9 @@ export class EntityManager {
     /**
      * Creates a new query builder that can be used to build a sql query.
      */
-    createQueryBuilder<Entity>(entityClass?: ObjectType<Entity>|EntitySchema<Entity>|Function|string|QueryRunner, alias?: string, queryRunner?: QueryRunner): SelectQueryBuilder<Entity> {
+    createQueryBuilder<Entity>(entityClass?: ObjectType<Entity>|EntitySchema<Entity>|string|QueryRunner, alias?: string, queryRunner?: QueryRunner): SelectQueryBuilder<Entity> {
         if (alias) {
-            return this.connection.createQueryBuilder(entityClass as Function|EntitySchema<Entity>|string, alias, queryRunner || this.queryRunner);
+            return this.connection.createQueryBuilder(entityClass as EntitySchema<Entity>|string, alias, queryRunner || this.queryRunner);
 
         } else {
             return this.connection.createQueryBuilder(entityClass as QueryRunner|undefined || queryRunner || this.queryRunner);
@@ -212,21 +233,40 @@ export class EntityManager {
     }
 
     /**
-     * Creates a new entity instance.
-     */
-    create<Entity>(entityClass: ObjectType<Entity>): Entity;
-
-    /**
      * Creates a new entity instance and copies all entity properties from this object into a new entity.
      * Note that it copies only properties that present in entity schema.
      */
-    create<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, plainObject: DeepPartial<Entity>): Entity;
+    create<Entity>(entityClass: ObjectType<Entity>, plainObject?: DeepPartial<Entity>): Entity;
 
     /**
      * Creates a new entities and copies all entity properties from given objects into their new entities.
      * Note that it copies only properties that present in entity schema.
      */
-    create<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, plainObjects: DeepPartial<Entity>[]): Entity[];
+    create<Entity>(entityClass: ObjectType<Entity>, plainObjects?: DeepPartial<Entity>[]): Entity[];
+
+    /**
+     * Creates a new entity instance and copies all entity properties from this object into a new entity.
+     * Note that it copies only properties that present in entity schema.
+     */
+    create<Entity>(entitySchema: EntitySchema<Entity>, plainObject?: DeepPartial<Entity>): Entity;
+
+    /**
+     * Creates a new entities and copies all entity properties from given objects into their new entities.
+     * Note that it copies only properties that present in entity schema.
+     */
+    create<Entity>(entitySchema: EntitySchema<Entity>, plainObjects?: DeepPartial<Entity>[]): Entity[];
+
+    /**
+     * Creates a new entity instance and copies all entity properties from this object into a new entity.
+     * Note that it copies only properties that present in entity schema.
+     */
+    create<Entity>(entityName: string, plainObject?: DeepPartial<Entity>): Entity;
+
+    /**
+     * Creates a new entities and copies all entity properties from given objects into their new entities.
+     * Note that it copies only properties that present in entity schema.
+     */
+    create<Entity>(entityName: string, plainObjects?: DeepPartial<Entity>[]): Entity[];
 
     /**
      * Creates a new entity instance or instances.
@@ -239,12 +279,27 @@ export class EntityManager {
             return metadata.create(this.queryRunner);
 
         if (plainObjectOrObjects instanceof Array)
-            return plainObjectOrObjects.map(plainEntityLike => this.create(entityClass, plainEntityLike));
+            return plainObjectOrObjects.map(plainEntityLike => this.create(entityClass as any, plainEntityLike));
 
         const mergeIntoEntity = metadata.create(this.queryRunner);
         this.plainObjectToEntityTransformer.transform(mergeIntoEntity, plainObjectOrObjects, metadata, true);
         return mergeIntoEntity;
     }
+
+    /**
+     * Merges two entities into one new entity.
+     */
+    merge<Entity>(entityClass: ObjectType<Entity>, mergeIntoEntity: Entity, ...entityLikes: DeepPartial<Entity>[]): Entity;
+
+    /**
+     * Merges two entities into one new entity.
+     */
+    merge<Entity>(entitySchema: EntitySchema<Entity>, mergeIntoEntity: Entity, ...entityLikes: DeepPartial<Entity>[]): Entity;
+
+    /**
+     * Merges two entities into one new entity.
+     */
+    merge<Entity>(entityName: string, mergeIntoEntity: Entity, ...entityLikes: DeepPartial<Entity>[]): Entity;
 
     /**
      * Merges two entities into one new entity.
@@ -261,12 +316,36 @@ export class EntityManager {
      * and returns this new entity. This new entity is actually a loaded from the db entity with all properties
      * replaced from the new object.
      */
+    preload<Entity>(entityClass: ObjectType<Entity>, entityLike: DeepPartial<Entity>): Promise<Entity|undefined>;
+
+    /**
+     * Creates a new entity from the given plan javascript object. If entity already exist in the database, then
+     * it loads it (and everything related to it), replaces all values with the new ones from the given object
+     * and returns this new entity. This new entity is actually a loaded from the db entity with all properties
+     * replaced from the new object.
+     */
+    preload<Entity>(entitySchema: EntitySchema<Entity>, entityLike: DeepPartial<Entity>): Promise<Entity|undefined>;
+
+    /**
+     * Creates a new entity from the given plan javascript object. If entity already exist in the database, then
+     * it loads it (and everything related to it), replaces all values with the new ones from the given object
+     * and returns this new entity. This new entity is actually a loaded from the db entity with all properties
+     * replaced from the new object.
+     */
+    preload(entityName: string, entityLike: DeepPartial<any>): Promise<any|undefined>;
+
+    /**
+     * Creates a new entity from the given plan javascript object. If entity already exist in the database, then
+     * it loads it (and everything related to it), replaces all values with the new ones from the given object
+     * and returns this new entity. This new entity is actually a loaded from the db entity with all properties
+     * replaced from the new object.
+     */
     async preload<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, entityLike: DeepPartial<Entity>): Promise<Entity|undefined> {
         const metadata = this.connection.getMetadata(entityClass);
         const plainObjectToDatabaseEntityTransformer = new PlainObjectToDatabaseEntityTransformer(this.connection.manager);
         const transformedEntity = await plainObjectToDatabaseEntityTransformer.transform(entityLike, metadata);
         if (transformedEntity)
-            return this.merge(entityClass, transformedEntity as Entity, entityLike);
+            return this.merge(entityClass as any, transformedEntity as Entity, entityLike);
 
         return undefined;
     }
@@ -287,13 +366,25 @@ export class EntityManager {
      * Saves all given entities in the database.
      * If entities do not exist in the database then inserts, otherwise updates.
      */
-    save<Entity, T extends DeepPartial<Entity>>(targetOrEntity: ObjectType<Entity>|EntitySchema<Entity>|string, entities: T[], options?: SaveOptions): Promise<T[]>;
+    save<Entity, T extends DeepPartial<Entity>>(targetOrEntity: ObjectType<Entity>|EntitySchema<Entity>, entities: T[], options?: SaveOptions): Promise<T[]>;
 
     /**
      * Saves all given entities in the database.
      * If entities do not exist in the database then inserts, otherwise updates.
      */
-    save<Entity, T extends DeepPartial<Entity>>(targetOrEntity: ObjectType<Entity>|EntitySchema<Entity>|string, entity: T, options?: SaveOptions): Promise<T>;
+    save<Entity, T extends DeepPartial<Entity>>(targetOrEntity: ObjectType<Entity>|EntitySchema<Entity>, entity: T, options?: SaveOptions): Promise<T>;
+
+    /**
+     * Saves all given entities in the database.
+     * If entities do not exist in the database then inserts, otherwise updates.
+     */
+    save<T>(targetOrEntity: string, entities: T[], options?: SaveOptions): Promise<T[]>;
+
+    /**
+     * Saves all given entities in the database.
+     * If entities do not exist in the database then inserts, otherwise updates.
+     */
+    save<T>(targetOrEntity: string, entity: T, options?: SaveOptions): Promise<T>;
 
     /**
      * Saves a given entity in the database.
@@ -326,7 +417,17 @@ export class EntityManager {
     /**
      * Removes a given entity from the database.
      */
-    remove<Entity>(targetOrEntity: ObjectType<Entity>|EntitySchema<Entity>|string, entity: Entity, options?: RemoveOptions): Promise<Entity>;
+    remove<Entity>(targetOrEntity: ObjectType<Entity>, entity: Entity, options?: RemoveOptions): Promise<Entity>;
+
+    /**
+     * Removes a given entity from the database.
+     */
+    remove<Entity>(targetOrEntity: EntitySchema<Entity>, entity: Entity, options?: RemoveOptions): Promise<Entity>;
+
+    /**
+     * Removes a given entity from the database.
+     */
+    remove<Entity>(targetOrEntity: string, entity: Entity, options?: RemoveOptions): Promise<Entity>;
 
     /**
      * Removes a given entity from the database.
@@ -336,7 +437,17 @@ export class EntityManager {
     /**
      * Removes a given entity from the database.
      */
-    remove<Entity>(targetOrEntity: ObjectType<Entity>|EntitySchema<Entity>|string, entity: Entity[], options?: RemoveOptions): Promise<Entity[]>;
+    remove<Entity>(targetOrEntity: ObjectType<Entity>, entity: Entity[], options?: RemoveOptions): Promise<Entity[]>;
+
+    /**
+     * Removes a given entity from the database.
+     */
+    remove<Entity>(targetOrEntity: EntitySchema<Entity>, entity: Entity[], options?: RemoveOptions): Promise<Entity[]>;
+
+    /**
+     * Removes a given entity from the database.
+     */
+    remove<Entity>(targetOrEntity: string, entity: Entity[], options?: RemoveOptions): Promise<Entity[]>;
 
     /**
      * Removes a given entity from the database.
@@ -365,7 +476,7 @@ export class EntityManager {
      * Does not check if entity exist in the database, so query will fail if duplicate entity is being inserted.
      * You can execute bulk inserts using this method.
      */
-    async insert<Entity>(target: ObjectType<Entity>|EntitySchema<Entity>|string, entity: QueryPartialEntity<Entity>|(QueryPartialEntity<Entity>[]), options?: SaveOptions): Promise<InsertResult> {
+    async insert<Entity>(target: ObjectType<Entity>|EntitySchema<Entity>|string, entity: QueryDeepPartialEntity<Entity>|(QueryDeepPartialEntity<Entity>[]), options?: SaveOptions): Promise<InsertResult> {
 
         // TODO: Oracle does not support multiple values. Need to create another nice solution.
         if (this.connection.driver instanceof OracleDriver && entity instanceof Array) {
@@ -386,8 +497,8 @@ export class EntityManager {
      * Does not check if entity exist in the database.
      * Condition(s) cannot be empty.
      */
-    update<Entity>(target: ObjectType<Entity>|EntitySchema<Entity>|string, criteria: string|string[]|number|number[]|Date|Date[]|ObjectID|ObjectID[]|FindOptionsWhere<Entity>, partialEntity: DeepPartial<Entity>, options?: SaveOptions): Promise<UpdateResult> {
-        
+    update<Entity>(target: ObjectType<Entity>|EntitySchema<Entity>|string, criteria: string|string[]|number|number[]|Date|Date[]|ObjectID|ObjectID[]|FindOptionsWhere<Entity>, partialEntity: QueryDeepPartialEntity<Entity>, options?: SaveOptions): Promise<UpdateResult> {
+
         // if user passed empty criteria or empty list of criterias, then throw an error
         if (criteria === undefined ||
             criteria === null ||
@@ -396,7 +507,7 @@ export class EntityManager {
 
             return Promise.reject(new Error(`Empty criteria(s) are not allowed for the update method.`));
         }
-        
+
         if (typeof criteria === "string" ||
             typeof criteria === "number" ||
             criteria instanceof Date ||
@@ -425,7 +536,7 @@ export class EntityManager {
      * Condition(s) cannot be empty.
      */
     delete<Entity>(targetOrEntity: ObjectType<Entity>|EntitySchema<Entity>|string, criteria: string|string[]|number|number[]|Date|Date[]|ObjectID|ObjectID[]|FindOptionsWhere<Entity>, options?: RemoveOptions): Promise<DeleteResult> {
-        
+
         // if user passed empty criteria or empty list of criterias, then throw an error
         if (criteria === undefined ||
             criteria === null ||
@@ -434,7 +545,7 @@ export class EntityManager {
 
             return Promise.reject(new Error(`Empty criteria(s) are not allowed for the delete method.`));
         }
-        
+
         if (typeof criteria === "string" ||
             typeof criteria === "number" ||
             criteria instanceof Date ||
@@ -456,21 +567,75 @@ export class EntityManager {
     }
 
     /**
+     * Counts entities that match given conditions.
+     * Useful for pagination.
+     */
+    count<Entity>(entityClass: ObjectType<Entity>, conditions?: FindOptionsWhere<Entity>, options?: FindExtraOptions): Promise<number>;
+
+    /**
+     * Counts entities that match given conditions.
+     * Useful for pagination.
+     */
+    count<Entity>(entityClass: EntitySchema<Entity>, conditions?: FindOptionsWhere<Entity>, options?: FindExtraOptions): Promise<number>;
+
+    /**
+     * Counts entities that match given conditions.
+     * Useful for pagination.
+     */
+    count<Entity>(entityClass: string, conditions?: FindOptionsWhere<Entity>, options?: FindExtraOptions): Promise<number>;
+
+    /**
+     * Counts entities that match given find options or conditions.
+     * Useful for pagination.
+     */
+    async count<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, conditions?: FindOptionsWhere<Entity>, options?: FindExtraOptions): Promise<number> {
+        const metadata = this.connection.getMetadata(entityClass);
+        const qb = this.createQueryBuilder(entityClass as any, metadata.name);
+
+        qb.setFindOptions({
+            where: conditions,
+            options: options
+        });
+
+        return qb.getCount();
+    }
+
+    /**
      * Finds entities that match given options.
      */
-    find<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, options?: FindOptions<Entity>): Promise<Entity[]>;
+    find<Entity>(entityClass: ObjectType<Entity>, options?: FindOptions<Entity>): Promise<Entity[]>;
 
     /**
      * Finds entities that match given conditions.
      */
-    find<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, conditions?: FindOptionsWhere<Entity>): Promise<Entity[]>;
+    find<Entity>(entityClass: ObjectType<Entity>, conditions?: FindOptionsWhere<Entity>): Promise<Entity[]>;
+
+    /**
+     * Finds entities that match given options.
+     */
+    find<Entity>(entitySchema: EntitySchema<Entity>, options?: FindOptions<Entity>): Promise<Entity[]>;
+
+    /**
+     * Finds entities that match given conditions.
+     */
+    find<Entity>(entitySchema: EntitySchema<Entity>, conditions?: FindOptionsWhere<Entity>): Promise<Entity[]>;
+
+    /**
+     * Finds entities that match given conditions.
+     */
+    find<Entity>(entityClass: string, options?: FindOptions<Entity>): Promise<Entity[]>;
+
+    /**
+     * Finds entities that match given conditions.
+     */
+    find<Entity>(entityClass: string, conditions?: FindOptionsWhere<Entity>): Promise<Entity[]>;
 
     /**
      * Finds entities that match given find options or conditions.
      */
     async find<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, optionsOrConditions?: FindOptions<Entity>|FindOptionsWhere<Entity>): Promise<Entity[]> {
         const metadata = this.connection.getMetadata(entityClass);
-        const qb = this.createQueryBuilder(entityClass, metadata.name);
+        const qb = this.createQueryBuilder<Entity>(entityClass as any, metadata.name);
 
         if (optionsOrConditions)
             qb.setFindOptions(FindOptionsUtils.isFindOptions(optionsOrConditions) ? optionsOrConditions as any : { where: optionsOrConditions });
@@ -483,14 +648,42 @@ export class EntityManager {
      * Also counts all entities that match given conditions,
      * but ignores pagination settings (from and take options).
      */
-    findAndCount<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, options?: FindOptions<Entity>): Promise<[Entity[], number]>;
+    findAndCount<Entity>(entityClass: ObjectType<Entity>, options?: FindOptions<Entity>): Promise<[Entity[], number]>;
+
+    /**
+     * Finds entities that match given find options.
+     * Also counts all entities that match given conditions,
+     * but ignores pagination settings (from and take options).
+     */
+    findAndCount<Entity>(entityClass: EntitySchema<Entity>, options?: FindOptions<Entity>): Promise<[Entity[], number]>;
+
+    /**
+     * Finds entities that match given find options.
+     * Also counts all entities that match given conditions,
+     * but ignores pagination settings (from and take options).
+     */
+    findAndCount<Entity>(entityClass: string, options?: FindOptions<Entity>): Promise<[Entity[], number]>;
 
     /**
      * Finds entities that match given conditions.
      * Also counts all entities that match given conditions,
      * but ignores pagination settings (from and take options).
      */
-    findAndCount<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, conditions?: FindOptionsWhere<Entity>): Promise<[Entity[], number]>;
+    findAndCount<Entity>(entityClass: ObjectType<Entity>, conditions?: FindOptionsWhere<Entity>): Promise<[Entity[], number]>;
+
+    /**
+     * Finds entities that match given conditions.
+     * Also counts all entities that match given conditions,
+     * but ignores pagination settings (from and take options).
+     */
+    findAndCount<Entity>(entityClass: EntitySchema<Entity>, conditions?: FindOptionsWhere<Entity>): Promise<[Entity[], number]>;
+
+    /**
+     * Finds entities that match given conditions.
+     * Also counts all entities that match given conditions,
+     * but ignores pagination settings (from and take options).
+     */
+    findAndCount<Entity>(entityClass: string, conditions?: FindOptionsWhere<Entity>): Promise<[Entity[], number]>;
 
     /**
      * Finds entities that match given find options and conditions.
@@ -499,7 +692,7 @@ export class EntityManager {
      */
     async findAndCount<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, optionsOrConditions?: FindOptions<Entity>|FindOptionsWhere<Entity>): Promise<[Entity[], number]> {
         const metadata = this.connection.getMetadata(entityClass);
-        const qb = this.createQueryBuilder(entityClass, metadata.name);
+        const qb = this.createQueryBuilder<Entity>(entityClass as any, metadata.name);
 
         if (optionsOrConditions)
             qb.setFindOptions(FindOptionsUtils.isFindOptions(optionsOrConditions) ? optionsOrConditions as any : { where: optionsOrConditions });
@@ -511,26 +704,51 @@ export class EntityManager {
      * Finds entities with ids.
      * Optionally find options can be applied.
      */
-    findByIds<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, ids: any[], options?: FindOptions<Entity>): Promise<Entity[]>;
+    findByIds<Entity>(entityClass: ObjectType<Entity>, ids: any[], options?: FindOptions<Entity>): Promise<Entity[]>;
+
+    /**
+     * Finds entities with ids.
+     * Optionally find options can be applied.
+     */
+    findByIds<Entity>(entityClass: EntitySchema<Entity>, ids: any[], options?: FindOptions<Entity>): Promise<Entity[]>;
+
+    /**
+     * Finds entities with ids.
+     * Optionally find options can be applied.
+     */
+    findByIds<Entity>(entityClass: string, ids: any[], options?: FindOptions<Entity>): Promise<Entity[]>;
 
     /**
      * Finds entities with ids.
      * Optionally conditions can be applied.
      */
-    findByIds<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, ids: any[], conditions?: FindOptionsWhere<Entity>): Promise<Entity[]>;
+    findByIds<Entity>(entityClass: ObjectType<Entity>, ids: any[], conditions?: FindOptionsWhere<Entity>): Promise<Entity[]>;
+
+    /**
+     * Finds entities with ids.
+     * Optionally conditions can be applied.
+     */
+    findByIds<Entity>(entityClass: EntitySchema<Entity>, ids: any[], conditions?: FindOptionsWhere<Entity>): Promise<Entity[]>;
+
+    /**
+     * Finds entities with ids.
+     * Optionally conditions can be applied.
+     */
+    findByIds<Entity>(entityClass: string, ids: any[], conditions?: FindOptionsWhere<Entity>): Promise<Entity[]>;
 
     /**
      * Finds entities with ids.
      * Optionally find options or conditions can be applied.
      */
-    async findByIds<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, ids: any[], optionsOrConditions?: FindOptions<Entity>|FindOptionsWhere<Entity>): Promise<Entity[]> {
+    async findByIds<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, ids: any[], optionsOrConditions?: FindOptions<Entity>|any): Promise<Entity[]> {
 
         // if no ids passed, no need to execute a query - just return an empty array of values
         if (!ids.length)
             return Promise.resolve([]);
 
         const metadata = this.connection.getMetadata(entityClass);
-        const qb = this.createQueryBuilder(entityClass, metadata.name);
+        const qb = this.createQueryBuilder<Entity>(entityClass as any, metadata.name);
+        // FindOptionsUtils.applyFindOptionsOrConditionsToQueryBuilder(qb, optionsOrConditions);
 
         // todo: implement only-find options it later
         // let options: FindOptions<any> = { };
@@ -553,48 +771,85 @@ export class EntityManager {
             Object.assign(findOptions, { where: optionsOrConditions });
         }
 
-        if (findOptions.where || metadata.primaryColumns.length > 1) {
-            return qb.andWhereInIds(ids).getMany();
-        }
+        // if (findOptions.where || metadata.primaryColumns.length > 1) {
+        return qb
+            .setFindOptions(findOptions)
+            .andWhereInIds(ids)
+            .getMany();
+        // }
 
         // this is for optimization purpose
-        findOptions.where = {};
-        const primaryColumn = metadata.primaryColumns[0];
-        const normalizedIds = ids.map(id => {
-            return typeof id === "object" ? primaryColumn.getEntityValue(id) : id;
-        });
-        primaryColumn.setEntityValue(findOptions.where, In(normalizedIds));
+        // findOptions.where = {};
+        // const primaryColumn = metadata.primaryColumns[0];
+        // const normalizedIds = ids.map(id => {
+        //     return typeof id === "object" ? primaryColumn.getEntityValue(id) : id;
+        // });
+        // primaryColumn.setEntityValue(findOptions.where, In(normalizedIds));
 
         // console.log("WHERE:", findOptions);
-        qb.setFindOptions(findOptions);
-        const results = await qb.getMany();
+        // qb.setFindOptions(findOptions);
+        // const results = await qb.getMany();
         // console.log("results", results);
-        return results;
+        // return results;
     }
 
     /**
      * Finds first entity that matches given find options.
      */
-    findOne<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, id?: string|number|Date|ObjectID, options?: FindOptions<Entity>): Promise<Entity|undefined>;
+    findOne<Entity>(entityClass: ObjectType<Entity>, id?: string|number|Date|ObjectID, options?: FindOptions<Entity>): Promise<Entity|undefined>;
 
     /**
      * Finds first entity that matches given find options.
      */
-    findOne<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, options?: FindOptions<Entity>): Promise<Entity|undefined>;
+    findOne<Entity>(entityClass: EntitySchema<Entity>, id?: string|number|Date|ObjectID, options?: FindOptions<Entity>): Promise<Entity|undefined>;
+
+    /**
+     * Finds first entity that matches given find options.
+     */
+    findOne<Entity>(entityClass: string, id?: string|number|Date|ObjectID, options?: FindOptions<Entity>): Promise<Entity|undefined>;
+
+    /**
+     * Finds first entity that matches given find options.
+     */
+    findOne<Entity>(entityClass: ObjectType<Entity>, options?: FindOptions<Entity>): Promise<Entity|undefined>;
+
+    /**
+     * Finds first entity that matches given find options.
+     */
+    findOne<Entity>(entityClass: EntitySchema<Entity>, options?: FindOptions<Entity>): Promise<Entity|undefined>;
+
+    /**
+     * Finds first entity that matches given find options.
+     */
+    findOne<Entity>(entityClass: string, options?: FindOptions<Entity>): Promise<Entity|undefined>;
 
     /**
      * Finds first entity that matches given conditions.
      */
-    findOne<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, conditions?: FindOptionsWhere<Entity>, options?: FindOptions<Entity>): Promise<Entity|undefined>;
+    findOne<Entity>(entityClass: ObjectType<Entity>, conditions?: FindOptionsWhere<Entity>, options?: FindOptions<Entity>): Promise<Entity|undefined>;
 
     /**
      * Finds first entity that matches given conditions.
      */
-    async findOne<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, idOrOptionsOrConditions?: string|string[]|number|number[]|Date|Date[]|ObjectID|ObjectID[]|FindOptions<Entity>|FindOptionsWhere<Entity>, maybeOptions?: FindOptions<Entity>): Promise<Entity|undefined> {
+    findOne<Entity>(entityClass: EntitySchema<Entity>, conditions?: FindOptionsWhere<Entity>, options?: FindOptions<Entity>): Promise<Entity|undefined>;
 
-        let findOptions: FindOptions<Entity>|undefined = undefined;
+    /**
+     * Finds first entity that matches given conditions.
+     */
+    findOne<Entity>(entityClass: string, conditions?: FindOptionsWhere<Entity>, options?: FindOptions<Entity>): Promise<Entity|undefined>;
+
+    /**
+     * Finds first entity that matches given conditions.
+     */
+    async findOne<Entity>(
+        entityClass: ObjectType<Entity>|EntitySchema<Entity>|string,
+        idOrOptionsOrConditions?: string|string[]|number|number[]|Date|Date[]|ObjectID|ObjectID[]|FindOptions<Entity>|any,
+        maybeOptions?: FindOptions<Entity>
+    ): Promise<Entity|undefined> {
+
+        let findOptions: FindOptions<any>|undefined = undefined;
         if (FindOptionsUtils.isFindOptions(idOrOptionsOrConditions)) {
-            findOptions = idOrOptionsOrConditions as any;
+            findOptions = idOrOptionsOrConditions;
         } else if (maybeOptions && FindOptionsUtils.isFindOptions(maybeOptions)) {
             findOptions = maybeOptions;
         }
@@ -604,19 +859,24 @@ export class EntityManager {
             options = idOrOptionsOrConditions as FindOptionsWhere<Entity>;
 
         const metadata = this.connection.getMetadata(entityClass);
-        const qb = this.createQueryBuilder(entityClass, metadata.name);
+        const qb = this.createQueryBuilder<Entity>(entityClass as any, metadata.name);
 
-        if (findOptions)
+        // if (!findOptions || findOptions.loadEagerRelations !== false)
+        //     FindOptionsUtils.joinEagerRelations(qb, qb.alias, qb.expressionMap.mainAlias!.metadata);
+
+        if (findOptions) {
+            findOptions = {
+                ...(findOptions || {}),
+                take: 1,
+            };
             qb.setFindOptions(findOptions);
+        }
 
         if (options) {
-            qb.setFindOptions({ where: options });
+            qb.where(options);
 
-        } else if (typeof idOrOptionsOrConditions === "string" || typeof idOrOptionsOrConditions === "number" || (idOrOptionsOrConditions as any) instanceof Date) {
+        } else if (typeof idOrOptionsOrConditions === "string" || typeof idOrOptionsOrConditions === "number" || idOrOptionsOrConditions instanceof Date) {
             qb.andWhereInIds(metadata.ensureEntityIdMap(idOrOptionsOrConditions));
-
-        } else if (!findOptions) {
-            throw new Error(`Wrong arguments supplied. You must provide valid options to findOne method.`);
         }
 
         return qb.getOne();
@@ -625,42 +885,58 @@ export class EntityManager {
     /**
      * Finds first entity that matches given find options or rejects the returned promise on error.
      */
-    findOneOrFail<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, id?: string|number|Date|ObjectID, options?: FindOptions<Entity>): Promise<Entity>;
+    findOneOrFail<Entity>(entityClass: ObjectType<Entity>, id?: string|number|Date|ObjectID, options?: FindOptions<Entity>): Promise<Entity>;
 
     /**
      * Finds first entity that matches given find options or rejects the returned promise on error.
      */
-    findOneOrFail<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, options?: FindOptions<Entity>): Promise<Entity>;
+    findOneOrFail<Entity>(entityClass: EntitySchema<Entity>, id?: string|number|Date|ObjectID, options?: FindOptions<Entity>): Promise<Entity>;
+
+    /**
+     * Finds first entity that matches given find options or rejects the returned promise on error.
+     */
+    findOneOrFail<Entity>(entityClass: string, id?: string|number|Date|ObjectID, options?: FindOptions<Entity>): Promise<Entity>;
+
+    /**
+     * Finds first entity that matches given find options or rejects the returned promise on error.
+     */
+    findOneOrFail<Entity>(entityClass: ObjectType<Entity>, options?: FindOptions<Entity>): Promise<Entity>;
+
+    /**
+     * Finds first entity that matches given find options or rejects the returned promise on error.
+     */
+    findOneOrFail<Entity>(entityClass: EntitySchema<Entity>, options?: FindOptions<Entity>): Promise<Entity>;
+
+    /**
+     * Finds first entity that matches given find options or rejects the returned promise on error.
+     */
+    findOneOrFail<Entity>(entityClass: string, options?: FindOptions<Entity>): Promise<Entity>;
 
     /**
      * Finds first entity that matches given conditions or rejects the returned promise on error.
      */
-    findOneOrFail<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, conditions?: FindOptionsWhere<Entity>, options?: FindOptions<Entity>): Promise<Entity>;
+    findOneOrFail<Entity>(entityClass: ObjectType<Entity>, conditions?: FindOptionsWhere<Entity>, options?: FindOptions<Entity>): Promise<Entity>;
 
     /**
      * Finds first entity that matches given conditions or rejects the returned promise on error.
      */
-    async findOneOrFail<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, idOrOptionsOrConditions?: string|string[]|number|number[]|Date|Date[]|ObjectID|ObjectID[]|FindOptions<Entity>|FindOptionsWhere<Entity>, maybeOptions?: FindOptions<Entity>): Promise<Entity> {
-        return this.findOne(entityClass, idOrOptionsOrConditions as any, maybeOptions).then((value) => {
+    findOneOrFail<Entity>(entityClass: EntitySchema<Entity>, conditions?: FindOptionsWhere<Entity>, options?: FindOptions<Entity>): Promise<Entity>;
+
+    /**
+     * Finds first entity that matches given conditions or rejects the returned promise on error.
+     */
+    findOneOrFail<Entity>(entityClass: string, conditions?: FindOptionsWhere<Entity>, options?: FindOptions<Entity>): Promise<Entity>;
+
+    /**
+     * Finds first entity that matches given conditions or rejects the returned promise on error.
+     */
+    async findOneOrFail<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, idOrOptionsOrConditions?: string|string[]|number|number[]|Date|Date[]|ObjectID|ObjectID[]|FindOptions<Entity>|any, maybeOptions?: FindOptions<Entity>): Promise<Entity> {
+        return this.findOne<Entity>(entityClass as any, idOrOptionsOrConditions as any, maybeOptions).then((value) => {
             if (value === undefined) {
                 return Promise.reject(new EntityNotFoundError(entityClass, idOrOptionsOrConditions));
             }
             return Promise.resolve(value);
         });
-    }
-
-    /**
-     * Counts entities that match given conditions.
-     * Useful for pagination.
-     */
-    count<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string, conditions?: FindOptionsWhere<Entity>, options?: FindExtraOptions): Promise<number> {
-        const metadata = this.connection.getMetadata(entityClass);
-        const qb = this.createQueryBuilder(entityClass, metadata.name);
-
-        if (conditions || options)
-            qb.setFindOptions({ where: conditions, options: options });
-
-        return qb.getCount();
     }
 
     /**
@@ -771,19 +1047,28 @@ export class EntityManager {
     async increment<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string,
                             conditions: FindOptionsWhere<Entity>,
                             propertyPath: string,
-                            value: number): Promise<void> {
+                            value: number | string): Promise<UpdateResult> {
 
         const metadata = this.connection.getMetadata(entityClass);
         const column = metadata.findColumnWithPropertyPath(propertyPath);
         if (!column)
             throw new Error(`Column ${propertyPath} was not found in ${metadata.targetName} entity.`);
 
-        await this
-            .createQueryBuilder(entityClass, "entity")
+        if (isNaN(Number(value)))
+            throw new Error(`Value "${value}" is not a number.`);
+
+        // convert possible embeded path "social.likes" into object { social: { like: () => value } }
+        const values: QueryDeepPartialEntity<Entity> = propertyPath
+            .split(".")
+            .reduceRight(
+                (value, key) => ({ [key]: value }) as any,
+                () => this.connection.driver.escape(column.databaseName) + " + " + value
+            );
+
+        return this
+            .createQueryBuilder<Entity>(entityClass as any, "entity")
             .update(entityClass)
-            .set({
-                [propertyPath]: () => this.connection.driver.escape(column.databaseName) + " + " + Number(value)
-            })
+            .set(values)
             .where(conditions)
             .execute();
     }
@@ -794,19 +1079,28 @@ export class EntityManager {
     async decrement<Entity>(entityClass: ObjectType<Entity>|EntitySchema<Entity>|string,
                             conditions: FindOptionsWhere<Entity>,
                             propertyPath: string,
-                            value: number): Promise<void> {
+                            value: number | string): Promise<UpdateResult> {
 
         const metadata = this.connection.getMetadata(entityClass);
         const column = metadata.findColumnWithPropertyPath(propertyPath);
         if (!column)
             throw new Error(`Column ${propertyPath} was not found in ${metadata.targetName} entity.`);
 
-        await this
-            .createQueryBuilder(entityClass, "entity")
+        if (isNaN(Number(value)))
+            throw new Error(`Value "${value}" is not a number.`);
+
+        // convert possible embeded path "social.likes" into object { social: { like: () => value } }
+        const values: QueryDeepPartialEntity<Entity> = propertyPath
+            .split(".")
+            .reduceRight(
+                (value, key) => ({ [key]: value }) as any,
+                () => this.connection.driver.escape(column.databaseName) + " - " + value
+            );
+
+        return this
+            .createQueryBuilder<Entity>(entityClass as any, "entity")
             .update(entityClass)
-            .set({
-                [propertyPath]: () => this.connection.driver.escape(column.databaseName) + " - " + Number(value)
-            })
+            .set(values)
             .where(conditions)
             .execute();
     }

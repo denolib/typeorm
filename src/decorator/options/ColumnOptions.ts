@@ -1,10 +1,11 @@
 import {ColumnType} from "../../driver/types/ColumnTypes";
 import {ValueTransformer} from "./ValueTransformer";
+import { ColumnCommonOptions } from "./ColumnCommonOptions";
 
 /**
  * Describes all column's options.
  */
-export interface ColumnOptions {
+export interface ColumnOptions extends ColumnCommonOptions {
 
     /**
      * Column type. Must be one of the value from the ColumnTypes class.
@@ -109,7 +110,7 @@ export interface ColumnOptions {
     /**
      * Array of possible enumerated values.
      */
-    enum?: any[]|Object;
+    enum?: (string|number)[]|Object;
 
     /**
      * Generated column expression. Supports only in MySQL.
