@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../../test/utils/test-utils";
-import {Connection} from "../../../../../src/connection/Connection";
+import {Connection} from "../../../../../src";
 import {Profile} from "./entity/Profile";
 import {Photo} from "./entity/Photo";
 import {User} from "./entity/User";
@@ -8,13 +8,13 @@ import {User} from "./entity/User";
 describe("persistence > cascades > example 1", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should insert everything by cascades properly", () => Promise.all(connections.map(async connection => {
+    test("should insert everything by cascades properly", () => Promise.all(connections.map(async connection => {
 
         const photo = new Photo();
 
@@ -33,7 +33,7 @@ describe("persistence > cascades > example 1", () => {
             .leftJoinAndSelect("profile.user", "profileUser")
             .getOne();
 
-        loadedUser!.should.be.eql({
+        expect(loadedUser)!.toEqual({
             id: 1,
             profile: {
                 id: 1,

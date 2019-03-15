@@ -1,9 +1,8 @@
 import "reflect-metadata";
-import {Connection} from "../../../../src/connection/Connection";
+import {Connection} from "../../../../src";
 import {Post} from "./entity/Post";
 import {Category} from "./entity/Category";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../test/utils/test-utils";
-// import {expect} from "chai";
 
 describe("persistence > bulk-insert-remove-optimization", function() {
 
@@ -12,15 +11,15 @@ describe("persistence > bulk-insert-remove-optimization", function() {
     // -------------------------------------------------------------------------
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({ __dirname }));
+    beforeAll(async () => connections = await createTestingConnections({ __dirname }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
     // -------------------------------------------------------------------------
     // Specifications
     // -------------------------------------------------------------------------
 
-    it("should group multiple insert and remove queries", () => Promise.all(connections.map(async connection => {
+    test("should group multiple insert and remove queries", () => Promise.all(connections.map(async connection => {
 
         const category1 = new Category();
         category1.name = "cat#1";
