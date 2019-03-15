@@ -1,8 +1,7 @@
 import "reflect-metadata";
 import {Post} from "./entity/Post";
 import {Counters} from "./entity/Counters";
-import {Connection} from "../../../../src/connection/Connection";
-import {expect} from "chai";
+import {Connection} from "../../../../src";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../test/utils/test-utils";
 import {Subcounters} from "./entity/Subcounters";
 import {User} from "./entity/User";
@@ -10,15 +9,15 @@ import {User} from "./entity/User";
 describe("embedded > embedded-many-to-many-case5", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
     describe("owner side", () => {
 
-        it("should insert, load, update and remove entities with embeddeds when embedded entity having ManyToMany relation with multiple primary keys (multiple keys in both sides)", () => Promise.all(connections.map(async connection => {
+        test("should insert, load, update and remove entities with embeddeds when embedded entity having ManyToMany relation with multiple primary keys (multiple keys in both sides)", () => Promise.all(connections.map(async connection => {
 
             const user1 = new User();
             user1.id = 1;
@@ -73,7 +72,7 @@ describe("embedded > embedded-many-to-many-case5", () => {
                 .addOrderBy("likedUser.id")
                 .getMany();
 
-            expect(loadedPosts[0].should.be.eql(
+            expect(loadedPosts[0]).toEqual(
                 {
                     id: 1,
                     title: "About cars",
@@ -100,8 +99,8 @@ describe("embedded > embedded-many-to-many-case5", () => {
                         }
                     }
                 }
-            ));
-            expect(loadedPosts[1].should.be.eql(
+            );
+            expect(loadedPosts[1]).toEqual(
                 {
                     id: 2,
                     title: "About airplanes",
@@ -123,7 +122,7 @@ describe("embedded > embedded-many-to-many-case5", () => {
                         }
                     }
                 }
-            ));
+            );
 
             let loadedPost = await connection.manager
                 .createQueryBuilder(Post, "post")
@@ -132,7 +131,7 @@ describe("embedded > embedded-many-to-many-case5", () => {
                 .where("post.id = :id", {id: 1})
                 .getOne();
 
-            expect(loadedPost!.should.be.eql(
+            expect(loadedPost)!.toEqual(
                 {
                     id: 1,
                     title: "About cars",
@@ -159,7 +158,7 @@ describe("embedded > embedded-many-to-many-case5", () => {
                         }
                     }
                 }
-            ));
+            );
 
             loadedPost!.counters.favorites += 1;
             loadedPost!.counters.subcounters.watches += 1;
@@ -173,7 +172,7 @@ describe("embedded > embedded-many-to-many-case5", () => {
                 .where("post.id = :id", {id: 1})
                 .getOne();
 
-            expect(loadedPost!.should.be.eql(
+            expect(loadedPost)!.toEqual(
                 {
                     id: 1,
                     title: "About cars",
@@ -195,19 +194,19 @@ describe("embedded > embedded-many-to-many-case5", () => {
                         }
                     }
                 }
-            ));
+            );
 
             await connection.getRepository(Post).remove(loadedPost!);
 
             loadedPosts = (await connection.getRepository(Post).find())!;
-            expect(loadedPosts.length).to.be.equal(1);
-            expect(loadedPosts[0].title).to.be.equal("About airplanes");
+            expect(loadedPosts.length).toEqual(1);
+            expect(loadedPosts[0].title).toEqual("About airplanes");
         })));
     });
 
     describe("inverse side", () => {
 
-        it("should insert, load, update and remove entities with embeddeds when embedded entity having ManyToMany relation with multiple primary keys (multiple keys in both sides)", () => Promise.all(connections.map(async connection => {
+        test("should insert, load, update and remove entities with embeddeds when embedded entity having ManyToMany relation with multiple primary keys (multiple keys in both sides)", () => Promise.all(connections.map(async connection => {
 
             const post1 = new Post();
             post1.id = 1;
@@ -263,7 +262,7 @@ describe("embedded > embedded-many-to-many-case5", () => {
                 .addOrderBy("likedPost.id")
                 .getMany();
 
-            expect(loadedUsers[0].should.be.eql(
+            expect(loadedUsers[0]).toEqual(
                 {
                     id: 1,
                     personId: 1,
@@ -299,8 +298,8 @@ describe("embedded > embedded-many-to-many-case5", () => {
                         }
                     ]
                 }
-            ));
-            expect(loadedUsers[1].should.be.eql(
+            );
+            expect(loadedUsers[1]).toEqual(
                 {
                     id: 2,
                     personId: 2,
@@ -322,8 +321,8 @@ describe("embedded > embedded-many-to-many-case5", () => {
                         }
                     ]
                 }
-            ));
-            expect(loadedUsers[2].should.be.eql(
+            );
+            expect(loadedUsers[2]).toEqual(
                 {
                     id: 3,
                     personId: 3,
@@ -345,7 +344,7 @@ describe("embedded > embedded-many-to-many-case5", () => {
                         }
                     ]
                 }
-            ));
+            );
 
             let loadedUser = await connection.manager
                 .createQueryBuilder(User, "user")
@@ -354,7 +353,7 @@ describe("embedded > embedded-many-to-many-case5", () => {
                 .where("user.id = :id", {id: 1})
                 .getOne();
 
-            expect(loadedUser!.should.be.eql(
+            expect(loadedUser)!.toEqual(
                 {
                     id: 1,
                     personId: 1,
@@ -390,7 +389,7 @@ describe("embedded > embedded-many-to-many-case5", () => {
                         }
                     ]
                 }
-            ));
+            );
 
             loadedUser!.name = "Anna";
             loadedUser!.likedPosts = [post1];
@@ -403,7 +402,7 @@ describe("embedded > embedded-many-to-many-case5", () => {
                 .where("user.id = :id", {id: 1})
                 .getOne();
 
-            expect(loadedUser!.should.be.eql(
+            expect(loadedUser)!.toEqual(
                 {
                     id: 1,
                     personId: 1,
@@ -425,14 +424,14 @@ describe("embedded > embedded-many-to-many-case5", () => {
                         }
                     ]
                 }
-            ));
+            );
 
             await connection.getRepository(User).remove(loadedUser!);
 
             loadedUsers = (await connection.getRepository(User).find())!;
-            expect(loadedUsers.length).to.be.equal(2);
-            expect(loadedUsers[0].name).to.be.equal("Bob");
-            expect(loadedUsers[1].name).to.be.equal("Clara");
+            expect(loadedUsers.length).toEqual(2);
+            expect(loadedUsers[0].name).toEqual("Bob");
+            expect(loadedUsers[1].name).toEqual("Clara");
         })));
 
     });
