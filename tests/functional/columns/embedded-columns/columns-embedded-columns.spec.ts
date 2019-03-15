@@ -1,7 +1,6 @@
 import "reflect-metadata";
-import {expect} from "chai";
-import {Connection} from "../../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
+import {Connection} from "../../../../src";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../test/utils/test-utils";
 import {SimplePost} from "./entity/SimplePost";
 import {SimpleCounters} from "./entity/SimpleCounters";
 import {Information} from "./entity/Information";
@@ -10,13 +9,13 @@ import {Post} from "./entity/Post";
 describe("columns > embedded columns", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should insert / update / remove entity with embedded correctly", () => Promise.all(connections.map(async connection => {
+    test("should insert / update / remove entity with embedded correctly", () => Promise.all(connections.map(async connection => {
         const postRepository = connection.getRepository(SimplePost);
 
         // save few posts
@@ -33,18 +32,18 @@ describe("columns > embedded columns", () => {
 
         const loadedPost = await postRepository.findOne({ title: "Post" });
 
-        expect(loadedPost).to.be.not.empty;
-        expect(loadedPost!.counters).to.be.not.empty;
-        expect(loadedPost!.counters.information).to.be.not.empty;
-        loadedPost!.should.be.instanceOf(SimplePost);
-        loadedPost!.title.should.be.equal("Post");
-        loadedPost!.text.should.be.equal("Everything about post");
-        loadedPost!.counters.should.be.instanceOf(SimpleCounters);
-        loadedPost!.counters.likes.should.be.equal(5);
-        loadedPost!.counters.comments.should.be.equal(1);
-        loadedPost!.counters.favorites.should.be.equal(10);
-        loadedPost!.counters.information.should.be.instanceOf(Information);
-        loadedPost!.counters.information.description.should.be.equal("Hello post");
+        expect(loadedPost).toBeDefined();
+        expect(loadedPost!.counters).toBeDefined();
+        expect(loadedPost!.counters.information).toBeDefined();
+        expect(loadedPost)!.toBeInstanceOf(SimplePost);
+        expect(loadedPost!.title).toEqual("Post");
+        expect(loadedPost!.text).toEqual("Everything about post");
+        expect(loadedPost!.counters).toBeInstanceOf(SimpleCounters);
+        expect(loadedPost!.counters.likes).toEqual(5);
+        expect(loadedPost!.counters.comments).toEqual(1);
+        expect(loadedPost!.counters.favorites).toEqual(10);
+        expect(loadedPost!.counters.information).toBeInstanceOf(Information);
+        expect(loadedPost!.counters.information.description).toEqual("Hello post");
 
         post.title = "Updated post";
         post.counters.comments = 2;
@@ -53,25 +52,25 @@ describe("columns > embedded columns", () => {
 
         const loadedUpdatedPost = await postRepository.findOne({ title: "Updated post" });
 
-        expect(loadedUpdatedPost).to.be.not.empty;
-        expect(loadedUpdatedPost!.counters).to.be.not.empty;
-        expect(loadedUpdatedPost!.counters.information).to.be.not.empty;
-        loadedUpdatedPost!.should.be.instanceOf(SimplePost);
-        loadedUpdatedPost!.title.should.be.equal("Updated post");
-        loadedUpdatedPost!.text.should.be.equal("Everything about post");
-        loadedUpdatedPost!.counters.should.be.instanceOf(SimpleCounters);
-        loadedUpdatedPost!.counters.likes.should.be.equal(5);
-        loadedUpdatedPost!.counters.comments.should.be.equal(2);
-        loadedUpdatedPost!.counters.favorites.should.be.equal(10);
-        loadedUpdatedPost!.counters.information.should.be.instanceOf(Information);
-        loadedUpdatedPost!.counters.information.description.should.be.equal("Hello updated post");
+        expect(loadedUpdatedPost).toBeDefined();
+        expect(loadedUpdatedPost!.counters).toBeDefined();
+        expect(loadedUpdatedPost!.counters.information).toBeDefined();
+        expect(loadedUpdatedPost)!.toBeInstanceOf(SimplePost);
+        expect(loadedUpdatedPost!.title).toEqual("Updated post");
+        expect(loadedUpdatedPost!.text).toEqual("Everything about post");
+        expect(loadedUpdatedPost!.counters).toBeInstanceOf(SimpleCounters);
+        expect(loadedUpdatedPost!.counters.likes).toEqual(5);
+        expect(loadedUpdatedPost!.counters.comments).toEqual(2);
+        expect(loadedUpdatedPost!.counters.favorites).toEqual(10);
+        expect(loadedUpdatedPost!.counters.information).toBeInstanceOf(Information);
+        expect(loadedUpdatedPost!.counters.information.description).toEqual("Hello updated post");
 
         await postRepository.remove(post);
 
         const removedPost = await postRepository.findOne({ title: "Post" });
         const removedUpdatedPost = await postRepository.findOne({ title: "Updated post" });
-        expect(removedPost).to.be.undefined;
-        expect(removedUpdatedPost).to.be.undefined;
+        expect(removedPost).toBeUndefined();
+        expect(removedUpdatedPost).toBeUndefined();
     })));
 
     it("should properly generate column names", () => Promise.all(connections.map(async connection => {
@@ -79,7 +78,7 @@ describe("columns > embedded columns", () => {
         const columns = postRepository.metadata.columns;
         const databaseColumns = columns.map(c => c.databaseName);
 
-        expect(databaseColumns).to.have.members([
+        expect(databaseColumns).toEqual(expect.arrayContaining([
             // Post
             // Post.id
             "id",
@@ -129,6 +128,6 @@ describe("columns > embedded columns", () => {
             "testDataDescr",
             // Post.countersWithoutPrefix('').dataWithoutPrefix('').description
             "descr"
-        ]);
+        ]));
     })));
 });
