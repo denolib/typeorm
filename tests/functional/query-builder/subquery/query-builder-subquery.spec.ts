@@ -1,10 +1,14 @@
 import "reflect-metadata";
 import {CockroachDriver} from "../../../../src/driver/cockroachdb/CockroachDriver";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
-import {Connection} from "../../../../src/connection/Connection";
+import {Connection} from "../../../../src";
 import {User} from "./entity/User";
 import {Post} from "./entity/Post";
 import {Category} from "./entity/Category";
+import {
+    closeTestingConnections,
+    createTestingConnections,
+    reloadTestingDatabases
+} from "../../../../test/utils/test-utils";
 
 describe("query builder > sub-query", () => {
 
@@ -13,11 +17,11 @@ describe("query builder > sub-query", () => {
     // -------------------------------------------------------------------------
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
     // -------------------------------------------------------------------------
     // Reusable functions
@@ -67,7 +71,7 @@ describe("query builder > sub-query", () => {
     // Specifications
     // -------------------------------------------------------------------------
 
-    it("should execute sub query in where string using subQuery method", () => Promise.all(connections.map(async connection => {
+    test("should execute sub query in where string using subQuery method", () => Promise.all(connections.map(async connection => {
         await prepare(connection);
 
         const qb = await connection.getRepository(Post).createQueryBuilder("post");
@@ -77,13 +81,13 @@ describe("query builder > sub-query", () => {
             .orderBy("post.id")
             .getMany();
 
-        posts.should.be.eql([
+        expect(posts).toEqual([
             { id: 1, title: "Alex Messer" },
             { id: 2, title: "Dima Zotov" },
         ]);
     })));
 
-    it("should execute sub query in where function using subQuery method", () => Promise.all(connections.map(async connection => {
+    test("should execute sub query in where function using subQuery method", () => Promise.all(connections.map(async connection => {
         await prepare(connection);
 
         const posts = await connection.getRepository(Post)
@@ -100,13 +104,13 @@ describe("query builder > sub-query", () => {
             .orderBy("post.id")
             .getMany();
 
-        posts.should.be.eql([
+        expect(posts).toEqual([
             { id: 1, title: "Alex Messer" },
             { id: 2, title: "Dima Zotov" },
         ]);
     })));
 
-    it("should execute sub query in where function using subQuery method", () => Promise.all(connections.map(async connection => {
+    test("should execute sub query in where function using subQuery method", () => Promise.all(connections.map(async connection => {
         await prepare(connection);
 
         const posts = await connection.getRepository(Post)
@@ -123,13 +127,13 @@ describe("query builder > sub-query", () => {
             .orderBy("post.id")
             .getMany();
 
-        posts.should.be.eql([
+        expect(posts).toEqual([
             { id: 1, title: "Alex Messer" },
             { id: 2, title: "Dima Zotov" },
         ]);
     })));
 
-    it("should execute sub query using different query builder", () => Promise.all(connections.map(async connection => {
+    test("should execute sub query using different query builder", () => Promise.all(connections.map(async connection => {
         await prepare(connection);
 
         const userQb = await connection.getRepository(User)
@@ -144,13 +148,13 @@ describe("query builder > sub-query", () => {
             .orderBy("post.id")
             .getMany();
 
-        posts.should.be.eql([
+        expect(posts).toEqual([
             { id: 1, title: "Alex Messer" },
             { id: 2, title: "Dima Zotov" },
         ]);
     })));
 
-    it("should execute sub query in from expression (using different query builder)", () => Promise.all(connections.map(async connection => {
+    test("should execute sub query in from expression (using different query builder)", () => Promise.all(connections.map(async connection => {
         await prepare(connection);
 
         const userQb = await connection.getRepository(User)
@@ -165,13 +169,13 @@ describe("query builder > sub-query", () => {
             .setParameters(userQb.getParameters())
             .getRawMany();
 
-        posts.should.be.eql([
+        expect(posts).toEqual([
             { name: "Alex Messer" },
             { name: "Dima Zotov" },
         ]);
     })));
 
-    it("should execute sub query in from expression (using from's query builder)", () => Promise.all(connections.map(async connection => {
+    test("should execute sub query in from expression (using from's query builder)", () => Promise.all(connections.map(async connection => {
         await prepare(connection);
 
         const userQb = await connection.getRepository(User)
@@ -191,13 +195,13 @@ describe("query builder > sub-query", () => {
             .setParameters(userQb.getParameters())
             .getRawMany();
 
-        posts.should.be.eql([
+        expect(posts).toEqual([
             { name: "Alex Messer" },
             { name: "Dima Zotov" },
         ]);
     })));
 
-    it("should execute sub query in from expression (using from's query builder)", () => Promise.all(connections.map(async connection => {
+    test("should execute sub query in from expression (using from's query builder)", () => Promise.all(connections.map(async connection => {
         await prepare(connection);
 
         const userQb = await connection.getRepository(User)
@@ -217,13 +221,13 @@ describe("query builder > sub-query", () => {
             .setParameters(userQb.getParameters())
             .getRawMany();
 
-        posts.should.be.eql([
+        expect(posts).toEqual([
             { name: "Alex Messer" },
             { name: "Dima Zotov" },
         ]);
     })));
 
-    it("should execute sub query in from expression as second from expression", () => Promise.all(connections.map(async connection => {
+    test("should execute sub query in from expression as second from expression", () => Promise.all(connections.map(async connection => {
         await prepare(connection);
 
         const posts = await connection
@@ -240,13 +244,13 @@ describe("query builder > sub-query", () => {
             .orderBy("post.id")
             .getMany();
 
-        posts.should.be.eql([
+        expect(posts).toEqual([
             { id: 1, title: "Alex Messer" },
             { id: 2, title: "Dima Zotov" },
         ]);
     })));
 
-    it("should execute sub query in selects", () => Promise.all(connections.map(async connection => {
+    test("should execute sub query in selects", () => Promise.all(connections.map(async connection => {
         await prepare(connection);
 
         const subQuery = connection
@@ -267,14 +271,14 @@ describe("query builder > sub-query", () => {
 
         // CockroachDB returns numeric data types as string
         if (connection.driver instanceof CockroachDriver) {
-            posts.should.be.eql([
+            expect(posts).toEqual([
                 { id: "1", name: "Alex Messer" },
                 { id: "2", name: "Alex Messer" },
                 { id: "3", name: "Alex Messer" },
             ]);
 
         } else {
-            posts.should.be.eql([
+            expect(posts).toEqual([
                 { id: 1, name: "Alex Messer" },
                 { id: 2, name: "Alex Messer" },
                 { id: 3, name: "Alex Messer" },
@@ -282,7 +286,7 @@ describe("query builder > sub-query", () => {
         }
     })));
 
-    it("should execute sub query in selects (using provided sub query builder)", () => Promise.all(connections.map(async connection => {
+    test("should execute sub query in selects (using provided sub query builder)", () => Promise.all(connections.map(async connection => {
         await prepare(connection);
 
         const posts = await connection
@@ -301,14 +305,14 @@ describe("query builder > sub-query", () => {
 
         // CockroachDB returns numeric data types as string
         if (connection.driver instanceof CockroachDriver) {
-            posts.should.be.eql([
+            expect(posts).toEqual([
                 { id: "1", name: "Alex Messer" },
                 { id: "2", name: "Alex Messer" },
                 { id: "3", name: "Alex Messer" },
             ]);
 
         } else {
-            posts.should.be.eql([
+            expect(posts).toEqual([
                 { id: 1, name: "Alex Messer" },
                 { id: 2, name: "Alex Messer" },
                 { id: 3, name: "Alex Messer" },
@@ -316,7 +320,7 @@ describe("query builder > sub-query", () => {
         }
     })));
 
-    it("should execute sub query in joins (using provided sub query builder)", () => Promise.all(connections.map(async connection => {
+    test("should execute sub query in joins (using provided sub query builder)", () => Promise.all(connections.map(async connection => {
         await prepare(connection);
 
         const subQuery = connection
@@ -332,13 +336,13 @@ describe("query builder > sub-query", () => {
             .orderBy("post.id")
             .getMany();
 
-        posts.should.be.eql([
+        expect(posts).toEqual([
             { id: 1, title: "Alex Messer" },
             { id: 2, title: "Dima Zotov" },
         ]);
     })));
 
-    it("should execute sub query in joins with subquery factory (as selection)", () => Promise.all(connections.map(async connection => {
+    test("should execute sub query in joins with subquery factory (as selection)", () => Promise.all(connections.map(async connection => {
         await prepare(connection);
 
         const joinConditionSubQuery = connection
@@ -356,14 +360,14 @@ describe("query builder > sub-query", () => {
             .orderBy("post.id")
             .getMany();
 
-        posts.should.be.eql([
+        expect(posts).toEqual([
             { id: 1, title: "Alex Messer" },
             { id: 2, title: "Dima Zotov" },
             { id: 3, title: "Umed Khudoiberdiev" },
         ]);
     })));
 
-    it("should execute sub query in joins as string (as selection)", () => Promise.all(connections.map(async connection => {
+    test("should execute sub query in joins as string (as selection)", () => Promise.all(connections.map(async connection => {
         await prepare(connection);
 
         const joinConditionSubQuery = connection
@@ -385,7 +389,7 @@ describe("query builder > sub-query", () => {
             .orderBy("post.id")
             .getMany();
 
-        posts.should.be.eql([
+        expect(posts).toEqual([
             { id: 1, title: "Alex Messer" },
             { id: 2, title: "Dima Zotov" },
             { id: 3, title: "Umed Khudoiberdiev" },
