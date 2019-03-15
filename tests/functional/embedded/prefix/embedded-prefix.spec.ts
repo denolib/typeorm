@@ -1,19 +1,19 @@
 import "reflect-metadata";
 import {Post} from "./entity/Post";
 import {Counters} from "./entity/Counters";
-import {Connection} from "../../../../src/connection/Connection";
+import {Connection} from "../../../../src";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../test/utils/test-utils";
 
 describe("embedded > prefix functionality", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should insert, load, update and remove entities with embeddeds properly", () => Promise.all(connections.map(async connection => {
+    test("should insert, load, update and remove entities with embeddeds properly", () => Promise.all(connections.map(async connection => {
         const postRepository = connection.getRepository(Post);
 
         const post = new Post();
@@ -29,10 +29,10 @@ describe("embedded > prefix functionality", () => {
 
         // now load it
         const loadedPost = (await postRepository.findOne(1))!;
-        loadedPost.id.should.be.equal(1);
-        loadedPost.title.should.be.equal("Hello post");
-        loadedPost.text.should.be.equal("This is text about the post");
-        loadedPost.counters.should.be.eql({
+        expect(loadedPost.id).toEqual(1);
+        expect(loadedPost.title).toEqual("Hello post");
+        expect(loadedPost.text).toEqual("This is text about the post");
+        expect(loadedPost.counters).toEqual({
             comments: 5,
             favorites: 2,
             likes: 1
