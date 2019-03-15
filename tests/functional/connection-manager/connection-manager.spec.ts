@@ -1,11 +1,10 @@
 import "reflect-metadata";
-import {expect} from "chai";
-import {setupSingleTestingConnection} from "../../utils/test-utils";
-import {ConnectionManager} from "../../../src/connection/ConnectionManager";
+import {setupSingleTestingConnection} from "../../../test/utils/test-utils";
+import {ConnectionManager} from "../../../src";
 import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver";
-import {PrimaryGeneratedColumn} from "../../../src/decorator/columns/PrimaryGeneratedColumn";
-import {Column} from "../../../src/decorator/columns/Column";
-import {Entity} from "../../../src/decorator/entity/Entity";
+import {PrimaryGeneratedColumn} from "../../../src";
+import {Column} from "../../../src";
+import {Entity} from "../../../src";
 
 describe("ConnectionManager", () => {
 
@@ -26,7 +25,7 @@ describe("ConnectionManager", () => {
 
     describe("create", function() {
 
-        it("should create a mysql connection when mysql driver is specified", () => {
+        test("should create a mysql connection when mysql driver is specified", () => {
 
             const options = setupSingleTestingConnection("mysql", {
                 name: "default",
@@ -36,50 +35,50 @@ describe("ConnectionManager", () => {
                 return;
             const connectionManager = new ConnectionManager();
             const connection = connectionManager.create(options);
-            connection.name.should.be.equal("default");
-            connection.driver.should.be.instanceOf(MysqlDriver);
-            connection.isConnected.should.be.false;
+            expect(connection.name).toEqual("default");
+            expect(connection.driver).toBeInstanceOf(MysqlDriver);
+            expect(connection.isConnected).toBeFalsy();
         });
 
-       /* it("should create a postgres connection when postgres driver is specified", () => {
+       /* test("should create a postgres connection when postgres driver is specified", () => {
             const options: ConnectionOptions = {
                 name: "myPostgresConnection",
                 driver: createTestingConnectionOptions("postgres")
             };
             const connectionManager = new ConnectionManager();
             const connection = connectionManager.create(options);
-            connection.name.should.be.equal("myPostgresConnection");
-            connection.driver.should.be.instanceOf(PostgresDriver);
-            connection.isConnected.should.be.false;
+            expect(connection.name)toEqual("myPostgresConnection");
+            expect(connection.driver).toBeInstanceOf(PostgresDriver);
+            expect(connection.isConnected).toBeFalsy();
         });*/
 
     });
 
     /*describe("createAndConnect", function() {
 
-        it("should create a mysql connection when mysql driver is specified AND connect to it", async () => {
+        test("should create a mysql connection when mysql driver is specified AND connect to it", async () => {
             const options: ConnectionOptions = setupSingleTestingConnection("mysql", {
                 name: "default",
                 entities: []
             });
             const connectionManager = new ConnectionManager();
             const connection = await connectionManager.createAndConnect(options);
-            connection.name.should.be.equal("default");
-            connection.driver.should.be.instanceOf(MysqlDriver);
-            connection.isConnected.should.be.true;
+            expect(connection.name).toEqual("default");
+            expect(connection.driver).toBeInstanceOf(MysqlDriver);
+            expect(connection.isConnected).toBeTruthy();
             await connection.close();
         });
 
-    /!*    it("should create a postgres connection when postgres driver is specified AND connect to it", async () => {
+    /!*    test("should create a postgres connection when postgres driver is specified AND connect to it", async () => {
             const options: ConnectionOptions = {
                 name: "myPostgresConnection",
                 driver: createTestingConnectionOptions("postgres")
             };
             const connectionManager = new ConnectionManager();
             const connection = await connectionManager.createAndConnect(options);
-            connection.name.should.be.equal("myPostgresConnection");
-            connection.driver.should.be.instanceOf(PostgresDriver);
-            connection.isConnected.should.be.true;
+            expect(connection.name).toEqual("myPostgresConnection");
+            expect(connection.driver).toBeInstanceOf(PostgresDriver);
+            expect(connection.isConnected).toBeTruthy();
             await connection.close();
         });*!/
 
@@ -87,7 +86,7 @@ describe("ConnectionManager", () => {
 
     describe("get", function() {
 
-        it("should give connection with a requested name", () => {
+        test("should give connection with a requested name", () => {
             const options = setupSingleTestingConnection("mysql", {
                 name: "myMysqlConnection",
                 entities: []
@@ -96,11 +95,11 @@ describe("ConnectionManager", () => {
                 return;
             const connectionManager = new ConnectionManager();
             const connection = connectionManager.create(options);
-            connection.driver.should.be.instanceOf(MysqlDriver);
-            connectionManager.get("myMysqlConnection").should.be.equal(connection);
+            expect(connection.driver).toBeInstanceOf(MysqlDriver);
+            expect(connectionManager.get("myMysqlConnection")).toEqual(connection);
         });
 
-        it("should throw an error if connection with the given name was not found", () => {
+        test("should throw an error if connection with the given name was not found", () => {
             const options = setupSingleTestingConnection("mysql", {
                 name: "myMysqlConnection",
                 entities: []
@@ -109,15 +108,15 @@ describe("ConnectionManager", () => {
                 return;
             const connectionManager = new ConnectionManager();
             const connection = connectionManager.create(options);
-            connection.driver.should.be.instanceOf(MysqlDriver);
-            expect(() => connectionManager.get("myPostgresConnection")).to.throw(Error);
+            expect(connection.driver).toBeInstanceOf(MysqlDriver);
+            expect(() => connectionManager.get("myPostgresConnection")).toThrow(Error);
         });
 
     });
 
     describe("create connection options", function() {
 
-        it("should not drop the database if dropSchema was not specified", async () => {
+        test("should not drop the database if dropSchema was not specified", async () => {
             const options = setupSingleTestingConnection("mysql", {
                 name: "myMysqlConnection",
                 schemaCreate: true,
@@ -137,12 +136,12 @@ describe("ConnectionManager", () => {
             // recreate connection and find previously saved post
             connection = await connectionManager.create(options).connect();
             const loadedPost = (await connection.manager.findOne(Post, 1))!;
-            loadedPost.should.be.instanceof(Post);
-            loadedPost.should.be.eql({ id: 1, title: "Hello post" });
+            expect(loadedPost).toBeInstanceOf(Post);
+            expect(loadedPost).toEqual({ id: 1, title: "Hello post" });
             await connection.close();
         });
 
-        it("should drop the database if dropSchema was set to true (mysql)", async () => {
+        test("should drop the database if dropSchema was set to true (mysql)", async () => {
             const options = setupSingleTestingConnection("mysql", {
                 name: "myMysqlConnection",
                 schemaCreate: true,
@@ -163,11 +162,11 @@ describe("ConnectionManager", () => {
             // recreate connection and find previously saved post
             connection = await connectionManager.create(options).connect();
             const loadedPost = await connection.manager.findOne(Post, 1);
-            expect(loadedPost).to.be.undefined;
+            expect(loadedPost).toBeUndefined();
             await connection.close();
          });
 
-     /*   it("should drop the database if dropSchema was set to true (postgres)", async () => {
+     /*   test("should drop the database if dropSchema was set to true (postgres)", async () => {
             const options: ConnectionOptions = {
                 dropSchema: true,
                 synchronize: true,
@@ -185,12 +184,12 @@ describe("ConnectionManager", () => {
             // recreate connection and find previously saved post
             connection = await connectionManager.createAndConnect(options);
             const loadedPost = await connection.manager.findOne(Post, 1);
-            expect(loadedPost).to.be.undefined;
+            expect(loadedPost).toBeUndefined();
 
             await connection.close();
          });*/
 
-    /*    it("should drop the database if dropSchema was set to true (postgres)", async () => {
+    /*    test("should drop the database if dropSchema was set to true (postgres)", async () => {
             const options: ConnectionOptions = {
                 dropSchema: true,
                 synchronize: true,
@@ -208,7 +207,7 @@ describe("ConnectionManager", () => {
             // recreate connection and find previously saved post
             connection = await connectionManager.createAndConnect(options);
             const loadedPost = await connection.manager.findOne(Post, 1);
-            expect(loadedPost).to.be.undefined;
+            expect(loadedPost).toBeUndefined();
             await connection.close();
          });*/
 
