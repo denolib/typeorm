@@ -1,21 +1,21 @@
 import "reflect-metadata";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../test/utils/test-utils";
-import {Connection} from "../../../../src/connection/Connection";
+import {Connection} from "../../../../src";
 import {Post} from "./entity/Post";
 import {Category} from "./entity/Category";
 
 describe("persistence > cascade operations with custom name", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
     describe("cascade update", function() {
 
-        it("should remove relation", () => Promise.all(connections.map(async connection => {
+        test("should remove relation", () => Promise.all(connections.map(async connection => {
 
             // create first post and category and save them
             const post1 = new Post();
@@ -44,7 +44,7 @@ describe("persistence > cascade operations with custom name", () => {
                 }
             });
 
-            posts.should.be.eql([{
+            expect(posts).toEqual([{
                 id: 1,
                 title: "Hello Post #1",
                 category: null
