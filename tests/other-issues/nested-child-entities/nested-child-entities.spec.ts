@@ -7,16 +7,16 @@ import {SquadBilliardsTournament} from "./entity/SquadBilliardsTournament";
 describe("other issues > using nested child entities", () => {
     let connections: Connection[];
 
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
         enabledDrivers: ["postgres"]
     }));
     
     beforeEach(() => reloadTestingDatabases(connections));
 
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should insert without error", () => Promise.all(connections.map(async connection => {
+    test("should insert without error", () => Promise.all(connections.map(async connection => {
         const squadBilliardsTournament = new SquadBilliardsTournament({
             name: "Squad Tournament",
         });
