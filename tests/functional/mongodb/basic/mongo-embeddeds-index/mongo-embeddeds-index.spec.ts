@@ -1,21 +1,24 @@
 import "reflect-metadata";
-import {Connection} from "../../../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils";
+import {Connection} from "../../../../../src";
 import {Post} from "./entity/Post";
-import {expect} from "chai";
 import {Information} from "./entity/Information";
+import {
+    closeTestingConnections,
+    createTestingConnections,
+    reloadTestingDatabases
+} from "../../../../../test/utils/test-utils";
 
 describe("mongodb > embeddeds indices", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [Post],
         enabledDrivers: ["mongodb"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should insert entity with embeddeds indices correctly", () => Promise.all(connections.map(async connection => {
+    test("should insert entity with embeddeds indices correctly", () => Promise.all(connections.map(async connection => {
         const postRepository = connection.getRepository(Post);
 
         // save a post
@@ -29,7 +32,7 @@ describe("mongodb > embeddeds indices", () => {
 
         // check saved post
         const loadedPost = await postRepository.findOne({title: "Post"});
-        expect(loadedPost).to.be.not.empty;
+        expect(loadedPost).toBeDefined();
     })));
 
 });
