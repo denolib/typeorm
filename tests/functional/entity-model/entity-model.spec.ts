@@ -1,20 +1,20 @@
 import "reflect-metadata";
 import {Post} from "./entity/Post";
 import {Category} from "./entity/Category";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
-import {PromiseUtils} from "../../../src/util/PromiseUtils";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
+import {PromiseUtils} from "../../../src";
 
 describe("entity-model", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should save successfully and use static methods successfully", () => PromiseUtils.runInSequence(connections, async connection => {
+    test("should save successfully and use static methods successfully", () => PromiseUtils.runInSequence(connections, async connection => {
         Post.useConnection(connection); // change connection each time because of AR specifics
 
         const post = Post.create();
@@ -24,13 +24,13 @@ describe("entity-model", () => {
 
         const loadedPost = await Post.findOne(post.id);
 
-        loadedPost!.should.be.instanceOf(Post);
-        loadedPost!.id.should.be.eql(post.id);
-        loadedPost!.title.should.be.eql("About ActiveRecord");
-        loadedPost!.text.should.be.eql("Huge discussion how good or bad ActiveRecord is.");
+        expect(loadedPost)!.toBeInstanceOf(Post);
+        expect(loadedPost!.id).toEqual(post.id);
+        expect(loadedPost!.title).toEqual("About ActiveRecord");
+        expect(loadedPost!.text).toEqual("Huge discussion how good or bad ActiveRecord is.");
     }));
 
-    it("should reload given entity successfully", () => PromiseUtils.runInSequence(connections, async connection => {
+    test("should reload given entity successfully", () => PromiseUtils.runInSequence(connections, async connection => {
         await connection.synchronize(true);
         Post.useConnection(connection);
         Category.useConnection(connection);
@@ -48,11 +48,11 @@ describe("entity-model", () => {
         await post.reload();
 
         const assertCategory = Object.assign({}, post.categories[0]);
-        post!.should.be.instanceOf(Post);
-        post!.id.should.be.eql(post.id);
-        post!.title.should.be.eql("About ActiveRecord");
-        post!.text.should.be.eql("This is default text.");
-        assertCategory.should.be.eql({
+        expect(post)!.toBeInstanceOf(Post);
+        expect(post!.id).toEqual(post.id);
+        expect(post!.title).toEqual("About ActiveRecord");
+        expect(post!.text).toEqual("This is default text.");
+        expect(assertCategory).toEqual({
             id: 1,
             name: "Persistence"
         });
@@ -63,7 +63,7 @@ describe("entity-model", () => {
         await post.reload();
 
         const assertReloadedCategory = Object.assign({}, post.categories[0]);
-        assertReloadedCategory.should.be.eql({
+        expect(assertReloadedCategory).toEqual({
             id: 1,
             name: "Persistence and Entity"
         });
