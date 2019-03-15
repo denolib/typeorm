@@ -1,19 +1,18 @@
 import "reflect-metadata";
-import {expect} from "chai";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../test/utils/test-utils";
-import {Connection} from "../../../../src/connection/Connection";
+import {Connection} from "../../../../src";
 import {Post} from "./entity/Post";
 
 describe("columns > no-selection functionality", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [Post],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should not select columns marked with select: false option", () => Promise.all(connections.map(async connection => {
+    test("should not select columns marked with select: false option", () => Promise.all(connections.map(async connection => {
         const postRepository = connection.getRepository(Post);
 
         // create and save a post first
@@ -25,12 +24,12 @@ describe("columns > no-selection functionality", () => {
 
         // check if all columns are updated except for readonly columns
         const loadedPost = await postRepository.findOne(post.id);
-        expect(loadedPost!.title).to.be.equal("About columns");
-        expect(loadedPost!.text).to.be.equal("Some text about columns");
-        expect(loadedPost!.authorName).to.be.undefined;
+        expect(loadedPost!.title).toEqual("About columns");
+        expect(loadedPost!.text).toEqual("Some text about columns");
+        expect(loadedPost!.authorName).toBeUndefined();
     })));
 
-    it("should not select columns with QueryBuilder marked with select: false option", () => Promise.all(connections.map(async connection => {
+    test("should not select columns with QueryBuilder marked with select: false option", () => Promise.all(connections.map(async connection => {
         const postRepository = connection.getRepository(Post);
 
         // create and save a post first
@@ -45,12 +44,12 @@ describe("columns > no-selection functionality", () => {
             .createQueryBuilder("post")
             .where("post.id = :id", { id: post.id })
             .getOne();
-        expect(loadedPost!.title).to.be.equal("About columns");
-        expect(loadedPost!.text).to.be.equal("Some text about columns");
-        expect(loadedPost!.authorName).to.be.undefined;
+        expect(loadedPost!.title).toEqual("About columns");
+        expect(loadedPost!.text).toEqual("Some text about columns");
+        expect(loadedPost!.authorName).toBeUndefined();
     })));
 
-    it("should select columns with select: false even columns were implicitly selected", () => Promise.all(connections.map(async connection => {
+    test("should select columns with select: false even columns were implicitly selected", () => Promise.all(connections.map(async connection => {
         const postRepository = connection.getRepository(Post);
 
         // create and save a post first
@@ -66,9 +65,9 @@ describe("columns > no-selection functionality", () => {
             .addSelect("post.authorName")
             .where("post.id = :id", { id: post.id })
             .getOne();
-        expect(loadedPost!.title).to.be.equal("About columns");
-        expect(loadedPost!.text).to.be.equal("Some text about columns");
-        expect(loadedPost!.authorName).to.be.equal("Umed");
+        expect(loadedPost!.title).toEqual("About columns");
+        expect(loadedPost!.text).toEqual("Some text about columns");
+        expect(loadedPost!.authorName).toEqual("Umed");
     })));
 
 });
