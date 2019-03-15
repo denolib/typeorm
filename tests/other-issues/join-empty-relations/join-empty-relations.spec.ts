@@ -1,19 +1,18 @@
 import "reflect-metadata";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {Connection} from "../../../src";
 import {Post} from "./entity/Post";
-import {expect} from "chai";
 
 describe("other issues > joining empty relations", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should return empty array if its joined and nothing was found", () => Promise.all(connections.map(async function(connection) {
+    test("should return empty array if its joined and nothing was found", () => Promise.all(connections.map(async function(connection) {
 
         const post = new Post();
         post.title = "Hello Post";
@@ -26,8 +25,8 @@ describe("other issues > joining empty relations", () => {
             .leftJoinAndSelect("post.categories", "categories")
             .getMany();
 
-        expect(loadedPosts1).not.to.be.undefined;
-        loadedPosts1.should.be.eql([{
+        expect(loadedPosts1).not.toBeUndefined();
+        expect(loadedPosts1).toEqual([{
             id: 1,
             title: "Hello Post",
             categories: []
@@ -35,7 +34,7 @@ describe("other issues > joining empty relations", () => {
 
     })));
 
-    it("should return empty array if its joined and nothing was found, but relations in empty results should be skipped", () => Promise.all(connections.map(async function(connection) {
+    test("should return empty array if its joined and nothing was found, but relations in empty results should be skipped", () => Promise.all(connections.map(async function(connection) {
 
         const post = new Post();
         post.title = "Hello Post";
@@ -49,8 +48,8 @@ describe("other issues > joining empty relations", () => {
             .leftJoinAndSelect("categories.authors", "authors")
             .getMany();
 
-        expect(loadedPosts1).not.to.be.undefined;
-        loadedPosts1.should.be.eql([{
+        expect(loadedPosts1).not.toBeUndefined();
+        expect(loadedPosts1).toEqual([{
             id: 1,
             title: "Hello Post",
             categories: []
