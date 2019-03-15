@@ -1,4 +1,4 @@
-import {EntitySchema} from "../../../../../src/index";
+import {EntitySchema} from "../../../../../src";
 
 export const PersonSchema = new EntitySchema<any>({
     name: "Person",
@@ -16,15 +16,14 @@ export const PersonSchema = new EntitySchema<any>({
             type: String,
             length: 50,
             nullable: false
+        },
+        Age: {
+            type: Number,
+            nullable: false
         }
     },
-    uniques: [
-        {
-            name: "UNIQUE_TEST",
-            columns: [
-                "FirstName",
-                "LastName"
-            ]
-        }
+    checks: [
+        { expression: `"FirstName" <> 'John' AND "LastName" <> 'Doe'` },
+        { expression: `"Age" > 18` }
     ]
 });

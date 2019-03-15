@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../test/utils/test-utils";
 import {Connection} from "../../../../src";
 import {PostEntity} from "./entity/PostEntity";
 import {CategoryEntity} from "./entity/CategoryEntity";
@@ -7,16 +7,16 @@ import {CategoryEntity} from "./entity/CategoryEntity";
 describe("entity schemas > basic functionality", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [
             PostEntity,
             CategoryEntity
         ],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should perform basic operations with entity", () => Promise.all(connections.map(async connection => {
+    test("should perform basic operations with entity", () => Promise.all(connections.map(async connection => {
 
         const postRepository = connection.getRepository(PostEntity);
         const post = postRepository.create({
@@ -26,9 +26,9 @@ describe("entity schemas > basic functionality", () => {
         await postRepository.save(post);
 
         const loadedPost = await connection.manager.findOne(PostEntity, { title: "First Post" });
-        loadedPost!.id.should.be.equal(post.id);
-        loadedPost!.title.should.be.equal("First Post");
-        loadedPost!.text.should.be.equal("About first post");
+        expect(loadedPost!.id).toEqual(post.id);
+        expect(loadedPost!.title).toEqual("First Post");
+        expect(loadedPost!.text).toEqual("About first post");
     })));
 
 });
