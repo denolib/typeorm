@@ -1,11 +1,10 @@
 import "reflect-metadata";
-import {expect} from "chai";
 import {
     closeTestingConnections,
     createTestingConnections,
     reloadTestingDatabases
 } from "../../../../../../test/utils/test-utils";
-import {Connection} from "../../../../../../src/connection/Connection";
+import {Connection} from "../../../../../../src";
 import {Category} from "./entity/Category";
 import {Post} from "./entity/Post";
 import {Image} from "./entity/Image";
@@ -13,13 +12,13 @@ import {Image} from "./entity/Image";
 describe("query builder > relation-id > one-to-many > basic-functionality", () => {
     
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should load id when loadRelationIdAndMap used with OneToMany relation", () => Promise.all(connections.map(async connection => {
+    test("should load id when loadRelationIdAndMap used with OneToMany relation", () => Promise.all(connections.map(async connection => {
 
         const category1 = new Category();
         category1.name = "cars";
@@ -52,14 +51,14 @@ describe("query builder > relation-id > one-to-many > basic-functionality", () =
             .loadRelationIdAndMap("post.categoryIds", "post.categories")
             .getMany();
 
-        expect(loadedPosts[0].categoryIds).to.not.be.eql([]);
-        expect(loadedPosts[0].categoryIds.length).to.be.equal(2);
-        expect(loadedPosts[0].categoryIds[0]).to.be.equal(1);
-        expect(loadedPosts[0].categoryIds[1]).to.be.equal(2);
-        expect(loadedPosts[1].categoryIds).to.not.be.eql([]);
-        expect(loadedPosts[1].categoryIds.length).to.be.equal(2);
-        expect(loadedPosts[1].categoryIds[0]).to.be.equal(3);
-        expect(loadedPosts[1].categoryIds[1]).to.be.equal(4);
+        expect(loadedPosts[0].categoryIds).not.toEqual([]);
+        expect(loadedPosts[0].categoryIds.length).toEqual(2);
+        expect(loadedPosts[0].categoryIds[0]).toEqual(1);
+        expect(loadedPosts[0].categoryIds[1]).toEqual(2);
+        expect(loadedPosts[1].categoryIds).not.toEqual([]);
+        expect(loadedPosts[1].categoryIds.length).toEqual(2);
+        expect(loadedPosts[1].categoryIds[0]).toEqual(3);
+        expect(loadedPosts[1].categoryIds[1]).toEqual(4);
 
         const loadedPost = await connection.manager
             .createQueryBuilder(Post, "post")
@@ -67,13 +66,13 @@ describe("query builder > relation-id > one-to-many > basic-functionality", () =
             .where("post.id = :id", { id: 1 })
             .getOne();
 
-        expect(loadedPost!.categoryIds).to.not.be.eql([]);
-        expect(loadedPost!.categoryIds.length).to.be.equal(2);
-        expect(loadedPost!.categoryIds[0]).to.be.equal(1);
-        expect(loadedPost!.categoryIds[1]).to.be.equal(2);
+        expect(loadedPost!.categoryIds).not.toEqual([]);
+        expect(loadedPost!.categoryIds.length).toEqual(2);
+        expect(loadedPost!.categoryIds[0]).toEqual(1);
+        expect(loadedPost!.categoryIds[1]).toEqual(2);
     })));
 
-    it("should load id when loadRelationIdAndMap used with additional condition", () => Promise.all(connections.map(async connection => {
+    test("should load id when loadRelationIdAndMap used with additional condition", () => Promise.all(connections.map(async connection => {
 
         const category1 = new Category();
         category1.name = "cars";
@@ -108,12 +107,12 @@ describe("query builder > relation-id > one-to-many > basic-functionality", () =
             .loadRelationIdAndMap("post.categoryIds", "post.categories", "category", qb => qb.andWhere("category.isRemoved = :isRemoved", { isRemoved: true }))
             .getMany();
 
-        expect(loadedPosts[0].categoryIds).to.not.be.eql([]);
-        expect(loadedPosts[0].categoryIds.length).to.be.equal(1);
-        expect(loadedPosts[0].categoryIds[0]).to.be.equal(2);
-        expect(loadedPosts[1].categoryIds).to.not.be.eql([]);
-        expect(loadedPosts[1].categoryIds.length).to.be.equal(1);
-        expect(loadedPosts[1].categoryIds[0]).to.be.equal(4);
+        expect(loadedPosts[0].categoryIds).not.toEqual([]);
+        expect(loadedPosts[0].categoryIds.length).toEqual(1);
+        expect(loadedPosts[0].categoryIds[0]).toEqual(2);
+        expect(loadedPosts[1].categoryIds).not.toEqual([]);
+        expect(loadedPosts[1].categoryIds.length).toEqual(1);
+        expect(loadedPosts[1].categoryIds[0]).toEqual(4);
 
         const loadedPost = await connection.manager
             .createQueryBuilder(Post, "post")
@@ -121,12 +120,12 @@ describe("query builder > relation-id > one-to-many > basic-functionality", () =
             .where("post.id = :id", { id: 1 })
             .getOne();
 
-        expect(loadedPost!.categoryIds).to.not.be.eql([]);
-        expect(loadedPost!.categoryIds.length).to.be.equal(1);
-        expect(loadedPost!.categoryIds[0]).to.be.equal(1);
+        expect(loadedPost!.categoryIds).not.toEqual([]);
+        expect(loadedPost!.categoryIds.length).toEqual(1);
+        expect(loadedPost!.categoryIds[0]).toEqual(1);
     })));
 
-    it("should load id when loadRelationIdAndMap used on nested relation", () => Promise.all(connections.map(async connection => {
+    test("should load id when loadRelationIdAndMap used on nested relation", () => Promise.all(connections.map(async connection => {
 
         const image1 = new Image();
         image1.name = "Image #1";
@@ -185,30 +184,30 @@ describe("query builder > relation-id > one-to-many > basic-functionality", () =
             .orderBy("category.id")
             .getMany();
 
-        expect(loadedPosts[0].categoryIds).to.not.be.eql([]);
-        expect(loadedPosts[0].categoryIds.length).to.be.equal(2);
-        expect(loadedPosts[0].categoryIds[0]).to.be.equal(1);
-        expect(loadedPosts[0].categoryIds[1]).to.be.equal(2);
-        expect(loadedPosts[0].categories).to.not.be.eql([]);
-        expect(loadedPosts[0].categories.length).to.be.equal(2);
-        expect(loadedPosts[0].categories[0].imageIds).to.not.be.eql([]);
-        expect(loadedPosts[0].categories[0].imageIds.length).to.be.equal(2);
-        expect(loadedPosts[0].categories[0].imageIds[0]).to.be.equal(1);
-        expect(loadedPosts[0].categories[0].imageIds[1]).to.be.equal(2);
-        expect(loadedPosts[0].categories[1].imageIds).to.not.be.eql([]);
-        expect(loadedPosts[0].categories[1].imageIds.length).to.be.equal(1);
-        expect(loadedPosts[0].categories[1].imageIds[0]).to.be.equal(3);
-        expect(loadedPosts[1].categoryIds).to.not.be.eql([]);
-        expect(loadedPosts[1].categoryIds.length).to.be.equal(2);
-        expect(loadedPosts[1].categoryIds[0]).to.be.equal(3);
-        expect(loadedPosts[1].categoryIds[1]).to.be.equal(4);
-        expect(loadedPosts[1].categories).to.not.be.eql([]);
-        expect(loadedPosts[1].categories.length).to.be.equal(2);
-        expect(loadedPosts[1].categories[0].imageIds).to.not.be.eql([]);
-        expect(loadedPosts[1].categories[0].imageIds.length).to.be.equal(2);
-        expect(loadedPosts[1].categories[0].imageIds[0]).to.be.equal(4);
-        expect(loadedPosts[1].categories[0].imageIds[1]).to.be.equal(5);
-        expect(loadedPosts[1].categories[1].imageIds).to.be.eql([]);
+        expect(loadedPosts[0].categoryIds).not.toEqual([]);
+        expect(loadedPosts[0].categoryIds.length).toEqual(2);
+        expect(loadedPosts[0].categoryIds[0]).toEqual(1);
+        expect(loadedPosts[0].categoryIds[1]).toEqual(2);
+        expect(loadedPosts[0].categories).not.toEqual([]);
+        expect(loadedPosts[0].categories.length).toEqual(2);
+        expect(loadedPosts[0].categories[0].imageIds).not.toEqual([]);
+        expect(loadedPosts[0].categories[0].imageIds.length).toEqual(2);
+        expect(loadedPosts[0].categories[0].imageIds[0]).toEqual(1);
+        expect(loadedPosts[0].categories[0].imageIds[1]).toEqual(2);
+        expect(loadedPosts[0].categories[1].imageIds).not.toEqual([]);
+        expect(loadedPosts[0].categories[1].imageIds.length).toEqual(1);
+        expect(loadedPosts[0].categories[1].imageIds[0]).toEqual(3);
+        expect(loadedPosts[1].categoryIds).not.toEqual([]);
+        expect(loadedPosts[1].categoryIds.length).toEqual(2);
+        expect(loadedPosts[1].categoryIds[0]).toEqual(3);
+        expect(loadedPosts[1].categoryIds[1]).toEqual(4);
+        expect(loadedPosts[1].categories).not.toEqual([]);
+        expect(loadedPosts[1].categories.length).toEqual(2);
+        expect(loadedPosts[1].categories[0].imageIds).not.toEqual([]);
+        expect(loadedPosts[1].categories[0].imageIds.length).toEqual(2);
+        expect(loadedPosts[1].categories[0].imageIds[0]).toEqual(4);
+        expect(loadedPosts[1].categories[0].imageIds[1]).toEqual(5);
+        expect(loadedPosts[1].categories[1].imageIds).toEqual([]);
 
         const loadedPost = await connection.manager
             .createQueryBuilder(Post, "post")
@@ -219,19 +218,19 @@ describe("query builder > relation-id > one-to-many > basic-functionality", () =
             .orderBy("category.id")
             .getOne();
 
-        expect(loadedPost!.categoryIds).to.not.be.eql([]);
-        expect(loadedPost!.categoryIds.length).to.be.equal(2);
-        expect(loadedPost!.categoryIds[0]).to.be.equal(1);
-        expect(loadedPost!.categoryIds[1]).to.be.equal(2);
-        expect(loadedPost!.categories).to.not.be.eql([]);
-        expect(loadedPost!.categories.length).to.be.equal(2);
-        expect(loadedPost!.categories[0].imageIds).to.not.be.eql([]);
-        expect(loadedPost!.categories[0].imageIds.length).to.be.equal(2);
-        expect(loadedPost!.categories[0].imageIds[0]).to.be.equal(1);
-        expect(loadedPost!.categories[0].imageIds[1]).to.be.equal(2);
-        expect(loadedPost!.categories[1].imageIds).to.not.be.eql([]);
-        expect(loadedPost!.categories[1].imageIds.length).to.be.equal(1);
-        expect(loadedPost!.categories[1].imageIds[0]).to.be.equal(3);
+        expect(loadedPost!.categoryIds).not.toEqual([]);
+        expect(loadedPost!.categoryIds.length).toEqual(2);
+        expect(loadedPost!.categoryIds[0]).toEqual(1);
+        expect(loadedPost!.categoryIds[1]).toEqual(2);
+        expect(loadedPost!.categories).not.toEqual([]);
+        expect(loadedPost!.categories.length).toEqual(2);
+        expect(loadedPost!.categories[0].imageIds).not.toEqual([]);
+        expect(loadedPost!.categories[0].imageIds.length).toEqual(2);
+        expect(loadedPost!.categories[0].imageIds[0]).toEqual(1);
+        expect(loadedPost!.categories[0].imageIds[1]).toEqual(2);
+        expect(loadedPost!.categories[1].imageIds).not.toEqual([]);
+        expect(loadedPost!.categories[1].imageIds.length).toEqual(1);
+        expect(loadedPost!.categories[1].imageIds[0]).toEqual(3);
     })));
 
 });
