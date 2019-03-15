@@ -1,22 +1,21 @@
 import "reflect-metadata";
 import {Post} from "./entity/Post";
 import {Counters} from "./entity/Counters";
-import {Connection} from "../../../src/connection/Connection";
-import {expect} from "chai";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
+import {Connection} from "../../../src";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
 import {Subcounters} from "./entity/Subcounters";
 import {User} from "./entity/User";
 
 describe("entity-metadata > property-map", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should create correct property map object", () => Promise.all(connections.map(async connection => {
+    test("should create correct property map object", () => Promise.all(connections.map(async connection => {
 
         const user1 = new User();
         user1.id = 1;
@@ -36,7 +35,7 @@ describe("entity-metadata > property-map", () => {
         post1.counters.subcounters.watchedUsers = [user1];
 
         const postPropertiesMap = connection.getMetadata(Post).propertiesMap;
-        expect(postPropertiesMap.should.be.eql(
+        expect(postPropertiesMap).toEqual(
             {
                 id: "id",
                 title: "title",
@@ -53,6 +52,6 @@ describe("entity-metadata > property-map", () => {
                     likedUsers: "counters.likedUsers"
                 }
             }
-        ));
+        );
     })));
 });
