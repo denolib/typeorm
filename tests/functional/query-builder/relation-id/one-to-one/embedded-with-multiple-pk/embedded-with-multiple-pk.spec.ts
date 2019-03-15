@@ -1,11 +1,10 @@
 import "reflect-metadata";
-import {expect} from "chai";
 import {
     closeTestingConnections,
     createTestingConnections,
     reloadTestingDatabases
 } from "../../../../../../test/utils/test-utils";
-import {Connection} from "../../../../../../src/connection/Connection";
+import {Connection} from "../../../../../../src";
 import {Post} from "./entity/Post";
 import {Category} from "./entity/Category";
 import {Counters} from "./entity/Counters";
@@ -15,13 +14,13 @@ import {Subcounters} from "./entity/Subcounters";
 describe("query builder > relation-id > one-to-one > embedded-with-multiple-pk", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should load ids when loadRelationIdAndMap used on embedded table and each table have primary key", () => Promise.all(connections.map(async connection => {
+    test("should load ids when loadRelationIdAndMap used on embedded table and each table have primary key", () => Promise.all(connections.map(async connection => {
 
         const user1 = new User();
         user1.id = 1;
@@ -80,7 +79,7 @@ describe("query builder > relation-id > one-to-one > embedded-with-multiple-pk",
             .orderBy("post.id")
             .getMany();
 
-        expect(loadedPosts[0].should.be.eql(
+        expect(loadedPosts[0]).toEqual(
             {
                 id: 1,
                 title: "About BMW",
@@ -97,8 +96,8 @@ describe("query builder > relation-id > one-to-one > embedded-with-multiple-pk",
                     }
                 }
             }
-        ));
-        expect(loadedPosts[1].should.be.eql(
+        );
+        expect(loadedPosts[1]).toEqual(
             {
                 id: 2,
                 title: "About Boeing",
@@ -115,7 +114,7 @@ describe("query builder > relation-id > one-to-one > embedded-with-multiple-pk",
                     }
                 }
             }
-        ));
+        );
 
         const loadedPost = await connection.manager
             .createQueryBuilder(Post, "post")
@@ -126,7 +125,7 @@ describe("query builder > relation-id > one-to-one > embedded-with-multiple-pk",
             .andWhere("post.counters.subcounters.version = :version", { version: 1 })
             .getOne();
 
-        expect(loadedPost!.should.be.eql(
+        expect(loadedPost)!.toEqual(
             {
                 id: 1,
                 title: "About BMW",
@@ -143,7 +142,7 @@ describe("query builder > relation-id > one-to-one > embedded-with-multiple-pk",
                     }
                 }
             }
-        ));
+        );
 
     })));
 
