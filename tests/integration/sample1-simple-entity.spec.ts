@@ -1,8 +1,7 @@
 import "reflect-metadata";
-import {expect} from "chai";
-import {Connection} from "../../src/connection/Connection";
+import {Connection} from "../../src";
 import {Post} from "../../sample/sample1-simple-entity/entity/Post";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../utils/test-utils";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../test/utils/test-utils";
 
 describe("insertion", function() {
 
@@ -11,17 +10,17 @@ describe("insertion", function() {
     // -------------------------------------------------------------------------
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [Post],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
     // -------------------------------------------------------------------------
     // Specifications: persist
     // -------------------------------------------------------------------------
 
-    it("basic insert functionality", () => Promise.all(connections.map(async connection => {
+    test("basic insert functionality", () => Promise.all(connections.map(async connection => {
         const postRepository = connection.getRepository(Post);
 
         let newPost = new Post();
@@ -30,11 +29,11 @@ describe("insertion", function() {
         newPost.likesCount = 0;
         const savedPost = await postRepository.save(newPost);
 
-        savedPost.should.be.equal(newPost);
-        expect(savedPost.id).not.to.be.undefined;
+        expect(savedPost).toEqual(newPost);
+        expect(savedPost.id).not.toBeUndefined();
 
         const insertedPost = await postRepository.findOne(savedPost.id);
-        insertedPost!.should.be.eql({
+        expect(insertedPost)!.toEqual({
             id: savedPost.id,
             text: "Hello post",
             title: "this is post title",
