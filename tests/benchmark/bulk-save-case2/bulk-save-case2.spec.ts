@@ -1,16 +1,16 @@
 import "reflect-metadata";
-import {Connection} from "../../../src/connection/Connection";
+import {Connection} from "../../../src";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
 import {Document} from "./entity/Document";
 
 describe("benchmark > bulk-save > case2", () => {
     
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({ __dirname, enabledDrivers: ["postgres"] }));
+    beforeAll(async () => connections = await createTestingConnections({ __dirname, enabledDrivers: ["postgres"] }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("testing bulk save of 10000 objects", () => Promise.all(connections.map(async connection => {
+    test("testing bulk save of 10000 objects", () => Promise.all(connections.map(async connection => {
 
         const documents: Document[] = [];
         for (let i = 0; i < 10000; i++) {
