@@ -1,8 +1,7 @@
 import "reflect-metadata";
 import {Post} from "./entity/Post";
 import {Counters} from "./entity/Counters";
-import {Connection} from "../../../../src/connection/Connection";
-import {expect} from "chai";
+import {Connection} from "../../../../src";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../test/utils/test-utils";
 import {Subcounters} from "./entity/Subcounters";
 import {User} from "./entity/User";
@@ -10,15 +9,15 @@ import {User} from "./entity/User";
 describe("embedded > embedded-many-to-one-case3", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
     describe("owner side", () => {
 
-        it("should insert, load, update and remove entities with embeddeds when embedded entity having ManyToOne relation with multiple primary keys (one PK in each embed)", () => Promise.all(connections.map(async connection => {
+        test("should insert, load, update and remove entities with embeddeds when embedded entity having ManyToOne relation with multiple primary keys (one PK in each embed)", () => Promise.all(connections.map(async connection => {
 
             const user1 = new User();
             user1.id = 1;
@@ -71,7 +70,7 @@ describe("embedded > embedded-many-to-one-case3", () => {
                 .orderBy("post.id")
                 .getMany();
 
-            expect(loadedPosts[0].should.be.eql(
+            expect(loadedPosts[0]).toEqual(
                 {
                     id: 1,
                     title: "About cars",
@@ -87,8 +86,8 @@ describe("embedded > embedded-many-to-one-case3", () => {
                         }
                     }
                 }
-            ));
-            expect(loadedPosts[1].should.be.eql(
+            );
+            expect(loadedPosts[1]).toEqual(
                 {
                     id: 2,
                     title: "About airplanes",
@@ -104,7 +103,7 @@ describe("embedded > embedded-many-to-one-case3", () => {
                         }
                     }
                 }
-            ));
+            );
 
             let loadedPost = await connection.manager
                 .createQueryBuilder(Post, "post")
@@ -112,7 +111,7 @@ describe("embedded > embedded-many-to-one-case3", () => {
                 .where("post.id = :id", { id: 1 })
                 .getOne();
 
-            expect(loadedPost!.should.be.eql(
+            expect(loadedPost)!.toEqual(
                 {
                     id: 1,
                     title: "About cars",
@@ -128,7 +127,7 @@ describe("embedded > embedded-many-to-one-case3", () => {
                         }
                     }
                 }
-            ));
+            );
 
             loadedPost!.counters.favorites += 1;
             loadedPost!.counters.subcounters.watches += 1;
@@ -141,7 +140,7 @@ describe("embedded > embedded-many-to-one-case3", () => {
                 .where("post.id = :id", { id: 1 })
                 .getOne();
 
-            expect(loadedPost!.should.be.eql(
+            expect(loadedPost)!.toEqual(
                 {
                     id: 1,
                     title: "About cars",
@@ -157,19 +156,19 @@ describe("embedded > embedded-many-to-one-case3", () => {
                         }
                     }
                 }
-            ));
+            );
 
             await postRepository.remove(loadedPost!);
 
             loadedPosts = (await postRepository.find())!;
-            expect(loadedPosts.length).to.be.equal(1);
-            expect(loadedPosts[0].title).to.be.equal("About airplanes");
+            expect(loadedPosts.length).toEqual(1);
+            expect(loadedPosts[0].title).toEqual("About airplanes");
         })));
     });
 
     describe("inverse side", () => {
 
-        it("should insert, load, update and remove entities with embeddeds when embedded entity having ManyToOne relation with multiple primary keys (one PK in each embed)", () => Promise.all(connections.map(async connection => {
+        test("should insert, load, update and remove entities with embeddeds when embedded entity having ManyToOne relation with multiple primary keys (one PK in each embed)", () => Promise.all(connections.map(async connection => {
 
             const post1 = new Post();
             post1.id = 1;
@@ -228,7 +227,7 @@ describe("embedded > embedded-many-to-one-case3", () => {
                 .orderBy("user.id, likedPost.id")
                 .getMany();
 
-            expect(loadedUsers[0].should.be.eql(
+            expect(loadedUsers[0]).toEqual(
                 {
                     id: 1,
                     name: "Alice",
@@ -263,8 +262,8 @@ describe("embedded > embedded-many-to-one-case3", () => {
                         }
                     ]
                 }
-            ));
-            expect(loadedUsers[1].should.be.eql(
+            );
+            expect(loadedUsers[1]).toEqual(
                 {
                     id: 2,
                     name: "Bob",
@@ -285,7 +284,7 @@ describe("embedded > embedded-many-to-one-case3", () => {
                         }
                     ]
                 }
-            ));
+            );
 
             let loadedUser = await connection.manager
                 .createQueryBuilder(User, "user")
@@ -294,7 +293,7 @@ describe("embedded > embedded-many-to-one-case3", () => {
                 .where("user.id = :id", { id: 1 })
                 .getOne();
 
-            expect(loadedUser!.should.be.eql(
+            expect(loadedUser)!.toEqual(
                 {
                     id: 1,
                     name: "Alice",
@@ -329,7 +328,7 @@ describe("embedded > embedded-many-to-one-case3", () => {
                         }
                     ]
                 }
-            ));
+            );
 
             loadedUser!.name = "Anna";
             loadedUser!.likedPosts = [post1];
@@ -342,7 +341,7 @@ describe("embedded > embedded-many-to-one-case3", () => {
                 .where("user.id = :id", { id: 1 })
                 .getOne();
 
-            expect(loadedUser!.should.be.eql(
+            expect(loadedUser)!.toEqual(
                 {
                     id: 1,
                     name: "Anna",
@@ -363,7 +362,7 @@ describe("embedded > embedded-many-to-one-case3", () => {
                         }
                     ]
                 }
-            ));
+            );
 
             const loadedPost = await connection.manager
                 .createQueryBuilder(Post, "post")
@@ -371,7 +370,7 @@ describe("embedded > embedded-many-to-one-case3", () => {
                 .where("post.id = :id", { id: 2 })
                 .getOne();
 
-            expect(loadedPost!.counters.likedUser).to.be.null;
+            expect(loadedPost!.counters.likedUser).toBeNull()
         })));
 
     });
