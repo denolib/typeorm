@@ -1,11 +1,10 @@
 import "reflect-metadata";
-import {expect} from "chai";
 import {
     closeTestingConnections,
     createTestingConnections,
     reloadTestingDatabases
 } from "../../../../../../test/utils/test-utils";
-import {Connection} from "../../../../../../src/connection/Connection";
+import {Connection} from "../../../../../../src";
 import {Post} from "./entity/Post";
 import {Category} from "./entity/Category";
 import {Image} from "./entity/Image";
@@ -14,13 +13,13 @@ import {PostCategory} from "./entity/PostCategory";
 describe("query builder > relation-id > many-to-one > basic-functionality", () => {
     
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should load ids when loadRelationIdAndMap used", () => Promise.all(connections.map(async connection => {
+    test("should load ids when loadRelationIdAndMap used", () => Promise.all(connections.map(async connection => {
 
         const category1 = new Category();
         category1.name = "cars";
@@ -56,14 +55,14 @@ describe("query builder > relation-id > many-to-one > basic-functionality", () =
             .loadRelationIdAndMap("post.categoryName", "post.categoryByName")
             .getMany();
 
-        expect(loadedPosts![0].categoryId).to.not.be.undefined;
-        expect(loadedPosts![0].categoryId).to.be.equal(1);
-        expect(loadedPosts![0].categoryName).to.not.be.undefined;
-        expect(loadedPosts![0].categoryName).to.be.equal("BMW");
-        expect(loadedPosts![1].categoryId).to.not.be.undefined;
-        expect(loadedPosts![1].categoryId).to.be.equal(2);
-        expect(loadedPosts![1].categoryName).to.not.be.undefined;
-        expect(loadedPosts![1].categoryName).to.be.equal("Boeing");
+        expect(loadedPosts![0].categoryId).not.toBeUndefined();
+        expect(loadedPosts![0].categoryId).toEqual(1);
+        expect(loadedPosts![0].categoryName).not.toBeUndefined();
+        expect(loadedPosts![0].categoryName).toEqual("BMW");
+        expect(loadedPosts![1].categoryId).not.toBeUndefined();
+        expect(loadedPosts![1].categoryId).toEqual(2);
+        expect(loadedPosts![1].categoryName).not.toBeUndefined();
+        expect(loadedPosts![1].categoryName).toEqual("Boeing");
 
         let loadedPost = await connection.manager
             .createQueryBuilder(Post, "post")
@@ -72,13 +71,13 @@ describe("query builder > relation-id > many-to-one > basic-functionality", () =
             .where("post.id = :id", { id: 1 })
             .getOne();
 
-        expect(loadedPost!.categoryId).to.not.be.undefined;
-        expect(loadedPost!.categoryId).to.be.equal(1);
-        expect(loadedPost!.categoryName).to.not.be.undefined;
-        expect(loadedPost!.categoryName).to.be.equal("BMW");
+        expect(loadedPost!.categoryId).not.toBeUndefined();
+        expect(loadedPost!.categoryId).toEqual(1);
+        expect(loadedPost!.categoryName).not.toBeUndefined();
+        expect(loadedPost!.categoryName).toEqual("BMW");
     })));
 
-    it("should load ids when loadRelationIdAndMap used and target entity has multiple primary keys", () => Promise.all(connections.map(async connection => {
+    test("should load ids when loadRelationIdAndMap used and target entity has multiple primary keys", () => Promise.all(connections.map(async connection => {
 
         const category = new Category();
         category.name = "cars";
@@ -99,13 +98,13 @@ describe("query builder > relation-id > many-to-one > basic-functionality", () =
             .loadRelationIdAndMap("postCategory.categoryId", "postCategory.category")
             .getOne();
 
-        expect(loadedPostCategory!.categoryId).to.not.be.undefined;
-        expect(loadedPostCategory!.categoryId).to.be.equal(1);
-        expect(loadedPostCategory!.postId).to.not.be.undefined;
-        expect(loadedPostCategory!.postId).to.be.equal(1);
+        expect(loadedPostCategory!.categoryId).not.toBeUndefined();
+        expect(loadedPostCategory!.categoryId).toEqual(1);
+        expect(loadedPostCategory!.postId).not.toBeUndefined();
+        expect(loadedPostCategory!.postId).toEqual(1);
     })));
 
-    it("should load ids when loadRelationIdAndMap used on nested relation and target entity has multiple primary keys", () => Promise.all(connections.map(async connection => {
+    test("should load ids when loadRelationIdAndMap used on nested relation and target entity has multiple primary keys", () => Promise.all(connections.map(async connection => {
 
         const category = new Category();
         category.name = "cars";
@@ -129,8 +128,8 @@ describe("query builder > relation-id > many-to-one > basic-functionality", () =
             .createQueryBuilder(PostCategory, "postCategory")
             .loadRelationIdAndMap("postCategory.imageId", "postCategory.image")
             .getOne();
-        expect(loadedPostCategory!.imageId).to.not.be.undefined;
-        expect(loadedPostCategory!.imageId).to.be.equal(1);
+        expect(loadedPostCategory!.imageId).not.toBeUndefined();
+        expect(loadedPostCategory!.imageId).toEqual(1);
     })));
 
 
