@@ -1,20 +1,19 @@
 import "reflect-metadata";
-import {expect} from "chai";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../../test/utils/test-utils";
-import {Connection} from "../../../../../src/connection/Connection";
+import {Connection} from "../../../../../src";
 import {Category} from "./entity/Category";
 import {Post} from "./entity/Post";
 
 describe("decorators > relation-id > one-to-many", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should load id when RelationId decorator used", () => Promise.all(connections.map(async connection => {
+    test("should load id when RelationId decorator used", () => Promise.all(connections.map(async connection => {
 
         const category = new Category();
         category.id = 1;
@@ -49,23 +48,23 @@ describe("decorators > relation-id > one-to-many", () => {
             .orderBy("category.id")
             .getMany();
 
-        expect(loadedCategories![0].postIds.length).to.be.equal(2);
-        expect(loadedCategories![0].postIds[0]).to.be.equal(1);
-        expect(loadedCategories![0].postIds[1]).to.be.equal(2);
-        expect(loadedCategories![1].postIds.length).to.be.equal(1);
-        expect(loadedCategories![1].postIds[0]).to.be.equal(3);
+        expect(loadedCategories![0].postIds.length).toEqual(2);
+        expect(loadedCategories![0].postIds[0]).toEqual(1);
+        expect(loadedCategories![0].postIds[1]).toEqual(2);
+        expect(loadedCategories![1].postIds.length).toEqual(1);
+        expect(loadedCategories![1].postIds[0]).toEqual(3);
 
         let loadedCategory = await connection.manager
             .createQueryBuilder(Category, "category")
             .where("category.id = :id", { id: 1 })
             .getOne();
 
-        expect(loadedCategory!.postIds.length).to.be.equal(2);
-        expect(loadedCategory!.postIds[0]).to.be.equal(1);
-        expect(loadedCategory!.postIds[1]).to.be.equal(2);
+        expect(loadedCategory!.postIds.length).toEqual(2);
+        expect(loadedCategory!.postIds[0]).toEqual(1);
+        expect(loadedCategory!.postIds[1]).toEqual(2);
     })));
 
-    it("should load id when RelationId decorator used with additional condition", () => Promise.all(connections.map(async connection => {
+    test("should load id when RelationId decorator used with additional condition", () => Promise.all(connections.map(async connection => {
 
         const category = new Category();
         category.id = 1;
@@ -102,19 +101,19 @@ describe("decorators > relation-id > one-to-many", () => {
             .orderBy("category.id")
             .getMany();
 
-        expect(loadedCategories![0].removedPostIds).to.not.be.eql([]);
-        expect(loadedCategories![0].removedPostIds.length).to.be.equal(1);
-        expect(loadedCategories![0].removedPostIds[0]).to.be.equal(2);
-        expect(loadedCategories![1].removedPostIds[0]).to.be.equal(3);
+        expect(loadedCategories![0].removedPostIds).not.toEqual([]);
+        expect(loadedCategories![0].removedPostIds.length).toEqual(1);
+        expect(loadedCategories![0].removedPostIds[0]).toEqual(2);
+        expect(loadedCategories![1].removedPostIds[0]).toEqual(3);
 
         let loadedCategory = await connection.manager
             .createQueryBuilder(Category, "category")
             .where("category.id = :id", { id: 1 })
             .getOne();
 
-        expect(loadedCategory!.removedPostIds).to.not.be.eql([]);
-        expect(loadedCategory!.removedPostIds.length).to.be.equal(1);
-        expect(loadedCategory!.removedPostIds[0]).to.be.equal(2);
+        expect(loadedCategory!.removedPostIds).not.toEqual([]);
+        expect(loadedCategory!.removedPostIds.length).toEqual(1);
+        expect(loadedCategory!.removedPostIds[0]).toEqual(2);
 
     })));
 
