@@ -1,8 +1,7 @@
 import "reflect-metadata";
-import {expect} from "chai";
 import {Post} from "./entity/Post";
 import {Counters} from "./entity/Counters";
-import {Connection} from "../../../../src/connection/Connection";
+import {Connection} from "../../../../src";
 import {
     closeTestingConnections,
     createTestingConnections,
@@ -14,13 +13,13 @@ import {Subcounters} from "../embedded-many-to-one-case2/entity/Subcounters";
 describe("embedded > embedded-with-special-columns", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should insert, load, update and remove entities with embeddeds when embeds contains special columns (e.g. CreateDateColumn, UpdateDateColumn, VersionColumn", () => Promise.all(connections.map(async connection => {
+    test("should insert, load, update and remove entities with embeddeds when embeds contains special columns (e.g. CreateDateColumn, UpdateDateColumn, VersionColumn", () => Promise.all(connections.map(async connection => {
 
         const post1 = new Post();
         post1.id = 1;
@@ -49,12 +48,12 @@ describe("embedded > embedded-with-special-columns", () => {
             .orderBy("post.id")
             .getMany();
 
-        expect(loadedPosts[0].counters.createdDate.should.be.instanceof(Date));
-        expect(loadedPosts[0].counters.updatedDate.should.be.instanceof(Date));
-        expect(loadedPosts[0].counters.subcounters.version.should.be.equal(1));
-        expect(loadedPosts[1].counters.createdDate.should.be.instanceof(Date));
-        expect(loadedPosts[1].counters.updatedDate.should.be.instanceof(Date));
-        expect(loadedPosts[1].counters.subcounters.version.should.be.equal(1));
+        expect(loadedPosts[0].counters.createdDate).toBeInstanceOf(Date);
+        expect(loadedPosts[0].counters.updatedDate).toBeInstanceOf(Date);
+        expect(loadedPosts[0].counters.subcounters.version).toEqual(1);
+        expect(loadedPosts[1].counters.createdDate).toBeInstanceOf(Date);
+        expect(loadedPosts[1].counters.updatedDate).toBeInstanceOf(Date);
+        expect(loadedPosts[1].counters.subcounters.version).toEqual(1);
 
         let loadedPost = await connection.manager
             .createQueryBuilder(Post, "post")
@@ -62,9 +61,9 @@ describe("embedded > embedded-with-special-columns", () => {
             .where("post.id = :id", { id: 1 })
             .getOne();
 
-        expect(loadedPost!.counters.createdDate.should.be.instanceof(Date));
-        expect(loadedPost!.counters.updatedDate.should.be.instanceof(Date));
-        expect(loadedPost!.counters.subcounters.version.should.be.equal(1));
+        expect(loadedPost!.counters.createdDate).toBeInstanceOf(Date);
+        expect(loadedPost!.counters.updatedDate).toBeInstanceOf(Date);
+        expect(loadedPost!.counters.subcounters.version).toEqual(1);
 
         const prevUpdateDate = loadedPost!.counters.updatedDate;
 
@@ -78,8 +77,8 @@ describe("embedded > embedded-with-special-columns", () => {
             .where("post.id = :id", { id: 1 })
             .getOne();
 
-        expect((loadedPost!.counters.updatedDate.valueOf()).should.be.greaterThan(prevUpdateDate.valueOf()));
-        expect(loadedPost!.counters.subcounters.version.should.be.equal(2));
+        expect(loadedPost!.counters.updatedDate.valueOf()).toBeGreaterThan(prevUpdateDate.valueOf());
+        expect(loadedPost!.counters.subcounters.version).toEqual(2);
 
     })));
 
