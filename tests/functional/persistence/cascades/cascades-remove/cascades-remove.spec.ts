@@ -1,18 +1,22 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils";
-import {Connection} from "../../../../../src/connection/Connection";
+import {Connection} from "../../../../../src";
 import {Photo} from "./entity/Photo";
 import {User} from "./entity/User";
+import {
+    closeTestingConnections,
+    createTestingConnections,
+    reloadTestingDatabases
+} from "../../../../../test/utils/test-utils";
 
 // todo: fix later
 describe.skip("persistence > cascades > remove", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({ __dirname, enabledDrivers: ["mysql"] }));
+    beforeAll(async () => connections = await createTestingConnections({ __dirname, enabledDrivers: ["mysql"] }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should remove everything by cascades properly", () => Promise.all(connections.map(async connection => {
+    test("should remove everything by cascades properly", () => Promise.all(connections.map(async connection => {
 
         await connection.manager.save(new Photo("Photo #1"));
 
@@ -29,25 +33,25 @@ describe.skip("persistence > cascades > remove", () => {
             .leftJoinAndSelect("user.manyToManyPhotos", "manyToManyPhotos")
             .getOne();
 
-        loadedUser!.id.should.be.equal(1);
-        loadedUser!.name.should.be.equal("Mr. Cascade Danger");
+        expect(loadedUser!.id).toEqual(1);
+        expect(loadedUser!.name).toEqual("Mr. Cascade Danger");
 
         const manyPhotoNames = loadedUser!.manyPhotos.map(photo => photo.name);
-        manyPhotoNames.length.should.be.equal(2);
-        manyPhotoNames.should.deep.include("one-to-many #1");
-        manyPhotoNames.should.deep.include("one-to-many #2");
+        expect(manyPhotoNames.length).toEqual(2);
+        expect(manyPhotoNames).toContain("one-to-many #1");
+        expect(manyPhotoNames).toContain("one-to-many #2");
 
         const manyToManyPhotoNames = loadedUser!.manyToManyPhotos.map(photo => photo.name);
-        manyToManyPhotoNames.length.should.be.equal(3);
-        manyToManyPhotoNames.should.deep.include("many-to-many #1");
-        manyToManyPhotoNames.should.deep.include("many-to-many #2");
-        manyToManyPhotoNames.should.deep.include("many-to-many #3");
+        expect(manyToManyPhotoNames.length).toEqual(3);
+        expect(manyToManyPhotoNames).toContain("many-to-many #1");
+        expect(manyToManyPhotoNames).toContain("many-to-many #2");
+        expect(manyToManyPhotoNames).toContain("many-to-many #3");
 
         await connection.manager.remove(user);
 
         const allPhotos = await connection.manager.find(Photo);
-        allPhotos.length.should.be.equal(1);
-        allPhotos[0].name.should.be.equal("Photo #1");
+        expect(allPhotos.length).toEqual(1);
+        expect(allPhotos[0].name).toEqual("Photo #1");
     })));
 
 });
