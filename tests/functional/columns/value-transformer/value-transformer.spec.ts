@@ -1,22 +1,19 @@
 import "reflect-metadata";
-
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../test/utils/test-utils";
-
-import {Connection} from "../../../../src/connection/Connection";
+import {Connection} from "../../../../src";
 import { PhoneBook } from "./entity/PhoneBook";
 import {Post} from "./entity/Post";
-import {expect} from "chai";
 
 describe("columns > value-transformer functionality", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [Post, PhoneBook],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should marshal data using the provided value-transformer", () => Promise.all(connections.map(async connection => {
+    test("should marshal data using the provided value-transformer", () => Promise.all(connections.map(async connection => {
 
         const postRepository = connection.getRepository(Post);
 
@@ -33,8 +30,8 @@ describe("columns > value-transformer functionality", () => {
 
         // check if all columns are updated except for readonly columns
         const loadedPost = await postRepository.findOne(post.id);
-        expect(loadedPost!.title).to.be.equal("About columns1");
-        expect(loadedPost!.tags).to.deep.eq(["very", "simple"]);
+        expect(loadedPost!.title).toEqual("About columns1");
+        expect(loadedPost!.tags).toEqual(["very", "simple"]);
 
 
         const phoneBookRepository = connection.getRepository(PhoneBook);
@@ -46,10 +43,10 @@ describe("columns > value-transformer functionality", () => {
         await phoneBookRepository.save(phoneBook);
 
         const loadedPhoneBook = await phoneBookRepository.findOne(phoneBook.id);
-        expect(loadedPhoneBook!.name).to.be.equal("George");
-        expect(loadedPhoneBook!.phones).not.to.be.undefined;
-        expect(loadedPhoneBook!.phones.get("work")).to.equal(123456);
-        expect(loadedPhoneBook!.phones.get("mobile")).to.equal(1234567);
+        expect(loadedPhoneBook!.name).toEqual("George");
+        expect(loadedPhoneBook!.phones).not.toBeUndefined();
+        expect(loadedPhoneBook!.phones.get("work")).toEqual(123456);
+        expect(loadedPhoneBook!.phones.get("mobile")).toEqual(1234567);
 
 
     })));
