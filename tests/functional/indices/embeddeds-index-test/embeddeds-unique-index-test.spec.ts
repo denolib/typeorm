@@ -1,21 +1,21 @@
 import "reflect-metadata";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../test/utils/test-utils";
-import {Connection} from "../../../../src/connection/Connection";
+import {Connection} from "../../../../src";
 import {Customer} from "./entity/Customer";
 import {Profile} from "./entity/Profile";
 
 describe("indices > embeds index test", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
     describe("embeddeds index", function() {
 
-        it("should work without errors", () => Promise.all(connections.map(async connection => {
+        test("should work without errors", () => Promise.all(connections.map(async connection => {
             const customer = new Customer();
             customer.nameEnglish = "Umed";
             customer.nameHebrew = "Uma";

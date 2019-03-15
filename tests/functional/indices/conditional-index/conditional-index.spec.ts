@@ -1,12 +1,11 @@
 import "reflect-metadata";
 import {Connection} from "../../../../src";
 import {closeTestingConnections, createTestingConnections} from "../../../../test/utils/test-utils";
-import {expect} from "chai";
 
 describe("indices > conditional index", () => {
 
     let connections: Connection[];
-    before(async () => {
+    beforeAll(async () => {
         connections = await createTestingConnections({
             entities: [__dirname + "/entity/*{.js,.ts}"],
             enabledDrivers: ["mssql", "postgres", "sqlite"], // only these drivers supports conditional indices
@@ -14,40 +13,40 @@ describe("indices > conditional index", () => {
             dropSchema: true,
         });
     });
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should correctly create conditional indices with WHERE condition", () => Promise.all(connections.map(async connection => {
+    test("should correctly create conditional indices with WHERE condition", () => Promise.all(connections.map(async connection => {
 
         const queryRunner = connection.createQueryRunner();
         let table = await queryRunner.getTable("post");
 
-        table!.indices.length.should.be.equal(2);
-        expect(table!.indices[0].where).to.be.not.empty;
-        expect(table!.indices[1].where).to.be.not.empty;
+        expect(table!.indices.length).toEqual(2);
+        expect(table!.indices[0].where).toBeDefined();
+        expect(table!.indices[1].where).toBeDefined();
 
         await queryRunner.release();
 
     })));
 
-    it("should correctly drop conditional indices and revert drop", () => Promise.all(connections.map(async connection => {
+    test("should correctly drop conditional indices and revert drop", () => Promise.all(connections.map(async connection => {
 
         const queryRunner = connection.createQueryRunner();
         let table = await queryRunner.getTable("post");
-        table!.indices.length.should.be.equal(2);
-        expect(table!.indices[0].where).to.be.not.empty;
-        expect(table!.indices[1].where).to.be.not.empty;
+        expect(table!.indices.length).toEqual(2);
+        expect(table!.indices[0].where).toBeDefined();
+        expect(table!.indices[1].where).toBeDefined();
 
         await queryRunner.dropIndices(table!, table!.indices);
 
         table = await queryRunner.getTable("post");
-        table!.indices.length.should.be.equal(0);
+        expect(table!.indices.length).toEqual(0);
 
         await queryRunner.executeMemoryDownSql();
 
         table = await queryRunner.getTable("post");
-        table!.indices.length.should.be.equal(2);
-        expect(table!.indices[0].where).to.be.not.empty;
-        expect(table!.indices[1].where).to.be.not.empty;
+        expect(table!.indices.length).toEqual(2);
+        expect(table!.indices[0].where).toBeDefined();
+        expect(table!.indices[1].where).toBeDefined();
 
         await queryRunner.release();
 
