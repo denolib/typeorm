@@ -1,20 +1,19 @@
 import "reflect-metadata";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {Connection} from "../../../src";
 import {Post} from "./entity/Post";
-import {expect} from "chai";
 
 describe("other issues > mongodb entity change in listeners should affect persistence", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         enabledDrivers: ["mongodb"],
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("if entity was changed in the listener, changed property should be updated in the db", () => Promise.all(connections.map(async function (connection) {
+    test("if entity was changed in the listener, changed property should be updated in the db", () => Promise.all(connections.map(async function (connection) {
 
         // insert a post
         const post = new Post();
@@ -23,8 +22,8 @@ describe("other issues > mongodb entity change in listeners should affect persis
 
         // check if it was inserted correctly
         const loadedPost = await connection.manager.findOne(Post);
-        expect(loadedPost).not.to.be.undefined;
-        loadedPost!.title.should.be.equal("hello");
+        expect(loadedPost).not.toBeUndefined();
+        expect(loadedPost!.title).toEqual("hello");
 
         // now update some property and let update listener trigger
         loadedPost!.active = true;
@@ -33,13 +32,13 @@ describe("other issues > mongodb entity change in listeners should affect persis
         // check if update listener was triggered and entity was really updated by the changes in the listener
         const loadedUpdatedPost = await connection.manager.findOne(Post);
 
-        expect(loadedUpdatedPost).not.to.be.undefined;
-        loadedUpdatedPost!.title.should.be.equal("hello!");
+        expect(loadedUpdatedPost).not.toBeUndefined();
+        expect(loadedUpdatedPost!.title).toEqual("hello!");
         await connection.manager.save(loadedPost!);
 
     })));
 
-    it("if entity was loaded in the listener, loaded property should be changed", () => Promise.all(connections.map(async function (connection) {
+    test("if entity was loaded in the listener, loaded property should be changed", () => Promise.all(connections.map(async function (connection) {
 
         // insert a post
         const post = new Post();
@@ -48,8 +47,8 @@ describe("other issues > mongodb entity change in listeners should affect persis
 
         const loadedPost = await connection.manager.findOne(Post);
 
-        expect(loadedPost).not.to.be.undefined;
-        loadedPost!.loaded.should.be.equal(true);
+        expect(loadedPost).not.toBeUndefined();
+        expect(loadedPost!.loaded).toEqual(true);
         await connection.manager.save(loadedPost!);
 
     })));
