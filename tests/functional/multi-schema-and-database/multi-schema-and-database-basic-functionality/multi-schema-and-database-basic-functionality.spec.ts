@@ -1,7 +1,6 @@
 import "reflect-metadata";
-import {Connection} from "../../../../src/connection/Connection";
+import {Connection} from "../../../../src";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../test/utils/test-utils";
-import {expect} from "chai";
 import {Post} from "./entity/Post";
 import {PostgresDriver} from "../../../../src/driver/postgres/PostgresDriver";
 import {SqlServerDriver} from "../../../../src/driver/sqlserver/SqlServerDriver";
@@ -17,7 +16,7 @@ describe("multi-schema-and-database > basic-functionality", () => {
     describe("custom-table-schema", () => {
 
         let connections: Connection[];
-        before(async () => {
+        beforeAll(async () => {
             connections = await createTestingConnections({
                 entities: [Post, User, Category],
                 enabledDrivers: ["mssql", "postgres"],
@@ -25,9 +24,9 @@ describe("multi-schema-and-database > basic-functionality", () => {
             });
         });
         beforeEach(() => reloadTestingDatabases(connections));
-        after(() => closeTestingConnections(connections));
+        afterAll(() => closeTestingConnections(connections));
 
-        it("should correctly create tables when custom table schema used", () => Promise.all(connections.map(async connection => {
+        test("should correctly create tables when custom table schema used", () => Promise.all(connections.map(async connection => {
 
             const queryRunner = connection.createQueryRunner();
             const table = await queryRunner.getTable("post");
@@ -42,15 +41,15 @@ describe("multi-schema-and-database > basic-functionality", () => {
                 .getSql();
 
             if (connection.driver instanceof PostgresDriver)
-                sql.should.be.equal(`SELECT "post"."id" AS "post_id", "post"."name" AS "post_name" FROM "custom"."post" "post" WHERE "post"."id" = $1`);
+                expect(sql).toEqual(`SELECT "post"."id" AS "post_id", "post"."name" AS "post_name" FROM "custom"."post" "post" WHERE "post"."id" = $1`);
 
             if (connection.driver instanceof SqlServerDriver)
-                sql.should.be.equal(`SELECT "post"."id" AS "post_id", "post"."name" AS "post_name" FROM "custom"."post" "post" WHERE "post"."id" = @0`);
+                expect(sql).toEqual(`SELECT "post"."id" AS "post_id", "post"."name" AS "post_name" FROM "custom"."post" "post" WHERE "post"."id" = @0`);
 
-            table!.name.should.be.equal("custom.post");
+            expect(table!.name).toEqual("custom.post");
         })));
 
-        it("should correctly create tables when custom table schema used in Entity decorator", () => Promise.all(connections.map(async connection => {
+        test("should correctly create tables when custom table schema used in Entity decorator", () => Promise.all(connections.map(async connection => {
 
             const queryRunner = connection.createQueryRunner();
             const table = await queryRunner.getTable("userSchema.user");
@@ -65,15 +64,15 @@ describe("multi-schema-and-database > basic-functionality", () => {
                 .getSql();
 
             if (connection.driver instanceof PostgresDriver)
-                sql.should.be.equal(`SELECT "user"."id" AS "user_id", "user"."name" AS "user_name" FROM "userSchema"."user" "user" WHERE "user"."id" = $1`);
+                expect(sql).toEqual(`SELECT "user"."id" AS "user_id", "user"."name" AS "user_name" FROM "userSchema"."user" "user" WHERE "user"."id" = $1`);
 
             if (connection.driver instanceof SqlServerDriver)
-                sql.should.be.equal(`SELECT "user"."id" AS "user_id", "user"."name" AS "user_name" FROM "userSchema"."user" "user" WHERE "user"."id" = @0`);
+                expect(sql).toEqual(`SELECT "user"."id" AS "user_id", "user"."name" AS "user_name" FROM "userSchema"."user" "user" WHERE "user"."id" = @0`);
 
-            table!.name.should.be.equal("userSchema.user");
+            expect(table!.name).toEqual("userSchema.user");
         })));
 
-        it("should correctly work with cross-schema queries", () => Promise.all(connections.map(async connection => {
+        test("should correctly work with cross-schema queries", () => Promise.all(connections.map(async connection => {
 
             const queryRunner = connection.createQueryRunner();
             const table = await queryRunner.getTable("guest.category");
@@ -93,9 +92,9 @@ describe("multi-schema-and-database > basic-functionality", () => {
                 .where("category.id = :id", {id: 1})
                 .getOne();
 
-            loadedCategory!.should.be.not.empty;
-            loadedCategory!.post.should.be.not.empty;
-            loadedCategory!.post.id.should.be.equal(1);
+            expect(loadedCategory)!.toBeDefined();
+            expect(loadedCategory!.post).toBeDefined();
+            expect(loadedCategory!.post.id).toEqual(1);
 
             const sql = connection.createQueryBuilder(Category, "category")
                 .innerJoinAndSelect("category.post", "post")
@@ -103,19 +102,19 @@ describe("multi-schema-and-database > basic-functionality", () => {
                 .getSql();
 
             if (connection.driver instanceof PostgresDriver)
-                sql.should.be.equal(`SELECT "category"."id" AS "category_id", "category"."name" AS "category_name",` +
+                expect(sql).toEqual(`SELECT "category"."id" AS "category_id", "category"."name" AS "category_name",` +
                     ` "category"."postId" AS "category_postId", "post"."id" AS "post_id", "post"."name" AS "post_name"` +
                     ` FROM "guest"."category" "category" INNER JOIN "custom"."post" "post" ON "post"."id"="category"."postId" WHERE "category"."id" = $1`);
 
             if (connection.driver instanceof SqlServerDriver)
-                sql.should.be.equal(`SELECT "category"."id" AS "category_id", "category"."name" AS "category_name",` +
+                expect(sql).toEqual(`SELECT "category"."id" AS "category_id", "category"."name" AS "category_name",` +
                     ` "category"."postId" AS "category_postId", "post"."id" AS "post_id", "post"."name" AS "post_name"` +
                     ` FROM "guest"."category" "category" INNER JOIN "custom"."post" "post" ON "post"."id"="category"."postId" WHERE "category"."id" = @0`);
 
-            table!.name.should.be.equal("guest.category");
+            expect(table!.name).toEqual("guest.category");
         })));
 
-        it("should correctly work with QueryBuilder", () => Promise.all(connections.map(async connection => {
+        test("should correctly work with QueryBuilder", () => Promise.all(connections.map(async connection => {
 
             const post = new Post();
             post.name = "Post #1";
@@ -138,14 +137,14 @@ describe("multi-schema-and-database > basic-functionality", () => {
                 .where("category.id = :id", {id: 1})
                 .andWhere("post.id = category.post");
 
-            (await query.getRawOne())!.should.be.not.empty;
+            expect((await query.getRawOne()))!.toBeDefined();
 
             if (connection.driver instanceof PostgresDriver)
-                query.getSql().should.be.equal(`SELECT * FROM "guest"."category" "category", "userSchema"."user" "user",` +
+                expect(query.getSql()).toEqual(`SELECT * FROM "guest"."category" "category", "userSchema"."user" "user",` +
                     ` "custom"."post" "post" WHERE "category"."id" = $1 AND "post"."id" = "category"."postId"`);
 
             if (connection.driver instanceof SqlServerDriver)
-                query.getSql().should.be.equal(`SELECT * FROM "guest"."category" "category", "userSchema"."user" "user",` +
+                expect(query.getSql()).toEqual(`SELECT * FROM "guest"."category" "category", "userSchema"."user" "user",` +
                     ` "custom"."post" "post" WHERE "category"."id" = @0 AND "post"."id" = "category"."postId"`);
         })));
     });
@@ -153,16 +152,16 @@ describe("multi-schema-and-database > basic-functionality", () => {
     describe("custom-table-schema-and-database", () => {
 
         let connections: Connection[];
-        before(async () => {
+        beforeAll(async () => {
             connections = await createTestingConnections({
                 entities: [Question, Answer],
                 enabledDrivers: ["mssql"],
             });
         });
         beforeEach(() => reloadTestingDatabases(connections));
-        after(() => closeTestingConnections(connections));
+        afterAll(() => closeTestingConnections(connections));
 
-        it("should correctly create tables when custom database and custom schema used in Entity decorator", () => Promise.all(connections.map(async connection => {
+        test("should correctly create tables when custom database and custom schema used in Entity decorator", () => Promise.all(connections.map(async connection => {
 
             const queryRunner = connection.createQueryRunner();
             const table = await queryRunner.getTable("testDB.questions.question");
@@ -176,11 +175,11 @@ describe("multi-schema-and-database > basic-functionality", () => {
                 .where("question.id = :id", {id: 1})
                 .getSql();
 
-            sql.should.be.equal(`SELECT "question"."id" AS "question_id", "question"."name" AS "question_name" FROM "testDB"."questions"."question" "question" WHERE "question"."id" = @0`);
-            table!.name.should.be.equal("testDB.questions.question");
+            expect(sql).toEqual(`SELECT "question"."id" AS "question_id", "question"."name" AS "question_name" FROM "testDB"."questions"."question" "question" WHERE "question"."id" = @0`);
+            expect(table!.name).toEqual("testDB.questions.question");
         })));
 
-        it("should correctly work with cross-schema and cross-database queries in QueryBuilder", () => Promise.all(connections.map(async connection => {
+        test("should correctly work with cross-schema and cross-database queries in QueryBuilder", () => Promise.all(connections.map(async connection => {
 
             const queryRunner = connection.createQueryRunner();
             const questionTable = await queryRunner.getTable("testDB.questions.question");
@@ -208,29 +207,29 @@ describe("multi-schema-and-database > basic-functionality", () => {
                 .where("question.id = :id", {id: 1})
                 .andWhere("answer.questionId = question.id");
 
-            expect(await query.getRawOne()).to.be.not.empty;
+            expect(await query.getRawOne()).toBeDefined();
 
-            query.getSql().should.be.equal(`SELECT * FROM "testDB"."questions"."question" "question", "secondDB"."answers"."answer"` +
+            expect(query.getSql()).toEqual(`SELECT * FROM "testDB"."questions"."question" "question", "secondDB"."answers"."answer"` +
                 ` "answer" WHERE "question"."id" = @0 AND "answer"."questionId" = "question"."id"`);
 
-            questionTable!.name.should.be.equal("testDB.questions.question");
-            answerTable!.name.should.be.equal("secondDB.answers.answer");
+            expect(questionTable!.name).toEqual("testDB.questions.question");
+            expect(answerTable!.name).toEqual("secondDB.answers.answer");
         })));
     });
 
     describe("custom-database", () => {
 
         let connections: Connection[];
-        before(async () => {
+        beforeAll(async () => {
             connections = await createTestingConnections({
                 entities: [Person],
                 enabledDrivers: ["mssql", "mysql"],
             });
         });
         beforeEach(() => reloadTestingDatabases(connections));
-        after(() => closeTestingConnections(connections));
+        afterAll(() => closeTestingConnections(connections));
 
-        it("should correctly create tables when custom database used in Entity decorator", () => Promise.all(connections.map(async connection => {
+        test("should correctly create tables when custom database used in Entity decorator", () => Promise.all(connections.map(async connection => {
 
             const queryRunner = connection.createQueryRunner();
             const tablePath = connection.driver instanceof SqlServerDriver ? "secondDB..person" : "secondDB.person";
@@ -246,12 +245,12 @@ describe("multi-schema-and-database > basic-functionality", () => {
                 .getSql();
 
             if (connection.driver instanceof SqlServerDriver)
-                sql.should.be.equal(`SELECT "person"."id" AS "person_id", "person"."name" AS "person_name" FROM "secondDB".."person" "person" WHERE "person"."id" = @0`);
+                expect(sql).toEqual(`SELECT "person"."id" AS "person_id", "person"."name" AS "person_name" FROM "secondDB".."person" "person" WHERE "person"."id" = @0`);
 
             if (connection.driver instanceof MysqlDriver)
-                sql.should.be.equal("SELECT `person`.`id` AS `person_id`, `person`.`name` AS `person_name` FROM `secondDB`.`person` `person` WHERE `person`.`id` = ?");
+                expect(sql).toEqual("SELECT `person`.`id` AS `person_id`, `person`.`name` AS `person_name` FROM `secondDB`.`person` `person` WHERE `person`.`id` = ?");
 
-            table!.name.should.be.equal(tablePath);
+            expect(table!.name).toEqual(tablePath);
         })));
 
     });
