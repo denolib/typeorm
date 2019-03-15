@@ -1,19 +1,19 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
-import {Connection} from "../../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../test/utils/test-utils";
+import {Connection} from "../../../../src";
 import {Post} from "./entity/Post";
 
 describe("query builder > insertion > on conflict", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
         enabledDrivers: ["postgres", "sqlite"] // since on conflict statement is only supported in postgres and sqlite >= 3.24.0
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should perform insertion correctly", () => Promise.all(connections.map(async connection => {
+    test("should perform insertion correctly", () => Promise.all(connections.map(async connection => { // TODO: Bakhrom
 
         const post1 = new Post();
         post1.id = "post#1";

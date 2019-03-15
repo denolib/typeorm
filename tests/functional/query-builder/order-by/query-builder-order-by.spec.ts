@@ -1,21 +1,24 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
-import {Connection} from "../../../../src/connection/Connection";
-import {expect} from "chai";
+import {Connection} from "../../../../src";
 import {Post} from "./entity/Post";
 import {PostgresDriver} from "../../../../src/driver/postgres/PostgresDriver";
 import {MysqlDriver} from "../../../../src/driver/mysql/MysqlDriver";
+import {
+    closeTestingConnections,
+    createTestingConnections,
+    reloadTestingDatabases
+} from "../../../../test/utils/test-utils";
 
 describe("query builder > order-by", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should be always in right order(default order)", () => Promise.all(connections.map(async connection => {
+    test("should be always in right order(default order)", () => Promise.all(connections.map(async connection => {
 
         const post1 = new Post();
         post1.myOrder = 1;
@@ -28,11 +31,11 @@ describe("query builder > order-by", () => {
             .createQueryBuilder(Post, "post")
             .getOne();
 
-        expect(loadedPost!.myOrder).to.be.equal(2);
+        expect(loadedPost!.myOrder).toEqual(2);
 
     })));
 
-    it("should be always in right order(custom order)", () => Promise.all(connections.map(async connection => {
+    test("should be always in right order(custom order)", () => Promise.all(connections.map(async connection => {
 
         const post1 = new Post();
         post1.myOrder = 1;
@@ -46,11 +49,11 @@ describe("query builder > order-by", () => {
             .addOrderBy("post.myOrder", "ASC")
             .getOne();
 
-        expect(loadedPost!.myOrder).to.be.equal(1);
+        expect(loadedPost!.myOrder).toEqual(1);
 
     })));
 
-    it("should be always in right order(custom order)", () => Promise.all(connections.map(async connection => {
+    test("should be always in right order(custom order)", () => Promise.all(connections.map(async connection => {
         if (!(connection.driver instanceof PostgresDriver)) // NULLS FIRST / LAST only supported by postgres
             return;
 
@@ -66,18 +69,18 @@ describe("query builder > order-by", () => {
             .addOrderBy("post.myOrder", "ASC", "NULLS FIRST")
             .getOne();
 
-        expect(loadedPost1!.myOrder).to.be.equal(1);
+        expect(loadedPost1!.myOrder).toEqual(1);
 
         const loadedPost2 = await connection.manager
             .createQueryBuilder(Post, "post")
             .addOrderBy("post.myOrder", "ASC", "NULLS LAST")
             .getOne();
 
-        expect(loadedPost2!.myOrder).to.be.equal(1);
+        expect(loadedPost2!.myOrder).toEqual(1);
 
     })));
 
-    it("should be always in right order(custom order)", () => Promise.all(connections.map(async connection => {
+    test("should be always in right order(custom order)", () => Promise.all(connections.map(async connection => {
         if (!(connection.driver instanceof MysqlDriver)) // IS NULL / IS NOT NULL only supported by mysql
             return;
 
@@ -93,18 +96,18 @@ describe("query builder > order-by", () => {
             .addOrderBy("post.myOrder IS NULL", "ASC")
             .getOne();
 
-        expect(loadedPost1!.myOrder).to.be.equal(1);
+        expect(loadedPost1!.myOrder).toEqual(1);
 
         const loadedPost2 = await connection.manager
             .createQueryBuilder(Post, "post")
             .addOrderBy("post.myOrder IS NOT NULL", "ASC")
             .getOne();
 
-        expect(loadedPost2!.myOrder).to.be.equal(1);
+        expect(loadedPost2!.myOrder).toEqual(1);
 
     })));
 
-    it("should be able to order by sql statement", () => Promise.all(connections.map(async connection => {
+    test("should be able to order by sql statement", () => Promise.all(connections.map(async connection => {
         if (!(connection.driver instanceof MysqlDriver)) return; // DIV statement does not supported by all drivers
 
         const post1 = new Post();
@@ -123,16 +126,16 @@ describe("query builder > order-by", () => {
             .orderBy("post.num1 DIV post.num2")
             .getOne();
 
-        expect(loadedPost1!.num1).to.be.equal(10);
-        expect(loadedPost1!.num2).to.be.equal(5);
+        expect(loadedPost1!.num1).toEqual(10);
+        expect(loadedPost1!.num2).toEqual(5);
 
         const loadedPost2 = await connection.manager
             .createQueryBuilder(Post, "post")
             .orderBy("post.num1 DIV post.num2", "DESC")
             .getOne();
 
-        expect(loadedPost2!.num1).to.be.equal(10);
-        expect(loadedPost2!.num2).to.be.equal(2);
+        expect(loadedPost2!.num1).toEqual(10);
+        expect(loadedPost2!.num2).toEqual(2);
     })));
 
 });
