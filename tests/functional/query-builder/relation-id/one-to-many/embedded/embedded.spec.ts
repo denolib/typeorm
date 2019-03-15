@@ -1,11 +1,10 @@
 import "reflect-metadata";
-import {expect} from "chai";
 import {
     closeTestingConnections,
     createTestingConnections,
     reloadTestingDatabases
 } from "../../../../../../test/utils/test-utils";
-import {Connection} from "../../../../../../src/connection/Connection";
+import {Connection} from "../../../../../../src";
 import {Post} from "./entity/Post";
 import {Category} from "./entity/Category";
 import {Counters} from "./entity/Counters";
@@ -15,13 +14,13 @@ import {Subcounters} from "./entity/Subcounters";
 describe("query builder > relation-id > one-to-many > embedded", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should load ids when loadRelationIdAndMap used on embedded and nested embedded tables", () => Promise.all(connections.map(async connection => {
+    test("should load ids when loadRelationIdAndMap used on embedded and nested embedded tables", () => Promise.all(connections.map(async connection => {
 
         const user1 = new User();
         user1.name = "Alice";
@@ -84,7 +83,7 @@ describe("query builder > relation-id > one-to-many > embedded", () => {
             .orderBy("post.id")
             .getMany();
 
-        expect(loadedPosts[0].should.be.eql(
+        expect(loadedPosts[0]).toEqual(
             {
                 title: "About BMW",
                 counters: {
@@ -100,8 +99,8 @@ describe("query builder > relation-id > one-to-many > embedded", () => {
                     }
                 }
             }
-        ));
-        expect(loadedPosts[1].should.be.eql(
+        );
+        expect(loadedPosts[1]).toEqual(
             {
                 title: "About Boeing",
                 counters: {
@@ -117,7 +116,7 @@ describe("query builder > relation-id > one-to-many > embedded", () => {
                     }
                 }
             }
-        ));
+        );
 
     })));
 
