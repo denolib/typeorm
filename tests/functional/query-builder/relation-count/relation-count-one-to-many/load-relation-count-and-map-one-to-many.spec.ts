@@ -1,7 +1,6 @@
 import "reflect-metadata";
-import {expect} from "chai";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../../test/utils/test-utils";
-import {Connection} from "../../../../../src/connection/Connection";
+import {Connection} from "../../../../../src";
 import {Category} from "./entity/Category";
 import {Post} from "./entity/Post";
 import {Image} from "./entity/Image";
@@ -9,13 +8,13 @@ import {Image} from "./entity/Image";
 describe("query builder > load-relation-count-and-map > one-to-many", () => {
     
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should load relation count", () => Promise.all(connections.map(async connection => {
+    test("should load relation count", () => Promise.all(connections.map(async connection => {
 
         const category1 = new Category();
         category1.name = "cars";
@@ -44,8 +43,8 @@ describe("query builder > load-relation-count-and-map > one-to-many", () => {
             .loadRelationCountAndMap("post.categoryCount", "post.categories")
             .getMany();
 
-        expect(loadedPosts[0]!.categoryCount).to.be.equal(2);
-        expect(loadedPosts[1]!.categoryCount).to.be.equal(1);
+        expect(loadedPosts[0]!.categoryCount).toEqual(2);
+        expect(loadedPosts[1]!.categoryCount).toEqual(1);
 
         const loadedPost = await connection.manager
             .createQueryBuilder(Post, "post")
@@ -53,10 +52,10 @@ describe("query builder > load-relation-count-and-map > one-to-many", () => {
             .where("post.id = :id", { id: 1 })
             .getOne();
 
-        expect(loadedPost!.categoryCount).to.be.equal(2);
+        expect(loadedPost!.categoryCount).toEqual(2);
     })));
 
-    it("should load relation count on nested relations", () => Promise.all(connections.map(async connection => {
+    test("should load relation count on nested relations", () => Promise.all(connections.map(async connection => {
 
         const image1 = new Image();
         image1.name = "image #1";
@@ -102,11 +101,11 @@ describe("query builder > load-relation-count-and-map > one-to-many", () => {
             .addOrderBy("post.id, categories.id")
             .getMany();
 
-        expect(loadedPosts[0]!.categoryCount).to.be.equal(2);
-        expect(loadedPosts[0]!.categories[0].imageCount).to.be.equal(2);
-        expect(loadedPosts[0]!.categories[1].imageCount).to.be.equal(0);
-        expect(loadedPosts[1]!.categoryCount).to.be.equal(1);
-        expect(loadedPosts[1]!.categories[0].imageCount).to.be.equal(1);
+        expect(loadedPosts[0]!.categoryCount).toEqual(2);
+        expect(loadedPosts[0]!.categories[0].imageCount).toEqual(2);
+        expect(loadedPosts[0]!.categories[1].imageCount).toEqual(0);
+        expect(loadedPosts[1]!.categoryCount).toEqual(1);
+        expect(loadedPosts[1]!.categories[0].imageCount).toEqual(1);
 
         const loadedPost = await connection.manager
             .createQueryBuilder(Post, "post")
@@ -117,12 +116,12 @@ describe("query builder > load-relation-count-and-map > one-to-many", () => {
             .addOrderBy("post.id, categories.id")
             .getOne();
 
-        expect(loadedPost!.categoryCount).to.be.equal(2);
-        expect(loadedPost!.categories[0].imageCount).to.be.equal(2);
-        expect(loadedPost!.categories[1].imageCount).to.be.equal(0);
+        expect(loadedPost!.categoryCount).toEqual(2);
+        expect(loadedPost!.categories[0].imageCount).toEqual(2);
+        expect(loadedPost!.categories[1].imageCount).toEqual(0);
     })));
 
-    it("should load relation count with additional conditions", () => Promise.all(connections.map(async connection => {
+    test("should load relation count with additional conditions", () => Promise.all(connections.map(async connection => {
 
         const category1 = new Category();
         category1.name = "cars";
@@ -153,9 +152,9 @@ describe("query builder > load-relation-count-and-map > one-to-many", () => {
             .loadRelationCountAndMap("post.removedCategoryCount", "post.categories", "rc", qb => qb.andWhere("rc.isRemoved = :isRemoved", { isRemoved: true }))
             .getMany();
 
-        expect(loadedPosts[0]!.categoryCount).to.be.equal(2);
-        expect(loadedPosts[0]!.removedCategoryCount).to.be.equal(1);
-        expect(loadedPosts[1]!.categoryCount).to.be.equal(1);
+        expect(loadedPosts[0]!.categoryCount).toEqual(2);
+        expect(loadedPosts[0]!.removedCategoryCount).toEqual(1);
+        expect(loadedPosts[1]!.categoryCount).toEqual(1);
 
         const loadedPost = await connection.manager
             .createQueryBuilder(Post, "post")
@@ -164,8 +163,8 @@ describe("query builder > load-relation-count-and-map > one-to-many", () => {
             .where("post.id = :id", { id: 1 })
             .getOne();
 
-        expect(loadedPost!.categoryCount).to.be.equal(2);
-        expect(loadedPost!.removedCategoryCount).to.be.equal(1);
+        expect(loadedPost!.categoryCount).toEqual(2);
+        expect(loadedPost!.removedCategoryCount).toEqual(1);
     })));
 
 });
