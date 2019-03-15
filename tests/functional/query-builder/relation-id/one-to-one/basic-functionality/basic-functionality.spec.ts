@@ -1,24 +1,23 @@
 import "reflect-metadata";
-import {expect} from "chai";
 import {
     closeTestingConnections,
     createTestingConnections,
     reloadTestingDatabases
 } from "../../../../../../test/utils/test-utils";
-import {Connection} from "../../../../../../src/connection/Connection";
+import {Connection} from "../../../../../../src";
 import {Category} from "./entity/Category";
 import {Post} from "./entity/Post";
 
 describe("query builder > relation-id > one-to-one > basic-functionality", () => {
     
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should load ids when loadRelationIdAndMap used with OneToOne owner side relation", () => Promise.all(connections.map(async connection => {
+    test("should load ids when loadRelationIdAndMap used with OneToOne owner side relation", () => Promise.all(connections.map(async connection => {
 
         const category = new Category();
         category.name = "kids";
@@ -43,10 +42,10 @@ describe("query builder > relation-id > one-to-one > basic-functionality", () =>
             .loadRelationIdAndMap("post.categoryId", "post.category")
             .getMany();
 
-        expect(loadedPosts![0].categoryId).to.not.be.undefined;
-        expect(loadedPosts![0].categoryId).to.be.equal(1);
-        expect(loadedPosts![1].categoryId).to.not.be.undefined;
-        expect(loadedPosts![1].categoryId).to.be.equal(2);
+        expect(loadedPosts![0].categoryId).not.toBeUndefined();
+        expect(loadedPosts![0].categoryId).toEqual(1);
+        expect(loadedPosts![1].categoryId).not.toBeUndefined();
+        expect(loadedPosts![1].categoryId).toEqual(2);
 
         let loadedPost = await connection.manager
             .createQueryBuilder(Post, "post")
@@ -54,11 +53,11 @@ describe("query builder > relation-id > one-to-one > basic-functionality", () =>
             .where("post.id = :id", { id: post.id })
             .getOne();
 
-        expect(loadedPost!.categoryId).to.not.be.undefined;
-        expect(loadedPost!.categoryId).to.be.equal(1);
+        expect(loadedPost!.categoryId).not.toBeUndefined();
+        expect(loadedPost!.categoryId).toEqual(1);
     })));
 
-    it("should load id when loadRelationIdAndMap used with OneToOne inverse side relation", () => Promise.all(connections.map(async connection => {
+    test("should load id when loadRelationIdAndMap used with OneToOne inverse side relation", () => Promise.all(connections.map(async connection => {
 
         const category = new Category();
         category.name = "kids";
@@ -83,18 +82,18 @@ describe("query builder > relation-id > one-to-one > basic-functionality", () =>
             .loadRelationIdAndMap("category.postId", "category.post")
             .getMany();
 
-        expect(loadedCategories![0].postId).to.not.be.undefined;
-        expect(loadedCategories![0].postId).to.be.equal(1);
-        expect(loadedCategories![1].postId).to.not.be.undefined;
-        expect(loadedCategories![1].postId).to.be.equal(2);
+        expect(loadedCategories![0].postId).not.toBeUndefined();
+        expect(loadedCategories![0].postId).toEqual(1);
+        expect(loadedCategories![1].postId).not.toBeUndefined();
+        expect(loadedCategories![1].postId).toEqual(2);
 
         let loadedCategory = await connection.manager
             .createQueryBuilder(Category, "category")
             .loadRelationIdAndMap("category.postId", "category.post")
             .getOne();
 
-        expect(loadedCategory!.postId).to.not.be.undefined;
-        expect(loadedCategory!.postId).to.be.equal(1);
+        expect(loadedCategory!.postId).not.toBeUndefined();
+        expect(loadedCategory!.postId).toEqual(1);
     })));
 
 });
