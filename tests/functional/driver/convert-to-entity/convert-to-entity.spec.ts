@@ -1,19 +1,18 @@
 import "reflect-metadata";
-import {expect} from "chai";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
-import {Connection} from "../../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../test/utils/test-utils";
+import {Connection} from "../../../../src";
 import {Post} from "./entity/Post";
 
 describe("driver > convert raw results to entity", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [Post],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should return null value in entity property when record column is null", () => Promise.all(connections.map(async connection => {
+    test("should return null value in entity property when record column is null", () => Promise.all(connections.map(async connection => {
         const postRepository = connection.getRepository(Post);
         const post = new Post();
         post.id = 1;
@@ -22,11 +21,11 @@ describe("driver > convert raw results to entity", () => {
 
         const loadedPost = await postRepository.findOne(1);
         if (loadedPost) {
-            expect(loadedPost.isNew).to.be.equal(null);
+            expect(loadedPost.isNew).toEqual(null);
         }
     })));
 
-    it("should return true in entity property when record column is true", () => Promise.all(connections.map(async connection => {
+    test("should return true in entity property when record column is true", () => Promise.all(connections.map(async connection => {
         const postRepository = connection.getRepository(Post);
         const post = new Post();
         post.id = 1;
@@ -36,11 +35,11 @@ describe("driver > convert raw results to entity", () => {
 
         const loadedPost = await postRepository.findOne(1);
         if (loadedPost) {
-            expect(loadedPost.isNew).to.be.equal(true);
+            expect(loadedPost.isNew).toEqual(true);
         }
     })));
 
-    it("should return false in entity property when record column is false", () => Promise.all(connections.map(async connection => {
+    test("should return false in entity property when record column is false", () => Promise.all(connections.map(async connection => {
         const postRepository = connection.getRepository(Post);
         const post = new Post();
         post.id = 1;
@@ -50,7 +49,7 @@ describe("driver > convert raw results to entity", () => {
 
         const loadedPost = await postRepository.findOne(1);
         if (loadedPost) {
-            expect(loadedPost.isNew).to.be.equal(false);
+            expect(loadedPost.isNew).toEqual(false);
         }
     })));
 });
