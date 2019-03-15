@@ -1,19 +1,23 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
-import {Connection} from "../../../../src/connection/Connection";
+import {Connection} from "../../../../src";
 import {Post} from "./entity/Post";
 import {PostDetails} from "./entity/PostDetails";
+import {
+    closeTestingConnections,
+    createTestingConnections,
+    reloadTestingDatabases
+} from "../../../../test/utils/test-utils";
 
 describe("cascades > should insert by cascades from both sides (#57)", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should insert by cascades from owner side", () => Promise.all(connections.map(async connection => {
+    test("should insert by cascades from owner side", () => Promise.all(connections.map(async connection => {
 
         // first create details but don't save them because they will be saved by cascades
         const details = new PostDetails();
@@ -35,7 +39,7 @@ describe("cascades > should insert by cascades from both sides (#57)", () => {
             }
         });
 
-        posts.should.be.eql([{
+        expect(posts).toEqual([{
             key: post1.key,
             title: post1.title,
             details: {
