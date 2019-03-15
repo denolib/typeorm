@@ -1,30 +1,34 @@
 import "reflect-metadata";
-import {Connection} from "../../../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils";
+import {Connection} from "../../../../../src";
 import {Post} from "./entity/Post";
-import {MongoRepository} from "../../../../../src/repository/MongoRepository";
+import {MongoRepository} from "../../../../../src";
+import {
+    closeTestingConnections,
+    createTestingConnections,
+    reloadTestingDatabases
+} from "../../../../../test/utils/test-utils";
 
 describe("mongodb > MongoRepository", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [Post],
         enabledDrivers: ["mongodb"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("connection should return mongo repository when requested", () => Promise.all(connections.map(async connection => {
+    test("connection should return mongo repository when requested", () => Promise.all(connections.map(async connection => {
         const postRepository = connection.getMongoRepository(Post);
-        postRepository.should.be.instanceOf(MongoRepository);
+        expect(postRepository).toBeInstanceOf(MongoRepository);
     })));
 
-    it("entity manager should return mongo repository when requested", () => Promise.all(connections.map(async connection => {
+    test("entity manager should return mongo repository when requested", () => Promise.all(connections.map(async connection => {
         const postRepository = connection.manager.getMongoRepository(Post);
-        postRepository.should.be.instanceOf(MongoRepository);
+        expect(postRepository).toBeInstanceOf(MongoRepository);
     })));
 
-    it("should be able to use entity cursor which will return instances of entity classes", () => Promise.all(connections.map(async connection => {
+    test("should be able to use entity cursor which will return instances of entity classes", () => Promise.all(connections.map(async connection => {
         const postRepository = connection.getMongoRepository(Post);
 
         // save few posts
@@ -43,15 +47,15 @@ describe("mongodb > MongoRepository", () => {
         });
 
         const loadedPosts = await cursor.toArray();
-        loadedPosts.length.should.be.equal(1);
-        loadedPosts[0].should.be.instanceOf(Post);
-        loadedPosts[0].id.should.be.eql(firstPost.id);
-        loadedPosts[0].title.should.be.equal("Post #1");
-        loadedPosts[0].text.should.be.equal("Everything about post #1");
+        expect(loadedPosts.length).toEqual(1);
+        expect(loadedPosts[0]).toBeInstanceOf(Post);
+        expect(loadedPosts[0].id).toEqual(firstPost.id);
+        expect(loadedPosts[0].title).toEqual("Post #1");
+        expect(loadedPosts[0].text).toEqual("Everything about post #1");
 
     })));
 
-    it("should be able to use entity cursor which will return instances of entity classes", () => Promise.all(connections.map(async connection => {
+    test("should be able to use entity cursor which will return instances of entity classes", () => Promise.all(connections.map(async connection => {
         const postRepository = connection.getMongoRepository(Post);
 
         // save few posts
@@ -78,11 +82,11 @@ describe("mongodb > MongoRepository", () => {
             }
         });
 
-        loadedPosts.length.should.be.equal(1);
-        loadedPosts[0].should.be.instanceOf(Post);
-        loadedPosts[0].id.should.be.eql(firstPost.id);
-        loadedPosts[0].title.should.be.equal("Post #1");
-        loadedPosts[0].text.should.be.equal("Everything about post #1");
+        expect(loadedPosts.length).toEqual(1);
+        expect(loadedPosts[0]).should.be.instanceOf(Post);
+        expect(loadedPosts[0].id).toEqual(firstPost.id);
+        expect(loadedPosts[0].title).toEqual("Post #1");
+        expect(loadedPosts[0].text).toEqual("Everything about post #1");
 
     })));
 
