@@ -1,38 +1,37 @@
 import "reflect-metadata";
-import {Connection} from "../../../../../src/connection/Connection";
+import {Connection} from "../../../../../src";
+import {Post} from "./entity/Post";
 import {
     closeTestingConnections,
     createTestingConnections,
     reloadTestingDatabases
-} from "../../../../utils/test-utils";
-import {Post} from "./entity/Post";
-import {expect} from "chai";
+} from "../../../../../test/utils/test-utils";
 
 describe("mongodb > timestampable columns", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [Post],
         enabledDrivers: ["mongodb"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should persist timestampable columns", () => Promise.all(connections.map(async connection => {
+    test("should persist timestampable columns", () => Promise.all(connections.map(async connection => {
         const commentMongoRepository = connection.getMongoRepository(Post);
 
         // save a post
         const post = new Post();
         post.message = "Hello";
         await commentMongoRepository.save(post);
-        expect(post.id).to.be.not.undefined;
+        expect(post.id).toBeDefined();
         post.createdAt.should.be.instanceof(Date);
         const createdAt = post.createdAt;
 
         post.updatedAt.should.be.instanceof(Date);
         const updatedAt = post.updatedAt;
 
-        expect(post.createdAt.getTime()).to.equal(post.updatedAt.getTime());
+        expect(post.createdAt.getTime()).toEqual(post.updatedAt.getTime());
 
         // update
         const date = new Date();
@@ -46,10 +45,10 @@ describe("mongodb > timestampable columns", () => {
 
         const updatedPost = await commentMongoRepository.findOne(post.id);
 
-        expect(updatedPost).to.be.ok;
+        expect(updatedPost).toBeDefined();
 
-        expect((updatedPost as Post).createdAt.getTime()).to.equal(createdAt.getTime());
-        expect((updatedPost as Post).updatedAt.getTime()).to.gte(updatedAt.getTime());
+        expect((updatedPost as Post).createdAt.getTime()).toEqual(createdAt.getTime());
+        expect((updatedPost as Post).updatedAt.getTime()).toEqual(updatedAt.getTime());
     })));
 
 });
