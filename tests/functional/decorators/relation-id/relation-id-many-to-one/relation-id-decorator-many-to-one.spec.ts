@@ -1,20 +1,19 @@
 import "reflect-metadata";
-import {expect} from "chai";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../../test/utils/test-utils";
-import {Connection} from "../../../../../src/connection/Connection";
+import {Connection} from "../../../../../src";
 import {Post} from "./entity/Post";
 import {Category} from "./entity/Category";
 
 describe("decorators > relation-id-decorator > many-to-one", () => {
     
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should load ids when RelationId decorator used", () => Promise.all(connections.map(async connection => {
+    test("should load ids when RelationId decorator used", () => Promise.all(connections.map(async connection => {
 
         const category1 = new Category();
         category1.id = 1;
@@ -55,24 +54,24 @@ describe("decorators > relation-id-decorator > many-to-one", () => {
             .orderBy("post.id")
             .getMany();
 
-        expect(loadedPosts![0].categoryId).to.not.be.undefined;
-        expect(loadedPosts![0].categoryId).to.be.equal(1);
-        expect(loadedPosts![0].categoryName).to.not.be.undefined;
-        expect(loadedPosts![0].categoryName).to.be.equal("BMW");
-        expect(loadedPosts![1].categoryId).to.not.be.undefined;
-        expect(loadedPosts![1].categoryId).to.be.equal(2);
-        expect(loadedPosts![1].categoryName).to.not.be.undefined;
-        expect(loadedPosts![1].categoryName).to.be.equal("Boeing");
+        expect(loadedPosts![0].categoryId).not.toBeUndefined();
+        expect(loadedPosts![0].categoryId).toEqual(1);
+        expect(loadedPosts![0].categoryName).not.toBeUndefined();
+        expect(loadedPosts![0].categoryName).toEqual("BMW");
+        expect(loadedPosts![1].categoryId).not.toBeUndefined();
+        expect(loadedPosts![1].categoryId).toEqual(2);
+        expect(loadedPosts![1].categoryName).not.toBeUndefined();
+        expect(loadedPosts![1].categoryName).toEqual("Boeing");
 
         let loadedPost = await connection.manager
             .createQueryBuilder(Post, "post")
             .where("post.id = :id", { id: 1 })
             .getOne();
 
-        expect(loadedPost!.categoryId).to.not.be.undefined;
-        expect(loadedPost!.categoryId).to.be.equal(1);
-        expect(loadedPost!.categoryName).to.not.be.undefined;
-        expect(loadedPost!.categoryName).to.be.equal("BMW");
+        expect(loadedPost!.categoryId).not.toBeUndefined();
+        expect(loadedPost!.categoryId).toEqual(1);
+        expect(loadedPost!.categoryName).not.toBeUndefined();
+        expect(loadedPost!.categoryName).toEqual("BMW");
     })));
 
 });
