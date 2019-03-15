@@ -1,19 +1,18 @@
 import "reflect-metadata";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../test/utils/test-utils";
-import {Connection} from "../../../../src/connection/Connection";
+import {Connection} from "../../../../src";
 import {Post} from "./entity/Post";
-import {expect} from "chai";
 
 describe("other issues > entity listeners must work in embeddeds as well", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("getters and setters should work correctly", () => Promise.all(connections.map(async connection => {
+    test("getters and setters should work correctly", () => Promise.all(connections.map(async connection => {
 
         const post = new Post();
         post.title = "Super title";
@@ -26,11 +25,11 @@ describe("other issues > entity listeners must work in embeddeds as well", () =>
             .where("post.id = :id", { id: post.id })
             .getOne();
 
-        expect(loadedPost).not.to.be.undefined;
-        expect(loadedPost!.title).not.to.be.undefined;
-        expect(loadedPost!.text).not.to.be.undefined;
-        loadedPost!.title.should.be.equal("Super title");
-        loadedPost!.text.should.be.equal("About this post");
+        expect(loadedPost).not.toBeUndefined();
+        expect(loadedPost!.title).not.toBeUndefined();
+        expect(loadedPost!.text).not.toBeUndefined();
+        expect(loadedPost!.title).toEqual("Super title");
+        expect(loadedPost!.text).toEqual("About this post");
 
     })));
 
