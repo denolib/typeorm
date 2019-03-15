@@ -1,19 +1,18 @@
 import "reflect-metadata";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {Connection} from "../../../src";
 import {Post} from "./entity/Post";
-import {expect} from "chai";
 
 describe("other issues > escaping function parameter", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("select query builder should ignore function-based parameters", () => Promise.all(connections.map(async connection => {
+    test("select query builder should ignore function-based parameters", () => Promise.all(connections.map(async connection => {
 
         const post = new Post();
         post.title = "Super title";
@@ -25,10 +24,10 @@ describe("other issues > escaping function parameter", () => {
                 .createQueryBuilder(Post, "post")
                 .where("post.title = :title", { title: () => "Super title" })
                 .getOne();
-        }).to.throw(Error);
+        }).toThrow(Error);
     })));
 
-    it("insert query builder should work with function parameters", () => Promise.all(connections.map(async connection => {
+    test("insert query builder should work with function parameters", () => Promise.all(connections.map(async connection => {
 
         await connection
             .manager
@@ -41,11 +40,11 @@ describe("other issues > escaping function parameter", () => {
             .execute();
 
         const post = await connection.manager.findOne(Post, { title: "super title" });
-        expect(post).to.be.eql({ id: 1, title: "super title" });
+        expect(post).toEqual({ id: 1, title: "super title" });
 
     })));
 
-    it("update query builder should work with function parameters", () => Promise.all(connections.map(async connection => {
+    test("update query builder should work with function parameters", () => Promise.all(connections.map(async connection => {
 
         const post = new Post();
         post.title = "Super title";
@@ -62,7 +61,7 @@ describe("other issues > escaping function parameter", () => {
             .execute();
 
         const loadedPost = await connection.manager.findOne(Post, { title: "super title" });
-        expect(loadedPost).to.be.eql({ id: 1, title: "super title" });
+        expect(loadedPost).toEqual({ id: 1, title: "super title" });
 
     })));
 
