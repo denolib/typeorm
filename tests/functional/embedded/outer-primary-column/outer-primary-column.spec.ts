@@ -1,20 +1,19 @@
 import "reflect-metadata";
 import {Post} from "./entity/Post";
 import {Counters} from "./entity/Counters";
-import {Connection} from "../../../../src/connection/Connection";
-import {expect} from "chai";
+import {Connection} from "../../../../src";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../test/utils/test-utils";
 
 describe("embedded > outer-primary-column", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should insert, load, update and remove entities with embeddeds when primary column defined only in embedded entity", () => Promise.all(connections.map(async connection => {
+    test("should insert, load, update and remove entities with embeddeds when primary column defined only in embedded entity", () => Promise.all(connections.map(async connection => {
 
         const postRepository = connection.getRepository(Post);
 
@@ -43,27 +42,27 @@ describe("embedded > outer-primary-column", () => {
             .orderBy("post.counters.code")
             .getMany();
 
-        expect(loadedPosts[0].title).to.be.equal("About cars");
-        expect(loadedPosts[0].counters.should.be.eql({ code: 1, comments: 1, favorites: 2, likes: 3 }));
-        expect(loadedPosts[1].title).to.be.equal("About airplanes");
-        expect(loadedPosts[1].counters.should.be.eql({ code: 2, comments: 2, favorites: 3, likes: 4 }));
+        expect(loadedPosts[0].title).toEqual("About cars");
+        expect(loadedPosts[0].counters).toEqual({ code: 1, comments: 1, favorites: 2, likes: 3 });
+        expect(loadedPosts[1].title).toEqual("About airplanes");
+        expect(loadedPosts[1].counters).toEqual({ code: 2, comments: 2, favorites: 3, likes: 4 });
 
         const loadedPost = (await postRepository.findOne(1))!;
-        expect(loadedPost.title).to.be.equal("About cars");
-        expect(loadedPost.counters.should.be.eql({ code: 1, comments: 1, favorites: 2, likes: 3 }));
+        expect(loadedPost.title).toEqual("About cars");
+        expect(loadedPost.counters).toEqual({ code: 1, comments: 1, favorites: 2, likes: 3 });
 
         loadedPost.counters.favorites += 1;
         await postRepository.save(loadedPost);
 
         const loadedPost2 = (await postRepository.findOne(1))!;
-        expect(loadedPost.title).to.be.equal("About cars");
-        expect(loadedPost.counters.should.be.eql({ code: 1, comments: 1, favorites: 3, likes: 3 }));
+        expect(loadedPost.title).toEqual("About cars");
+        expect(loadedPost.counters).toEqual({ code: 1, comments: 1, favorites: 3, likes: 3 });
 
         await postRepository.remove(loadedPost2);
 
         const loadedPosts2 = (await postRepository.find())!;
-        expect(loadedPosts2.length).to.be.equal(1);
-        expect(loadedPosts2[0].title).to.be.equal("About airplanes");
+        expect(loadedPosts2.length).toEqual(1);
+        expect(loadedPosts2[0].title).toEqual("About airplanes");
     })));
 
 });
