@@ -1,19 +1,18 @@
 import "reflect-metadata";
-import {expect} from "chai";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../test/utils/test-utils";
-import {Connection} from "../../../../src/connection/Connection";
+import {Connection} from "../../../../src";
 import {Post} from "./entity/Post";
 
 describe("columns > getters and setters", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [Post],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should not update columns marked with readonly property", () => Promise.all(connections.map(async connection => {
+    test("should not update columns marked with readonly property", () => Promise.all(connections.map(async connection => {
 
         const postRepository = connection.getRepository(Post);
 
@@ -24,11 +23,11 @@ describe("columns > getters and setters", () => {
 
         // check if title is a value applied by a setter
         const loadedPost1 = await postRepository.findOne(post.id);
-        expect(loadedPost1!.title).to.be.equal("bye");
+        expect(loadedPost1!.title).toEqual("bye");
 
         // try to load a column by its value
         const loadedPost2 = await postRepository.findOne({ title: "bye" });
-        expect(loadedPost2!.title).to.be.equal("bye");
+        expect(loadedPost2!.title).toEqual("bye");
 
     })));
 
