@@ -16,7 +16,7 @@ import {TreeRepositoryNotSupportedError} from "../error/TreeRepositoryNotSupport
 import {QueryDeepPartialEntity} from "../query-builder/QueryPartialEntity";
 import {FindExtraOptions, FindOptions, FindOptionsWhere} from "../find-options/FindOptions";
 import {FindOptionsUtils} from "../find-options/FindOptionsUtils";
-import {EntitySchema, getMetadataArgsStorage, In} from "../index";
+import {EntitySchema, getMetadataArgsStorage} from "../index";
 import {ObserverExecutor} from "../observer/ObserverExecutor";
 import {QueryObserver} from "../observer/QueryObserver";
 import {EntityPersistExecutor} from "../persistence/EntityPersistExecutor";
