@@ -1,32 +1,31 @@
 import "reflect-metadata";
 import {CockroachDriver} from "../../../../../src/driver/cockroachdb/CockroachDriver";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../../test/utils/test-utils";
-import {Connection} from "../../../../../src/connection/Connection";
-import {EntityMetadata} from "../../../../../src/metadata/EntityMetadata";
+import {Connection} from "../../../../../src";
+import {EntityMetadata} from "../../../../../src";
 import {IndexMetadata} from "../../../../../src/metadata/IndexMetadata";
-import {expect} from "chai";
 import {PersonSchema} from "./entity/Person";
 
 describe("entity-schema > indices > basic", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [<any>PersonSchema],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should create a non unique index with 2 columns", () => Promise.all(connections.map(async connection => {
+    test("should create a non unique index with 2 columns", () => Promise.all(connections.map(async connection => {
 
         const queryRunner = connection.createQueryRunner();
         const table = await queryRunner.getTable("person");
         await queryRunner.release();
 
-        expect(table!.indices.length).to.be.equal(1);
-        expect(table!.indices[0].name).to.be.equal("IDX_TEST");
-        expect(table!.indices[0].isUnique).to.be.false;
-        expect(table!.indices[0].columnNames.length).to.be.equal(2);
-        expect(table!.indices[0].columnNames).to.deep.include.members(["FirstName", "LastName"]);
+        expect(table!.indices.length).toEqual(1);
+        expect(table!.indices[0].name).toEqual("IDX_TEST");
+        expect(table!.indices[0].isUnique).toBeFalsy();
+        expect(table!.indices[0].columnNames.length).toEqual(2);
+        expect(table!.indices[0].columnNames).toEqual(expect.arrayContaining(["FirstName", "LastName"]));
 
     })));
 
@@ -44,21 +43,21 @@ describe("entity-schema > indices > basic", () => {
 
         // CockroachDB stores unique indices as UNIQUE constraints
         if (connection.driver instanceof CockroachDriver) {
-            expect(table!.uniques.length).to.be.equal(1);
-            expect(table!.uniques[0].name).to.be.equal("IDX_TEST");
-            expect(table!.uniques[0].columnNames.length).to.be.equal(2);
-            expect(table!.uniques[0].columnNames).to.deep.include.members(["FirstName", "LastName"]);
+            expect(table!.uniques.length).toEqual(1);
+            expect(table!.uniques[0].name).toEqual("IDX_TEST");
+            expect(table!.uniques[0].columnNames.length).toEqual(2);
+            expect(table!.uniques[0].columnNames).toEqual(expect.arrayContaining(["FirstName", "LastName"]));
         } else {
-            expect(table!.indices.length).to.be.equal(1);
-            expect(table!.indices[0].name).to.be.equal("IDX_TEST");
-            expect(table!.indices[0].isUnique).to.be.true;
-            expect(table!.indices[0].columnNames.length).to.be.equal(2);
-            expect(table!.indices[0].columnNames).to.deep.include.members(["FirstName", "LastName"]);
+            expect(table!.indices.length).toEqual(1);
+            expect(table!.indices[0].name).toEqual("IDX_TEST");
+            expect(table!.indices[0].isUnique).toBeTruthy();
+            expect(table!.indices[0].columnNames.length).toEqual(2);
+            expect(table!.indices[0].columnNames).toEqual(expect.arrayContaining(["FirstName", "LastName"]));
         }
 
     })));
 
-    it("should update the index swaping the 2 columns", () => Promise.all(connections.map(async connection => {
+    test("should update the index swaping the 2 columns", () => Promise.all(connections.map(async connection => {
 
         const entityMetadata = connection.entityMetadatas.find(x => x.name === "Person");
         entityMetadata!.indices = [new IndexMetadata({
@@ -79,11 +78,11 @@ describe("entity-schema > indices > basic", () => {
         const table = await queryRunner.getTable("person");
         await queryRunner.release();
 
-        expect(table!.indices.length).to.be.equal(1);
-        expect(table!.indices[0].name).to.be.equal("IDX_TEST");
-        expect(table!.indices[0].isUnique).to.be.false;
-        expect(table!.indices[0].columnNames.length).to.be.equal(2);
-        expect(table!.indices[0].columnNames).to.deep.include.members(["FirstName", "LastName"]);
+        expect(table!.indices.length).toEqual(1);
+        expect(table!.indices[0].name).toEqual("IDX_TEST");
+        expect(table!.indices[0].isUnique).toBeFalsy();
+        expect(table!.indices[0].columnNames.length).toEqual(2);
+        expect(table!.indices[0].columnNames).toEqual(expect.arrayContaining(["FirstName", "LastName"]));
 
     })));
 
