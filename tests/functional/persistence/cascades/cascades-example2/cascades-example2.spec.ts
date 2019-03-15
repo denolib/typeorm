@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../../test/utils/test-utils";
-import {Connection} from "../../../../../src/connection/Connection";
+import {Connection} from "../../../../../src";
 import {Question} from "./entity/Question";
 import {Answer} from "./entity/Answer";
 import {Photo} from "./entity/Photo";
@@ -9,13 +9,13 @@ import {User} from "./entity/User";
 describe("persistence > cascades > example 2", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should insert everything by cascades properly", () => Promise.all(connections.map(async connection => {
+    test("should insert everything by cascades properly", () => Promise.all(connections.map(async connection => {
 
         const photo = new Photo();
         const user = new User();
@@ -42,7 +42,7 @@ describe("persistence > cascades > example 2", () => {
             .leftJoinAndSelect("answerUser.question", "userQuestion")
             .getOne();
 
-        loadedQuestion!.should.be.eql({
+        expect(loadedQuestion)!.toEqual({
             id: 1,
             answers: [{
                 id: 1,
