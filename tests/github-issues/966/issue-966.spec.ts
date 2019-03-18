@@ -1,19 +1,18 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
-import {expect} from "chai";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {User, UserInfo} from "./entity/user";
 
 describe("github issues > #966 Inheritance in embeddables", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should save and load Superclass fields in embeddable", () => Promise.all(connections.map(async connection => {
+    test("should save and load Superclass fields in embeddable", () => Promise.all(connections.map(async connection => {
         const repository = connection.getRepository(User);
         
         const info = new UserInfo();
@@ -29,7 +28,7 @@ describe("github issues > #966 Inheritance in embeddables", () => {
 
         const loadedUser = await repository.findOne(user.id);
 
-        expect(info).to.deep.equal(loadedUser!.info);
+        expect(info).toEqual(loadedUser!.info);
     })));
 
 });
