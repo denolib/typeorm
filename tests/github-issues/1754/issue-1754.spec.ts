@@ -1,20 +1,20 @@
 import {Cliente} from "./entity/cliente";
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
 import {Connection} from "../../../src";
 import {TipoCliente} from "./entity/tipo-cliente";
 
 describe("github issue #1754 Repository.save() always updating ManyToOne relation", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
         enabledDrivers: ["mysql"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should work as expected", () => Promise.all(connections.map(async connection => {
+    test("should work as expected", () => Promise.all(connections.map(async connection => {
 
         const tipoCliente1 = new TipoCliente();
         tipoCliente1.id = 1;
