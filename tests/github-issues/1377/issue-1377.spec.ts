@@ -1,12 +1,12 @@
 import "reflect-metadata";
-import {Connection} from "../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils";
+import {Connection} from "../../../src";
+import {closeTestingConnections, createTestingConnections} from "../../../test/utils/test-utils";
 import {Post} from "./entity/Post";
 
 describe("github issues > #1377 Add support for `GENERATED ALWAYS AS` in MySQL", () => {
 
     let connections: Connection[];
-    before(async () => {
+    beforeAll(async () => {
         connections = await createTestingConnections({
             entities: [__dirname + "/entity/*{.js,.ts}"],
             enabledDrivers: ["mysql"],
@@ -14,15 +14,15 @@ describe("github issues > #1377 Add support for `GENERATED ALWAYS AS` in MySQL",
             dropSchema: true,
         });
     });
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should correctly create table with generated columns", () => Promise.all(connections.map(async connection => {
+    test("should correctly create table with generated columns", () => Promise.all(connections.map(async connection => {
         const queryRunner = connection.createQueryRunner();
         let table = await queryRunner.getTable("post");
-        table!.findColumnByName("virtualFullName")!.asExpression!.should.be.equal("concat(`firstName`,' ',`lastName`)");
-        table!.findColumnByName("virtualFullName")!.generatedType!.should.be.equal("VIRTUAL");
-        table!.findColumnByName("storedFullName")!.asExpression!.should.be.equal("concat(`firstName`,' ',`lastName`)");
-        table!.findColumnByName("storedFullName")!.generatedType!.should.be.equal("STORED");
+        expect(table!.findColumnByName("virtualFullName")!.asExpression)!.toEqual("concat(`firstName`,' ',`lastName`)");
+        expect(table!.findColumnByName("virtualFullName")!.generatedType)!.toEqual("VIRTUAL");
+        expect(table!.findColumnByName("storedFullName")!.asExpression)!.toEqual("concat(`firstName`,' ',`lastName`)");
+        expect(table!.findColumnByName("storedFullName")!.generatedType)!.toEqual("STORED");
 
         const metadata = connection.getMetadata(Post);
         const virtualFullNameColumn = metadata.findColumnWithPropertyName("virtualFullName");
@@ -33,8 +33,8 @@ describe("github issues > #1377 Add support for `GENERATED ALWAYS AS` in MySQL",
         await connection.synchronize();
 
         table = await queryRunner.getTable("post");
-        table!.findColumnByName("virtualFullName")!.generatedType!.should.be.equal("STORED");
-        table!.findColumnByName("storedFullName")!.asExpression!.should.be.equal("concat('Mr. ',`firstName`,' ',`lastName`)");
+        expect(table!.findColumnByName("virtualFullName")!.generatedType)!.toEqual("STORED");
+        expect(table!.findColumnByName("storedFullName")!.asExpression)!.toEqual("concat('Mr. ',`firstName`,' ',`lastName`)");
 
         await queryRunner.release();
     })));
