@@ -1,7 +1,6 @@
 import "reflect-metadata";
-import { expect } from "chai";
-import { Connection } from "../../../src/connection/Connection";
-import { closeTestingConnections, createTestingConnections, reloadTestingDatabases } from "../../utils/test-utils";
+import { Connection } from "../../../src";
+import { closeTestingConnections, createTestingConnections, reloadTestingDatabases } from "../../../test/utils/test-utils";
 import { CategoryWithVeryLongName } from "./entity/CategoryWithVeryLongName";
 import { AuthorWithVeryLongName as PostAuthorWithVeryLongName, AuthorWithVeryLongName } from "./entity/PostAuthorWithVeryLongName";
 import { PostWithVeryLongName } from "./entity/PostWithVeryLongName";
@@ -15,13 +14,13 @@ import { PostWithVeryLongName } from "./entity/PostWithVeryLongName";
  */
 describe("other issues > shorten alias names (for RDBMS with a limit) when they are longer than 63 characters", () => {
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should be able to load deeply nested entity, even with long aliases", () => Promise.all(connections.map(async (connection) => {
+    test("should be able to load deeply nested entity, even with long aliases", () => Promise.all(connections.map(async (connection) => {
         const author = new PostAuthorWithVeryLongName();
         author.firstName = "Jean";
         const post = new PostWithVeryLongName();
@@ -41,19 +40,19 @@ describe("other issues > shorten alias names (for RDBMS with a limit) when they 
             "postsWithVeryLongName.authorWithVeryLongName"
         ] });
 
-        expect(loadedCategory).not.to.be.undefined;
-        expect(loadedCategory!.postsWithVeryLongName).not.to.be.undefined;
-        expect(loadedCategory!.postsWithVeryLongName).not.to.be.empty;
-        expect(loadedCategory!.postsWithVeryLongName[0].authorWithVeryLongName).not.to.be.undefined;
-        expect(loadedCategory!.postsWithVeryLongName[0].authorWithVeryLongName.firstName).to.equal(author.firstName);
+        expect(loadedCategory).not.toBeUndefined();
+        expect(loadedCategory!.postsWithVeryLongName).not.toBeUndefined();
+        expect(loadedCategory!.postsWithVeryLongName).toBeDefined();
+        expect(loadedCategory!.postsWithVeryLongName[0].authorWithVeryLongName).not.toBeUndefined();
+        expect(loadedCategory!.postsWithVeryLongName[0].authorWithVeryLongName.firstName).toEqual(author.firstName);
     })));
 
-    it("should shorten table names which exceed the max length", () => Promise.all(connections.map(async (connection) => {
+    test("should shorten table names which exceed the max length", () => Promise.all(connections.map(async (connection) => {
         const shortName = "cat_wit_ver_lon_nam_pos_wit_ver_lon_nam_pos_wit_ver_lon_nam";
         const normalName = "category_with_very_long_name_posts_with_very_long_name_post_with_very_long_name";
         const { maxAliasLength } = connection.driver;
         const expectedTableName =  maxAliasLength && maxAliasLength > 0 && normalName.length > maxAliasLength ? shortName : normalName;
 
-        expect(connection.entityMetadatas.some(em => em.tableName === expectedTableName)).to.be.true;
+        expect(connection.entityMetadatas.some(em => em.tableName === expectedTableName)).toBeTruthy();
     })));
 });
