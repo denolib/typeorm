@@ -1,4 +1,4 @@
-import { ChildEntity, OneToOne, JoinColumn, ManyToMany, JoinTable } from "../../../../src/index";
+import { ChildEntity, OneToOne, JoinColumn, ManyToMany, JoinTable } from "../../../../src";
 
 import { TournamentParticipant } from "./TournamentParticipant";
 import { User } from "./User";

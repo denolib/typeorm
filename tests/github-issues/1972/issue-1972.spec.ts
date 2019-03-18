@@ -1,22 +1,25 @@
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
 import {Connection} from "../../../src";
 import {assert} from "chai";
 import {User} from "./entity/User";
 import {TournamentUserParticipant} from "./entity/TournamentUserParticipant";
 import {TournamentSquadParticipant} from "./entity/TournamentSquadParticipant";
+import {
+    closeTestingConnections,
+    createTestingConnections,
+    reloadTestingDatabases
+} from "../../../test/utils/test-utils";
 
 describe("github issues > #1972 STI problem - empty columns", () => {
     let connections: Connection[];
 
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
 
     beforeEach(() => reloadTestingDatabases(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    after(() => closeTestingConnections(connections));
-
-    it("should insert with userId", () => Promise.all(connections.map(async connection => {
+    test("should insert with userId", () => Promise.all(connections.map(async connection => {
         // create user
         const user = new User({
             name: "test",
@@ -37,7 +40,7 @@ describe("github issues > #1972 STI problem - empty columns", () => {
         }
     })));
 
-    it("should insert with ownerId", () => Promise.all(connections.map(async connection => {
+    test("should insert with ownerId", () => Promise.all(connections.map(async connection => {
         // create user
         const user = new User({
             name: "test",
