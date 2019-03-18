@@ -1,20 +1,20 @@
 import "reflect-metadata";
-import {Connection} from "../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils";
+import {Connection} from "../../../src";
+import {closeTestingConnections, createTestingConnections} from "../../../test/utils/test-utils";
 import {Table} from "../../../src";
 
 describe("github issues > #1863 createTable.uniques doesn't work when the columnNames only has one item", () => {
 
     let connections: Connection[];
-    before(async () => {
+    beforeAll(async () => {
         connections = await createTestingConnections({
             enabledDrivers: ["mysql"],
             dropSchema: true,
         });
     });
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should correctly create table with unique constraint", () => Promise.all(connections.map(async connection => {
+    test("should correctly create table with unique constraint", () => Promise.all(connections.map(async connection => {
         const queryRunner = connection.createQueryRunner();
         await queryRunner.createTable(new Table({
             name: "post",
@@ -39,8 +39,8 @@ describe("github issues > #1863 createTable.uniques doesn't work when the column
         }));
 
         const table = await queryRunner.getTable("post");
-        table!.indices.length.should.be.equal(1);
-        table!.indices[0].name!.should.be.equal("table_unique");
+        expect(table!.indices.length).toEqual(1);
+        expect(table!.indices[0].name)!.toEqual("table_unique");
 
     })));
 
