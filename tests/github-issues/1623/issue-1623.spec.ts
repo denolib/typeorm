@@ -1,6 +1,6 @@
 import "reflect-metadata";
-import {Connection} from "../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils";
+import {Connection} from "../../../src";
+import {closeTestingConnections, createTestingConnections} from "../../../test/utils/test-utils";
 import {ColumnMetadata} from "../../../src/metadata/ColumnMetadata";
 import {ColumnMetadataArgs} from "../../../src/metadata-args/ColumnMetadataArgs";
 import {User} from "./entity/User";
@@ -8,16 +8,16 @@ import {User} from "./entity/User";
 describe("github issues > #1623 NOT NULL constraint failed after a new column is added (SQLite)", () => {
 
     let connections: Connection[];
-    before(async () => {
+    beforeAll(async () => {
         connections = await createTestingConnections({
             entities: [__dirname + "/entity/*{.js,.ts}"],
             schemaCreate: true,
             dropSchema: true,
         });
     });
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should correctly add new column", () => Promise.all(connections.map(async connection => {
+    test("should correctly add new column", () => Promise.all(connections.map(async connection => {
 
         const userMetadata = connection.getMetadata(User);
 
@@ -45,7 +45,7 @@ describe("github issues > #1623 NOT NULL constraint failed after a new column is
         const column1 = table!.findColumnByName("userName")!;
         await queryRunner.release();
 
-        column1.should.be.exist;
+        expect(column1).toBeDefined();
     })));
 
 });
