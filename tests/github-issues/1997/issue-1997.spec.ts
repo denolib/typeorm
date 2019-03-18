@@ -1,13 +1,12 @@
 import "reflect-metadata";
-import {expect} from "chai";
-import {createTestingConnections, closeTestingConnections} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {createTestingConnections, closeTestingConnections} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {Post} from "./entity/Post";
 import {Table, TableColumn} from "../../../src";
 
 describe("github issues > #1997 enum type not working in postgres when defined in a custom schema", () => {
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
         enabledDrivers: ["postgres"],
     }));
@@ -26,21 +25,21 @@ describe("github issues > #1997 enum type not working in postgres when defined i
             await queryRunner.release();
         }));
     });
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should create table with ENUM column", () => Promise.all(connections.map(async connection => {
+    test("should create table with ENUM column", () => Promise.all(connections.map(async connection => {
         await connection.driver.createSchemaBuilder().build();
     })));
 
-    it("should be able to read table data with ENUM", () => Promise.all(connections.map(async connection => {
+    test("should be able to read table data with ENUM", () => Promise.all(connections.map(async connection => {
         await connection.driver.createSchemaBuilder().build();
         const queryRunner = connection.createQueryRunner();
         const table = await queryRunner.getTable("schema.post");
-        table!.should.not.be.undefined;
+        expect(table)!.not.toBeUndefined();
         await queryRunner.release();
     })));
 
-    it("should save data with ENUM", () => Promise.all(connections.map(async connection => {
+    test("should save data with ENUM", () => Promise.all(connections.map(async connection => {
         await connection.driver.createSchemaBuilder().build();
 
         const postRepository = connection.getRepository(Post);
@@ -54,12 +53,12 @@ describe("github issues > #1997 enum type not working in postgres when defined i
         await postRepository.save(post);
 
         const loadedPost = (await postRepository.findOne(1))!;
-        loadedPost.enum.should.be.equal(post.enum);
+        expect(loadedPost.enum).toEqual(post.enum);
 
-        table!.findColumnByName("enum")!.type.should.be.equal("enum");
+        expect(table!.findColumnByName("enum")!.type).toEqual("enum");
     })));
 
-    it("should create ENUM column and revert creation", () => Promise.all(connections.map(async connection => {
+    test("should create ENUM column and revert creation", () => Promise.all(connections.map(async connection => {
         await connection.driver.createSchemaBuilder().build();
 
         const queryRunner = connection.createQueryRunner();
@@ -70,17 +69,17 @@ describe("github issues > #1997 enum type not working in postgres when defined i
         }));
 
         let table = await queryRunner.getTable("schema.post");
-        table!.findColumnByName("newEnum")!.type.should.be.equal("enum");
+        expect(table!.findColumnByName("newEnum")!.type).toEqual("enum");
 
         await queryRunner.executeMemoryDownSql();
 
         table = await queryRunner.getTable("schema.post");
-        expect(table!.findColumnByName("newEnum")).to.be.undefined;
+        expect(table!.findColumnByName("newEnum")).toBeUndefined();
 
         await queryRunner.release();
     })));
 
-    it("should drop ENUM column and revert drop", () => Promise.all(connections.map(async connection => {
+    test("should drop ENUM column and revert drop", () => Promise.all(connections.map(async connection => {
         await connection.driver.createSchemaBuilder().build();
 
         const queryRunner = connection.createQueryRunner();
@@ -88,17 +87,17 @@ describe("github issues > #1997 enum type not working in postgres when defined i
         const enumColumn = table!.findColumnByName("enum")!;
 
         await queryRunner.dropColumn(table!, enumColumn);
-        expect(table!.findColumnByName("enum")).to.be.undefined;
+        expect(table!.findColumnByName("enum")).toBeUndefined();
 
         await queryRunner.executeMemoryDownSql();
 
         table = await queryRunner.getTable("schema.post");
-        table!.findColumnByName("enum")!.type.should.be.equal("enum");
+        expect(table!.findColumnByName("enum")!.type).toEqual("enum");
 
         await queryRunner.release();
     })));
 
-    it("should create table with ENUM column and revert creation", () => Promise.all(connections.map(async connection => {
+    test("should create table with ENUM column and revert creation", () => Promise.all(connections.map(async connection => {
         await connection.driver.createSchemaBuilder().build();
 
         const queryRunner = connection.createQueryRunner();
@@ -115,35 +114,35 @@ describe("github issues > #1997 enum type not working in postgres when defined i
 
         let table = await queryRunner.getTable("schema.question");
         const enumColumn = table!.findColumnByName("enum")!;
-        enumColumn.type.should.be.equal("enum");
-        enumColumn.enum!.should.be.eql(["Apple", "Banana", "Cherry"]);
+        expect(enumColumn.type).toEqual("enum");
+        expect(enumColumn.enum)!.toEqual(["Apple", "Banana", "Cherry"]);
 
         await queryRunner.executeMemoryDownSql();
 
         table = await queryRunner.getTable("question");
-        expect(table).to.be.undefined;
+        expect(table).toBeUndefined();
 
         await queryRunner.release();
     })));
 
-    it("should drop table with ENUM column and revert drop", () => Promise.all(connections.map(async connection => {
+    test("should drop table with ENUM column and revert drop", () => Promise.all(connections.map(async connection => {
         await connection.driver.createSchemaBuilder().build();
 
         const queryRunner = connection.createQueryRunner();
         await queryRunner.dropTable("schema.post");
 
         let table = await queryRunner.getTable("schema.post");
-        expect(table).to.be.undefined;
+        expect(table).toBeUndefined();
 
         await queryRunner.executeMemoryDownSql();
 
         table = await queryRunner.getTable("schema.post");
-        expect(table).to.be.not.undefined;
+        expect(table).not.toBeUndefined();
 
         await queryRunner.release();
     })));
 
-    it("should change non-enum column in to ENUM and revert change", () => Promise.all(connections.map(async connection => {
+    test("should change non-enum column in to ENUM and revert change", () => Promise.all(connections.map(async connection => {
         await connection.driver.createSchemaBuilder().build();
 
         const queryRunner = connection.createQueryRunner();
@@ -157,20 +156,20 @@ describe("github issues > #1997 enum type not working in postgres when defined i
 
         table = await queryRunner.getTable("schema.post");
         changedColumn = table!.findColumnByName("name")!;
-        changedColumn.type.should.be.equal("enum");
-        changedColumn.enum!.should.be.eql(["Apple", "Banana", "Cherry"]);
+        expect(changedColumn.type).toEqual("enum");
+        expect(changedColumn.enum)!.toEqual(["Apple", "Banana", "Cherry"]);
 
         await queryRunner.executeMemoryDownSql();
 
         table = await queryRunner.getTable("schema.post");
         nameColumn = table!.findColumnByName("name")!;
-        nameColumn.type.should.be.equal("character varying");
-        expect(nameColumn.enum).to.be.undefined;
+        expect(nameColumn.type).toEqual("character varying");
+        expect(nameColumn.enum).toBeUndefined();
 
         await queryRunner.release();
     })));
 
-    it("should change ENUM column in to non-enum and revert change", () => Promise.all(connections.map(async connection => {
+    test("should change ENUM column in to non-enum and revert change", () => Promise.all(connections.map(async connection => {
         await connection.driver.createSchemaBuilder().build();
 
         const queryRunner = connection.createQueryRunner();
@@ -184,20 +183,20 @@ describe("github issues > #1997 enum type not working in postgres when defined i
 
         table = await queryRunner.getTable("schema.post");
         changedColumn = table!.findColumnByName("enum")!;
-        changedColumn.type.should.be.equal("character varying");
-        expect(changedColumn.enum).to.be.undefined;
+        expect(changedColumn.type).toEqual("character varying");
+        expect(changedColumn.enum).toBeUndefined();
 
         await queryRunner.executeMemoryDownSql();
 
         table = await queryRunner.getTable("schema.post");
         enumColumn = table!.findColumnByName("enum")!;
-        enumColumn.type.should.be.equal("enum");
-        enumColumn.enum!.should.be.eql(["A", "B", "C"]);
+        expect(enumColumn.type).toEqual("enum");
+        expect(enumColumn.enum)!.toEqual(["A", "B", "C"]);
 
         await queryRunner.release();
     })));
 
-    it("should change ENUM column and revert change", () => Promise.all(connections.map(async connection => {
+    test("should change ENUM column and revert change", () => Promise.all(connections.map(async connection => {
         await connection.driver.createSchemaBuilder().build();
 
         const queryRunner = connection.createQueryRunner();
@@ -209,17 +208,17 @@ describe("github issues > #1997 enum type not working in postgres when defined i
         await queryRunner.changeColumn(table!, enumColumn, changedColumn);
 
         table = await queryRunner.getTable("schema.post");
-        table!.findColumnByName("enum")!.enum!.should.be.eql(["C", "D", "E"]);
+        expect(table!.findColumnByName("enum")!.enum)!.toEqual(["C", "D", "E"]);
 
         await queryRunner.executeMemoryDownSql();
 
         table = await queryRunner.getTable("schema.post");
-        table!.findColumnByName("enum")!.enum!.should.be.eql(["A", "B", "C"]);
+        expect(table!.findColumnByName("enum")!.enum)!.toEqual(["A", "B", "C"]);
 
         await queryRunner.release();
     })));
 
-    it("should rename ENUM when column renamed and revert rename", () => Promise.all(connections.map(async connection => {
+    test("should rename ENUM when column renamed and revert rename", () => Promise.all(connections.map(async connection => {
         await connection.driver.createSchemaBuilder().build();
 
         const queryRunner = connection.createQueryRunner();
@@ -233,19 +232,19 @@ describe("github issues > #1997 enum type not working in postgres when defined i
         let result = await queryRunner.query(`SELECT "n"."nspname", "t"."typname" FROM "pg_type" "t" ` +
             `INNER JOIN "pg_namespace" "n" ON "n"."oid" = "t"."typnamespace" ` +
             `WHERE "n"."nspname" = 'schema' AND "t"."typname" = 'post_enumerable_enum'`);
-        result.length.should.be.equal(1);
+        expect(result.length).toEqual(1);
 
         await queryRunner.executeMemoryDownSql();
 
         result = await queryRunner.query(`SELECT "n"."nspname", "t"."typname" FROM "pg_type" "t" ` +
             `INNER JOIN "pg_namespace" "n" ON "n"."oid" = "t"."typnamespace" ` +
             `WHERE "n"."nspname" = 'schema' AND "t"."typname" = 'post_enum_enum'`);
-        result.length.should.be.equal(1);
+        expect(result.length).toEqual(1);
 
         await queryRunner.release();
     })));
 
-    it("should rename ENUM when table renamed and revert rename", () => Promise.all(connections.map(async connection => {
+    test("should rename ENUM when table renamed and revert rename", () => Promise.all(connections.map(async connection => {
         await connection.driver.createSchemaBuilder().build();
 
         const queryRunner = connection.createQueryRunner();
@@ -256,14 +255,14 @@ describe("github issues > #1997 enum type not working in postgres when defined i
         let result = await queryRunner.query(`SELECT "n"."nspname", "t"."typname" FROM "pg_type" "t" ` +
             `INNER JOIN "pg_namespace" "n" ON "n"."oid" = "t"."typnamespace" ` +
             `WHERE "n"."nspname" = 'schema' AND "t"."typname" = 'question_enum_enum'`);
-        result.length.should.be.equal(1);
+        expect(result.length).toEqual(1);
 
         await queryRunner.executeMemoryDownSql();
 
         result = await queryRunner.query(`SELECT "n"."nspname", "t"."typname" FROM "pg_type" "t" ` +
             `INNER JOIN "pg_namespace" "n" ON "n"."oid" = "t"."typnamespace" ` +
             `WHERE "n"."nspname" = 'schema' AND "t"."typname" = 'post_enum_enum'`);
-        result.length.should.be.equal(1);
+        expect(result.length).toEqual(1);
 
         await queryRunner.release();
     })));
