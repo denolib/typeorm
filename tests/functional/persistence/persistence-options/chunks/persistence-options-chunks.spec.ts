@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../../test/utils/test-utils";
 import {Post} from "./entity/Post";
-import {Connection} from "../../../../../src/connection/Connection";
+import {Connection} from "../../../../../src";
 
 describe("persistence > persistence options > chunks", () => {
 
@@ -10,15 +10,15 @@ describe("persistence > persistence options > chunks", () => {
     // -------------------------------------------------------------------------
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({ __dirname, enabledDrivers: ["postgres"] }));
+    beforeAll(async () => connections = await createTestingConnections({ __dirname, enabledDrivers: ["postgres"] }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
     // -------------------------------------------------------------------------
     // Specifications
     // -------------------------------------------------------------------------
 
-    it("should save objects in chunks", () => Promise.all(connections.map(async connection => {
+    test("should save objects in chunks", () => Promise.all(connections.map(async connection => {
         const posts: Post[] = [];
         for (let i = 0; i < 25000; i++) { // CI falls on Node 4 with 100000 rows
             const post = new Post();
