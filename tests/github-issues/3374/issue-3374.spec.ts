@@ -1,21 +1,20 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {Post} from "./entity/Post";
-import {expect} from "chai";
 
 describe("github issues > #3374 Synchronize issue with UUID (MySQL)", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
         subscribers: [__dirname + "/subscriber/*{.js,.ts}"],
         enabledDrivers: ["mysql"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should not drop primary column again", () => Promise.all(connections.map(async function(connection) {
+    test("should not drop primary column again", () => Promise.all(connections.map(async function(connection) {
 
         const post = new Post();
         post.id = 1;
@@ -25,7 +24,7 @@ describe("github issues > #3374 Synchronize issue with UUID (MySQL)", () => {
         await connection.synchronize();
 
         const loadedPost = await connection.manager.find(Post, { name: "hello world" });
-        expect(loadedPost).to.be.not.empty;
+        expect(loadedPost).toBeDefined();
 
     })));
 
