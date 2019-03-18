@@ -1,4 +1,4 @@
-import {Column, Entity, OneToMany, PrimaryGeneratedColumn} from "../../../../src/index";
+import {Column, Entity, OneToMany, PrimaryGeneratedColumn} from "../../../../src";
 import {EventRole} from "./EventRole";
 
 @Entity()

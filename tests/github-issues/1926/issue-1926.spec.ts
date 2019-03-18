@@ -1,6 +1,5 @@
-import {Connection} from "../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-
+import {Connection} from "../../../src";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
 import {Role} from "./entity/Role";
 import {Event} from "./entity/Event";
 import {EventRole} from "./entity/EventRole";
@@ -8,17 +7,16 @@ import {EventRole} from "./entity/EventRole";
 // todo: fix later (refactor persistence)
 describe.skip("github issues > #1926 Update fails for entity with compound relation-based primary key on OneToMany relationship", () => {
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
         enabledDrivers: ["postgres"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("Should update OneToMany entity with compound relation-based primary key", () => Promise.all(connections.map(async connection => {
+    test("Should update OneToMany entity with compound relation-based primary key", () => Promise.all(connections.map(async connection => {
         let role = new Role();
         role.title = "The Boss";
-
         role = await connection.manager.save(role);
 
         let event = new Event();
@@ -28,11 +26,8 @@ describe.skip("github issues > #1926 Update fails for entity with compound relat
         eventRole.description = "Be the boss";
         eventRole.compensation = "All the money!";
         eventRole.roleId = role.id;
-
         event.roles = [eventRole];
-
         event = await connection.manager.save(event);
-
         event.roles[0].description = "Be a good boss";
 
         // Fails with:
