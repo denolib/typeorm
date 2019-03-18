@@ -1,8 +1,5 @@
 import "reflect-metadata";
-
-import { expect } from "chai";
-
-import { Connection } from "../../../src/connection/Connection";
+import { Connection } from "../../../src";
 import {
   closeTestingConnections,
   createTestingConnections,
@@ -13,7 +10,7 @@ import { Foo } from "./entity/Foo";
 
 describe("github issues > #2251 - Unexpected behavior when passing duplicate entities to repository.save()", () => {
   let connections: Connection[];
-  before(
+  beforeAll(
     async () =>
       (connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
@@ -23,9 +20,9 @@ describe("github issues > #2251 - Unexpected behavior when passing duplicate ent
   );
 
   beforeEach(() => reloadTestingDatabases(connections));
-  after(() => closeTestingConnections(connections));
+  afterAll(() => closeTestingConnections(connections));
 
-  it("should update all entities", () =>
+  test("should update all entities", () =>
     Promise.all(
       connections.map(async connection => {
         const repo = connection.getRepository(Bar);
@@ -42,11 +39,11 @@ describe("github issues > #2251 - Unexpected behavior when passing duplicate ent
 
         bars = await repo.find();
 
-        expect(bars.length).to.equal(2);
+        expect(bars.length).toEqual(2);
       })
     ));
 
-  it("should handle cascade updates", () =>
+  test("should handle cascade updates", () =>
     Promise.all(
       connections.map(async connection => {
         const barRepo = connection.getRepository(Bar);
@@ -69,15 +66,15 @@ describe("github issues > #2251 - Unexpected behavior when passing duplicate ent
 
         // We saved two bars originally. The above save should update the description of one,
         // remove the reference of another and insert a 3rd.
-        expect(bars.length).to.equal(3);
+        expect(bars.length).toEqual(3);
         
         const bar = await barRepo.findOne(1);
 
-        expect(bar).not.to.be.undefined;
+        expect(bar).not.toBeUndefined();
 
         // Did not observe the same behavior with unwanted inserts. Current behavior is
         // that the first duplicate goes through and the rest are ignored.
-        expect(bar!.description).to.equal("test2a-1");
+        expect(bar!.description).toEqual("test2a-1");
       })
     ));
 });
