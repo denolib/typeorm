@@ -1,4 +1,4 @@
-import {EntitySubscriberInterface, EventSubscriber, InsertEvent, UpdateEvent} from "../../../../src/index";
+import {EntitySubscriberInterface, EventSubscriber, InsertEvent, UpdateEvent} from "../../../../src";
 import {AbstractEntity} from "../entity/AbstractEntity";
 
 @EventSubscriber()

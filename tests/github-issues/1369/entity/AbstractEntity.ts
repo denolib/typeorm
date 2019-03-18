@@ -1,4 +1,4 @@
-import {Column, PrimaryGeneratedColumn} from "../../../../src/index";
+import {Column, PrimaryGeneratedColumn} from "../../../../src";
 
 export abstract class AbstractEntity {
   @PrimaryGeneratedColumn() id: number;

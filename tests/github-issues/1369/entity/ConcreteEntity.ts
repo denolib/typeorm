@@ -1,4 +1,4 @@
-import {Column, Entity} from "../../../../src/index";
+import {Column, Entity} from "../../../../src";
 import {AbstractEntity} from "./AbstractEntity";
 
 @Entity()
