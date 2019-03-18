@@ -1,21 +1,20 @@
 import "reflect-metadata";
-import { closeTestingConnections, createTestingConnections, reloadTestingDatabases } from "../../utils/test-utils";
-import { Connection } from "../../../src/connection/Connection";
-import { expect } from "chai";
+import { closeTestingConnections, createTestingConnections, reloadTestingDatabases } from "../../../test/utils/test-utils";
+import { Connection } from "../../../src";
 import { Post } from "./entity/Post";
 import { PostgresDriver } from "../../../src/driver/postgres/PostgresDriver";
 
 describe("github issues > #2128 skip preparePersistentValue for value functions", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
         enabledDrivers: ["postgres", "mysql"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should be able to resolve value functions", () => Promise.all(connections.map(async connection => {
+    test("should be able to resolve value functions", () => Promise.all(connections.map(async connection => {
 
         await connection.createQueryBuilder()
             .insert()
@@ -49,14 +48,13 @@ describe("github issues > #2128 skip preparePersistentValue for value functions"
 
         const loadedPost = await connection.getRepository(Post).findOne({ title: "First Post" });
 
-        expect(loadedPost!.meta).to.deep.equal({
-             author: "John Doe",
-             keywords: [
-                 "important",
-                 "fresh"
+        expect(loadedPost!.meta).toEqual({
+            author: "John Doe",
+            keywords: [
+                "important",
+                "fresh"
             ]
         });
-
     })));
 
 });
