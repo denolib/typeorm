@@ -1,20 +1,19 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
 import {Connection} from "../../../src";
 import {Thing, EmbeddedInThing} from "./entity/thing";
-import {expect} from "chai";
 
 describe("github issues > #1825 Invalid field values being loaded with long camelCased embedded field names.", () => {
     let connections: Connection[];
-    before(async () => (connections = await createTestingConnections({
+    beforeAll(async () => (connections = await createTestingConnections({
             entities: [__dirname + "/entity/*{.js,.ts}"],
             enabledDrivers: ["mysql", "postgres", "mariadb"]
         }))
     );
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should load valid values in embedded with long field names", () => Promise.all(connections.map(async connection => {
+    test("should load valid values in embedded with long field names", () => Promise.all(connections.map(async connection => {
         const thingRepository = connection.getRepository(Thing);
 
         const thing = new Thing();
@@ -27,6 +26,6 @@ describe("github issues > #1825 Invalid field values being loaded with long came
 
         const loadedThing = await thingRepository.findOne(thing.id);
 
-        expect(loadedThing).to.eql(thing);
+        expect(loadedThing).toEqual(thing);
     })));
 });
