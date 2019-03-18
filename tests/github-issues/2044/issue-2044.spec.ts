@@ -1,19 +1,19 @@
 import {Connection} from "../../../src";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
 import {User} from "./entity/User";
 import {Photo} from "./entity/Photo";
 
 describe("github issues > #2044 Should not double get embedded column value", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
         enabledDrivers: ["mysql"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("Insert query should work with relational columns", () => Promise.all(connections.map(async connection => {
+    test("Insert query should work with relational columns", () => Promise.all(connections.map(async connection => {
         let userId = "1234";
         let photoId = "4321";
 
@@ -35,8 +35,8 @@ describe("github issues > #2044 Should not double get embedded column value", ()
 
         const resultPhoto = photos[0];
 
-        resultPhoto.id.should.be.eql(photoId);
-        resultPhoto.user.id.should.be.eql(userId);
+        expect(resultPhoto.id).toEqual(photoId);
+        expect(resultPhoto.user.id).toEqual(userId);
     })));
 
 });
