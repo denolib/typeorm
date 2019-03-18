@@ -1,20 +1,20 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {Post} from "./entity/Post";
 import {ObjectLiteral} from "../../../src";
 
 describe("github issues > #922 Support HSTORE column type", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
         enabledDrivers: ["postgres"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should correctly implement HSTORE type", () => Promise.all(connections.map(async connection => {
+    test("should correctly implement HSTORE type", () => Promise.all(connections.map(async connection => {
 
         const queryRunner = connection.createQueryRunner();
         const postRepository = connection.getRepository(Post);
@@ -26,11 +26,11 @@ describe("github issues > #922 Support HSTORE column type", () => {
         await postRepository.save(post);
 
         const loadedPost = await postRepository.findOne(1);
-        (loadedPost!.hstoreObj as ObjectLiteral).name.should.be.equal("Alice");
-        (loadedPost!.hstoreObj as ObjectLiteral).surname.should.be.equal("A");
-        (loadedPost!.hstoreObj as ObjectLiteral).age.should.be.equal("25");
-        loadedPost!.hstoreStr.should.be.equal(`"age"=>"30", "name"=>"Bob", "surname"=>"B"`);
-        table!.findColumnByName("hstoreObj")!.type.should.be.equal("hstore");
+        expect((loadedPost!.hstoreObj as ObjectLiteral).name).toEqual("Alice");
+        expect((loadedPost!.hstoreObj as ObjectLiteral).surname).toEqual("A");
+        expect((loadedPost!.hstoreObj as ObjectLiteral).age).toEqual("25");
+        expect(loadedPost!.hstoreStr).toEqual(`"age"=>"30", "name"=>"Bob", "surname"=>"B"`);
+        expect(table!.findColumnByName("hstoreObj")!.type).toEqual("hstore");
         await queryRunner.release();
     })));
 
