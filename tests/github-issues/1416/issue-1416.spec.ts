@@ -1,21 +1,20 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
 import {Author} from "./entity/Author";
 import {Photo} from "./entity/Photo";
-import {Connection} from "../../../src/connection/Connection";
+import {Connection} from "../../../src";
 import {PhotoMetadata} from "./entity/PhotoMetadata";
-import {expect} from "chai";
 
 describe("github issue > #1416 Wrong behavior when fetching an entity that has a relation with its own eager relations", () => {
     let connections: Connection[] = [];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
         enabledDrivers: ["mysql"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should load eager relations of an entity's relations recursively", () => Promise.all(connections.map(async connection => {
+    test("should load eager relations of an entity's relations recursively", () => Promise.all(connections.map(async connection => {
         const metadata = new PhotoMetadata();
         metadata.height = 640;
         metadata.width = 480;
@@ -43,10 +42,10 @@ describe("github issue > #1416 Wrong behavior when fetching an entity that has a
             }, 
             relations: ["photos"] 
         }) as Author;
-        expect(author).not.to.be.undefined;
-        expect(author.photos[0]).not.to.be.undefined;
-        expect(author.photos[0]).to.eql(photo);
-        expect(author.photos[0].metadata).not.to.be.undefined;
-        expect(author.photos[0].metadata).to.eql(metadata);
+        expect(author).not.toBeUndefined();
+        expect(author.photos[0]).not.toBeUndefined();
+        expect(author.photos[0]).toEqual(photo);
+        expect(author.photos[0].metadata).not.toBeUndefined();
+        expect(author.photos[0].metadata).toEqual(metadata);
     })));
 });

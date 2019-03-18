@@ -1,4 +1,4 @@
-import {Entity, PrimaryGeneratedColumn, Column, OneToOne} from "../../../../src/index";
+import {Entity, PrimaryGeneratedColumn, Column, OneToOne} from "../../../../src";
 import {Photo} from "./Photo";
 
 @Entity()

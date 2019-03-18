@@ -1,4 +1,4 @@
-import {Column, Entity, PrimaryGeneratedColumn, OneToOne, ManyToOne, JoinColumn} from "../../../../src/index";
+import {Column, Entity, PrimaryGeneratedColumn, OneToOne, ManyToOne, JoinColumn} from "../../../../src";
 import {PhotoMetadata} from "./PhotoMetadata";
 import {Author} from "./Author";
 
