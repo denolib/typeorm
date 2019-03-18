@@ -1,21 +1,20 @@
 import "reflect-metadata";
-import {expect} from "chai";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {Post} from "./entity/Post";
 import { Category } from "./entity/Category";
 
 describe("github issues > #1576 Entities with null as `id` are merged [@next]", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
         enabledDrivers: ["postgres"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should successfully create object", () => Promise.all(connections.map(async connection => {
+    test("should successfully create object", () => Promise.all(connections.map(async connection => {
         const newpost = new Post();
         let cat1 = new Category();
         cat1.name2 = "1";
@@ -25,7 +24,7 @@ describe("github issues > #1576 Entities with null as `id` are merged [@next]", 
 
         const post = connection.manager.create(Post, newpost);
 
-        expect(post.categories).to.have.length(2);
+        expect(post.categories).toHaveLength(2);
     })));
 
 });
