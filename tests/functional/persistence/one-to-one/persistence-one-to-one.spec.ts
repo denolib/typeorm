@@ -1,6 +1,5 @@
 import "reflect-metadata";
-import {expect} from "chai";
-import {Connection} from "../../../../src/connection/Connection";
+import {Connection} from "../../../../src";
 import {User} from "./entity/User";
 import {AccessToken} from "./entity/AccessToken";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../test/utils/test-utils";
@@ -12,12 +11,12 @@ describe("persistence > one-to-one", function() {
     // -------------------------------------------------------------------------
 
     let connections: Connection[];
-    before(() => {
+    beforeAll(() => {
         return createTestingConnections({
             entities: [User, AccessToken],
         }).then(all => connections = all);
     });
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
     beforeEach(() => reloadTestingDatabases(connections));
 
     // -------------------------------------------------------------------------
@@ -26,7 +25,7 @@ describe("persistence > one-to-one", function() {
 
     describe("set the relation with proper item", function() {
 
-        it("should have an access token", () => Promise.all(connections.map(async connection => {
+        test("should have an access token", () => Promise.all(connections.map(async connection => {
             const userRepository = connection.getRepository(User);
             const accessTokenRepository = connection.getRepository(AccessToken);
 
@@ -44,15 +43,15 @@ describe("persistence > one-to-one", function() {
                 relations: ["access_token"]
             });
 
-            expect(loadedUser).not.to.be.undefined;
-            expect(loadedUser!.access_token).not.to.be.undefined;
+            expect(loadedUser).not.toBeUndefined();
+            expect(loadedUser!.access_token).not.toBeUndefined();
         })));
 
     });
 
     describe("doesn't allow the same relation to be used twice", function() {
 
-        it("should reject the saving attempt", () => Promise.all(connections.map(async connection => {
+        test("should reject the saving attempt", () => Promise.all(connections.map(async connection => {
             const userRepository = connection.getRepository(User);
             const accessTokenRepository = connection.getRepository(AccessToken);
 
@@ -74,9 +73,9 @@ describe("persistence > one-to-one", function() {
                 error = err;
             }
 
-            expect(error).to.be.instanceof(Error);
-            expect(await userRepository.count({})).to.equal(1);
-            expect(await accessTokenRepository.count({})).to.equal(1);
+            expect(error).toBeInstanceOf(Error);
+            expect(await userRepository.count({})).toEqual(1);
+            expect(await accessTokenRepository.count({})).toEqual(1);
         })));
 
     });
