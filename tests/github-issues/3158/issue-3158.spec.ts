@@ -1,8 +1,8 @@
 import "reflect-metadata";
-import { createTestingConnections, closeTestingConnections, reloadTestingDatabases } from "../../utils/test-utils";
-import { Connection } from "../../../src/connection/Connection";
-import { expect } from "chai";
-it("github issues > #3158 Cannot run sync a second time", async () => {
+import { createTestingConnections, closeTestingConnections, reloadTestingDatabases } from "../../../test/utils/test-utils";
+import { Connection } from "../../../src";
+
+test("github issues > #3158 Cannot run sync a second time", async () => {
     let connections: Connection[];
         connections = await createTestingConnections({
             entities: [__dirname + "/entity/*{.js,.ts}"],
@@ -15,8 +15,8 @@ it("github issues > #3158 Cannot run sync a second time", async () => {
         await Promise.all(connections.map(async connection => {
             const schemaBuilder = connection.driver.createSchemaBuilder();
             const syncQueries = await schemaBuilder.log();
-            expect(syncQueries.downQueries).to.be.eql([]);
-            expect(syncQueries.upQueries).to.be.eql([]);
+            expect(syncQueries.downQueries).toEqual([]);
+            expect(syncQueries.upQueries).toEqual([]);
         }));
         await closeTestingConnections(connections);
 });
