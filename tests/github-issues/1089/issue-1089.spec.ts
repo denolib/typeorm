@@ -1,26 +1,26 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {Group} from "./entity/Group";
 
 describe("github issues > #1089 UUID in ClosureEntity", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
         schemaCreate: false,
         dropSchema: true
     }));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should correctly work with primary UUID column", () => Promise.all(connections.map(async connection => {
+    test("should correctly work with primary UUID column", () => Promise.all(connections.map(async connection => {
         await connection.synchronize();
 
         const queryRunner = connection.createQueryRunner();
         const table = await queryRunner.getTable("group");
         await queryRunner.release();
 
-        table!.should.exist;
+        expect(table)!.toBeDefined();
 
         const groupRepository = connection.getTreeRepository(Group);
 
@@ -39,13 +39,13 @@ describe("github issues > #1089 UUID in ClosureEntity", () => {
         await groupRepository.save(a12);
 
         const rootGroups = await groupRepository.findRoots();
-        rootGroups.length.should.be.equal(1);
+        expect(rootGroups.length).toEqual(1);
 
         const a11Parent = await groupRepository.findAncestors(a11);
-        a11Parent.length.should.be.equal(2);
+        expect(a11Parent.length).toEqual(2);
 
         const a1Children = await groupRepository.findDescendants(a1);
-        a1Children.length.should.be.equal(3);
+        expect(a1Children.length).toEqual(3);
 
     })));
 
