@@ -1,12 +1,12 @@
 import "reflect-metadata";
-import {Connection} from "../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils";
+import {Connection} from "../../../src";
+import {closeTestingConnections, createTestingConnections} from "../../../test/utils/test-utils";
 import {Post} from "./entity/Post";
 
 describe("github issues > #1733 Postgresql driver does not detect/support varying without length specified", () => {
 
     let connections: Connection[];
-    before(async () => {
+    beforeAll(async () => {
         connections = await createTestingConnections({
             entities: [__dirname + "/entity/*{.js,.ts}"],
             enabledDrivers: ["postgres"],
@@ -14,14 +14,14 @@ describe("github issues > #1733 Postgresql driver does not detect/support varyin
             dropSchema: true,
         });
     });
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should correctly synchronize schema when varchar column length is not specified", () => Promise.all(connections.map(async connection => {
+    test("should correctly synchronize schema when varchar column length is not specified", () => Promise.all(connections.map(async connection => {
         const queryRunner = connection.createQueryRunner();
         let table = await queryRunner.getTable("post");
 
-        table!.findColumnByName("name")!.length.should.be.empty;
-        table!.findColumnByName("name2")!.length.should.be.equal("255");
+        expect(table!.findColumnByName("name")!.length).toBeDefined();
+        expect(table!.findColumnByName("name2")!.length).toEqual("255");
 
         const postMetadata = connection.getMetadata(Post);
         const column1 = postMetadata.findColumnWithPropertyName("name")!;
@@ -32,8 +32,8 @@ describe("github issues > #1733 Postgresql driver does not detect/support varyin
         await connection.synchronize();
 
         table = await queryRunner.getTable("post");
-        table!.findColumnByName("name")!.length.should.be.equal("500");
-        table!.findColumnByName("name2")!.length.should.be.empty;
+        expect(table!.findColumnByName("name")!.length).toEqual("500");
+        expect(table!.findColumnByName("name2")!.length).toBeDefined();
 
         column1.length = "";
         column2.length = "255";
@@ -41,8 +41,8 @@ describe("github issues > #1733 Postgresql driver does not detect/support varyin
         await connection.synchronize();
 
         table = await queryRunner.getTable("post");
-        table!.findColumnByName("name")!.length.should.be.empty;
-        table!.findColumnByName("name2")!.length.should.be.equal("255");
+        expect(table!.findColumnByName("name")!.length).toBeDefined();
+        expect(table!.findColumnByName("name2")!.length).toEqual("255");
 
         await queryRunner.release();
     })));
