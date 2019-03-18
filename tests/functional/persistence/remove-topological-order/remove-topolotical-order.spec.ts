@@ -1,9 +1,8 @@
 import "reflect-metadata";
-import {Connection} from "../../../../src/connection/Connection";
+import {Connection} from "../../../../src";
 import {Post} from "./entity/Post";
 import {Category} from "./entity/Category";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../test/utils/test-utils";
-// import {expect} from "chai";
 
 describe("persistence > remove-topological-order", function() {
 
@@ -12,15 +11,15 @@ describe("persistence > remove-topological-order", function() {
     // -------------------------------------------------------------------------
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({ __dirname }));
+    beforeAll(async () => connections = await createTestingConnections({ __dirname }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
     // -------------------------------------------------------------------------
     // Specifications
     // -------------------------------------------------------------------------
 
-    it("should remove depend properties in a proper order", () => Promise.all(connections.map(async connection => {
+    test("should remove depend properties in a proper order", () => Promise.all(connections.map(async connection => {
 
         // insert some data
         const category1 = new Category();
