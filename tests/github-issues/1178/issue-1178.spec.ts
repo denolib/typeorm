@@ -1,20 +1,20 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {Post} from "./entity/Post";
 import {User} from "./entity/User";
 
 describe("github issues > #1178 subqueries must work in insert statements", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
         enabledDrivers: ["postgres"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should work fine", () => Promise.all(connections.map(async connection => {
+    test("should work fine", () => Promise.all(connections.map(async connection => {
 
         const user = new User();
         user.name = "Timber Saw";
@@ -32,7 +32,8 @@ describe("github issues > #1178 subqueries must work in insert statements", () =
             .returning("*")
             .execute();
 
-        await connection.manager.findOne(Post, 1, { relations: ["user"] }).should.eventually.eql({
+        const post = await connection.manager.findOne(Post, 1, { relations: ["user"] });
+        expect(post).toEqual({
             id: 1,
             name: "First post",
             user: {
@@ -40,6 +41,7 @@ describe("github issues > #1178 subqueries must work in insert statements", () =
                 name: "Timber Saw"
             }
         });
+
     })));
 
 });
