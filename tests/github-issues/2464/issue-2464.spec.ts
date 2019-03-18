@@ -1,23 +1,20 @@
 import "reflect-metadata";
-
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-
-import {Connection} from "../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import { Foo } from "./entity/Foo";
 import { QueryFailedError } from "../../../src";
-import {expect} from "chai";
 
 describe("github issues > #2464 - ManyToMany onDelete option not working", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"]
     }));
 
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should not delete when onDelete is 'NO ACTION'", () => Promise.all(
+    test("should not delete when onDelete is 'NO ACTION'", () => Promise.all(
       connections.map(async connection => {
         const repo = connection.getRepository(Foo);
 
@@ -25,15 +22,15 @@ describe("github issues > #2464 - ManyToMany onDelete option not working", () =>
 
         try {
           await repo.delete(1);
-          expect.fail(); 
+          expect.fail();
         } catch (e) {
-          e.should.be.instanceOf(QueryFailedError);
+          expect(e).toBeInstanceOf(QueryFailedError);
         }
         
       })
     ));
 
-    it("should delete when onDelete is not set", () => Promise.all(
+    test("should delete when onDelete is not set", () => Promise.all(
       connections.map(async connection => {
         const repo = connection.getRepository(Foo);
 
@@ -41,7 +38,7 @@ describe("github issues > #2464 - ManyToMany onDelete option not working", () =>
         await repo.delete(1);
 
         const foo = await repo.findOne(1);
-        expect(foo).to.be.undefined;
+        expect(foo).toBeUndefined();
         
       })
     ));
