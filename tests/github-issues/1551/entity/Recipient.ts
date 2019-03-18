@@ -1,4 +1,4 @@
-import {CreateDateColumn, Entity, ManyToOne} from "../../../../src/index";
+import {CreateDateColumn, Entity, ManyToOne} from "../../../../src";
 import {Message} from "./Message";
 import {User} from "./User";
 

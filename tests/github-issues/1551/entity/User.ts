@@ -1,4 +1,4 @@
-import {Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn} from "../../../../src/index";
+import {Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn} from "../../../../src";
 import {Chat} from "./Chat";
 import {Message} from "./Message";
 import {Recipient} from "./Recipient";

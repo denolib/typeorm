@@ -4,7 +4,7 @@ import {Recipient} from "./Recipient";
 import {
     Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany,
     PrimaryGeneratedColumn
-} from "../../../../src/index";
+} from "../../../../src";
 
 export enum MessageType {
   TEXT,

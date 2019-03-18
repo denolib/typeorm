@@ -1,4 +1,4 @@
-import {Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "../../../../src/index";
+import {Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "../../../../src";
 import {Message} from "./Message";
 import {User} from "./User";
 

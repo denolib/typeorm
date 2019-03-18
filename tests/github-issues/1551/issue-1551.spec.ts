@@ -1,6 +1,6 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {Message, MessageType} from "./entity/Message";
 import {Recipient} from "./entity/Recipient";
 import {User} from "./entity/User";
@@ -9,11 +9,11 @@ import {Chat} from "./entity/Chat";
 describe("github issues > #1551 complex example of cascades + multiple primary keys = persistence order", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({ __dirname, enabledDrivers: ["mysql"] }));
+    beforeAll(async () => connections = await createTestingConnections({ __dirname, enabledDrivers: ["mysql"] }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("throws an error because there is no object id defined", () => Promise.all(connections.map(async connection => {
+    test("throws an error because there is no object id defined", () => Promise.all(connections.map(async connection => {
 
         const user1 = new User({
             username: "ethan",
@@ -63,15 +63,15 @@ describe("github issues > #1551 complex example of cascades + multiple primary k
         }));
 
         const messages = await connection.manager.find(Message);
-        messages[0].recipients.length.should.be.equal(1);
-        messages[1].recipients.length.should.be.equal(1);
+        expect(messages[0].recipients.length).toEqual(1);
+        expect(messages[1].recipients.length).toEqual(1);
 
         const recipients = await connection.manager.find(Recipient);
-        recipients.length.should.be.equal(2);
+        expect(recipients.length).toEqual(2);
     })));
 
     // cascade remove are not supported
-    it.skip("throws a \"update or delete on table 'message' violates foreign key constraint on table 'recipient'\" error on delete", () => Promise.all(connections.map(async connection => {
+    test.skip("throws a \"update or delete on table 'message' violates foreign key constraint on table 'recipient'\" error on delete", () => Promise.all(connections.map(async connection => {
 
         const user1 = new User({
             username: "ethan",
@@ -131,14 +131,14 @@ describe("github issues > #1551 complex example of cascades + multiple primary k
         }
 
         const messages = await connection.manager.find(Message);
-        messages.length.should.be.equal(0);
+        expect(messages.length).toEqual(0);
 
         const recipients = await connection.manager.find(Recipient);
-        recipients.length.should.be.equal(0);
+        expect(recipients.length).toEqual(0);
     })));
 
     // cascade remove are not supported
-    it.skip("throws a \"null value in column 'userId' violates not-null constraint\" error on delete", () => Promise.all(connections.map(async connection => {
+    test.skip("throws a \"null value in column 'userId' violates not-null constraint\" error on delete", () => Promise.all(connections.map(async connection => {
 
         const user1 = new User({
             username: "ethan",
@@ -196,14 +196,14 @@ describe("github issues > #1551 complex example of cascades + multiple primary k
         }
 
         const messages = await connection.manager.find(Message);
-        messages.length.should.be.equal(0);
+        expect(messages.length).toEqual(0);
 
         const recipients = await connection.manager.find(Recipient);
-        recipients.length.should.be.equal(0);
+        expect(recipients.length).toEqual(0);
     })));
 
     // cascade remove are not supported
-    it.skip("throws a \"Subject Recipient must have an identifier to perform operation\" internal error on delete", () => Promise.all(connections.map(async connection => {
+    test.skip("throws a \"Subject Recipient must have an identifier to perform operation\" internal error on delete", () => Promise.all(connections.map(async connection => {
 
         const user1 = new User({
             username: "ethan",
@@ -259,7 +259,7 @@ describe("github issues > #1551 complex example of cascades + multiple primary k
         }
 
         recipients = await connection.manager.find(Recipient);
-        recipients.length.should.be.equal(0);
+        expect(recipients.length).toEqual(0);
     })));
 
 });
