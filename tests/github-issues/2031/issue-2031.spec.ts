@@ -1,19 +1,19 @@
 import {Connection, Equal} from "../../../src";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
 import {User} from "./entity/User";
 import {Photo} from "./entity/Photo";
 
 describe("github issues > #2031 Advanced find options with FKs", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
         enabledDrivers: ["mysql"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("find operators should work with relational columns as well", () => Promise.all(connections.map(async connection => {
+    test("find operators should work with relational columns as well", () => Promise.all(connections.map(async connection => {
 
         const user = new User();
         user.firstName = "Timber";
@@ -28,7 +28,7 @@ describe("github issues > #2031 Advanced find options with FKs", () => {
         await connection.manager.save(photo);
 
         const photos = await connection.manager.find(Photo, { where: { userId: Equal(user.id) } });
-        photos.should.be.eql([{
+        expect(photos).toEqual([{
             id: 1,
             description: "Tall trees",
             uri: "www.pictures.pic/1",
