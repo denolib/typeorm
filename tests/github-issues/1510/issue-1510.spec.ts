@@ -1,7 +1,6 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
-import {expect} from "chai";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {EntitySchema, InsertResult} from "../../../src";
 
 describe("github issues > #1510 entity schema does not support mode=objectId", () => {
@@ -38,16 +37,16 @@ describe("github issues > #1510 entity schema does not support mode=objectId", (
     });
 
     let connections: Connection[];
-    before(async () => {
+    beforeAll(async () => {
         return connections = await createTestingConnections({
             entities: [__dirname + "/entity/*{.js,.ts}", UserEntity, UserWithoutObjectIDEntity],
             enabledDrivers: ["mongodb"]
         });
     });
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("throws an error because there is no object id defined", () => Promise.all(connections.map(async connection => {
+    test("throws an error because there is no object id defined", () => Promise.all(connections.map(async connection => {
         const repo = connection.getRepository("UserWithoutObjectID");
 
         try {
@@ -55,13 +54,13 @@ describe("github issues > #1510 entity schema does not support mode=objectId", (
                 name: "Dotan",
             });
 
-            expect(true).to.be.false;
+            expect(true).toBeFalsy();
         } catch (e) {
-            expect(e.message).to.eq("Cannot read property 'createValueMap' of undefined");
+            expect(e.message).toEqual("Cannot read property 'createValueMap' of undefined");
         }
     })));
 
-    it("should create entities without throwing an error when objectId is defined", () => Promise.all(connections.map(async connection => {
+    test("should create entities without throwing an error when objectId is defined", () => Promise.all(connections.map(async connection => {
         const repo = connection.getRepository("User");
 
         const result: InsertResult = await repo.insert({
@@ -70,7 +69,7 @@ describe("github issues > #1510 entity schema does not support mode=objectId", (
 
         const insertedId = result.identifiers[0];
 
-        expect(insertedId).not.to.be.undefined;
+        expect(insertedId).not.toBeUndefined();
     })));
 
 });
