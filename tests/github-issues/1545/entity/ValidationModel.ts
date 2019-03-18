@@ -1,4 +1,4 @@
-import { Column, OneToMany, Entity } from "../../../../src/index";
+import { Column, OneToMany, Entity } from "../../../../src";
 import { DataModel } from "./DataModel";
 
 @Entity()

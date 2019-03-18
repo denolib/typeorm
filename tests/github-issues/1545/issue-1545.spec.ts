@@ -1,6 +1,6 @@
 import "reflect-metadata";
-import { Connection } from "../../../src/connection/Connection";
-import { createTestingConnections, reloadTestingDatabases, closeTestingConnections } from "../../utils/test-utils";
+import { Connection } from "../../../src";
+import { createTestingConnections, reloadTestingDatabases, closeTestingConnections } from "../../../test/utils/test-utils";
 import { ValidationModel } from "./entity/ValidationModel";
 import { MainModel } from "./entity/MainModel";
 import { DataModel } from "./entity/DataModel";
@@ -8,14 +8,14 @@ import { DataModel } from "./entity/DataModel";
 describe("github issues > #1545 Typeorm runs insert query instead of update query on save of existing entity for ManyToOne relationships", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
         enabledDrivers: ["postgres"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should add intial validation data", () => Promise.all(connections.map(async connection => {
+    test("should add intial validation data", () => Promise.all(connections.map(async connection => {
         const validation1 = new ValidationModel();
         validation1.validation = 123;
 

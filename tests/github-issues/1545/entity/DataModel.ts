@@ -1,4 +1,4 @@
-import { Entity, ManyToOne, JoinColumn, Column } from "../../../../src/index";
+import { Entity, ManyToOne, JoinColumn, Column } from "../../../../src";
 import { MainModel } from "./MainModel";
 import { ValidationModel } from "./ValidationModel";
 
