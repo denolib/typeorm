@@ -1,6 +1,5 @@
 import "reflect-metadata";
-import {expect} from "chai";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
 import {Connection} from "../../../src";
 import {Post, Uuid} from "./entity/Post";
 import {SqlServerDriver} from "../../../src/driver/sqlserver/SqlServerDriver";
@@ -8,14 +7,14 @@ import {SqlServerDriver} from "../../../src/driver/sqlserver/SqlServerDriver";
 describe("github issues > #1748 PrimaryColumn combined with transformer leads to error on save", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [Post],
         dropSchema: true
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should work as expected", () => Promise.all(connections.map(async connection => {
+    test("should work as expected", () => Promise.all(connections.map(async connection => {
         if (connection.driver instanceof SqlServerDriver) return;
 
         const postRepository = connection.getRepository(Post);
@@ -32,8 +31,8 @@ describe("github issues > #1748 PrimaryColumn combined with transformer leads to
 
         // check if all columns are updated except for readonly columns
         const loadedPost = await postRepository.findOne({ id: id });
-        expect(loadedPost!.id).to.deep.eq(id);
-        expect(loadedPost!.title).to.be.equal("About columns1");
+        expect(loadedPost!.id).toEqual(id);
+        expect(loadedPost!.title).toEqual("About columns1");
 
     })));
 
