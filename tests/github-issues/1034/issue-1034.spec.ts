@@ -1,21 +1,20 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {User} from "./entity/User";
 import {Circle} from "./entity/Circle";
-import {expect} from "chai";
 
 describe("github issues > #1034 Issue using setter with promises", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
         enabledDrivers: ["mysql"] // we are using lazy relations that's why we are using a single driver
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should set members in circle", () => Promise.all(connections.map(async connection => {
+    test("should set members in circle", () => Promise.all(connections.map(async connection => {
         const users: User[] = [];
 
         const user: User = new User();
@@ -30,12 +29,12 @@ describe("github issues > #1034 Issue using setter with promises", () => {
 
         users.push(user);
         const circleFromDB = await connection.manager.findOne(Circle, circle.getId());
-        expect(circleFromDB).is.not.undefined;
+        expect(circleFromDB).not.toBeUndefined();
 
         // Setting users with setter
         circleFromDB!.setUsers(Promise.resolve(users));
         await Promise.resolve(); // this is unpleasant way to fix this issue
-        expect(users).deep.equal(await circleFromDB!.getUsers());
+        expect(users).toEqual(await circleFromDB!.getUsers());
     })));
 
 });
