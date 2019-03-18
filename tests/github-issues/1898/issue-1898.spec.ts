@@ -1,12 +1,12 @@
 import "reflect-metadata";
-import {Connection} from "../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils";
+import {Connection} from "../../../src";
 import {Post} from "./entity/Post";
+import {closeTestingConnections, createTestingConnections} from "../../../test/utils/test-utils";
 
 describe("github issues > #1898 Simple JSON breaking in @next", () => {
 
     let connections: Connection[];
-    before(async () => {
+    beforeAll(async () => {
         connections = await createTestingConnections({
             entities: [__dirname + "/entity/*{.js,.ts}"],
             enabledDrivers: ["sqlite"],
@@ -14,9 +14,9 @@ describe("github issues > #1898 Simple JSON breaking in @next", () => {
             dropSchema: true
         });
     });
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should correctly persist", () => Promise.all(connections.map(async connection => {
+    test("should correctly persist", () => Promise.all(connections.map(async connection => {
         const post = new Post();
         post.type = "post";
         await connection.getRepository(Post).save(post);
