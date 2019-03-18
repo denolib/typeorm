@@ -1,20 +1,24 @@
 import "reflect-metadata";
 import {Post} from "./entity/Post";
 import {Category} from "./entity/Category";
-import {Connection} from "../../../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils";
+import {Connection} from "../../../../../src";
+import {
+    closeTestingConnections,
+    createTestingConnections,
+    reloadTestingDatabases
+} from "../../../../../test/utils/test-utils";
 
 describe("persistence > insert > update-relation-columns-after-insertion", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
 
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should work perfectly", () => Promise.all(connections.map(async connection => {
+    test("should work perfectly", () => Promise.all(connections.map(async connection => {
 
         // create category
         const category1 = new Category();
