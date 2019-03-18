@@ -1,22 +1,21 @@
 import "reflect-metadata";
-import {Connection} from "../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils";
+import {Connection} from "../../../src";
+import {closeTestingConnections, createTestingConnections} from "../../../test/utils/test-utils";
 import {User} from "./entity/User";
-import {expect} from "chai";
 
 describe("github issues > #1680 Delete & Update applies to all entities in table if criteria is undefined or empty", () => {
 
     let connections: Connection[];
-    before(async () => {
+    beforeAll(async () => {
         connections = await createTestingConnections({
             entities: [__dirname + "/entity/*{.js,.ts}"],
             schemaCreate: true,
             dropSchema: true,
         });
     });
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("Delete & Update should throw an error when supplied with an empty criteria", () => Promise.all(connections.map(async connection => {
+    test("Delete & Update should throw an error when supplied with an empty criteria", () => Promise.all(connections.map(async connection => {
 
         const userA = new User();
         userA.name = "User A";
@@ -35,7 +34,7 @@ describe("github issues > #1680 Delete & Update applies to all entities in table
 
             await connection.manager.delete(User, criteria).catch(err => error = err);
 
-            expect(error).to.be.instanceof(Error);
+            expect(error).toBeInstanceOf(Error);
         }
 
         // Execute potentially problematic updates
@@ -46,7 +45,7 @@ describe("github issues > #1680 Delete & Update applies to all entities in table
                 name: "Override Name"
             }).catch(err => error = err);
 
-            expect(error).to.be.instanceof(Error);
+            expect(error).toBeInstanceOf(Error);
         }
         
         // Ensure normal deleting works
@@ -56,7 +55,8 @@ describe("github issues > #1680 Delete & Update applies to all entities in table
         await connection.manager.update(User, 2, { name: "User B Updated" } );
         
         // All users should still exist except for User C
-        await connection.manager.find(User).should.eventually.eql([{
+        const user = await connection.manager.find(User);
+        expect(user).toEqual([{
             id: 1,
             name: "User A"
         }, {
