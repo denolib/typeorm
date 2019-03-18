@@ -1,8 +1,7 @@
 import "reflect-metadata";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../../test/utils/test-utils";
 import {Post} from "./entity/Post";
-import {Connection} from "../../../../../src/connection/Connection";
-// import {expect} from "chai";
+import {Connection} from "../../../../../src";
 
 describe("persistence > persistence options > transaction", () => {
 
@@ -11,15 +10,15 @@ describe("persistence > persistence options > transaction", () => {
     // -------------------------------------------------------------------------
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({ __dirname }));
+    beforeAll(async () => connections = await createTestingConnections({ __dirname }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
     // -------------------------------------------------------------------------
     // Specifications
     // -------------------------------------------------------------------------
 
-    it("should disable transaction when option is specified", () => Promise.all(connections.map(async connection => {
+    test("should disable transaction when option is specified", () => Promise.all(connections.map(async connection => {
         const post = new Post();
         post.title = "Bakhrom";
         post.description = "Hello";
