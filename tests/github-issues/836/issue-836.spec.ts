@@ -1,19 +1,19 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {User} from "./entity/User";
 import {UserCredential} from "./entity/UserCredential";
 
 describe("github issues > #836 .save won't update entity when it contains OneToOne relationship", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should work perfectly", () => Promise.all(connections.map(async connection => {
+    test("should work perfectly", () => Promise.all(connections.map(async connection => {
 
         // just insert another dummy user
         const user1 = new User();
@@ -37,7 +37,7 @@ describe("github issues > #836 .save won't update entity when it contains OneToO
 
         // check if credentials and user are saved properly
         const loadedCredentials = await connection.manager.findOne(UserCredential, 2, { relations: ["user"] });
-        loadedCredentials!.should.be.eql({
+        expect(loadedCredentials)!.toEqual({
             user: {
                 id: 2,
                 email: "user2@user.com",
