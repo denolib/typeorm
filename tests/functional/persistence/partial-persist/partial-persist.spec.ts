@@ -1,9 +1,8 @@
 import "reflect-metadata";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../test/utils/test-utils";
-import {Connection} from "../../../../src/connection/Connection";
+import {Connection} from "../../../../src";
 import {Post} from "./entity/Post";
 import {Category} from "./entity/Category";
-import {expect} from "chai";
 import {Counters} from "./entity/Counters";
 
 describe("persistence > partial persist", () => {
@@ -13,17 +12,17 @@ describe("persistence > partial persist", () => {
     // -------------------------------------------------------------------------
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
     // -------------------------------------------------------------------------
     // Specifications
     // -------------------------------------------------------------------------
 
-    it("should persist partial entities without data loss", () => Promise.all(connections.map(async connection => {
+    test("should persist partial entities without data loss", () => Promise.all(connections.map(async connection => {
 
         const postRepository = connection.getRepository(Post);
         const categoryRepository = connection.getRepository(Category);
@@ -57,15 +56,15 @@ describe("persistence > partial persist", () => {
             }
         });
 
-        expect(loadedPost!).not.to.be.undefined;
-        expect(loadedPost!.categories).not.to.be.undefined;
-        loadedPost!.title.should.be.equal("All about animals");
-        loadedPost!.description.should.be.equal("Description of the post about animals");
-        loadedPost!.categories[0].name.should.be.equal("Animals");
-        loadedPost!.categories[0].position.should.be.equal(999);
-        loadedPost!.counters.metadata.should.be.equal("Animals Metadata");
-        loadedPost!.counters.stars.should.be.equal(5);
-        loadedPost!.counters.commentCount.should.be.equal(2);
+        expect(loadedPost!).not.toBeUndefined();
+        expect(loadedPost!.categories).not.toBeUndefined();
+        expect(loadedPost!.title).toEqual("All about animals");
+        expect(loadedPost!.description).toEqual("Description of the post about animals");
+        expect(loadedPost!.categories[0].name).toEqual("Animals");
+        expect(loadedPost!.categories[0].position).toEqual(999);
+        expect(loadedPost!.counters.metadata).toEqual("Animals Metadata");
+        expect(loadedPost!.counters.stars).toEqual(5);
+        expect(loadedPost!.counters.commentCount).toEqual(2);
 
         // now update partially
         await postRepository.update({ title: "All about animals" }, { title: "All about bears" });
@@ -80,15 +79,15 @@ describe("persistence > partial persist", () => {
             }
         });
 
-        expect(loadedPostAfterTitleUpdate!).not.to.be.undefined;
-        expect(loadedPostAfterTitleUpdate!.categories).not.to.be.undefined;
-        loadedPostAfterTitleUpdate!.title.should.be.equal("All about bears");
-        loadedPostAfterTitleUpdate!.description.should.be.equal("Description of the post about animals");
-        loadedPostAfterTitleUpdate!.categories[0].name.should.be.equal("Animals");
-        loadedPostAfterTitleUpdate!.categories[0].position.should.be.equal(999);
-        loadedPostAfterTitleUpdate!.counters.metadata.should.be.equal("Animals Metadata");
-        loadedPostAfterTitleUpdate!.counters.stars.should.be.equal(5);
-        loadedPostAfterTitleUpdate!.counters.commentCount.should.be.equal(2);
+        expect(loadedPostAfterTitleUpdate!).not.toBeUndefined();
+        expect(loadedPostAfterTitleUpdate!.categories).not.toBeUndefined();
+        expect(loadedPostAfterTitleUpdate!.title).toEqual("All about bears");
+        expect(loadedPostAfterTitleUpdate!.description).toEqual("Description of the post about animals");
+        expect(loadedPostAfterTitleUpdate!.categories[0].name).toEqual("Animals");
+        expect(loadedPostAfterTitleUpdate!.categories[0].position).toEqual(999);
+        expect(loadedPostAfterTitleUpdate!.counters.metadata).toEqual("Animals Metadata");
+        expect(loadedPostAfterTitleUpdate!.counters.stars).toEqual(5);
+        expect(loadedPostAfterTitleUpdate!.counters.commentCount).toEqual(2);
 
         // now update in partial embeddable column
         await postRepository.update({ id: 1 }, { counters: { stars: 10 } });
@@ -103,15 +102,15 @@ describe("persistence > partial persist", () => {
             }
         });
 
-        expect(loadedPostAfterStarsUpdate!).not.to.be.undefined;
-        expect(loadedPostAfterStarsUpdate!.categories).not.to.be.undefined;
-        loadedPostAfterStarsUpdate!.title.should.be.equal("All about bears");
-        loadedPostAfterStarsUpdate!.description.should.be.equal("Description of the post about animals");
-        loadedPostAfterStarsUpdate!.categories[0].name.should.be.equal("Animals");
-        loadedPostAfterStarsUpdate!.categories[0].position.should.be.equal(999);
-        loadedPostAfterStarsUpdate!.counters.metadata.should.be.equal("Animals Metadata");
-        loadedPostAfterStarsUpdate!.counters.stars.should.be.equal(10);
-        loadedPostAfterStarsUpdate!.counters.commentCount.should.be.equal(2);
+        expect(loadedPostAfterStarsUpdate!).not.toBeUndefined();
+        expect(loadedPostAfterStarsUpdate!.categories).not.toBeUndefined();
+        expect(loadedPostAfterStarsUpdate!.title).toEqual("All about bears");
+        expect(loadedPostAfterStarsUpdate!.description).toEqual("Description of the post about animals");
+        expect(loadedPostAfterStarsUpdate!.categories[0].name).toEqual("Animals");
+        expect(loadedPostAfterStarsUpdate!.categories[0].position).toEqual(999);
+        expect(loadedPostAfterStarsUpdate!.counters.metadata).toEqual("Animals Metadata");
+        expect(loadedPostAfterStarsUpdate!.counters.stars).toEqual(10);
+        expect(loadedPostAfterStarsUpdate!.counters.commentCount).toEqual(2);
 
         // now update in relational column
         await postRepository.save({ id: 1, categories: [{ id: 1, name: "Bears" }] });
@@ -126,15 +125,15 @@ describe("persistence > partial persist", () => {
             }
         });
 
-        expect(loadedPostAfterCategoryUpdate!).not.to.be.undefined;
-        expect(loadedPostAfterCategoryUpdate!.categories).not.to.be.undefined;
-        loadedPostAfterCategoryUpdate!.title.should.be.equal("All about bears");
-        loadedPostAfterCategoryUpdate!.description.should.be.equal("Description of the post about animals");
-        loadedPostAfterCategoryUpdate!.categories[0].name.should.be.equal("Bears");
-        loadedPostAfterCategoryUpdate!.categories[0].position.should.be.equal(999);
-        loadedPostAfterCategoryUpdate!.counters.metadata.should.be.equal("Animals Metadata");
-        loadedPostAfterCategoryUpdate!.counters.stars.should.be.equal(10);
-        loadedPostAfterCategoryUpdate!.counters.commentCount.should.be.equal(2);
+        expect(loadedPostAfterCategoryUpdate!).not.toBeUndefined();
+        expect(loadedPostAfterCategoryUpdate!.categories).not.toBeUndefined();
+        expect(loadedPostAfterCategoryUpdate!.title).toEqual("All about bears");
+        expect(loadedPostAfterCategoryUpdate!.description).toEqual("Description of the post about animals");
+        expect(loadedPostAfterCategoryUpdate!.categories[0].name).toEqual("Bears");
+        expect(loadedPostAfterCategoryUpdate!.categories[0].position).toEqual(999);
+        expect(loadedPostAfterCategoryUpdate!.counters.metadata).toEqual("Animals Metadata");
+        expect(loadedPostAfterCategoryUpdate!.counters.stars).toEqual(10);
+        expect(loadedPostAfterCategoryUpdate!.counters.commentCount).toEqual(2);
 
     })));
 
