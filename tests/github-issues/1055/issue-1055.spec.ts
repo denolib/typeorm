@@ -1,22 +1,21 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {Parent} from "./entity/Parent";
 import {Child} from "./entity/Child";
-import {expect} from "chai";
-import {PromiseUtils} from "../../../src/util/PromiseUtils";
+import {PromiseUtils} from "../../../src";
 
 describe("github issues > #1055 ind with relations not working, correct syntax causes type error", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
         enabledDrivers: ["mysql"] // only one driver is enabled because this example uses lazy relations
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should be able to find by object reference", () => Promise.all(connections.map(async connection => {
+    test("should be able to find by object reference", () => Promise.all(connections.map(async connection => {
         const manager = connection.manager;
 
         const parent = new Parent();
@@ -24,7 +23,7 @@ describe("github issues > #1055 ind with relations not working, correct syntax c
         await manager.save(parent);
 
         const loadedParent = await manager.findOne(Parent, 1);
-        expect(loadedParent).not.to.be.undefined;
+        expect(loadedParent).not.toBeUndefined();
 
         if (!loadedParent) return;
 
@@ -35,11 +34,11 @@ describe("github issues > #1055 ind with relations not working, correct syntax c
         await manager.save(child);
 
         const foundChild = await manager.findOne(Child, { parent: loadedParent });
-        expect(foundChild).not.to.be.undefined;
+        expect(foundChild).not.toBeUndefined();
     })));
 
 
-    it("should be able to lookup from promise as well", () => Promise.all(connections.map(async connection => {
+    test("should be able to lookup from promise as well", () => Promise.all(connections.map(async connection => {
         const manager = connection.manager;
 
         const parent = new Parent();
@@ -47,7 +46,7 @@ describe("github issues > #1055 ind with relations not working, correct syntax c
         await manager.save(parent);
 
         const loadedParent = await manager.findOne(Parent, 1);
-        expect(loadedParent).not.to.be.undefined;
+        expect(loadedParent).not.toBeUndefined();
 
         if (!loadedParent) return;
 
@@ -57,10 +56,10 @@ describe("github issues > #1055 ind with relations not working, correct syntax c
         await manager.save(child);
 
         const foundChild = await manager.findOne(Child, { parent: PromiseUtils.create(loadedParent) });
-        expect(foundChild).not.to.be.undefined;
+        expect(foundChild).not.toBeUndefined();
     })));
 
-    it("should not have type errors with the primary key type", () => Promise.all(connections.map(async connection => {
+    test("should not have type errors with the primary key type", () => Promise.all(connections.map(async connection => {
         const manager = connection.manager;
 
         const parent = new Parent();
@@ -68,7 +67,7 @@ describe("github issues > #1055 ind with relations not working, correct syntax c
         await manager.save(parent);
 
         const loadedParent = await manager.findOne(Parent, 1);
-        expect(loadedParent).not.to.be.undefined;
+        expect(loadedParent).not.toBeUndefined();
 
         if (!loadedParent) return;
 
@@ -78,6 +77,6 @@ describe("github issues > #1055 ind with relations not working, correct syntax c
         await manager.save(child);
 
         const foundChild = await manager.findOne(Child, { parent: loadedParent.id });
-        expect(foundChild).not.to.be.undefined;
+        expect(foundChild).not.toBeUndefined();
     })));
 });
