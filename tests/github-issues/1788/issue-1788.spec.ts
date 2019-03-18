@@ -1,13 +1,12 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
 import {Connection} from "../../../src";
 import {Provider} from "./entity/Provider";
 import {Personalization} from "./entity/Personalization";
-import {expect} from "chai";
 
 describe("github issues > #1788 One to One does not load relationships.", () => {
     let connections: Connection[];
-    before(
+    beforeAll(
         async () =>
             (connections = await createTestingConnections({
                 entities: [__dirname + "/entity/*{.js,.ts}"],
@@ -15,9 +14,9 @@ describe("github issues > #1788 One to One does not load relationships.", () => 
             }))
     );
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should work as expected when using find* methods with relations explicitly provided", () => Promise.all(connections.map(async connection => {
+    test("should work as expected when using find* methods with relations explicitly provided", () => Promise.all(connections.map(async connection => {
             const personalizationRepository = connection.getRepository(
                 Personalization
             );
@@ -39,7 +38,7 @@ describe("github issues > #1788 One to One does not load relationships.", () => 
                 relations: ["personalization"]
             });
 
-            expect(dbProvider[0].personalization).to.not.eql(undefined);
+            expect(dbProvider[0].personalization).not.toEqual(undefined);
         })
     ));
 });
