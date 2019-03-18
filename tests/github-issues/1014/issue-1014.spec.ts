@@ -1,20 +1,19 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {TestEntity} from "./entity/TestEntity";
-import {expect} from "chai";
-import {PromiseUtils} from "../../../src/util/PromiseUtils";
+import {PromiseUtils} from "../../../src";
 
 describe("github issues > #1014 Transaction doesn't rollback", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should rollback transaction if some operation failed in it", () => Promise.all(connections.map(async connection => {
+    test("should rollback transaction if some operation failed in it", () => Promise.all(connections.map(async connection => {
 
         const testEntity = new TestEntity();
         testEntity.name = "Hello Test";
@@ -31,10 +30,10 @@ describe("github issues > #1014 Transaction doesn't rollback", () => {
             });
         } catch (err) { error = err; }
 
-        expect(error).to.be.instanceof(Error);
+        expect(error).toBeInstanceOf(Error);
         const loadedTestEntity = await connection.manager.findOne(TestEntity, 1);
-        expect(loadedTestEntity).not.to.be.undefined;
-        loadedTestEntity!.should.be.eql({ id: 1, name: "Hello Test" });
+        expect(loadedTestEntity).not.toBeUndefined();
+        expect(loadedTestEntity)!.toEqual({ id: 1, name: "Hello Test" });
     })));
 
 });
