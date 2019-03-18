@@ -1,20 +1,19 @@
 import "reflect-metadata";
-import {Connection} from "../../../../src/connection/Connection";
+import {Connection} from "../../../../src";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../test/utils/test-utils";
 import {Post} from "./entity/Post";
-import {expect} from "chai";
 
 describe("persistence > null and default behaviour", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
 
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should insert value if it is set", () => Promise.all(connections.map(async connection => {
+    test("should insert value if it is set", () => Promise.all(connections.map(async connection => {
 
         // create category
         const post = new Post();
@@ -23,15 +22,15 @@ describe("persistence > null and default behaviour", () => {
         await connection.manager.save(post);
 
         const loadedPost = await connection.manager.findOne(Post, 1);
-        expect(loadedPost).to.exist;
-        loadedPost!.should.be.eql({
+        expect(loadedPost).toBeDefined();
+        expect(loadedPost)!.toEqual({
             id: 1,
             title: "Category saved!"
         });
 
     })));
 
-    it("should insert default when post.title is undefined", () => Promise.all(connections.map(async connection => {
+    test("should insert default when post.title is undefined", () => Promise.all(connections.map(async connection => {
 
         // create category
         const post = new Post();
@@ -39,15 +38,15 @@ describe("persistence > null and default behaviour", () => {
         await connection.manager.save(post);
 
         const loadedPost = await connection.manager.findOne(Post, 1);
-        expect(loadedPost).to.exist;
-        loadedPost!.should.be.eql({
+        expect(loadedPost).toBeDefined();
+        expect(loadedPost)!.toEqual({
             id: 1,
             title: "hello default value"
         });
 
     })));
 
-    it("should insert NULL when post.title is null", () => Promise.all(connections.map(async connection => {
+    test("should insert NULL when post.title is null", () => Promise.all(connections.map(async connection => {
 
         // create category
         const post = new Post();
@@ -56,15 +55,15 @@ describe("persistence > null and default behaviour", () => {
         await connection.manager.save(post);
 
         const loadedPost = await connection.manager.findOne(Post, 1);
-        expect(loadedPost).to.exist;
-        loadedPost!.should.be.eql({
+        expect(loadedPost).toBeDefined();
+        expect(loadedPost)!.toEqual({
             id: 1,
             title: null
         });
 
     })));
 
-    it("should update nothing when post.title is undefined", () => Promise.all(connections.map(async connection => {
+    test("should update nothing when post.title is undefined", () => Promise.all(connections.map(async connection => {
 
         // create category
         const post = new Post();
@@ -76,15 +75,15 @@ describe("persistence > null and default behaviour", () => {
         await connection.manager.save(post);
 
         const loadedPost = await connection.manager.findOne(Post, 1);
-        expect(loadedPost).to.exist;
-        loadedPost!.should.be.eql({
+        expect(loadedPost).toBeDefined();
+        expect(loadedPost)!.toEqual({
             id: 1,
             title: "Category saved!"
         });
 
     })));
 
-    it("should update to null when post.title is null", () => Promise.all(connections.map(async connection => {
+    test("should update to null when post.title is null", () => Promise.all(connections.map(async connection => {
 
         const post = new Post();
         post.id = 1;
@@ -95,8 +94,8 @@ describe("persistence > null and default behaviour", () => {
         await connection.manager.save(post);
 
         const loadedPost = await connection.manager.findOne(Post, 1);
-        expect(loadedPost).to.exist;
-        loadedPost!.should.be.eql({
+        expect(loadedPost).toBeDefined();
+        expect(loadedPost)!.toEqual({
             id: 1,
             title: null
         });
