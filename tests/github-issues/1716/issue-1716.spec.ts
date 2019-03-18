@@ -1,9 +1,7 @@
 import "reflect-metadata";
-import { Connection } from "../../../src/connection/Connection";
-import { ConnectionOptions } from "../../../src/connection/ConnectionOptions";
-import { createTestingConnections, closeTestingConnections, reloadTestingDatabases, getTypeOrmConfig } from "../../utils/test-utils";
-import { expect } from "chai";
-
+import { Connection } from "../../../src";
+import { ConnectionOptions } from "../../../src";
+import { createTestingConnections, closeTestingConnections, reloadTestingDatabases, getTypeOrmConfig } from "../../../test/utils/test-utils";
 import { PgEntity } from "./entity/pgEntity";
 import { MysqlEntity } from "./entity/mysqlEntity";
 import { MariadbEntity } from "./entity/mariadbEntity";
@@ -39,7 +37,7 @@ describe("github issues > #1716 send timestamp to database without converting it
 
         let connections: Connection[];
 
-        before(async () => {
+        beforeAll(async () => {
             connections = await createTestingConnections({
                 entities: [PgEntity],
                 schemaCreate: true,
@@ -51,10 +49,10 @@ describe("github issues > #1716 send timestamp to database without converting it
         });
 
         beforeEach(() => reloadTestingDatabases(connections));
-        after(() => closeTestingConnections(connections));
+        afterAll(() => closeTestingConnections(connections));
 
 
-        it("should persist dates and times correctly", async () => {
+        test("should persist dates and times correctly", async () => {
 
             const manager = connections[0].manager;
 
@@ -72,7 +70,7 @@ describe("github issues > #1716 send timestamp to database without converting it
             const result1 = await manager.findOne(PgEntity, 1);
             convertPropsToISOStrings(result1, ["fieldTimestamp", "fieldTimestampWithoutTZ", "fieldTimestampWithTZ"]);
 
-            expect(result1).to.deep.equal({
+            expect(result1).toEqual({
                 id: 1,
                 fieldTime: "14:00:00",
                 fieldTimeWithTZ: "14:00:00+05",
@@ -97,7 +95,7 @@ describe("github issues > #1716 send timestamp to database without converting it
             const result2 = await manager.findOne(PgEntity, 2);
             convertPropsToISOStrings(result2, ["fieldTimestamp", "fieldTimestampWithoutTZ", "fieldTimestampWithTZ"]);
 
-            expect(result2).to.deep.equal({
+            expect(result2).toEqual({
                 id: 2,
                 fieldTime: "17:00:00",
                 fieldTimeWithTZ: "17:00:00+00",
@@ -121,7 +119,7 @@ describe("github issues > #1716 send timestamp to database without converting it
 
         let connections: Connection[];
 
-        before(async () => {
+        beforeAll(async () => {
             connections = await createTestingConnections({
                 entities: [MysqlEntity],
                 schemaCreate: true,
@@ -133,10 +131,10 @@ describe("github issues > #1716 send timestamp to database without converting it
         });
 
         beforeEach(() => reloadTestingDatabases(connections));
-        after(() => closeTestingConnections(connections));
+        afterAll(() => closeTestingConnections(connections));
 
 
-        it("should persist dates and times correctly", async () => {
+        test("should persist dates and times correctly", async () => {
 
             const manager = connections[0].manager;
 
@@ -151,7 +149,7 @@ describe("github issues > #1716 send timestamp to database without converting it
             const result1 = await manager.findOne(MysqlEntity, 1);
             convertPropsToISOStrings(result1, ["fieldTimestamp", "fieldDatetime"]);
 
-            expect(result1).to.deep.equal({
+            expect(result1).toEqual({
                 id: 1,
                 fieldTime: "14:00:00",
                 fieldTimestamp: toISOString("2018-03-07 14:00:00+05"),
@@ -170,7 +168,7 @@ describe("github issues > #1716 send timestamp to database without converting it
             const result2 = await manager.findOne(MysqlEntity, 2);
             convertPropsToISOStrings(result2, ["fieldTimestamp", "fieldDatetime"]);
 
-            expect(result2).to.deep.equal({
+            expect(result2).toEqual({
                 id: 2,
                 fieldTime: "17:00:00",
                 fieldTimestamp: toISOString("2018-03-07 17:00:00"),
@@ -191,7 +189,7 @@ describe("github issues > #1716 send timestamp to database without converting it
 
         let connections: Connection[];
 
-        before(async () => {
+        beforeAll(async () => {
             connections = await createTestingConnections({
                 entities: [MariadbEntity],
                 schemaCreate: true,
@@ -203,10 +201,10 @@ describe("github issues > #1716 send timestamp to database without converting it
         });
 
         beforeEach(() => reloadTestingDatabases(connections));
-        after(() => closeTestingConnections(connections));
+        afterAll(() => closeTestingConnections(connections));
 
 
-        it("should persist dates and times correctly", async () => {
+        test("should persist dates and times correctly", async () => {
 
             const manager = connections[0].manager;
 
@@ -221,7 +219,7 @@ describe("github issues > #1716 send timestamp to database without converting it
             const result1 = await manager.findOne(MariadbEntity, 1);
             convertPropsToISOStrings(result1, ["fieldTimestamp", "fieldDatetime"]);
 
-            expect(result1).to.deep.equal({
+            expect(result1).toEqual({
                 id: 1,
                 fieldTime: "14:00:00",
                 fieldTimestamp: toISOString("2018-03-07 14:00:00+05"),
@@ -240,7 +238,7 @@ describe("github issues > #1716 send timestamp to database without converting it
             const result2 = await manager.findOne(MariadbEntity, 2);
             convertPropsToISOStrings(result2, ["fieldTimestamp", "fieldDatetime"]);
 
-            expect(result2).to.deep.equal({
+            expect(result2).toEqual({
                 id: 2,
                 fieldTime: "17:00:00",
                 fieldTimestamp: toISOString("2018-03-07 17:00:00"),
@@ -261,7 +259,7 @@ describe("github issues > #1716 send timestamp to database without converting it
 
         let connections: Connection[];
 
-        before(async () => {
+        beforeAll(async () => {
             connections = await createTestingConnections({
                 entities: [MssqlEntity],
                 schemaCreate: true,
@@ -273,10 +271,10 @@ describe("github issues > #1716 send timestamp to database without converting it
         });
 
         beforeEach(() => reloadTestingDatabases(connections));
-        after(() => closeTestingConnections(connections));
+        afterAll(() => closeTestingConnections(connections));
 
 
-        it("should persist dates and times correctly", async () => {
+        test("should persist dates and times correctly", async () => {
 
             const manager = connections[0].manager;
 
@@ -292,7 +290,7 @@ describe("github issues > #1716 send timestamp to database without converting it
             const result1 = await manager.findOne(MssqlEntity, 1);
             convertPropsToISOStrings(result1, ["fieldDatetime", "fieldDatetime2", "fieldDatetimeoffset"]);
 
-            expect(result1).to.deep.equal({
+            expect(result1).toEqual({
                 id: 1,
                 fieldTime: "14:00:00",
                 fieldDatetime: toISOString("2018-03-07 14:00:00+05"),
@@ -313,7 +311,7 @@ describe("github issues > #1716 send timestamp to database without converting it
             const result2 = await manager.findOne(MssqlEntity, 2);
             convertPropsToISOStrings(result2, ["fieldDatetime", "fieldDatetime2", "fieldDatetimeoffset"]);
 
-            expect(result2).to.deep.equal({
+            expect(result2).toEqual({
                 id: 2,
                 fieldTime: "17:00:00",
                 fieldDatetime: toISOString("2018-03-07 17:00:00"),
