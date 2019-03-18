@@ -1,22 +1,21 @@
 import "reflect-metadata";
-import {Connection} from "../../../src/connection/Connection";
-import {PromiseUtils} from "../../../src/util/PromiseUtils";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
+import {Connection} from "../../src";
+import {PromiseUtils} from "../../src";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../test/utils/test-utils";
 import {Post} from "./entity/Post";
-import {expect} from "chai";
-import {EntityNotFoundError} from "../../../src/error/EntityNotFoundError";
+import {EntityNotFoundError} from "../../src/error/EntityNotFoundError";
 
 describe("github issues > #2313 - BaseEntity has no findOneOrFail() method", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"]
     }));
 
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should find the appropriate record when one exists", () => PromiseUtils.runInSequence(connections, async connection => {
+    test("should find the appropriate record when one exists", () => PromiseUtils.runInSequence(connections, async connection => {
         Post.useConnection(connection); // change connection each time because of AR specifics
 
         const post1 = new Post();
@@ -28,22 +27,19 @@ describe("github issues > #2313 - BaseEntity has no findOneOrFail() method", () 
         await post2.save();
 
         const result1 = await Post.findOneOrFail(1);
-
-        result1.data.should.be.eql(123);
-
+        expect(result1.data).toEqual(123);
         const result2 = await Post.findOneOrFail(2);
-
-        result2.data.should.be.eql(456);
+        expect(result2.data).toEqual(456);
     }));
 
-    it("should throw no matching record exists", () => PromiseUtils.runInSequence(connections, async connection => {
+    test("should throw no matching record exists", () => PromiseUtils.runInSequence(connections, async connection => {
         Post.useConnection(connection); // change connection each time because of AR specifics
 
         try {
             await Post.findOneOrFail(100);
             expect.fail();
         } catch (e) {
-            e.should.be.instanceOf(EntityNotFoundError);
+            expect(e).toBeInstanceOf(EntityNotFoundError);
         }
     }));
 
