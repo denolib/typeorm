@@ -1,6 +1,5 @@
 import "reflect-metadata";
-import {expect} from "chai";
-import {Connection} from "../../../../src/connection/Connection";
+import {Connection} from "../../../../src";
 import {Post} from "./entity/Post";
 import {Category} from "./entity/Category";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../test/utils/test-utils";
@@ -12,19 +11,19 @@ describe("persistence > one-to-many", function() {
     // -------------------------------------------------------------------------
 
     let connections: Connection[];
-    before(() => {
+    beforeAll(() => {
         return createTestingConnections({
             entities: [Post, Category],
         }).then(all => connections = all);
     });
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
     beforeEach(() => reloadTestingDatabases(connections));
 
     // -------------------------------------------------------------------------
     // Specifications
     // -------------------------------------------------------------------------
 
-    it("should add exist element to exist object with empty one-to-many relation and save it", () => Promise.all(connections.map(async connection => {
+    test("should add exist element to exist object with empty one-to-many relation and save it", () => Promise.all(connections.map(async connection => {
 
         const postRepository = connection.getRepository(Post);
         const categoryRepository = connection.getRepository(Category);
@@ -41,13 +40,13 @@ describe("persistence > one-to-many", function() {
         await postRepository.save(newPost);
 
         const loadedPost = await postRepository.findOne(newPost.id, { relations: ["categories"] });
-        expect(loadedPost!).not.to.be.undefined;
-        expect(loadedPost!.categories).not.to.be.undefined;
-        expect(loadedPost!.categories![0]).not.to.be.undefined;
+        expect(loadedPost!).not.toBeUndefined();
+        expect(loadedPost!.categories).not.toBeUndefined();
+        expect(loadedPost!.categories![0]).not.toBeUndefined();
 
     })));
 
-    it("should add exist element to new object with empty one-to-many relation and save it", () => Promise.all(connections.map(async connection => {
+    test("should add exist element to new object with empty one-to-many relation and save it", () => Promise.all(connections.map(async connection => {
         const postRepository = connection.getRepository(Post);
         const categoryRepository = connection.getRepository(Category);
 
@@ -61,12 +60,12 @@ describe("persistence > one-to-many", function() {
         await postRepository.save(newPost);
 
         const loadedPost = await postRepository.findOne(newPost.id, { relations: ["categories"] });
-        expect(loadedPost).not.to.be.undefined;
-        expect(loadedPost!.categories).not.to.be.undefined;
-        expect(loadedPost!.categories![0]).not.to.be.undefined;
+        expect(loadedPost).not.toBeUndefined();
+        expect(loadedPost!.categories).not.toBeUndefined();
+        expect(loadedPost!.categories![0]).not.toBeUndefined();
     })));
 
-    it("should remove exist element from one-to-many relation and save it", () => Promise.all(connections.map(async connection => {
+    test("should remove exist element from one-to-many relation and save it", () => Promise.all(connections.map(async connection => {
         const postRepository = connection.getRepository(Post);
         const categoryRepository = connection.getRepository(Category);
 
@@ -96,13 +95,13 @@ describe("persistence > one-to-many", function() {
                 }
             }
         });
-        expect(loadedPost).not.to.be.undefined;
-        expect(loadedPost!.categories).not.to.be.undefined;
-        expect(loadedPost!.categories![0]).not.to.be.undefined;
-        expect(loadedPost!.categories![1]).to.be.undefined;
+        expect(loadedPost).not.toBeUndefined();
+        expect(loadedPost!.categories).not.toBeUndefined();
+        expect(loadedPost!.categories![0]).not.toBeUndefined();
+        expect(loadedPost!.categories![1]).toBeUndefined();
     })));
 
-    it("should remove all elements from one-to-many relation and save it", () => Promise.all(connections.map(async connection => {
+    test("should remove all elements from one-to-many relation and save it", () => Promise.all(connections.map(async connection => {
         const postRepository = connection.getRepository(Post);
         const categoryRepository = connection.getRepository(Category);
 
@@ -132,11 +131,11 @@ describe("persistence > one-to-many", function() {
                 }
             }
         });
-        expect(loadedPost).not.to.be.undefined;
-        expect(loadedPost!.categories).to.be.eql([]);
+        expect(loadedPost).not.toBeUndefined();
+        expect(loadedPost!.categories).toEqual([]);
     })));
 
-    it("set relation to null (elements exist there) from one-to-many relation and save it", () => Promise.all(connections.map(async connection => {
+    test("set relation to null (elements exist there) from one-to-many relation and save it", () => Promise.all(connections.map(async connection => {
         const postRepository = connection.getRepository(Post);
         const categoryRepository = connection.getRepository(Category);
 
@@ -166,8 +165,8 @@ describe("persistence > one-to-many", function() {
                 }
             }
         }))!;
-        expect(loadedPost).not.to.be.undefined;
-        expect(loadedPost.categories).to.be.eql([]);
+        expect(loadedPost).not.toBeUndefined();
+        expect(loadedPost.categories).toEqual([]);
     })));
 
 });
