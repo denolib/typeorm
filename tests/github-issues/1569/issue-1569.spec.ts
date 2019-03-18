@@ -1,20 +1,19 @@
 import "reflect-metadata";
-import { expect } from "chai";
-import { Connection } from "../../../src/connection/Connection";
-import { closeTestingConnections, createTestingConnections, reloadTestingDatabases } from "../../utils/test-utils";
+import { Connection } from "../../../src";
+import { closeTestingConnections, createTestingConnections, reloadTestingDatabases } from "../../../test/utils/test-utils";
 import { Item, EmbeddedItem } from "./entity/Item";
 
 describe("github issue > #1569 updateById generates wrong SQL with arrays inside embeddeds", () => {
 
     let connections: Connection[] = [];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
         enabledDrivers: ["postgres"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should properly updateById arrays inside embeddeds", () => Promise.all(connections.map(async connection => {
+    test("should properly updateById arrays inside embeddeds", () => Promise.all(connections.map(async connection => {
         const item = new Item();
         item.someText = "some";
         const embedded = new EmbeddedItem();
@@ -32,7 +31,7 @@ describe("github issue > #1569 updateById generates wrong SQL with arrays inside
 
         const loadedItem = await connection.getRepository(Item).findOne(item.id);
 
-        expect(loadedItem!.embedded.arrayInsideEmbedded).to.eql([1, 2]);
+        expect(loadedItem!.embedded.arrayInsideEmbedded).toEqual([1, 2]);
 
     })));
 
