@@ -1,21 +1,20 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {Post} from "./entity/Post";
-import {expect} from "chai";
 import { Category } from "./entity/Category";
 
 describe("github issues > #3363 Isolation Level in transaction() from Connection", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
         subscribers: [__dirname + "/subscriber/*{.js,.ts}"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should execute operations in READ UNCOMMITED isolation level", () => Promise.all(connections.map(async function(connection) {
+    test("should execute operations in READ UNCOMMITED isolation level", () => Promise.all(connections.map(async function(connection) {
 
         let postId: number|undefined = undefined, categoryId: number|undefined = undefined;
 
@@ -35,22 +34,22 @@ describe("github issues > #3363 Isolation Level in transaction() from Connection
         });
 
         const post = await connection.manager.findOne(Post, { where: { title: "Post #1" }});
-        expect(post).not.to.be.undefined;
-        post!.should.be.eql({
+        expect(post).not.toBeUndefined();
+        expect(post)!.toEqual({
             id: postId,
             title: "Post #1"
         });
 
         const category = await connection.manager.findOne(Category, { where: { name: "Category #1" }});
-        expect(category).not.to.be.undefined;
-        category!.should.be.eql({
+        expect(category).not.toBeUndefined();
+        expect(category)!.toEqual({
             id: categoryId,
             name: "Category #1"
         });
 
     })));
 
-    it("should execute operations in SERIALIZABLE isolation level", () => Promise.all(connections.map(async connection => {
+    test("should execute operations in SERIALIZABLE isolation level", () => Promise.all(connections.map(async connection => {
 
         let postId: number|undefined = undefined, categoryId: number|undefined = undefined;
 
@@ -70,15 +69,15 @@ describe("github issues > #3363 Isolation Level in transaction() from Connection
         });
 
         const post = await connection.manager.findOne(Post, { where: { title: "Post #1" }});
-        expect(post).not.to.be.undefined;
-        post!.should.be.eql({
+        expect(post).not.toBeUndefined();
+        expect(post)!.toEqual({
             id: postId,
             title: "Post #1"
         });
 
         const category = await connection.manager.findOne(Category, { where: { name: "Category #1" }});
-        expect(category).not.to.be.undefined;
-        category!.should.be.eql({
+        expect(category).not.toBeUndefined();
+        expect(category)!.toEqual({
             id: categoryId,
             name: "Category #1"
         });
