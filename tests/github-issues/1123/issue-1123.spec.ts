@@ -1,12 +1,12 @@
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {EntitySchema} from "../../../src";
 import {Author, AuthorSchema} from "./entity/Author";
 import {Post, PostSchema} from "./entity/Post";
 
 describe("github issues > #1123 load relation eagerly by setting isEager property", () => {
   let connections: Connection[];
-  before(
+  beforeAll(
     async () =>
       (connections = await createTestingConnections({
         entities: [new EntitySchema<Author>(AuthorSchema), new EntitySchema<Post>(PostSchema)],
@@ -14,7 +14,7 @@ describe("github issues > #1123 load relation eagerly by setting isEager propert
       }))
   );
   beforeEach(() => reloadTestingDatabases(connections));
-  after(() => closeTestingConnections(connections));
+  afterAll(() => closeTestingConnections(connections));
 
   async function prepareData(connection: Connection) {
     const author = new Author();
@@ -29,13 +29,13 @@ describe("github issues > #1123 load relation eagerly by setting isEager propert
     await connection.manager.save(post);
   }
 
-  it("should load all eager relations when object is loaded", () =>
+  test("should load all eager relations when object is loaded", () =>
     Promise.all(
       connections.map(async connection => {
         await prepareData(connection);
 
         const loadedPost = await connection.manager.findOne(Post, 1);
-        loadedPost!.should.be.eql({
+        expect(loadedPost)!.toEqual({
           id: 1,
           title: "Post 1",
           author: {
@@ -46,7 +46,7 @@ describe("github issues > #1123 load relation eagerly by setting isEager propert
       })
     ));
 
-  it("should not load eager relations when query builder is used", () =>
+  test("should not load eager relations when query builder is used", () =>
     Promise.all(
       connections.map(async connection => {
         await prepareData(connection);
@@ -56,7 +56,7 @@ describe("github issues > #1123 load relation eagerly by setting isEager propert
           .where("post.id = :id", { id: 1 })
           .getOne();
 
-        loadedPost!.should.be.eql({
+        expect(loadedPost)!.toEqual({
           id: 1,
           title: "Post 1"
         });
