@@ -1,8 +1,6 @@
 import "reflect-metadata";
-import { expect } from "chai";
-
-import { Connection } from "../../../src/connection/Connection";
-import { closeTestingConnections, createTestingConnections, reloadTestingDatabases } from "../../utils/test-utils";
+import { Connection } from "../../../src";
+import { closeTestingConnections, createTestingConnections, reloadTestingDatabases } from "../../../test/utils/test-utils";
 import { Plan } from "./entity/Plan";
 import { Item } from "./entity/Item";
 import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver";
@@ -10,14 +8,14 @@ import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver";
 describe("github issues > #1476 subqueries", () => {
 
     let connections: Connection[] = [];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
         enabledDrivers: ["mysql", "mariadb", "sqlite", "sqljs"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should", () => Promise.all(connections.map(async connection => {
+    test("should", () => Promise.all(connections.map(async connection => {
         const planRepo = connection.getRepository(Plan);
         const itemRepo = connection.getRepository(Item);
         
@@ -49,17 +47,17 @@ describe("github issues > #1476 subqueries", () => {
             }, "i", `i.planId = b.planId`)
             .getRawMany();
 
-        expect(plans).to.not.be.undefined;
+        expect(plans).not.toBeUndefined();
 
         const plan = plans![0];
-        expect(plan.b_planId).to.be.equal(1);
-        expect(plan.b_planName).to.be.equal("Test");
-        expect(plan.planId).to.be.equal(1);
+        expect(plan.b_planId).toEqual(1);
+        expect(plan.b_planName).toEqual("Test");
+        expect(plan.planId).toEqual(1);
 
         if (connection.driver instanceof MysqlDriver) {
-            expect(plan.total).to.be.equal("2");
+            expect(plan.total).toEqual("2");
         } else {
-            expect(plan.total).to.be.equal(2);
+            expect(plan.total).toEqual(2);
         }
 
     })));
