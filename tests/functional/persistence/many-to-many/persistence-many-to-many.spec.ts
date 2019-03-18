@@ -1,6 +1,5 @@
 import "reflect-metadata";
-import {expect} from "chai";
-import {Connection} from "../../../../src/connection/Connection";
+import {Connection} from "../../../../src";
 import {Post} from "./entity/Post";
 import {Category} from "./entity/Category";
 import {User} from "./entity/User";
@@ -13,15 +12,15 @@ describe("persistence > many-to-many", function() {
     // -------------------------------------------------------------------------
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({ __dirname }));
+    beforeAll(async () => connections = await createTestingConnections({ __dirname }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
     // -------------------------------------------------------------------------
     // Specifications
     // -------------------------------------------------------------------------
     
-    it("add exist element to exist object with empty many-to-many relation and save it and it should contain a new category", () => Promise.all(connections.map(async connection => {
+    test("add exist element to exist object with empty many-to-many relation and save it and it should contain a new category", () => Promise.all(connections.map(async connection => {
 
         const postRepository = connection.getRepository(Post);
         const categoryRepository = connection.getRepository(Category);
@@ -55,13 +54,13 @@ describe("persistence > many-to-many", function() {
             }
         });
 
-        expect(loadedUser!).not.to.be.undefined;
-        expect(loadedUser!.post).not.to.be.undefined;
-        expect(loadedUser!.post.categories).not.to.be.undefined;
+        expect(loadedUser!).not.toBeUndefined();
+        expect(loadedUser!.post).not.toBeUndefined();
+        expect(loadedUser!.post.categories).not.toBeUndefined();
 
     })));
 
-    it("remove one element from many-to-many relation should remove from the database as well", () => Promise.all(connections.map(async connection => {
+    test("remove one element from many-to-many relation should remove from the database as well", () => Promise.all(connections.map(async connection => {
 
         const postRepository = connection.getRepository(Post);
         const categoryRepository = connection.getRepository(Category);
@@ -100,10 +99,10 @@ describe("persistence > many-to-many", function() {
             }
         });
 
-        expect(loadedUser1!).not.to.be.undefined;
-        expect(loadedUser1!.post).not.to.be.undefined;
-        expect(loadedUser1!.post.categories).not.to.be.undefined;
-        expect(loadedUser1!.post.categories!.length).to.be.equal(2);
+        expect(loadedUser1!).not.toBeUndefined();
+        expect(loadedUser1!.post).not.toBeUndefined();
+        expect(loadedUser1!.post.categories).not.toBeUndefined();
+        expect(loadedUser1!.post.categories!.length).toEqual(2);
 
         // now remove added categories
         newPost.categories = [category1];
@@ -118,14 +117,14 @@ describe("persistence > many-to-many", function() {
             }
         });
 
-        expect(loadedUser2!).not.to.be.undefined;
-        expect(loadedUser2!.post).not.to.be.undefined;
-        expect(loadedUser2!.post.categories).not.to.be.undefined;
-        expect(loadedUser2!.post.categories!.length).to.be.equal(1);
+        expect(loadedUser2!).not.toBeUndefined();
+        expect(loadedUser2!.post).not.toBeUndefined();
+        expect(loadedUser2!.post.categories).not.toBeUndefined();
+        expect(loadedUser2!.post.categories!.length).toEqual(1);
 
     })));
 
-    it("remove all elements from many-to-many relation should remove from the database as well", () => Promise.all(connections.map(async connection => {
+    test("remove all elements from many-to-many relation should remove from the database as well", () => Promise.all(connections.map(async connection => {
 
         const postRepository = connection.getRepository(Post);
         const categoryRepository = connection.getRepository(Category);
@@ -164,10 +163,10 @@ describe("persistence > many-to-many", function() {
             }
         });
 
-        expect(loadedUser1!).not.to.be.undefined;
-        expect(loadedUser1!.post).not.to.be.undefined;
-        expect(loadedUser1!.post.categories).not.to.be.undefined;
-        expect(loadedUser1!.post.categories!.length).to.be.equal(2);
+        expect(loadedUser1!).not.toBeUndefined();
+        expect(loadedUser1!.post).not.toBeUndefined();
+        expect(loadedUser1!.post.categories).not.toBeUndefined();
+        expect(loadedUser1!.post.categories!.length).toEqual(2);
 
         // now remove added categories
         newPost.categories = [];
@@ -182,13 +181,13 @@ describe("persistence > many-to-many", function() {
             }
         });
 
-        expect(loadedUser2!).not.to.be.undefined;
-        expect(loadedUser2!.post).not.to.be.undefined;
-        expect(loadedUser2!.post.categories!.length).to.be.equal(0);
+        expect(loadedUser2!).not.toBeUndefined();
+        expect(loadedUser2!.post).not.toBeUndefined();
+        expect(loadedUser2!.post.categories!.length).toEqual(0);
 
     })));
 
-    it("remove all elements (set to null) from many-to-many relation should remove from the database as well", () => Promise.all(connections.map(async connection => {
+    test("remove all elements (set to null) from many-to-many relation should remove from the database as well", () => Promise.all(connections.map(async connection => {
 
         const postRepository = connection.getRepository(Post);
         const categoryRepository = connection.getRepository(Category);
@@ -227,10 +226,10 @@ describe("persistence > many-to-many", function() {
             }
         });
 
-        expect(loadedUser1!).not.to.be.undefined;
-        expect(loadedUser1!.post).not.to.be.undefined;
-        expect(loadedUser1!.post.categories).not.to.be.undefined;
-        expect(loadedUser1!.post.categories!.length).to.be.equal(2);
+        expect(loadedUser1!).not.toBeUndefined();
+        expect(loadedUser1!.post).not.toBeUndefined();
+        expect(loadedUser1!.post.categories).not.toBeUndefined();
+        expect(loadedUser1!.post.categories!.length).toEqual(2);
 
         // now remove added categories
         newPost.categories = null;
@@ -245,12 +244,12 @@ describe("persistence > many-to-many", function() {
             }
         });
 
-        expect(loadedUser2!).not.to.be.undefined;
-        expect(loadedUser2!.post).not.to.be.undefined;
-        expect(loadedUser2!.post.categories!.length).to.be.equal(0);
+        expect(loadedUser2!).not.toBeUndefined();
+        expect(loadedUser2!.post).not.toBeUndefined();
+        expect(loadedUser2!.post.categories!.length).toEqual(0);
     })));
 
-    it("remove all elements from many-to-many relation if parent entity is removed", () => Promise.all(connections.map(async connection => {
+    test("remove all elements from many-to-many relation if parent entity is removed", () => Promise.all(connections.map(async connection => {
 
         // save a new category
         const category1 = new Category();
