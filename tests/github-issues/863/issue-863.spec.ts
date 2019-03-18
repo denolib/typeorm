@@ -1,22 +1,21 @@
 import "reflect-metadata";
-import { closeTestingConnections, createTestingConnections, reloadTestingDatabases } from "../../utils/test-utils";
-import { Connection } from "../../../src/connection/Connection";
-
+import { closeTestingConnections, createTestingConnections, reloadTestingDatabases } from "../../../test/utils/test-utils";
+import { Connection } from "../../../src";
 import { Master } from "./entities/master";
 import { Detail } from "./entities/detail";
 
 describe("indices > create schema", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [Master, Detail],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
     describe("build schema", function () {
 
-        it("it should just work, creating the index", () => Promise.all(connections.map(async connection => {
+        test("it should just work, creating the index", () => Promise.all(connections.map(async connection => {
 
             await connection.synchronize(true);
 
