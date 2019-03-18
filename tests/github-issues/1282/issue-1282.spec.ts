@@ -1,7 +1,6 @@
 import "reflect-metadata";
-import {expect} from "chai";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {Animal} from "./entity/Animal";
 import {NamingStrategyUnderTest} from "./naming/NamingStrategyUnderTest";
 import {ColumnMetadata} from "../../../src/metadata/ColumnMetadata";
@@ -12,18 +11,17 @@ describe("github issue > #1282 FEATURE REQUEST - Naming strategy joinTableColumn
     let connections: Connection[];
     let namingStrategy = new NamingStrategyUnderTest();
 
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
         namingStrategy
     }));
     beforeEach(() => {
         return reloadTestingDatabases(connections);
     });
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
 
-    it("NamingStrategyUnderTest#", () => Promise.all(connections.map(async connection => {
-
+    test("NamingStrategyUnderTest#", () => Promise.all(connections.map(async connection => {
         await connection.getRepository(Animal).find();
 
         let metadata = connection.getManyToManyMetadata(Animal, "categories");
@@ -35,11 +33,8 @@ describe("github issue > #1282 FEATURE REQUEST - Naming strategy joinTableColumn
             columns = [];
         }
 
-        expect(columns.find((column: ColumnMetadata) => column.databaseName === "animalIdForward"))
-            .not.to.be.undefined;
-
-        expect(columns.find((column: ColumnMetadata) => column.databaseName === "categoryIdInverse"))
-            .not.to.be.undefined;
+        expect(columns.find((column: ColumnMetadata) => column.databaseName === "animalIdForward")).not.toBeUndefined();
+        expect(columns.find((column: ColumnMetadata) => column.databaseName === "categoryIdInverse")).not.toBeUndefined();
 
     })));
 
