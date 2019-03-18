@@ -1,21 +1,20 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {Post} from "./entity/Post";
 import {Category} from "./entity/Category";
-import {expect} from "chai";
 
 describe("github issues > #996 already loaded via query builder relations should not be loaded again when they are lazily loaded", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
         enabledDrivers: ["mysql"] // only one driver is enabled because this example uses lazy relations
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should be able to find by object reference", () => Promise.all(connections.map(async connection => {
+    test("should be able to find by object reference", () => Promise.all(connections.map(async connection => {
 
         const category1 = new Category();
         category1.name = "Category #1";
@@ -35,9 +34,9 @@ describe("github issues > #996 already loaded via query builder relations should
             .leftJoinAndSelect("post.categories", "categories")
             .getOne();
 
-        expect(loadedPost).to.not.be.undefined;
+        expect(loadedPost).not.toBeUndefined();
         const categories = await loadedPost!.categories;
-        categories.should.be.eql([{
+        expect(categories).toEqual([{
             id: 1,
             name: "Category #1"
         }, {
