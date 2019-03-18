@@ -1,20 +1,19 @@
 import "reflect-metadata";
-import {createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
-import {expect} from "chai";
+import {createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {Record} from "./entity/Record";
 
 describe("github issues > #1314 UPDATE on json column stores string type", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
         enabledDrivers: ["postgres"] // because only postgres supports jsonb type
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should not store json type as string on update", () => Promise.all(connections.map(async connection => {
+    test("should not store json type as string on update", () => Promise.all(connections.map(async connection => {
 
         let recordRepo = connection.getRepository(Record);
 
@@ -22,20 +21,20 @@ describe("github issues > #1314 UPDATE on json column stores string type", () =>
         record.data = { foo: "bar" };
 
         let persistedRecord = await recordRepo.save(record);
-        record.data.should.be.eql({ foo: "bar" });
+        expect(record.data).toEqual({ foo: "bar" });
 
         let foundRecord = await recordRepo.findOne(persistedRecord.id);
-        expect(foundRecord).to.be.not.undefined;
-        expect(foundRecord!.data.foo).to.eq("bar");
+        expect(foundRecord).not.toBeUndefined();
+        expect(foundRecord!.data.foo).toEqual("bar");
 
         // Update
         foundRecord!.data = {answer: 42};
         await recordRepo.save(foundRecord!);
         foundRecord = await recordRepo.findOne(persistedRecord.id);
 
-        expect(foundRecord).to.be.not.undefined;
-        expect(foundRecord!.data).to.not.be.equal("{\"answer\":42}");
-        expect(foundRecord!.data.answer).to.eq(42);
+        expect(foundRecord).not.toBeUndefined();
+        expect(foundRecord!.data).not.toEqual("{\"answer\":42}");
+        expect(foundRecord!.data.answer).toEqual(42);
     })));
 
 });
