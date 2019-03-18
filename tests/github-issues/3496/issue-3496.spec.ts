@@ -1,22 +1,22 @@
 import "reflect-metadata";
 import {Connection} from "../../../src";
-import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils";
+import {closeTestingConnections, createTestingConnections} from "../../../test/utils/test-utils";
 import {Post} from "./entity/Post";
 import {PromiseUtils} from "../../../src";
 
 describe("github issues > #3496 jsonb comparison doesn't work", () => {
 
     let connections: Connection[];
-    before(async () => {
+    beforeAll(async () => {
         connections = await createTestingConnections({
             entities: [__dirname + "/entity/*{.js,.ts}"],
             enabledDrivers: ["postgres"],
             dropSchema: true,
         });
     });
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("the entity should not be updated a second time", () => PromiseUtils.runInSequence(connections, async connection => {
+    test("the entity should not be updated a second time", () => PromiseUtils.runInSequence(connections, async connection => {
         await connection.synchronize();
         const repository = connection.getRepository(Post);
 
@@ -33,6 +33,6 @@ describe("github issues > #3496 jsonb comparison doesn't work", () => {
             })
         );
 
-        savedPost1!.version.should.be.equal(savedPost2!.version);
+        expect(savedPost1!.version).toEqual(savedPost2!.version);
     }));
 });
