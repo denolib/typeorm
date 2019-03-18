@@ -3,12 +3,12 @@ import {
     closeTestingConnections,
     createTestingConnections,
     reloadTestingDatabases
-} from "../../utils/test-utils";
+} from "../../../test/utils/test-utils";
 import { User } from "./entity/User";
 
 describe("github issues > #3654 Should be able compare buffer type", () => {
     let connections: Connection[];
-    before(
+    beforeAll(
         async () =>
             (connections = await createTestingConnections({
                 entities: [__dirname + "/entity/*{.js,.ts}"],
@@ -16,9 +16,9 @@ describe("github issues > #3654 Should be able compare buffer type", () => {
             }))
     );
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("Repository.save() method should be able compare buffer type for deciding if save or update ops.", () =>
+    test("Repository.save() method should be able compare buffer type for deciding if save or update ops.", () =>
         Promise.all(
             connections.map(async connection => {
                 const userRepo = connection.getRepository(User);
@@ -45,8 +45,8 @@ describe("github issues > #3654 Should be able compare buffer type", () => {
                     }
                 }))[0];
 
-                confirmUser.id.should.be.eql(userId);
-                confirmUser.age.should.be.eql(26);
+                expect(confirmUser.id).toEqual(userId);
+                expect(confirmUser.age).toEqual(26);
             })
         ));
 });
