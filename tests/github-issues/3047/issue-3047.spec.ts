@@ -1,14 +1,14 @@
 import "reflect-metadata";
-import {createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
-import {expect} from "chai";
+import {createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {User} from "./entity/User";
 import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver";
 import {PostgresDriver} from "../../../src/driver/postgres/PostgresDriver";
+
 describe("github issues > #3047 Mysqsl on duplicate key update use current values", () => {
     let connections: Connection[];
 
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [User],
         schemaCreate: true,
         dropSchema: true,
@@ -16,7 +16,7 @@ describe("github issues > #3047 Mysqsl on duplicate key update use current value
 
     beforeEach(() => reloadTestingDatabases(connections));
 
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
     let user1 = new User();
     user1.first_name = "John";
@@ -28,7 +28,7 @@ describe("github issues > #3047 Mysqsl on duplicate key update use current value
     user2.last_name = "Lenon";
     user2.is_updated = "yes";
 
-    it("should overwrite using current value in MySQL/MariaDB", () => Promise.all(connections.map(async connection => {
+    test("should overwrite using current value in MySQL/MariaDB", () => Promise.all(connections.map(async connection => {
       try {
          if (connection.driver instanceof MysqlDriver) {
             const UserRepository = connection.manager.getRepository(User);
@@ -49,16 +49,16 @@ describe("github issues > #3047 Mysqsl on duplicate key update use current value
               .execute();
 
             let loadedUser = await UserRepository.find();
-            expect(loadedUser).not.to.be.undefined;
-            expect(loadedUser).to.have.lengthOf(1);
-            expect(loadedUser[0]).to.includes({ is_updated: "yes" });
+            expect(loadedUser).not.toBeUndefined();
+            expect(loadedUser).toHaveLength(1);
+            expect(loadedUser[0]).toEqual({ is_updated: "yes" });
         }
       } catch (err) {
         throw new Error(err);
       }
      })));
 
-    it("should overwrite using current value in PostgreSQL", () => Promise.all(connections.map(async connection => {
+    test("should overwrite using current value in PostgreSQL", () => Promise.all(connections.map(async connection => {
       try {
         if (connection.driver instanceof PostgresDriver) {
 
@@ -83,9 +83,9 @@ describe("github issues > #3047 Mysqsl on duplicate key update use current value
             .execute();
 
           let loadedUser = await UserRepository.find();
-          expect(loadedUser).not.to.be.undefined;
-          expect(loadedUser).to.have.lengthOf(1);
-          expect(loadedUser[0]).to.includes({ is_updated: "yes" });
+          expect(loadedUser).not.toBeUndefined();
+          expect(loadedUser).toHaveLength(1);
+          expect(loadedUser[0]).toEqual({ is_updated: "yes" });
         }
       } catch (err) {
         throw new Error(err);
