@@ -1,22 +1,21 @@
 import "reflect-metadata";
-import {assert} from "chai";
-import {Connection} from "../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
+import {Connection} from "../../../src";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
 import {Account} from "./entity/Account";
 import {AccountActivationToken} from "./entity/AccountActivationToken";
 
 describe("save child and parent entity", () => {
 
     let connections: Connection[] = [];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
         enabledDrivers: ["mysql", "mariadb", "sqlite", "sqljs"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
 
-    it("account property in accountActivationToken should not be null", () => Promise.all(connections.map(async connection => {
+    test("account property in accountActivationToken should not be null", () => Promise.all(connections.map(async connection => {
 
         const account = new Account();
         account.username = "test";
@@ -24,7 +23,7 @@ describe("save child and parent entity", () => {
         account.accountActivationToken = new AccountActivationToken("XXXXXXXXXXXXXXXXXX", new Date());
 
         const savedAccount = await connection.manager.save(account);
-        assert.isNotNull(savedAccount.accountActivationToken.account);
+        expect(savedAccount.accountActivationToken.account).not.toBeNull();
 
     })));
 
