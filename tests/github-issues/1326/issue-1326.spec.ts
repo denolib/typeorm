@@ -1,21 +1,20 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
 import {User} from "./entity/User";
 import {SpecificUser} from "./entity/SpecificUser";
-import {Connection} from "../../../src/connection/Connection";
-import {expect} from "chai";
+import {Connection} from "../../../src";
 
 describe("github issue > #1326 Wrong behavior w/ the same table names in different databases", () => {
 
     let connections: Connection[] = [];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
         enabledDrivers: ["mysql"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should not confuse equivalent table names in different databases", () => Promise.all(connections.map(async connection => {
+    test("should not confuse equivalent table names in different databases", () => Promise.all(connections.map(async connection => {
         for (let i = 1; i <= 10; i++) {
             const user = new User();
             user.name = "user #" + i;
@@ -28,15 +27,15 @@ describe("github issue > #1326 Wrong behavior w/ the same table names in differe
         }
 
         const user = await connection.manager.findOne(User, { name: "user #1" });
-        expect(user).not.to.be.undefined;
-        user!.should.be.eql({
+        expect(user).not.toBeUndefined();
+        expect(user)!.toEqual({
             id: 1,
             name: "user #1"
         });
 
         const specificUser = await connection.manager.findOne(SpecificUser, { name: "specific user #1" });
-        expect(specificUser).not.to.be.undefined;
-        specificUser!.should.be.eql({
+        expect(specificUser).not.toBeUndefined();
+        expect(specificUser)!.toEqual({
             id: 1,
             name: "specific user #1"
         });
