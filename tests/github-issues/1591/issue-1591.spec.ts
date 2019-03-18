@@ -4,7 +4,7 @@ import {Connection} from "../../../src";
 import {User} from "./entity/User";
 import {Photo} from "./entity/Photo";
 
-describe("github issues > #1591 Define order of relation data when querying on the main entity", () => {
+describe.skip("github issues > #1591 Define order of relation data when querying on the main entity", () => {
 
     let connections: Connection[];
     beforeAll(async () => connections = await createTestingConnections({
