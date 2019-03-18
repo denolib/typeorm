@@ -1,12 +1,12 @@
 import "reflect-metadata";
-import {Connection} from "../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils";
+import {Connection} from "../../../src";
 import {Error} from "./entity/Error";
+import {closeTestingConnections, createTestingConnections} from "../../../test/utils/test-utils";
 
 describe("github issues > #1887 Having problems with UNIQUEIDENTIFIERS", () => {
 
     let connections: Connection[];
-    before(async () => {
+    beforeAll(async () => {
         connections = await createTestingConnections({
             entities: [__dirname + "/entity/*{.js,.ts}"],
             enabledDrivers: ["mssql"],
@@ -14,9 +14,9 @@ describe("github issues > #1887 Having problems with UNIQUEIDENTIFIERS", () => {
             dropSchema: true,
         });
     });
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should correctly insert data", () => Promise.all(connections.map(async connection => {
+    test("should correctly insert data", () => Promise.all(connections.map(async connection => {
         const errorRepository = connection.getRepository(Error);
         const err = new Error();
         err.errorDate = new Date();
