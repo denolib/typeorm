@@ -1,20 +1,20 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {User} from "./entity/User";
 import {Photo} from "./entity/Photo";
 
-describe.skip("github issues > #1591 Define order of relation data when querying on the main entity", () => {
+describe("github issues > #1591 Define order of relation data when querying on the main entity", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
         enabledDrivers: ["mysql"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should query correct number of users with joined data ordering applied", () => Promise.all(connections.map(async connection => {
+    test("should query correct number of users with joined data ordering applied", () => Promise.all(connections.map(async connection => {
         for (let i = 0; i < 30; i++) {
             const photo1 = new Photo();
             photo1.name = "Photo #" + i + "_1";
