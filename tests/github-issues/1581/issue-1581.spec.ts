@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
 import {Connection} from "../../../src";
 import {User} from "./entity/User";
 import {Product} from "./entity/Product";
@@ -10,14 +10,14 @@ import {OrderItem} from "./entity/OrderItem";
 describe.skip("github issues > #1581 Composite key breaks OneToMany relation", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
         enabledDrivers: ["mysql"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("throws an error because there is no object id defined", () => Promise.all(connections.map(async connection => {
+    test("throws an error because there is no object id defined", () => Promise.all(connections.map(async connection => {
 
         const user1 = new User();
         user1.email = "user1@example.com";
