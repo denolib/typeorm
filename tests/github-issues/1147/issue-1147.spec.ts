@@ -1,21 +1,20 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {Post} from "./entity/Post";
-import {expect} from "chai";
 
 describe("github issues > #1147 FindOptions should be able to accept custom where condition", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
         schemaCreate: true,
         dropSchema: true,
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should properly query using custom sql", () => Promise.all(connections.map(async connection => {
+    test("should properly query using custom sql", () => Promise.all(connections.map(async connection => {
 
         const promises: Promise<any>[] = [];
         for (let i = 1; i <= 5; i++) {
@@ -26,8 +25,8 @@ describe("github issues > #1147 FindOptions should be able to accept custom wher
         await Promise.all(promises);
 
         const posts = await connection.manager.find(Post, { where: "Post.title LIKE '%3'" });
-        posts.length.should.be.equal(1);
-        expect(posts[0].title).to.be.equal("post 3");
+        expect(posts.length).toEqual(1);
+        expect(posts[0].title).toEqual("post 3");
     })));
 
 });
