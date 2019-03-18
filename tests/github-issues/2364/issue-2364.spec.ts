@@ -1,7 +1,6 @@
 import "reflect-metadata";
-import { createTestingConnections, closeTestingConnections, reloadTestingDatabases } from "../../utils/test-utils";
-import { Connection } from "../../../src/connection/Connection";
-import { expect } from "chai";
+import { createTestingConnections, closeTestingConnections, reloadTestingDatabases } from "../../../test/utils/test-utils";
+import { Connection } from "../../../src";
 import { Dummy } from "./entity/dummy";
 import { Dummy2 } from "./entity/dummy2";
 
@@ -10,7 +9,7 @@ describe("github issues > #2364 should generate id value if @Column generated:tr
     let connections: Connection[];
 
 
-    it("should generate id value", async () => {
+    test("should generate id value", async () => {
         connections = await createTestingConnections({
             entities: [__dirname + "/entity/*{.js,.ts}"],
             schemaCreate: true,
@@ -25,8 +24,8 @@ describe("github issues > #2364 should generate id value if @Column generated:tr
             await repository1.insert(dummyObj1);
             await repository2.insert(dummyObj2);
 
-            expect(dummyObj1.id).to.not.be.eq(0);
-            expect(dummyObj2.id).to.not.be.eq(0);
+            expect(dummyObj1.id).not.toEqual(0);
+            expect(dummyObj2.id).not.toEqual(0);
         }));
         await closeTestingConnections(connections);
     });
