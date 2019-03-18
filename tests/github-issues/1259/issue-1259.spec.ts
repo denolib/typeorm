@@ -1,20 +1,20 @@
 import "reflect-metadata";
-import {createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {Post} from "./entity/Post";
 import {Category} from "./entity/Category";
 
 describe("github issues > #1259 Can't sort by fields added with addSelect", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
         enabledDrivers: ["postgres"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should order by added selects when pagination is used", () => Promise.all(connections.map(async connection => {
+    test("should order by added selects when pagination is used", () => Promise.all(connections.map(async connection => {
 
         const categories = [new Category(), new Category()];
         await connection.manager.save(categories);
@@ -43,14 +43,14 @@ describe("github issues > #1259 Can't sort by fields added with addSelect", () =
             .setParameter("query", "timber")
             .getMany();
 
-        loadedPosts.length.should.be.equal(5);
-        loadedPosts[0].id.should.be.equal(7);
-        loadedPosts[0].name.should.be.equal("timber");
-        loadedPosts[1].id.should.be.equal(8);
-        loadedPosts[1].name.should.be.equal("timber");
+        expect(loadedPosts.length).toEqual(5);
+        expect(loadedPosts[0].id).toEqual(7);
+        expect(loadedPosts[0].name).toEqual("timber");
+        expect(loadedPosts[1].id).toEqual(8);
+        expect(loadedPosts[1].name).toEqual("timber");
     })));
 
-    it("should order by added selects when pagination is used", () => Promise.all(connections.map(async connection => {
+    test("should order by added selects when pagination is used", () => Promise.all(connections.map(async connection => {
 
         const categories = [new Category(), new Category()];
         await connection.manager.save(categories);
@@ -73,12 +73,12 @@ describe("github issues > #1259 Can't sort by fields added with addSelect", () =
             .take(5)
             .getMany();
 
-        loadedPosts.length.should.be.equal(5);
-        loadedPosts[0].id.should.be.equal(10);
-        loadedPosts[1].id.should.be.equal(9);
-        loadedPosts[2].id.should.be.equal(8);
-        loadedPosts[3].id.should.be.equal(7);
-        loadedPosts[4].id.should.be.equal(6);
+        expect(loadedPosts.length).toEqual(5);
+        expect(loadedPosts[0].id).toEqual(10);
+        expect(loadedPosts[1].id).toEqual(9);
+        expect(loadedPosts[2].id).toEqual(8);
+        expect(loadedPosts[3].id).toEqual(7);
+        expect(loadedPosts[4].id).toEqual(6);
     })));
 
 });
