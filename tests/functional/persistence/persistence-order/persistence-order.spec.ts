@@ -1,17 +1,16 @@
 import "reflect-metadata";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../test/utils/test-utils";
-import {Connection} from "../../../../src/connection/Connection";
+import {Connection} from "../../../../src";
 import {Post} from "./entity/Post";
 import {Category} from "./entity/Category";
 import {ConnectionMetadataBuilder} from "../../../../src/connection/ConnectionMetadataBuilder";
 import {EntityMetadataValidator} from "../../../../src/metadata-builder/EntityMetadataValidator";
-import {expect} from "chai";
 
 describe("persistence > order of persistence execution operations", () => {
 
     describe("should throw exception when non-resolvable circular relations found", function() {
 
-        it("should throw CircularRelationsError", () => {
+        test("should throw CircularRelationsError", () => {
             const connection = new Connection({ // dummy connection options, connection won't be established anyway
                 type: "mysql",
                 host: "localhost",
@@ -23,7 +22,7 @@ describe("persistence > order of persistence execution operations", () => {
             const connectionMetadataBuilder = new ConnectionMetadataBuilder(connection);
             const entityMetadatas = connectionMetadataBuilder.buildEntityMetadatas([__dirname + "/entity/*{.js,.ts}"]);
             const entityMetadataValidator = new EntityMetadataValidator();
-            expect(() => entityMetadataValidator.validateMany(entityMetadatas, connection.driver)).to.throw(Error);
+            expect(() => entityMetadataValidator.validateMany(entityMetadatas, connection.driver)).toThrow(Error);
         });
 
 
@@ -32,12 +31,12 @@ describe("persistence > order of persistence execution operations", () => {
     describe.skip("should persist all entities in correct order", function() {
 
         let connections: Connection[];
-        before(async () => connections = await createTestingConnections({
+        beforeAll(async () => connections = await createTestingConnections({
             entities: [__dirname + "/entity/*{.js,.ts}"],
         }));
         beforeEach(() => reloadTestingDatabases(connections));
-        after(() => closeTestingConnections(connections));
-        it("", () => Promise.all(connections.map(async connection => {
+        afterAll(() => closeTestingConnections(connections));
+        test("", () => Promise.all(connections.map(async connection => {
 
             // create first category and post and save them
             const category1 = new Category();
@@ -60,7 +59,7 @@ describe("persistence > order of persistence execution operations", () => {
              }
              });
 
-             posts.should.be.eql([{
+             expect(posts).toEqual()([{
              id: 1,
              title: "Hello Post #1",
              category: {
