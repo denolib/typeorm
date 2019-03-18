@@ -1,12 +1,11 @@
-import {expect} from "chai";
-import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils";
+import {closeTestingConnections, createTestingConnections} from "../../../test/utils/test-utils";
 import {RecordContext} from "./entity/ver2/context";
 import {Record} from "./entity/ver2/record";
 import {User} from "./entity/ver2/user";
 
 describe("github issues > #2201 - Create a select query when using a (custom) junction table", () => {
 
-    it("Should create only two PM columns ('order_id' and 'user_id')", async () => {
+    test("Should create only two PM columns ('order_id' and 'user_id')", async () => {
         const connections = await createTestingConnections({
             entities: [__dirname + "/entity/ver1/*{.js,.ts}"],
             schemaCreate: true,
@@ -18,13 +17,12 @@ describe("github issues > #2201 - Create a select query when using a (custom) ju
         const expectedColumnNames = ["record_id", "meta", "user_id"];
         const existingColumnNames = contextMetadata.columns.map(col => col.databaseName);
 
-        expect(existingColumnNames.length).to.eql(expectedColumnNames.length);
-        expect(existingColumnNames).have.members(expectedColumnNames);
-
+        expect(existingColumnNames.length).toEqual(expectedColumnNames.length);
+        expect(existingColumnNames).toEqual(expect.arrayContaining(expectedColumnNames));
         await closeTestingConnections(connections);
     });
 
-    it.skip("Should not try to update the junction table when not needed", async () => {
+    test.skip("Should not try to update the junction table when not needed", async () => {
         const connections = await createTestingConnections({
             entities: [__dirname + "/entity/ver2/*{.js,.ts}"],
             enabledDrivers: ["postgres"],
@@ -62,7 +60,7 @@ describe("github issues > #2201 - Create a select query when using a (custom) ju
         result.status = "failed";
 
         await result.save();
-        expect(0).to.eql(0);
+        expect(0).toEqual(0);
 
         await closeTestingConnections(connections);
     });

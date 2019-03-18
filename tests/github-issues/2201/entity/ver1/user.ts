@@ -1,4 +1,4 @@
-import { PrimaryColumn, OneToMany } from "../../../../../src/index";
+import { PrimaryColumn, OneToMany } from "../../../../../src";
 import { Entity } from "../../../../../src/decorator/entity/Entity";
 import { BaseEntity } from "../../../../../src/repository/BaseEntity";
 

@@ -4,7 +4,7 @@ import {
   closeTestingConnections,
   createTestingConnections,
   reloadTestingDatabases
-} from "../../utils/test-utils";
+} from "../../../test/utils/test-utils";
 import { Bar } from "./entity/Bar";
 import { Foo } from "./entity/Foo";
 
