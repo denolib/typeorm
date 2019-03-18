@@ -1,19 +1,18 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
-import {expect} from "chai";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import { TestEntity } from "./entity/TestEntity";
 
 describe("github issues > #929 sub-queries should set their own parameters on execution", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should persist successfully and return persisted entity", () => Promise.all(connections.map(async connection => {
+    test("should persist successfully and return persisted entity", () => Promise.all(connections.map(async connection => {
 
         // create objects to save
         const testEntity1 = new TestEntity();
@@ -45,8 +44,8 @@ describe("github issues > #929 sub-queries should set their own parameters on ex
             .where(`testEntity.id IN ${subQuery.getQuery()}`)
             .getMany();
 
-        expect(results.length).to.be.equal(1);
-        expect(results).to.eql([{ id: 1, name: "Entity #1" }]);
+        expect(results.length).toEqual(1);
+        expect(results).toEqual([{ id: 1, name: "Entity #1" }]);
     })));
 
 });
