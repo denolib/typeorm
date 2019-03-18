@@ -1,18 +1,18 @@
 import "reflect-metadata";
-import {createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {Category} from "./entity/Category";
 
 describe("github issues > #904 Using closure tables without @TreeLevelColumn will always fail on insert", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should work correctly when saving using parent category", () => Promise.all(connections.map(async connection => {
+    test("should work correctly when saving using parent category", () => Promise.all(connections.map(async connection => {
         const categoryRepository = connection.getTreeRepository(Category);
 
         const a1 = new Category();
@@ -40,7 +40,7 @@ describe("github issues > #904 Using closure tables without @TreeLevelColumn wil
         await categoryRepository.save(c12);
 
         const roots = await categoryRepository.findRoots();
-        roots.should.be.eql([
+        expect(roots).toEqual([
             {
                 id: 1,
                 name: "a1",
@@ -56,8 +56,8 @@ describe("github issues > #904 Using closure tables without @TreeLevelColumn wil
         ]);
 
         const c1Tree = await categoryRepository.findDescendantsTree(c1);
-        c1Tree.should.be.equal(c1);
-        c1Tree!.should.be.eql({
+        expect(c1Tree).toEqual(c1);
+        expect(c1Tree)!.toEqual({
             id: 3,
             name: "c1",
             childCategories: [{
@@ -73,7 +73,7 @@ describe("github issues > #904 Using closure tables without @TreeLevelColumn wil
 
     })));
 
-    it("should work correctly when saving using children categories", () => Promise.all(connections.map(async connection => {
+    test("should work correctly when saving using children categories", () => Promise.all(connections.map(async connection => {
         const categoryRepository = connection.getTreeRepository(Category);
 
         const a1 = new Category();
@@ -103,7 +103,7 @@ describe("github issues > #904 Using closure tables without @TreeLevelColumn wil
         // await categoryRepository.save(c12);
 
         const roots = await categoryRepository.findRoots();
-        roots.should.be.eql([
+        expect(roots).toEqual([
             {
                 id: 1,
                 name: "a1",
@@ -119,8 +119,8 @@ describe("github issues > #904 Using closure tables without @TreeLevelColumn wil
         ]);
 
         const c1Tree = await categoryRepository.findDescendantsTree(c1);
-        c1Tree.should.be.equal(c1);
-        c1Tree!.should.be.eql({
+        expect(c1Tree).toEqual(c1);
+        expect(c1Tree)!.toEqual({
             id: 3,
             name: "c1",
             childCategories: [{
@@ -136,7 +136,7 @@ describe("github issues > #904 Using closure tables without @TreeLevelColumn wil
 
     })));
 
-    it("should be able to retrieve the whole tree", () => Promise.all(connections.map(async connection => {
+    test("should be able to retrieve the whole tree", () => Promise.all(connections.map(async connection => {
         const categoryRepository = connection.getTreeRepository(Category);
 
         const a1 = new Category();
@@ -164,7 +164,7 @@ describe("github issues > #904 Using closure tables without @TreeLevelColumn wil
         await categoryRepository.save(c1);
 
         const tree = await categoryRepository.findTrees();
-        tree!.should.be.eql(
+        expect(tree)!.toEqual(
             [
                 {
                     id: 1,
