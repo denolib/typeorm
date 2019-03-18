@@ -1,20 +1,20 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {Bar} from "./entity/Bar";
 
 describe("github issues > #1749 Can't delete tables in non-default schema", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
         enabledDrivers: ["postgres"]
     }));
 
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should delete entites from tables in different schemas", () => Promise.all(connections.map(async connection => {
+    test("should delete entites from tables in different schemas", () => Promise.all(connections.map(async connection => {
         const bar = new Bar();
         const persistedBar = await connection.manager.save(bar);
 
