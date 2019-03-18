@@ -1,18 +1,17 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
-import {expect} from "chai";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 
 describe("github issues > #945 synchronization with multiple primary keys", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("schema should include two primary keys", () => Promise.all(connections.map(async connection => {
+    test("schema should include two primary keys", () => Promise.all(connections.map(async connection => {
         const queryRunner = connection.createQueryRunner();
         const table = await queryRunner.getTable("test_entity");
 
@@ -20,9 +19,9 @@ describe("github issues > #945 synchronization with multiple primary keys", () =
             const firstId = table.columns.find(column => column.name === "id1");
             const secondId = table.columns.find(column => column.name === "id2");
 
-            expect(table.columns.filter(column => column.isPrimary)).length(2);
-            expect(firstId).not.to.be.undefined;
-            expect(secondId).not.to.be.undefined;
+            expect(table.columns.filter(column => column.isPrimary)).toHaveLength(2);
+            expect(firstId).not.toBeUndefined();
+            expect(secondId).not.toBeUndefined();
         }
 
         await queryRunner.release();
