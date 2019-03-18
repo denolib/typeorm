@@ -1,4 +1,4 @@
-import { Entity, Column, ManyToOne, PrimaryGeneratedColumn } from "../../../../src/";
+import { Entity, Column, ManyToOne, PrimaryGeneratedColumn } from "../../../../src";
 import { Person } from "./person";
 
 @Entity()
