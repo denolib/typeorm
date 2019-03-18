@@ -1,9 +1,9 @@
 import "reflect-metadata";
-import {Connection} from "../../src";
-import {PromiseUtils} from "../../src";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../test/utils/test-utils";
+import {Connection} from "../../../src";
+import {PromiseUtils} from "../../../src";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
 import {Post} from "./entity/Post";
-import {EntityNotFoundError} from "../../src/error/EntityNotFoundError";
+import {EntityNotFoundError} from "../../../src/error/EntityNotFoundError";
 
 describe("github issues > #2313 - BaseEntity has no findOneOrFail() method", () => {
 
