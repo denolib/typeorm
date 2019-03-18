@@ -1,22 +1,21 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {User} from "./entity/User";
 import {Profile} from "./entity/Profile";
 import {Information} from "./entity/Information";
-import {expect} from "chai";
 
 describe("github issues > #1042 EntityMetadata.createPropertyPath does not work properly with objects inside entities (date, json, etc.)", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
         enabledDrivers: ["postgres"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should update object columns fine, at the same time embedded should work properly", () => Promise.all(connections.map(async connection => {
+    test("should update object columns fine, at the same time embedded should work properly", () => Promise.all(connections.map(async connection => {
 
         // create and save a new user
         const user = new User();
@@ -34,8 +33,8 @@ describe("github issues > #1042 EntityMetadata.createPropertyPath does not work 
 
         // load and check if saved user is correct
         const loadedUser = await connection.manager.findOne(User, 1);
-        expect(loadedUser).not.to.be.undefined;
-        loadedUser!.should.be.eql({
+        expect(loadedUser).not.toBeUndefined();
+        expect(loadedUser)!.toEqual({
             id: 1,
             name: "Timber Saw aka Lumberjack",
             registeredAt: user.registeredAt,
@@ -67,8 +66,8 @@ describe("github issues > #1042 EntityMetadata.createPropertyPath does not work 
 
         // load and check again
         const loadedUser2 = await connection.manager.findOne(User, 1);
-        expect(loadedUser2).not.to.be.undefined;
-        loadedUser2!.should.be.eql({
+        expect(loadedUser2).not.toBeUndefined();
+        expect(loadedUser2)!.toEqual({
             id: 1,
             name: "Timber Saw aka Lumberjack",
             registeredAt: updatedDate,
@@ -101,8 +100,8 @@ describe("github issues > #1042 EntityMetadata.createPropertyPath does not work 
 
         // load and check again
         const loadedUser3 = await connection.manager.findOne(User, 1);
-        expect(loadedUser3).not.to.be.undefined;
-        loadedUser3!.should.be.eql({
+        expect(loadedUser3).not.toBeUndefined();
+        expect(loadedUser3)!.toEqual({
             id: 1,
             name: "Timber Saw aka Lumberjack",
             registeredAt: updatedDate,
@@ -135,8 +134,8 @@ describe("github issues > #1042 EntityMetadata.createPropertyPath does not work 
 
         // load and check again
         const loadedUser4 = await connection.manager.findOne(User, 1);
-        expect(loadedUser4).not.to.be.undefined;
-        loadedUser4!.should.be.eql({
+        expect(loadedUser4).not.toBeUndefined();
+        expect(loadedUser4)!.toEqual({
             id: 1,
             name: "Timber Saw aka Lumberjack",
             registeredAt: updatedDate,
