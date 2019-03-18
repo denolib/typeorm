@@ -1,22 +1,22 @@
 import "reflect-metadata";
-import {Connection} from "../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils";
+import {Connection} from "../../../src";
+import {closeTestingConnections, createTestingConnections} from "../../../test/utils/test-utils";
 import {PromiseUtils} from "../../../src";
 import { Book } from "./entity/Book";
 
 describe("github issues > #3551 array of embedded documents through multiple levels are not handled", () => {
 
     let connections: Connection[];
-    before(async () => {
+    beforeAll(async () => {
         connections = await createTestingConnections({
             entities: [__dirname + "/entity/*{.js,.ts}"],
             enabledDrivers: ["mongodb"],
             dropSchema: true,
         });
     });
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should return entity with all these embedded documents", () => PromiseUtils.runInSequence(connections, async connection => {
+    test("should return entity with all these embedded documents", () => PromiseUtils.runInSequence(connections, async connection => {
         const bookInput = {
             title: "Book 1",
             chapters: [
@@ -50,14 +50,14 @@ describe("github issues > #3551 array of embedded documents through multiple lev
         const books = await connection.mongoManager.getMongoRepository(Book).find();
         const book = books[0];
 
-        book!.title.should.be.equal(bookInput.title);
-        book!.chapters.should.be.lengthOf(2);
-        book!.chapters[0].title.should.be.equal(bookInput.chapters[0].title);
-        book!.chapters[0].pages.should.have.lengthOf(2);
-        book!.chapters[0].pages[0].number.should.be.equal(bookInput.chapters[0].pages[0].number);
-        book!.chapters[0].pages[1].number.should.be.equal(bookInput.chapters[0].pages[1].number);
-        book!.chapters[1].pages.should.have.lengthOf(2);
-        book!.chapters[1].pages[0].number.should.be.equal(bookInput.chapters[1].pages[0].number);
-        book!.chapters[1].pages[1].number.should.be.equal(bookInput.chapters[1].pages[1].number);
+        expect(book!.title).toEqual(bookInput.title);
+        expect(book!.chapters).toBeInstanceOf(2);
+        expect(book!.chapters[0].title).toEqual(bookInput.chapters[0].title);
+        expect(book!.chapters[0].pages).toBeInstanceOf(2);
+        expect(book!.chapters[0].pages[0].number).toEqual(bookInput.chapters[0].pages[0].number);
+        expect(book!.chapters[0].pages[1].number).toEqual(bookInput.chapters[0].pages[1].number);
+        expect(book!.chapters[1].pages).toBeInstanceOf(2);
+        expect(book!.chapters[1].pages[0].number).toEqual(bookInput.chapters[1].pages[0].number);
+        expect(book!.chapters[1].pages[1].number).toEqual(bookInput.chapters[1].pages[1].number);
     }));
 });
