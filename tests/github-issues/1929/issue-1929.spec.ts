@@ -1,20 +1,20 @@
 import "reflect-metadata";
 import {Product} from "./entity/Product";
-import {Connection} from "../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
+import {Connection} from "../../../src";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
 
 
 describe("github issues > #1929 Select attributes in Find method - mongodb", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [Product],
         enabledDrivers: ["mongodb"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("return column on include in select on find",
+    test("return column on include in select on find",
         () => Promise.all(connections.map(async connection => {
             const productRepository = connection.getMongoRepository(Product);
             let product = new Product("test1", "label1", 10);
@@ -26,7 +26,7 @@ describe("github issues > #1929 Select attributes in Find method - mongodb", () 
             await productRepository.find({select: ["name", "label"], order: {name: 1}});
         })));
 
-    it("return column on include in select on findAndCount",
+    test("return column on include in select on findAndCount",
         () => Promise.all(connections.map(async connection => {
             const productRepository = connection.getMongoRepository(Product);
             let product = new Product("test1", "label1", 10);
@@ -38,7 +38,7 @@ describe("github issues > #1929 Select attributes in Find method - mongodb", () 
             await productRepository.findAndCount({select: ["name", "label"], order: {name: 1}});
         })));
 
-    it("return column on include in select on findByIds",
+    test("return column on include in select on findByIds",
         () => Promise.all(connections.map(async connection => {
             const productRepository = connection.getMongoRepository(Product);
             let product = new Product("test1", "label1", 10);
@@ -50,7 +50,7 @@ describe("github issues > #1929 Select attributes in Find method - mongodb", () 
             await productRepository.findByIds([product3.id], {select: ["name", "label"], order: {name: 1}});
         })));
 
-    it("return column on include in select on findByIds ",
+    test("return column on include in select on findByIds ",
         () => Promise.all(connections.map(async connection => {
             const productRepository = connection.getMongoRepository(Product);
             let product = new Product("test1", "label1", 10);
