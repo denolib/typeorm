@@ -1,22 +1,21 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {Post} from "./entity/Post";
-import {expect} from "chai";
 import {Category} from "./entity/Category";
 import {Tag} from "./entity/Tag";
 
 describe("github issues > #234 and #223 lazy loading does not work correctly from one-to-many and many-to-many sides", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
         enabledDrivers: ["mysql"] // we can properly test lazy-relations only on one platform
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should correctly load from one-to-many and many-to-one sides", () => Promise.all(connections.map(async connection => {
+    test("should correctly load from one-to-many and many-to-one sides", () => Promise.all(connections.map(async connection => {
 
         // pre-populate database first
         const promises: Promise<any>[] = [];
@@ -58,24 +57,24 @@ describe("github issues > #234 and #223 lazy loading does not work correctly fro
             .getMany();
 
         const loadedCategory1 = await loadedPosts[0].category;
-        expect(loadedCategory1!).not.to.be.undefined;
-        loadedCategory1!.name.should.equal("category #1");
+        expect(loadedCategory1!).not.toBeUndefined();
+        expect(loadedCategory1!.name).toEqual("category #1");
 
         const loadedCategory2 = await loadedPosts[1].category;
-        expect(loadedCategory2!).not.to.be.undefined;
-        loadedCategory2!.name.should.equal("category #2");
+        expect(loadedCategory2!).not.toBeUndefined();
+        expect(loadedCategory2!.name).toEqual("category #2");
 
         const loadedPosts1 = await loadedCategory1.posts;
-        expect(loadedPosts1!).not.to.be.undefined;
-        loadedPosts1![0].title.should.equal("Hello Post #1");
+        expect(loadedPosts1!).not.toBeUndefined();
+        expect(loadedPosts1![0].title).toEqual("Hello Post #1");
 
         const loadedPosts2 = await loadedCategory2.posts;
-        expect(loadedPosts2!).not.to.be.undefined;
-        loadedPosts2![0].title.should.equal("Hello Post #2");
+        expect(loadedPosts2!).not.toBeUndefined();
+        expect(loadedPosts2![0].title).toEqual("Hello Post #2");
 
     })));
 
-    it("should correctly load from both many-to-many sides", () => Promise.all(connections.map(async connection => {
+    test("should correctly load from both many-to-many sides", () => Promise.all(connections.map(async connection => {
 
         // pre-populate database first
         const promises: Promise<any>[] = [];
@@ -128,29 +127,29 @@ describe("github issues > #234 and #223 lazy loading does not work correctly fro
         // check owner side
 
         const loadedTags1 = await loadedPosts[0].tags;
-        expect(loadedTags1).not.to.be.undefined;
-        loadedTags1.length.should.be.equal(2);
-        loadedTags1[0].name.should.equal("tag #1_1");
-        loadedTags1[1].name.should.equal("tag #1_2");
+        expect(loadedTags1).not.toBeUndefined();
+        expect(loadedTags1.length).toEqual(2);
+        expect(loadedTags1[0].name).toEqual("tag #1_1");
+        expect(loadedTags1[1].name).toEqual("tag #1_2");
 
         const loadedTags2 = await loadedPosts[1].tags;
-        expect(loadedTags2).not.to.be.undefined;
-        loadedTags2.length.should.be.equal(3);
-        loadedTags2[0].name.should.equal("tag #2_1");
-        loadedTags2[1].name.should.equal("tag #2_2");
-        loadedTags2[2].name.should.equal("tag #2_3");
+        expect(loadedTags2).not.toBeUndefined();
+        expect(loadedTags2.length).toEqual(3);
+        expect(loadedTags2[0].name).toEqual("tag #2_1");
+        expect(loadedTags2[1].name).toEqual("tag #2_2");
+        expect(loadedTags2[2].name).toEqual("tag #2_3");
 
         // check inverse side
 
         const loadedPosts1 = await loadedTags1[0].posts;
-        expect(loadedPosts1).not.to.be.undefined;
-        loadedPosts1.length.should.be.equal(1);
-        loadedPosts1[0].title.should.equal("Hello Post #1");
+        expect(loadedPosts1).not.toBeUndefined();
+        expect(loadedPosts1.length).toEqual(1);
+        expect(loadedPosts1[0].title).toEqual("Hello Post #1");
 
         const loadedPosts2 = await loadedTags2[0].posts;
-        expect(loadedPosts2).not.to.be.undefined;
-        loadedPosts2.length.should.be.equal(1);
-        loadedPosts2[0].title.should.equal("Hello Post #2");
+        expect(loadedPosts2).not.toBeUndefined();
+        expect(loadedPosts2.length).toEqual(1);
+        expect(loadedPosts2[0].title).toEqual("Hello Post #2");
 
     })));
 
