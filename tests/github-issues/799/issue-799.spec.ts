@@ -1,9 +1,9 @@
 import "reflect-metadata";
 import * as assert from "assert";
-import {createConnection} from "../../../src/index";
+import {createConnection} from "../../../src";
 import * as rimraf from "rimraf";
 import {dirname} from "path";
-import {Connection} from "../../../src/connection/Connection";
+import {Connection} from "../../../src";
 
 describe("github issues > #799 sqlite: 'database' path should be created", () => {
     let connection: Connection;
@@ -15,8 +15,8 @@ describe("github issues > #799 sqlite: 'database' path should be created", () =>
         });
     };
 
-    before(cleanup);
-    after(cleanup);
+    beforeAll(cleanup);
+    afterAll(cleanup);
 
     afterEach(() => {
         if (connection && connection.isConnected) {
@@ -24,7 +24,7 @@ describe("github issues > #799 sqlite: 'database' path should be created", () =>
         }
     });
 
-    it("should create the whole path to database file", async function () {
+    test("should create the whole path to database file", async function () {
         connection = await createConnection({
             "name": "sqlite",
             "type": "sqlite",
