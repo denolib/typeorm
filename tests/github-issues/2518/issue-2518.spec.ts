@@ -40,7 +40,7 @@ describe("github issues > #2518 TreeRepository.findDescendantsTree does not load
                 const child = await repo.save({ id: 2, name: "child", parent: root } as File);
                 expect(child.parentId).toEqual(1);
                 const trees: File[] = await repo.findTrees();
-                expect(trees).toContain("array");
+                expect(trees).toBeInstanceOf(Array);
                 expect(trees[0].children.length).toBeGreaterThan(0);
             })
         )
