@@ -20,7 +20,7 @@ describe("github issues > #423 Cannot use Group as Table name && cannot autoSche
         const table = await queryRunner.getTable("groups");
         await queryRunner.release();
 
-        table!.should.exist;
+        expect(table)!.toBeDefined();
         
         // CockroachDB stores unique indices as UNIQUE constraints
         if (connection.driver instanceof CockroachDriver) {

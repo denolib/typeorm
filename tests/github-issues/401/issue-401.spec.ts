@@ -1,20 +1,19 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
-import {expect} from "chai";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {Player} from "./entity/Player";
 import {Group} from "./entity/Group";
 
 describe("github issues > #401 special keywords should be escaped in join queries", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should escape 'group' keyword properly", () => Promise.all(connections.map(async connection => {
+    test("should escape 'group' keyword properly", () => Promise.all(connections.map(async connection => {
 
         const group = new Group();
         group.name = "about players";
@@ -32,7 +31,7 @@ describe("github issues > #401 special keywords should be escaped in join querie
             .where("player.email = :email", { email: "player@gmail.com" })
             .getOne();
 
-        expect(loadedPlayer).to.be.eql({
+        expect(loadedPlayer).toEqual({
             email: "player@gmail.com",
             group: {
                 id: 1,
