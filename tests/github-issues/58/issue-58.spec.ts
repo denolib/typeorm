@@ -1,21 +1,20 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {Post} from "./entity/Post";
 import {Category} from "./entity/Category";
 import {PostCategory} from "./entity/PostCategory";
-import {expect} from "chai";
 
 describe("github issues > #58 relations with multiple primary keys", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should persist successfully and return persisted entity", () => Promise.all(connections.map(async connection => {
+    test("should persist successfully and return persisted entity", () => Promise.all(connections.map(async connection => {
 
         // create objects to save
         const category1 = new Category();
@@ -49,8 +48,8 @@ describe("github issues > #58 relations with multiple primary keys", () => {
             .innerJoinAndSelect("postCategory.category", "category")
             .getOne();
 
-        expect(loadedPost!).not.to.be.undefined;
-        loadedPost!.should.be.eql({
+        expect(loadedPost!).not.toBeUndefined();
+        expect(loadedPost)!.toEqual({
             id: 1,
             title: "Hello Post #1",
             categories: [{
