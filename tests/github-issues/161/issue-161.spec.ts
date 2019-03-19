@@ -1,20 +1,19 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {Ticket} from "./entity/Ticket";
 import {Request} from "./entity/Request";
-import {expect} from "chai";
 
 describe("github issues > #161 joinAndSelect can't find entity from inverse side of relation", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should persist successfully", () => Promise.all(connections.map(async connection => {
+    test("should persist successfully", () => Promise.all(connections.map(async connection => {
 
         const request = new Request();
         request.owner = "Umed";
@@ -36,8 +35,8 @@ describe("github issues > #161 joinAndSelect can't find entity from inverse side
             }
         });
 
-        expect(loadedTicketWithRequest).not.to.be.undefined;
-        loadedTicketWithRequest!.should.be.eql({
+        expect(loadedTicketWithRequest).not.toBeUndefined();
+        expect(loadedTicketWithRequest)!.toEqual({
             id: 1,
             name: "ticket #1",
             request: {
@@ -57,7 +56,7 @@ describe("github issues > #161 joinAndSelect can't find entity from inverse side
             }
         });
 
-        loadedRequestWithTicket!.should.be.eql({
+        expect(loadedRequestWithTicket)!.toEqual({
             id: 1,
             owner: "Umed",
             type: "ticket",
@@ -70,7 +69,7 @@ describe("github issues > #161 joinAndSelect can't find entity from inverse side
 
     })));
 
-    it("should return joined relation successfully", () => Promise.all(connections.map(async connection => {
+    test("should return joined relation successfully", () => Promise.all(connections.map(async connection => {
 
         const authRequest = new Request();
         authRequest.owner = "somebody";
@@ -99,8 +98,8 @@ describe("github issues > #161 joinAndSelect can't find entity from inverse side
             }
         });
 
-        expect(loadedRequest).not.to.be.undefined;
-        loadedRequest!.should.be.eql({
+        expect(loadedRequest).not.toBeUndefined();
+        expect(loadedRequest)!.toEqual({
             id: 2,
             owner: "somebody",
             type: "ticket",
