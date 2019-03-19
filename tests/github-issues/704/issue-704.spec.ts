@@ -1,18 +1,18 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {User} from "./entity/User";
 
 describe("github issues > #704 Table alias in WHERE clause is not quoted in PostgreSQL", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should return user by a given email and proper escape 'user' keyword", () => Promise.all(connections.map(async connection => {
+    test("should return user by a given email and proper escape 'user' keyword", () => Promise.all(connections.map(async connection => {
 
         const user = new User();
         user.email = "john@example.com";
@@ -20,8 +20,8 @@ describe("github issues > #704 Table alias in WHERE clause is not quoted in Post
 
         const loadedUser = await connection.getRepository(User).findOne({ email: "john@example.com" });
 
-        loadedUser!.id.should.be.equal(1);
-        loadedUser!.email.should.be.equal("john@example.com");
+        expect(loadedUser!.id).toEqual(1);
+        expect(loadedUser!.email).toEqual("john@example.com");
     })));
 
 });
