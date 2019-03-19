@@ -1,18 +1,18 @@
 import "reflect-metadata";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {Connection} from "../../../src";
 import {Product} from "./entity/Product";
 
 describe("github issues > #752 postgres - count query fails for empty table", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should return user by a given email and proper escape 'user' keyword", () => Promise.all(connections.map(async connection => {
+    test("should return user by a given email and proper escape 'user' keyword", () => Promise.all(connections.map(async connection => {
 
         const product = new Product();
         product.name = "Apple";
@@ -20,7 +20,7 @@ describe("github issues > #752 postgres - count query fails for empty table", ()
         await connection.manager.save(product);
 
         const count = await connection.getRepository(Product).count({ productVersionId: 1 });
-        count.should.be.equal(1);
+        expect(count).toEqual(1);
     })));
 
 });
