@@ -1,20 +1,19 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
-import {expect} from "chai";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {Artikel} from "./entity/Artikel";
 import {Kollektion} from "./entity/Kollektion";
 
 describe("github issues > #71 ManyToOne relation with custom column name persistence fails", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should persist successfully entity successfully with its many-to-one relation", () => Promise.all(connections.map(async connection => {
+    test("should persist successfully entity successfully with its many-to-one relation", () => Promise.all(connections.map(async connection => {
 
         const kollektion = new Kollektion();
         kollektion.name = "kollektion #1";
@@ -34,9 +33,9 @@ describe("github issues > #71 ManyToOne relation with custom column name persist
             .where("artikel.id=:id", { id: 1 })
             .getOne();
 
-        expect(kollektion).not.to.be.undefined;
-        expect(loadedArtikel).not.to.be.undefined;
-        loadedArtikel!.should.be.eql({
+        expect(kollektion).not.toBeUndefined();
+        expect(loadedArtikel).not.toBeUndefined();
+        expect(loadedArtikel)!.toEqual({
             id: 1,
             nummer: "1",
             name: "artikel #1",
