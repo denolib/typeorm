@@ -1,20 +1,19 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {Game} from "./entity/Game";
 import {Platform} from "./entity/Platform";
-import {expect} from "chai";
 
 describe("github issues > #163 ManyToMany relation : Cannot read property 'joinColumnName' of undefined", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should persist class table child successfully", () => Promise.all(connections.map(async connection => {
+    test("should persist class table child successfully", () => Promise.all(connections.map(async connection => {
 
         let battlefront = new Game();
         battlefront.name = "SW Battlefront";
@@ -57,8 +56,8 @@ describe("github issues > #163 ManyToMany relation : Cannot read property 'joinC
             .addOrderBy("game.id")
             .getOne();
 
-        expect(completePlatform).not.to.be.undefined;
-        completePlatform!.should.be.eql({
+        expect(completePlatform).not.toBeUndefined();
+        expect(completePlatform)!.toEqual({
             id: platform.id,
             name: "Windows",
             slug: "windows",
