@@ -1,19 +1,18 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {Post} from "./entity/Post";
-import {expect} from "chai";
 
 describe("github issues > #499 postgres DATE hydrated as DATETIME object", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should return date in a string format", () => Promise.all(connections.map(async connection => {
+    test("should return date in a string format", () => Promise.all(connections.map(async connection => {
 
         const post = new Post();
         post.title = "Hello Post #1";
@@ -21,8 +20,8 @@ describe("github issues > #499 postgres DATE hydrated as DATETIME object", () =>
         await connection.manager.save(post);
 
         const loadedPost = await connection.manager.findOne(Post, { where: { title: "Hello Post #1" } });
-        expect(loadedPost!).not.to.be.undefined;
-        loadedPost!.date.should.be.equal("2017-01-25");
+        expect(loadedPost!).not.toBeUndefined();
+        expect(loadedPost!.date).toEqual("2017-01-25");
     })));
 
 });
