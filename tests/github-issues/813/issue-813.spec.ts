@@ -1,6 +1,6 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {Post} from "./entity/Post";
 import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver";
 import {Category} from "./entity/Category";
@@ -8,13 +8,13 @@ import {Category} from "./entity/Category";
 describe("github issues > #813 order by must support functions", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should work perfectly", () => Promise.all(connections.map(async connection => {
+    test("should work perfectly", () => Promise.all(connections.map(async connection => {
         if (!(connection.driver instanceof MysqlDriver))
             return;
 
@@ -31,11 +31,11 @@ describe("github issues > #813 order by must support functions", () => {
             .orderBy("RAND()")
             .getMany();
 
-        posts[0].id.should.be.equal(1);
-        posts[0].title.should.be.equal("About order by");
+        expect(posts[0].id).toEqual(1);
+        expect(posts[0].title).toEqual("About order by");
     })));
 
-    it("should work perfectly with pagination as well", () => Promise.all(connections.map(async connection => {
+    test("should work perfectly with pagination as well", () => Promise.all(connections.map(async connection => {
         if (!(connection.driver instanceof MysqlDriver))
             return;
 
@@ -55,8 +55,8 @@ describe("github issues > #813 order by must support functions", () => {
             .getMany();
 
 
-        posts[0].id.should.be.equal(1);
-        posts[0].title.should.be.equal("About order by");
+        expect(posts[0].id).toEqual(1);
+        expect(posts[0].title).toEqual("About order by");
     })));
 
 });
