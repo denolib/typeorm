@@ -1,19 +1,18 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
-import {expect} from "chai";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {Post} from "./entity/Post";
 
 describe("github issues > #388 skip and take with string ID don't work", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should load posts with string id successfully", () => Promise.all(connections.map(async connection => {
+    test("should load posts with string id successfully", () => Promise.all(connections.map(async connection => {
 
         const posts: Post[] = [];
         for (let i = 1; i <= 25; i++) {
@@ -32,9 +31,9 @@ describe("github issues > #388 skip and take with string ID don't work", () => {
             .orderBy("post.index")
             .getMany();
 
-        expect(loadedPosts).to.length(10);
-        expect(loadedPosts[0].lala_id).to.be.equal("post #6");
-        expect(loadedPosts[9].lala_id).to.be.equal("post #15");
+        expect(loadedPosts).toHaveLength(10);
+        expect(loadedPosts[0].lala_id).toEqual("post #6");
+        expect(loadedPosts[9].lala_id).toEqual("post #15");
 
     })));
 
