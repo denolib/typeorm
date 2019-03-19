@@ -1,4 +1,4 @@
-import {Entity} from "../../../../src/index";
+import {Entity} from "../../../../src";
 import {ManyToOne} from "../../../../src/decorator/relations/ManyToOne";
 import {Dog} from "./Dog";
 import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryGeneratedColumn";

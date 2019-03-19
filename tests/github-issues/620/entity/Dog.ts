@@ -1,4 +1,4 @@
-import {Entity} from "../../../../src/index";
+import {Entity} from "../../../../src";
 import {PrimaryColumn} from "../../../../src/decorator/columns/PrimaryColumn";
 import {OneToMany} from "../../../../src/decorator/relations/OneToMany";
 import {Cat} from "./Cat";

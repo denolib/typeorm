@@ -1,19 +1,19 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {Cat} from "./entity/Cat";
 import {Dog} from "./entity/Dog";
 
 describe("github issues > #620 Feature Request: Flexibility in Foreign Key names", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should work as expected", () => Promise.all(connections.map(async connection => {
+    test("should work as expected", () => Promise.all(connections.map(async connection => {
 
         const dog = new Dog();
         dog.DogID = "Simba";
@@ -29,8 +29,8 @@ describe("github issues > #620 Feature Request: Flexibility in Foreign Key names
             .leftJoinAndSelect("cat.dog", "dog")
             .getOne();
 
-        loadedCat!.id.should.be.equal(1);
-        loadedCat!.dog.DogID.should.be.equal("Simba");
+        expect(loadedCat!.id).toEqual(1);
+        expect(loadedCat!.dog.DogID).toEqual("Simba");
     })));
 
 });
