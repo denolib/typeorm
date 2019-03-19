@@ -1,19 +1,19 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {Post} from "./entity/Post";
 
 describe("github issues > #190 too many SQL variables when using setMaxResults in SQLite", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
         enabledDrivers: ["sqlite"] // this issue only related to sqlite
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should not fail if high max results is used", () => Promise.all(connections.map(async connection => {
+    test("should not fail if high max results is used", () => Promise.all(connections.map(async connection => {
 
         for (let i = 0; i < 1000; i++) {
             const post1 = new Post();
@@ -27,7 +27,7 @@ describe("github issues > #190 too many SQL variables when using setMaxResults i
             .take(1000)
             .getMany();
 
-        loadedPosts.length.should.be.equal(1000);
+        expect(loadedPosts.length).toEqual(1000);
     })));
 
 });
