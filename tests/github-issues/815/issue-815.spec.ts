@@ -1,20 +1,19 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {Post} from "./entity/Post";
 import {Category} from "./entity/Category";
-import {expect} from "chai";
 
 describe("github issues > #815 @RelationId properties are not updated after entity saving", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should work perfectly with many-to-one relation", () => Promise.all(connections.map(async connection => {
+    test("should work perfectly with many-to-one relation", () => Promise.all(connections.map(async connection => {
 
         const post = new Post();
         post.title = "About relation id";
@@ -27,12 +26,12 @@ describe("github issues > #815 @RelationId properties are not updated after enti
         category.post = post;
         await connection.manager.save(category);
 
-        expect(post).to.be.eql({
+        expect(post).toEqual({
             id: 1,
             title: "About relation id"
         });
 
-        expect(category).to.be.eql({
+        expect(category).toEqual({
             firstId: 2,
             secondId: 3,
             name: "relation-id-category",
@@ -46,7 +45,7 @@ describe("github issues > #815 @RelationId properties are not updated after enti
         category.post = null;
         await connection.manager.save(category);
 
-        expect(category).to.be.eql({
+        expect(category).toEqual({
             firstId: 2,
             secondId: 3,
             name: "relation-id-category",
@@ -56,7 +55,7 @@ describe("github issues > #815 @RelationId properties are not updated after enti
 
     })));
 
-    it("should work perfectly with one-to-many relation", () => Promise.all(connections.map(async connection => {
+    test("should work perfectly with one-to-many relation", () => Promise.all(connections.map(async connection => {
 
         const category1 = new Category();
         category1.firstId = 2;
@@ -75,19 +74,19 @@ describe("github issues > #815 @RelationId properties are not updated after enti
         post.categories = [category1, category2];
         await connection.manager.save(post);
 
-        expect(category1).to.be.eql({
+        expect(category1).toEqual({
             firstId: 2,
             secondId: 3,
             name: "relation-id-category1"
         });
 
-        expect(category2).to.be.eql({
+        expect(category2).toEqual({
             firstId: 2,
             secondId: 4,
             name: "relation-id-category2"
         });
 
-        expect(post).to.be.eql({
+        expect(post).toEqual({
             id: 1,
             title: "About relation id",
             categories: [{
@@ -110,7 +109,7 @@ describe("github issues > #815 @RelationId properties are not updated after enti
 
     })));
 
-    it("should work perfectly with many-to-many relation", () => Promise.all(connections.map(async connection => {
+    test("should work perfectly with many-to-many relation", () => Promise.all(connections.map(async connection => {
 
         const post1 = new Post();
         post1.title = "About relation id1";
@@ -133,17 +132,17 @@ describe("github issues > #815 @RelationId properties are not updated after enti
         category2.manyPosts = [post2];
         await connection.manager.save([category1, category2]);
 
-        expect(post1).to.be.eql({
+        expect(post1).toEqual({
             id: 1,
             title: "About relation id1",
         });
 
-        expect(post2).to.be.eql({
+        expect(post2).toEqual({
             id: 2,
             title: "About relation id2",
         });
 
-        expect(category1).to.be.eql({
+        expect(category1).toEqual({
             firstId: 2,
             secondId: 3,
             name: "relation-id-category1",
@@ -158,7 +157,7 @@ describe("github issues > #815 @RelationId properties are not updated after enti
         });
 
 
-        expect(category2).to.be.eql({
+        expect(category2).toEqual({
             firstId: 2,
             secondId: 4,
             name: "relation-id-category2",
@@ -190,19 +189,19 @@ describe("github issues > #815 @RelationId properties are not updated after enti
         post.manyCategories = [category1, category2];
         await connection.manager.save(post);
 
-        expect(category1).to.be.eql({
+        expect(category1).toEqual({
             firstId: 2,
             secondId: 3,
             name: "relation-id-category1"
         });
 
-        expect(category2).to.be.eql({
+        expect(category2).toEqual({
             firstId: 2,
             secondId: 4,
             name: "relation-id-category2"
         });
 
-        expect(post).to.be.eql({
+        expect(post).toEqual({
             id: 1,
             title: "About relation id",
             manyCategories: [{
