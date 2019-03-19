@@ -1,19 +1,19 @@
 import "reflect-metadata";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {Connection} from "../../../src";
 import {Item} from "./entity/Item";
 import {User} from "./entity/User";
 
 describe("github issues > #495 Unable to set multi-column indices", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should successfully create indices and save an object", () => Promise.all(connections.map(async connection => {
+    test("should successfully create indices and save an object", () => Promise.all(connections.map(async connection => {
 
         const user = new User();
         user.name = "stonecold";
