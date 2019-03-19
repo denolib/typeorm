@@ -72,7 +72,11 @@ describe("github issues > #1780 Support for insertion ignore on duplicate error"
              let loadedUser_3 = await UserRepository.find();
              expect(loadedUser_3).not.toEqual([]);
              expect(loadedUser_3.length).toEqual(1);
-             expect(loadedUser_3[0]).toEqual({ first_name: "John", last_name: "Lenon", is_updated: "yes" });
+             expect(loadedUser_3[0]).toMatchObject({
+                 first_name: "John",
+                 last_name: "Lenon",
+                 is_updated: "yes"
+             });
         }
        } catch (err) {
            throw new Error(err);
@@ -125,7 +129,11 @@ describe("github issues > #1780 Support for insertion ignore on duplicate error"
                  let loadedUser_3 = await UserRepository.find();
                 expect(loadedUser_3).not.toEqual([]);
                 expect(loadedUser_3.length).toEqual(1);
-                expect(loadedUser_3[0]).toEqual({ first_name: "John", last_name: "Lenon", is_updated: "yes" });
+                expect(loadedUser_3[0]).toMatchObject({
+                    first_name: "John",
+                    last_name: "Lenon",
+                    is_updated: "yes"
+                });
                  // create unique constraint
                 await connection.manager.query("ALTER TABLE \"user\" ADD CONSTRAINT constraint_unique_idx UNIQUE USING INDEX unique_idx;");
                 await UserRepository.remove(loadedUser_3);
@@ -151,7 +159,11 @@ describe("github issues > #1780 Support for insertion ignore on duplicate error"
                  let loadedUser_5 = await UserRepository.find();
                 expect(loadedUser_5).not.toEqual([]);
                 expect(loadedUser_5.length).toEqual(1);
-                expect(loadedUser_3[0]).toEqual({ first_name: "John", last_name: "Lenon", is_updated: "yes" });
+                expect(loadedUser_3[0]).toMatchObject({
+                    first_name: "John",
+                    last_name: "Lenon",
+                    is_updated: "yes"
+                });
             }
         }
         catch (err) {
