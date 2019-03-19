@@ -1,6 +1,6 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {Post} from "./entity/Post";
 import {Author} from "./entity/Author";
 import {Abbreviation} from "./entity/Abbreviation";
@@ -8,13 +8,13 @@ import {Abbreviation} from "./entity/Abbreviation";
 describe("github issues > #215 invalid replacements of join conditions", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should not do invalid replacements of join conditions", () => Promise.all(connections.map(async connection => {
+    test("should not do invalid replacements of join conditions", () => Promise.all(connections.map(async connection => {
 
         const author = new Author();
         author.name = "John Doe";
@@ -38,7 +38,7 @@ describe("github issues > #215 invalid replacements of join conditions", () => {
             .leftJoinAndMapOne("p.abbreviation", Abbreviation, "ab", "p.abbreviation_id = ab.id")
             .getMany();
 
-        loadedPosts.length.should.be.equal(1);
+        expect(loadedPosts.length).toEqual(1);
     })));
 
 });
