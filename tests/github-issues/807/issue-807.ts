@@ -1,18 +1,18 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {Tournament} from "./entity/Tournament";
 
 describe("github issues > #807 Error in persisting dates", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should be able to save dates as objects", () => Promise.all(connections.map(async connection => {
+    test("should be able to save dates as objects", () => Promise.all(connections.map(async connection => {
         const tournament = new Tournament();
         tournament.name = "One";
         tournament.startDate = new Date();
@@ -20,7 +20,7 @@ describe("github issues > #807 Error in persisting dates", () => {
         await connection.manager.save(tournament);
     })));
 
-    it("should be able to save dates as strings", () => Promise.all(connections.map(async connection => {
+    test("should be able to save dates as strings", () => Promise.all(connections.map(async connection => {
         const tournament = Object.assign(new Tournament(), {
             name: "One",
             startDate: "2017-08-28T00:00:00.000Z",
