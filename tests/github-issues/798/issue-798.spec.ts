@@ -1,17 +1,17 @@
 import "reflect-metadata";
 import * as assert from "assert";
-import {createConnection, getConnectionOptions} from "../../../src/index";
-import {Connection} from "../../../src/connection/Connection";
+import {createConnection, getConnectionOptions} from "../../../src";
+import {Connection} from "../../../src";
 
 describe("github issues > #798 sqlite: 'database' path in ormconfig.json is not relative", () => {
     let connection: Connection;
     const oldCwd = process.cwd();
 
-    before(function () {
+    beforeAll(function () {
         process.chdir("..");
     });
 
-    after(function () {
+    afterAll(function () {
         process.chdir(oldCwd);
     });
 
@@ -21,7 +21,7 @@ describe("github issues > #798 sqlite: 'database' path in ormconfig.json is not 
         }
     });
 
-    it("should find the sqlite database if the cwd is changed", async function () {
+    test("should find the sqlite database if the cwd is changed", async function () {
         const options = await getConnectionOptions("sqlite");
         connection = await createConnection(options);
 
