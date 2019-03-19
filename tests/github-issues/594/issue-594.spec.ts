@@ -1,18 +1,18 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {Post} from "./entity/Post";
 
 describe("github issues > #594 WhereInIds no longer works in the latest version.", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should load entities by given simple post ids (non mixed)", () => Promise.all(connections.map(async connection => {
+    test("should load entities by given simple post ids (non mixed)", () => Promise.all(connections.map(async connection => {
 
         for (let i = 0; i < 10; i++) {
             const post = new Post();
@@ -25,10 +25,10 @@ describe("github issues > #594 WhereInIds no longer works in the latest version.
             .whereInIds([1, 2, 5])
             .getMany();
 
-        loadedPosts.length.should.be.equal(3);
-        loadedPosts[0]!.postId.should.be.equal(1);
-        loadedPosts[1]!.postId.should.be.equal(2);
-        loadedPosts[2]!.postId.should.be.equal(5);
+        expect(loadedPosts.length).toEqual(3);
+        expect(loadedPosts[0]!.postId).toEqual(1);
+        expect(loadedPosts[1]!.postId).toEqual(2);
+        expect(loadedPosts[2]!.postId).toEqual(5);
     })));
 
 });

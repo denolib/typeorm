@@ -2,7 +2,7 @@ import "reflect-metadata";
 import {Connection} from "../../../src";
 import {closeTestingConnections, createTestingConnections} from "../../../test/utils/test-utils";
 
-describe("github issues > #609 Custom precision on CreateDateColumn and UpdateDateColumn", () => {
+describe("github issues > #609 Custom pr    ecision on CreateDateColumn and UpdateDateColumn", () => {
 
     let connections: Connection[];
     beforeAll(async () => {
