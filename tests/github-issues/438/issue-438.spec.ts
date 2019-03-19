@@ -1,12 +1,12 @@
 import "reflect-metadata";
-import {Connection} from "../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils";
+import {Connection} from "../../../src";
+import {closeTestingConnections, createTestingConnections} from "../../../test/utils/test-utils";
 import {Post} from "./entity/Post";
 
 describe("github issues > #438 how can i define unsigned column?", () => {
 
     let connections: Connection[];
-    before(async () => {
+    beforeAll(async () => {
         connections = await createTestingConnections({
             entities: [__dirname + "/entity/*{.js,.ts}"],
             enabledDrivers: ["mysql"],
@@ -14,18 +14,18 @@ describe("github issues > #438 how can i define unsigned column?", () => {
             dropSchema: true
         });
     });
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should correctly create and change column with UNSIGNED and ZEROFILL attributes", () => Promise.all(connections.map(async connection => {
+    test("should correctly create and change column with UNSIGNED and ZEROFILL attributes", () => Promise.all(connections.map(async connection => {
         const queryRunner = connection.createQueryRunner();
         const metadata = connection.getMetadata(Post);
         const idColumnMetadata = metadata.findColumnWithPropertyName("id");
         const numColumnMetadata = metadata.findColumnWithPropertyName("num");
         let table = await queryRunner.getTable("post");
 
-        table!.findColumnByName("id")!.unsigned!.should.be.true;
-        table!.findColumnByName("num")!.zerofill!.should.be.true;
-        table!.findColumnByName("num")!.unsigned!.should.be.true;
+        expect(table!.findColumnByName("id")!.unsigned)!.toBeTruthy();
+        expect(table!.findColumnByName("num")!.zerofill)!.toBeTruthy();
+        expect(table!.findColumnByName("num")!.unsigned)!.toBeTruthy();
 
         idColumnMetadata!.unsigned = false;
         numColumnMetadata!.zerofill = false;
@@ -34,9 +34,9 @@ describe("github issues > #438 how can i define unsigned column?", () => {
         await connection.synchronize();
 
         table = await queryRunner.getTable("post");
-        table!.findColumnByName("id")!.unsigned!.should.be.false;
-        table!.findColumnByName("num")!.zerofill!.should.be.false;
-        table!.findColumnByName("num")!.unsigned!.should.be.false;
+        expect(table!.findColumnByName("id")!.unsigned)!.toBeFalsy();
+        expect(table!.findColumnByName("num")!.zerofill)!.toBeFalsy();
+        expect(table!.findColumnByName("num")!.unsigned)!.toBeFalsy();
 
         await queryRunner.release();
     })));
