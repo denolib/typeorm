@@ -1,21 +1,20 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {Post} from "./entity/Post";
-import {expect} from "chai";
 import {PostStatus} from "./model/PostStatus";
 
 describe("github issues > #182 enums are not saved properly", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
         enabledDrivers: ["mysql"] // we can properly test lazy-relations only on one platform
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should persist successfully with enum values", () => Promise.all(connections.map(async connection => {
+    test("should persist successfully with enum values", () => Promise.all(connections.map(async connection => {
 
         const post1 = new Post();
         post1.status = PostStatus.NEW;
@@ -25,8 +24,8 @@ describe("github issues > #182 enums are not saved properly", () => {
         await connection.manager.save(post1);
 
         const loadedPosts1 = await connection.manager.findOne(Post, { where: { title: "Hello Post #1" } });
-        expect(loadedPosts1!).not.to.be.undefined;
-        loadedPosts1!.should.be.eql({
+        expect(loadedPosts1!).not.toBeUndefined();
+        expect(loadedPosts1)!.toEqual({
             id: 1,
             title: "Hello Post #1",
             status: PostStatus.NEW
@@ -43,8 +42,8 @@ describe("github issues > #182 enums are not saved properly", () => {
         await connection.manager.save(post2);
 
         const loadedPosts2 = await connection.manager.findOne(Post, { where: { title: "Hello Post #1" } });
-        expect(loadedPosts2!).not.to.be.undefined;
-        loadedPosts2!.should.be.eql({
+        expect(loadedPosts2!).not.toBeUndefined();
+        expect(loadedPosts2)!.toEqual({
             id: 2,
             title: "Hello Post #1",
             status: PostStatus.ACTIVE
@@ -61,8 +60,8 @@ describe("github issues > #182 enums are not saved properly", () => {
         await connection.manager.save(post3);
 
         const loadedPosts3 = await connection.manager.findOne(Post, { where: { title: "Hello Post #1" } });
-        expect(loadedPosts3!).not.to.be.undefined;
-        loadedPosts3!.should.be.eql({
+        expect(loadedPosts3!).not.toBeUndefined();
+        expect(loadedPosts3)!.toEqual({
             id: 3,
             title: "Hello Post #1",
             status: PostStatus.ACHIEVED
