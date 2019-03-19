@@ -1,22 +1,21 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {User} from "./entity/User";
 import {SqlServerDriver} from "../../../src/driver/sqlserver/SqlServerDriver";
 import {PostgresDriver} from "../../../src/driver/postgres/PostgresDriver";
-import {expect} from "chai";
 import {ReturningStatementNotSupportedError} from "../../../src/error/ReturningStatementNotSupportedError";
 
 describe("github issues > #660 Specifying a RETURNING or OUTPUT clause with QueryBuilder", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should create an INSERT statement, including RETURNING or OUTPUT clause (PostgreSQL and MSSQL only)", () => Promise.all(connections.map(async connection => {
+    test("should create an INSERT statement, including RETURNING or OUTPUT clause (PostgreSQL and MSSQL only)", () => Promise.all(connections.map(async connection => {
 
         const user = new User();
         user.name = "Tim Merrison";
@@ -32,18 +31,18 @@ describe("github issues > #660 Specifying a RETURNING or OUTPUT clause with Quer
                 .getSql();
 
         } catch (err) {
-            expect(err.message).to.eql(new ReturningStatementNotSupportedError().message);
+            expect(err.message).toEqual(new ReturningStatementNotSupportedError().message);
         }
 
         if (connection.driver instanceof SqlServerDriver) {
-            expect(sql).to.equal("INSERT INTO user(name) OUTPUT inserted.* VALUES (@0)");
+            expect(sql).toEqual("INSERT INTO user(name) OUTPUT inserted.* VALUES (@0)");
 
         } else if (connection.driver instanceof PostgresDriver) {
-            expect(sql).to.equal("INSERT INTO user(name) VALUES ($1) RETURNING *");
+            expect(sql).toEqual("INSERT INTO user(name) VALUES ($1) RETURNING *");
         }
     })));
 
-    it("should perform insert with RETURNING or OUTPUT clause (PostgreSQL and MSSQL only)", () => Promise.all(connections.map(async connection => {
+    test("should perform insert with RETURNING or OUTPUT clause (PostgreSQL and MSSQL only)", () => Promise.all(connections.map(async connection => {
 
         const user = new User();
         user.name = "Tim Merrison";
@@ -56,13 +55,13 @@ describe("github issues > #660 Specifying a RETURNING or OUTPUT clause with Quer
                 .returning(connection.driver instanceof PostgresDriver ? "*" : "inserted.*")
                 .execute();
     
-            returning.raw.should.be.eql([
+            expect(returning.raw).toEqual([
                 { id: 1, name: user.name }
             ]);
         }
     })));
 
-    it("should create an UPDATE statement, including RETURNING or OUTPUT clause (PostgreSQL and MSSQL only)", () => Promise.all(connections.map(async connection => {
+    test("should create an UPDATE statement, including RETURNING or OUTPUT clause (PostgreSQL and MSSQL only)", () => Promise.all(connections.map(async connection => {
 
         const user = new User();
         user.name = "Tim Merrison";
@@ -77,16 +76,16 @@ describe("github issues > #660 Specifying a RETURNING or OUTPUT clause with Quer
                 .getSql();
     
             if (connection.driver instanceof SqlServerDriver) {
-                expect(sql).to.equal("UPDATE user SET name = @0 OUTPUT inserted.* WHERE name = @1");
+                expect(sql).toEqual("UPDATE user SET name = @0 OUTPUT inserted.* WHERE name = @1");
             } else if (connection.driver instanceof PostgresDriver) {
-                expect(sql).to.equal("UPDATE user SET name = $1 WHERE name = $2 RETURNING *");
+                expect(sql).toEqual("UPDATE user SET name = $1 WHERE name = $2 RETURNING *");
             }
         } catch (err) {
-            expect(err.message).to.eql(new ReturningStatementNotSupportedError().message);
+            expect(err.message).toEqual(new ReturningStatementNotSupportedError().message);
         }
     })));
 
-    it("should perform update with RETURNING or OUTPUT clause (PostgreSQL and MSSQL only)", () => Promise.all(connections.map(async connection => {
+    test("should perform update with RETURNING or OUTPUT clause (PostgreSQL and MSSQL only)", () => Promise.all(connections.map(async connection => {
 
         const user = new User();
         user.name = "Tim Merrison";
@@ -101,13 +100,13 @@ describe("github issues > #660 Specifying a RETURNING or OUTPUT clause with Quer
                 .returning(connection.driver instanceof PostgresDriver ? "*" : "inserted.*")
                 .execute();
     
-            returning.raw.should.be.eql([
+            expect(returning.raw).toEqual([
                 { id: 1, name: "Joe Bloggs" }
             ]);
         }
     })));
 
-    it("should create a DELETE statement, including RETURNING or OUTPUT clause (PostgreSQL and MSSQL only)", () => Promise.all(connections.map(async connection => {
+    test("should create a DELETE statement, including RETURNING or OUTPUT clause (PostgreSQL and MSSQL only)", () => Promise.all(connections.map(async connection => {
 
         try {
             const user = new User();
@@ -122,16 +121,16 @@ describe("github issues > #660 Specifying a RETURNING or OUTPUT clause with Quer
                 .getSql();
     
             if (connection.driver instanceof SqlServerDriver) {
-                expect(sql).to.equal("DELETE FROM user OUTPUT deleted.* WHERE name = @0");
+                expect(sql).toEqual("DELETE FROM user OUTPUT deleted.* WHERE name = @0");
             } else if (connection.driver instanceof PostgresDriver) {
-                expect(sql).to.equal("DELETE FROM user WHERE name = $1 RETURNING *");
+                expect(sql).toEqual("DELETE FROM user WHERE name = $1 RETURNING *");
             }
         } catch (err) {
-            expect(err.message).to.eql(new ReturningStatementNotSupportedError().message);
+            expect(err.message).toEqual(new ReturningStatementNotSupportedError().message);
         }
     })));
 
-    it("should perform delete with RETURNING or OUTPUT clause (PostgreSQL and MSSQL only)", () => Promise.all(connections.map(async connection => {
+    test("should perform delete with RETURNING or OUTPUT clause (PostgreSQL and MSSQL only)", () => Promise.all(connections.map(async connection => {
 
         const user = new User();
         user.name = "Tim Merrison";
@@ -146,7 +145,7 @@ describe("github issues > #660 Specifying a RETURNING or OUTPUT clause with Quer
                 .returning(connection.driver instanceof PostgresDriver ? "*" : "deleted.*")
                 .execute();
     
-            returning.raw.should.be.eql([
+            expect(returning.raw).toEqual([
                 { id: 1, name: user.name }
             ]);
         }
