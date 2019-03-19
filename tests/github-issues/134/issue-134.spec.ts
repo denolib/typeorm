@@ -1,21 +1,20 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {Post} from "./entity/Post";
-import {expect} from "chai";
 
 describe("github issues > #134 Error TIME is converted to 'HH-mm' instead of 'HH:mm", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
         enabledDrivers: ["mysql", "mariadb", "sqlite", "mssql", "postgres"] // Oracle does not support TIME data type.
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
 
-    it("should successfully persist the post with creationDate in HH:mm and return persisted entity", () => Promise.all(connections.map(async connection => {
+    test("should successfully persist the post with creationDate in HH:mm and return persisted entity", () => Promise.all(connections.map(async connection => {
 
         const postRepository = connection.getRepository(Post);
         const post = new Post();
@@ -37,8 +36,8 @@ describe("github issues > #134 Error TIME is converted to 'HH-mm' instead of 'HH
         minutes = minutes.length === 1 ? "0" + minutes : minutes;
         seconds = seconds.length === 1 ? "0" + seconds : seconds;
 
-        expect(loadedPost).not.to.be.undefined;
-        loadedPost!.creationDate.should.be.equal(hours + ":" + minutes + ":" + seconds);
+        expect(loadedPost).not.toBeUndefined();
+        expect(loadedPost!.creationDate).toEqual(hours + ":" + minutes + ":" + seconds);
 
     })));
 
