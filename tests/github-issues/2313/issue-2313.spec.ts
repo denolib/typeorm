@@ -37,7 +37,7 @@ describe("github issues > #2313 - BaseEntity has no findOneOrFail() method", () 
 
         try {
             await Post.findOneOrFail(100);
-            expect.fail();
+            fail();
         } catch (e) {
             expect(e).toBeInstanceOf(EntityNotFoundError);
         }
