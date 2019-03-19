@@ -1,20 +1,19 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
-import {expect} from "chai";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {Organisation} from "./entity/Organisation";
 import {Contact} from "./entity/Contact";
 
 describe("github issues > #174 Embeded types confusing with order by", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should order organisations correctly when properties are duplicate in its embeddable", () => Promise.all(connections.map(async connection => {
+    test("should order organisations correctly when properties are duplicate in its embeddable", () => Promise.all(connections.map(async connection => {
 
         const organisation1 = new Organisation();
         organisation1.name = "MilkyWay Co";
@@ -36,8 +35,8 @@ describe("github issues > #174 Embeded types confusing with order by", () => {
             .orderBy("organisation.name")
             .getMany();
 
-        expect(organisations).not.to.be.undefined;
-        organisations!.should.be.eql([{
+        expect(organisations).not.toBeUndefined();
+        expect(organisations)!.toEqual([{
             id: 2,
             name: "ChockoWay",
             contact: {
