@@ -1,20 +1,20 @@
 import "reflect-metadata";
-import {createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {Employee} from "./entity/Employee";
 import {Person} from "./entity/Person";
 
 describe("github issues > #184 [Postgres] Single-Inheritance not working with integer type field", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
         enabledDrivers: ["postgres"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("single table inheritance should accept a Integer Type", () => Promise.all(connections.map(async connection => {
+    test("single table inheritance should accept a Integer Type", () => Promise.all(connections.map(async connection => {
 
         // Saving via subtype repository works
         let employeeRepository = connection.getRepository(Employee);
