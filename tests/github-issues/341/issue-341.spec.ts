@@ -1,20 +1,19 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {Post} from "./entity/Post";
 import {Category} from "./entity/Category";
-import {expect} from "chai";
 
 describe("github issues > OneToOne relation with referencedColumnName does not work", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("custom join column name and referencedColumnName", () => Promise.all(connections.map(async connection => {
+    test("custom join column name and referencedColumnName", () => Promise.all(connections.map(async connection => {
 
         const category = new Category();
         category.name = "category #1";
@@ -30,8 +29,8 @@ describe("github issues > OneToOne relation with referencedColumnName does not w
             .leftJoinAndSelect("post.category", "category")
             .getOne();
 
-        expect(loadedPost).not.to.be.undefined;
-        expect(loadedPost!.category).not.to.be.undefined;
+        expect(loadedPost).not.toBeUndefined();
+        expect(loadedPost!.category).not.toBeUndefined();
 
     })));
 
