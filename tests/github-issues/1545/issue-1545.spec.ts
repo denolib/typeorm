@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { Connection } from "../../../src";
-import { createTestingConnections, reloadTestingDatabases, closeTestingConnections } from "../../../test/utils/test-utils";
+import { createTestingConnections, reloadTestingDatabases, closeTestingConnections } from "../../utils/test-utils";
 import { ValidationModel } from "./entity/ValidationModel";
 import { MainModel } from "./entity/MainModel";
 import { DataModel } from "./entity/DataModel";

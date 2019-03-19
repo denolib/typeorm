@@ -7,7 +7,7 @@ import {
     closeTestingConnections,
     createTestingConnections,
     reloadTestingDatabases
-} from "../../../../test/utils/test-utils";
+} from "../../../utils/test-utils";
 
 describe("transaction > method wrapped into transaction decorator", () => {
 

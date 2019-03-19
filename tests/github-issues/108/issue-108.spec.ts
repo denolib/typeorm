@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections} from "../../../test/utils/test-utils";
+import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils";
 import {Connection} from "../../../src";
 
 describe("github issues > #108 Error with constraint names on postgres", () => {

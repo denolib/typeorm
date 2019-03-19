@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import {Connection} from "../../../../src";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../test/utils/test-utils";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
 import {Post} from "./entity/Post";
 import {Category} from "./entity/Category";
 import {SqlServerDriver} from "../../../../src/driver/sqlserver/SqlServerDriver";

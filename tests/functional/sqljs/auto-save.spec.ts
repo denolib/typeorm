@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import {Post} from "./entity/Post";
 import {Connection} from "../../../src";
-import {createTestingConnections} from "../../../test/utils/test-utils";
+import {createTestingConnections} from "../../utils/test-utils";
 
 describe("sqljs driver > autosave", () => {
     let connections: Connection[];

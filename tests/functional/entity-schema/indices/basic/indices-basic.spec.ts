@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import {CockroachDriver} from "../../../../../src/driver/cockroachdb/CockroachDriver";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../../test/utils/test-utils";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils";
 import {Connection} from "../../../../../src";
 import {EntityMetadata} from "../../../../../src";
 import {IndexMetadata} from "../../../../../src/metadata/IndexMetadata";

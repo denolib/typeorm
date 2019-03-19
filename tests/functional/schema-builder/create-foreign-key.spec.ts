@@ -2,7 +2,7 @@ import "reflect-metadata";
 import {Connection} from "../../../src";
 import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver";
 import {UniqueMetadata} from "../../../src/metadata/UniqueMetadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
 import {ForeignKeyMetadata} from "../../../src/metadata/ForeignKeyMetadata";
 
 describe("schema builder > create foreign key", () => {

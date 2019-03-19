@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import {Connection} from "../../../../../src/connection/Connection";
 import {expect} from "chai";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../../tests/utils/test-utils";
 import {Post} from "./entity/Post";
 import {Table, TableColumn} from "../../../../../src";
 

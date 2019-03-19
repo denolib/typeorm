@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import {Connection} from "../../../src";
-import {closeTestingConnections, createTestingConnections} from "../../../test/utils/test-utils";
+import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils";
 
 describe("github issues > #1427 precision and scale column types with errant behavior", () => {
 

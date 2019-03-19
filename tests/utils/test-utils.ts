@@ -4,7 +4,7 @@ import {PostgresDriver} from "../../src/driver/postgres/PostgresDriver";
 import {SqlServerDriver} from "../../src/driver/sqlserver/SqlServerDriver";
 import {DatabaseType} from "../../src/driver/types/DatabaseType";
 import {EntitySchema} from "../../src/entity-schema/EntitySchema";
-import {createConnections} from "../../src/index";
+import {createConnections} from "../../src";
 import {NamingStrategyInterface} from "../../src/naming-strategy/NamingStrategyInterface";
 import {PromiseUtils} from "../../src/util/PromiseUtils";
 

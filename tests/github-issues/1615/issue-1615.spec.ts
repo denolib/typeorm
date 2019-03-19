@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import {Connection} from "../../../src";
-import {closeTestingConnections, createTestingConnections} from "../../../test/utils/test-utils";
+import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils";
 
 describe("github issues > #1615 Datetime2 with any precision result in datetime2(7) in database", () => {
 

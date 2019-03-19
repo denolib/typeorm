@@ -4,7 +4,7 @@ import {
     closeTestingConnections,
     createTestingConnections,
     reloadTestingDatabases
-} from "../../../test/utils/test-utils";
+} from "../../utils/test-utils";
 
 describe("query runner > drop unique constraint", () => {
 

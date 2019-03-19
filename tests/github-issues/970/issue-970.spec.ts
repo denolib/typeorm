@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import {Post} from "./entity/Post";
 import {Connection} from "../../../src";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
 
 describe("github issues > #970 Mongo Bad Sort Specification", () => {
 

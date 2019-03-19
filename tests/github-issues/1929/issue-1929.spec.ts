@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import {Product} from "./entity/Product";
 import {Connection} from "../../../src";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
 
 
 describe("github issues > #1929 Select attributes in Find method - mongodb", () => {

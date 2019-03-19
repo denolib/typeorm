@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import {Connection} from "../../../src";
 import {Error} from "./entity/Error";
-import {closeTestingConnections, createTestingConnections} from "../../../test/utils/test-utils";
+import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils";
 
 describe("github issues > #1887 Having problems with UNIQUEIDENTIFIERS", () => {
 

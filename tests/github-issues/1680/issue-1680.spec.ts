@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import {Connection} from "../../../src";
-import {closeTestingConnections, createTestingConnections} from "../../../test/utils/test-utils";
+import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils";
 import {User} from "./entity/User";
 
 describe("github issues > #1680 Delete & Update applies to all entities in table if criteria is undefined or empty", () => {

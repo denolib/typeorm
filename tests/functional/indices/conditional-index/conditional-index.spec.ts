@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import {Connection} from "../../../../src";
-import {closeTestingConnections, createTestingConnections} from "../../../../test/utils/test-utils";
+import {closeTestingConnections, createTestingConnections} from "../../../utils/test-utils";
 
 describe("indices > conditional index", () => {
 

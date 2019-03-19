@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import {Connection} from "../../../src";
 import {PromiseUtils} from "../../../src";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
 import {Post} from "./entity/Post";
 import {EntityNotFoundError} from "../../../src/error/EntityNotFoundError";
 

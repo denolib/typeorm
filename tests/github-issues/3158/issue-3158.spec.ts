@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { createTestingConnections, closeTestingConnections, reloadTestingDatabases } from "../../../test/utils/test-utils";
+import { createTestingConnections, closeTestingConnections, reloadTestingDatabases } from "../../utils/test-utils";
 import { Connection } from "../../../src";
 
 test("github issues > #3158 Cannot run sync a second time", async () => {

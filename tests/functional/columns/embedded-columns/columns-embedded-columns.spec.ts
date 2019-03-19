@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import {Connection} from "../../../../src";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../test/utils/test-utils";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
 import {SimplePost} from "./entity/SimplePost";
 import {SimpleCounters} from "./entity/SimpleCounters";
 import {Information} from "./entity/Information";

@@ -1,5 +1,5 @@
 import {Connection} from "../../../src";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
 import {Product} from "./entity/Product";
 
 describe("github issues > #1981 Boolean values not casted properly when used in .find() condition", () => {

@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections} from "../../../utils/test-utils";
+import {closeTestingConnections, createTestingConnections} from "../../../../tests/utils/test-utils";
 import {Connection} from "../../../../src/connection/Connection";
 
 describe("database-schema > rowid-column", () => {

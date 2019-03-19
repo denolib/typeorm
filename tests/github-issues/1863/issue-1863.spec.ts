@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import {Connection} from "../../../src";
-import {closeTestingConnections, createTestingConnections} from "../../../test/utils/test-utils";
+import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils";
 import {Table} from "../../../src";
 
 describe("github issues > #1863 createTable.uniques doesn't work when the columnNames only has one item", () => {

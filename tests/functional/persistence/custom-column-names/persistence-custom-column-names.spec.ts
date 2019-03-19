@@ -2,7 +2,7 @@ import "reflect-metadata";
 import {getConnectionManager} from "../../../../src";
 import {Connection} from "../../../../src";
 import {Repository} from "../../../../src";
-import {setupSingleTestingConnection} from "../../../../test/utils/test-utils";
+import {setupSingleTestingConnection} from "../../../utils/test-utils";
 import {Category} from "./entity/Category";
 import {CategoryMetadata} from "./entity/CategoryMetadata";
 import {Post} from "./entity/Post";

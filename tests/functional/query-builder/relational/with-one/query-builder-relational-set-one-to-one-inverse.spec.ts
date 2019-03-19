@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import {Post} from "./entity/Post";
 import {Image} from "./entity/Image";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../../test/utils/test-utils";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils";
 import {Connection} from "../../../../../src";
 
 describe("query builder > relational query builder > set operation > one-to-one non owner side", () => {

@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import {createTestingConnections, closeTestingConnections} from "../../../test/utils/test-utils";
+import {createTestingConnections, closeTestingConnections} from "../../utils/test-utils";
 import {Connection} from "../../../src";
 import {Post} from "./entity/Post";
 import {Table, TableColumn} from "../../../src";

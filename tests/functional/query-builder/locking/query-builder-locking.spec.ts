@@ -5,7 +5,7 @@ import {
     closeTestingConnections,
     createTestingConnections,
     reloadTestingDatabases
-} from "../../../../test/utils/test-utils";
+} from "../../../utils/test-utils";
 import {PostWithVersion} from "./entity/PostWithVersion";
 import {PostWithoutVersionAndUpdateDate} from "./entity/PostWithoutVersionAndUpdateDate";
 import {PostWithUpdateDate} from "./entity/PostWithUpdateDate";

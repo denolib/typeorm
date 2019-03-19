@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { Connection } from "../../../src";
-import { closeTestingConnections, createTestingConnections, reloadTestingDatabases } from "../../../test/utils/test-utils";
+import { closeTestingConnections, createTestingConnections, reloadTestingDatabases } from "../../utils/test-utils";
 import { Item, EmbeddedItem } from "./entity/Item";
 
 describe("github issue > #1569 updateById generates wrong SQL with arrays inside embeddeds", () => {

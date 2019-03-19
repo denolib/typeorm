@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { Connection } from "../../../src";
 import { ConnectionOptions } from "../../../src";
-import { createTestingConnections, closeTestingConnections, reloadTestingDatabases, getTypeOrmConfig } from "../../../test/utils/test-utils";
+import { createTestingConnections, closeTestingConnections, reloadTestingDatabases, getTypeOrmConfig } from "../../utils/test-utils";
 import { PgEntity } from "./entity/pgEntity";
 import { MysqlEntity } from "./entity/mysqlEntity";
 import { MariadbEntity } from "./entity/mariadbEntity";

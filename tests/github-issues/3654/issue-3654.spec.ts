@@ -3,7 +3,7 @@ import {
     closeTestingConnections,
     createTestingConnections,
     reloadTestingDatabases
-} from "../../../test/utils/test-utils";
+} from "../../utils/test-utils";
 import { User } from "./entity/User";
 
 describe("github issues > #3654 Should be able compare buffer type", () => {

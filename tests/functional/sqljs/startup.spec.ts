@@ -7,7 +7,7 @@ import {
     closeTestingConnections,
     createTestingConnections,
     reloadTestingDatabases
-} from "../../../test/utils/test-utils";
+} from "../../utils/test-utils";
 
 describe("sqljs driver > startup", () => {
     let connections: Connection[];

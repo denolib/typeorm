@@ -8,7 +8,7 @@ import {Post} from "../../sample/sample4-many-to-many/entity/Post";
 import {PostCategory} from "../../sample/sample4-many-to-many/entity/PostCategory";
 import {PostMetadata} from "../../sample/sample4-many-to-many/entity/PostMetadata";
 import {PostImage} from "../../sample/sample4-many-to-many/entity/PostImage";
-import {setupSingleTestingConnection} from "../../test/utils/test-utils";
+import {setupSingleTestingConnection} from "../utils/test-utils";
 
 describe("many-to-many", function() {
 

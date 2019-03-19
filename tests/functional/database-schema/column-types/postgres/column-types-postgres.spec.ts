@@ -3,7 +3,7 @@ import {
     closeTestingConnections,
     createTestingConnections,
     reloadTestingDatabases
-} from "../../../../../test/utils/test-utils";
+} from "../../../../utils/test-utils";
 import {PostWithOptions} from "./entity/PostWithOptions";
 import {Connection} from "../../../../../src";
 import {PostWithoutTypes} from "./entity/PostWithoutTypes";

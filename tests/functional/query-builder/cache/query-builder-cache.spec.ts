@@ -4,7 +4,7 @@ import {
     createTestingConnections,
     reloadTestingDatabases,
     sleep
-} from "../../../../test/utils/test-utils";
+} from "../../../utils/test-utils";
 import {Connection} from "../../../../src";
 import {User} from "./entity/User";
 

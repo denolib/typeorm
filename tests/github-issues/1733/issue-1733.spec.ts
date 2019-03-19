@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import {Connection} from "../../../src";
-import {closeTestingConnections, createTestingConnections} from "../../../test/utils/test-utils";
+import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils";
 import {Post} from "./entity/Post";
 
 describe("github issues > #1733 Postgresql driver does not detect/support varying without length specified", () => {

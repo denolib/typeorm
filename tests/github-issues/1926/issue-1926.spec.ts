@@ -1,5 +1,5 @@
 import {Connection} from "../../../src";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
 import {Role} from "./entity/Role";
 import {Event} from "./entity/Event";
 import {EventRole} from "./entity/EventRole";

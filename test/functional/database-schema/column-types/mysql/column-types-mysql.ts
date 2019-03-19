@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import {Post} from "./entity/Post";
 import {Connection} from "../../../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../../tests/utils/test-utils";
 import {PostWithOptions} from "./entity/PostWithOptions";
 import {PostWithoutTypes} from "./entity/PostWithoutTypes";
 import {FruitEnum} from "./enum/FruitEnum";

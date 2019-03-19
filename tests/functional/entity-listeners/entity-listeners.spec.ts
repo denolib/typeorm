@@ -1,5 +1,5 @@
 import {Connection} from "../../../src";
-import {closeTestingConnections, createTestingConnections} from "../../../test/utils/test-utils";
+import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils";
 import {Post} from "./entity/Post";
 
 describe("entity-listeners", () => {

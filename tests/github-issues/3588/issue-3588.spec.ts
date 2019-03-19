@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { createTestingConnections, closeTestingConnections, reloadTestingDatabases } from "../../../test/utils/test-utils";
+import { createTestingConnections, closeTestingConnections, reloadTestingDatabases } from "../../utils/test-utils";
 import { Connection } from "../../../src";
 
 test("github issues > #3588 Migration:generate issue with onUpdate using mysql 8.0", async () => {

@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import {PostWithOptions} from "./entity/PostWithOptions";
 import {Connection} from "../../../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../../tests/utils/test-utils";
 import {PostWithoutTypes} from "./entity/PostWithoutTypes";
 import {Post} from "./entity/Post";
 

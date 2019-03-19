@@ -6,7 +6,7 @@ import {
     closeTestingConnections,
     createTestingConnections,
     reloadTestingDatabases
-} from "../../../../../test/utils/test-utils";
+} from "../../../../utils/test-utils";
 
 describe("persistence > insert > update-relation-columns-after-insertion", () => {
 

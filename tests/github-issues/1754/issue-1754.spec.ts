@@ -1,6 +1,6 @@
 import {Cliente} from "./entity/cliente";
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
 import {Connection} from "../../../src";
 import {TipoCliente} from "./entity/tipo-cliente";
 

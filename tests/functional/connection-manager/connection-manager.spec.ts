@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import {setupSingleTestingConnection} from "../../../test/utils/test-utils";
+import {setupSingleTestingConnection} from "../../utils/test-utils";
 import {ConnectionManager} from "../../../src";
 import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver";
 import {PrimaryGeneratedColumn} from "../../../src";

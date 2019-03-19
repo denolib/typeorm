@@ -1,4 +1,4 @@
-import {closeTestingConnections, createTestingConnections} from "../../../test/utils/test-utils";
+import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils";
 import {RecordContext} from "./entity/ver2/context";
 import {Record} from "./entity/ver2/record";
 import {User} from "./entity/ver2/user";

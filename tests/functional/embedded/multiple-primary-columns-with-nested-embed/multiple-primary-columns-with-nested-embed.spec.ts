@@ -2,7 +2,7 @@ import "reflect-metadata";
 import {Post} from "./entity/Post";
 import {Counters} from "./entity/Counters";
 import {Connection} from "../../../../src";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../test/utils/test-utils";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
 import {Subcounters} from "./entity/Subcounters";
 
 describe("embedded > multiple-primary-columns-with-nested-embed", () => {

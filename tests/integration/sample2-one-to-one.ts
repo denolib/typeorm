@@ -10,7 +10,7 @@ import {PostAuthor} from "../../sample/sample2-one-to-one/entity/PostAuthor";
 import {PostMetadata} from "../../sample/sample2-one-to-one/entity/PostMetadata";
 import {PostImage} from "../../sample/sample2-one-to-one/entity/PostImage";
 import {PostInformation} from "../../sample/sample2-one-to-one/entity/PostInformation";
-import {setupSingleTestingConnection} from "../../test/utils/test-utils";
+import {setupSingleTestingConnection} from "../utils/test-utils";
 
 describe("one-to-one", function() {
 

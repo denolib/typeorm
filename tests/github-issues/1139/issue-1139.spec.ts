@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { createTestingConnections, closeTestingConnections } from "../../../test/utils/test-utils";
+import { createTestingConnections, closeTestingConnections } from "../../utils/test-utils";
 import { Connection } from "../../../src";
 
 describe("github issues > #1139 mysql primary generated uuid ER_TOO_LONG_KEY", () => {

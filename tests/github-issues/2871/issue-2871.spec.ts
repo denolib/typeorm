@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import {closeTestingConnections, reloadTestingDatabases, setupSingleTestingConnection} from "../../../test/utils/test-utils";
+import {closeTestingConnections, reloadTestingDatabases, setupSingleTestingConnection} from "../../utils/test-utils";
 import {Connection} from "../../../src";
 import {createConnection, Repository} from "../../../src";
 

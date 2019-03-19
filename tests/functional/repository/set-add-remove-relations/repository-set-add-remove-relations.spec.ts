@@ -2,7 +2,7 @@ import "reflect-metadata";
 import {Connection} from "../../../../src";
 import {Post} from "./entity/Post";
 import {Category} from "./entity/Category";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../test/utils/test-utils";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
 
 // todo: fix this test later
 describe.skip("repository > set/add/remove relation methods", function() {

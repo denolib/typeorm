@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import {Record} from "./entity/Record";
 import {Connection} from "../../../src";
-import {closeTestingConnections, createTestingConnections} from "../../../test/utils/test-utils";
+import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils";
 
 describe("jsonb type", () => {
 

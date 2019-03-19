@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import {Connection} from "../../src";
 import {Post} from "../../sample/sample1-simple-entity/entity/Post";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../test/utils/test-utils";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../utils/test-utils";
 
 describe("insertion", function() {
 

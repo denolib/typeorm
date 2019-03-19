@@ -5,7 +5,7 @@ import {
     closeTestingConnections,
     createTestingConnections,
     reloadTestingDatabases
-} from "../../../test/utils/test-utils";
+} from "../../utils/test-utils";
 
 describe("github issues > #2800 - Can't override embedded entities in STI implementation", () => {
 

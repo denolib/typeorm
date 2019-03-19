@@ -10,7 +10,7 @@ import {PostAuthor} from "../../sample/sample3-many-to-one/entity/PostAuthor";
 import {PostMetadata} from "../../sample/sample3-many-to-one/entity/PostMetadata";
 import {PostImage} from "../../sample/sample3-many-to-one/entity/PostImage";
 import {PostInformation} from "../../sample/sample3-many-to-one/entity/PostInformation";
-import {setupSingleTestingConnection} from "../../test/utils/test-utils";
+import {setupSingleTestingConnection} from "../utils/test-utils";
 
 describe("many-to-one", function() {
 

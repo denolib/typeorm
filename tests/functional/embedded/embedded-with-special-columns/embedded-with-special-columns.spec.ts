@@ -7,7 +7,7 @@ import {
     createTestingConnections,
     reloadTestingDatabases,
     sleep
-} from "../../../../test/utils/test-utils";
+} from "../../../utils/test-utils";
 import {Subcounters} from "../embedded-many-to-one-case2/entity/Subcounters";
 
 describe("embedded > embedded-with-special-columns", () => {

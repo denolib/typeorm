@@ -6,7 +6,7 @@ import {Guest as GuestV2} from "./entity/v2/Guest";
 import {Comment as CommentV2} from "./entity/v2/Comment";
 import {View} from "./entity/View";
 import {Category} from "./entity/Category";
-import {closeTestingConnections, createTestingConnections, setupSingleTestingConnection} from "../../../test/utils/test-utils";
+import {closeTestingConnections, createTestingConnections, setupSingleTestingConnection} from "../../utils/test-utils";
 import {Connection} from "../../../src";
 import {Repository} from "../../../src";
 import {TreeRepository} from "../../../src";

@@ -1,4 +1,4 @@
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
 import {Connection} from "../../../src";
 import {EntitySchema} from "../../../src";
 import {Author, AuthorSchema} from "./entity/Author";

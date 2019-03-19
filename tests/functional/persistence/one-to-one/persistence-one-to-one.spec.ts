@@ -2,7 +2,7 @@ import "reflect-metadata";
 import {Connection} from "../../../../src";
 import {User} from "./entity/User";
 import {AccessToken} from "./entity/AccessToken";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../test/utils/test-utils";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
 
 describe("persistence > one-to-one", function() {
 
