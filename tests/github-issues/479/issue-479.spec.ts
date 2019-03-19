@@ -1,19 +1,18 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
-import {expect} from "chai";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {Car} from "./entity/Car";
 
 describe("github issues > #479 orWhere breaks skip / take", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("where expression of the skip/take should not break original where query", () => Promise.all(connections.map(async connection => {
+    test("where expression of the skip/take should not break original where query", () => Promise.all(connections.map(async connection => {
 
         const car1 = new Car();
         car1.name = "Test1";
@@ -42,7 +41,7 @@ describe("github issues > #479 orWhere breaks skip / take", () => {
             .take(1)
             .getMany();
 
-        expect(cars.length).to.be.equal(1);
+        expect(cars.length).toEqual(1);
     })));
 
 });
