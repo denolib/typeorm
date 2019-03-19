@@ -1,21 +1,20 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
-import {expect} from "chai";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {Post} from "./entity/Post";
-import {MssqlParameter} from "../../../src/driver/sqlserver/MssqlParameter";
+import {MssqlParameter} from "../../../src";
 
 describe("github issues > #352 double precision round to int in mssql", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
         enabledDrivers: ["mssql"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("real number should be successfully stored and loaded from db including value in parameters", () => Promise.all(connections.map(async connection => {
+    test("real number should be successfully stored and loaded from db including value in parameters", () => Promise.all(connections.map(async connection => {
 
         const posts: Post[] = [];
         for (let i = 1; i <= 25; i++) {
@@ -31,8 +30,8 @@ describe("github issues > #352 double precision round to int in mssql", () => {
             .where("post.id = :id", { id: new MssqlParameter(1.234567789, "float") })
             .getOne();
 
-        expect(loadedPost).to.exist;
-        expect(loadedPost!.id).to.be.equal(1.234567789);
+        expect(loadedPost).toBeDefined();
+        expect(loadedPost!.id).toEqual(1.234567789);
 
     })));
 
