@@ -1,20 +1,19 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {Post} from "./entity/Post";
 import {Category} from "./entity/Category";
-import {expect} from "chai";
 
 describe("github issues > Join query on ManyToMany relations not working", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("embedded with custom column name should persist and load without errors", () => Promise.all(connections.map(async connection => {
+    test("embedded with custom column name should persist and load without errors", () => Promise.all(connections.map(async connection => {
 
         for (let i = 0; i < 20; i++) {
             const category = new Category();
@@ -35,8 +34,8 @@ describe("github issues > Join query on ManyToMany relations not working", () =>
             .where("category.category_id IN (:...ids)", { ids: [21] })
             .getOne();
 
-        expect(loadedPost).not.to.be.undefined;
-        expect(loadedPost!.categories).not.to.be.undefined;
+        expect(loadedPost).not.toBeUndefined();
+        expect(loadedPost!.categories).not.toBeUndefined();
 
     })));
 
