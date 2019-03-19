@@ -1,20 +1,19 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
-import {expect} from "chai";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {Post} from "./entity/Post";
 import {Category} from "./entity/Category";
 
 describe("github issues > #151 joinAndSelect can't find entity from inverse side of relation", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should cascade persist successfully", () => Promise.all(connections.map(async connection => {
+    test("should cascade persist successfully", () => Promise.all(connections.map(async connection => {
 
         const category = new Category();
         category.name = "post category";
@@ -34,8 +33,8 @@ describe("github issues > #151 joinAndSelect can't find entity from inverse side
             }
         });
 
-        expect(loadedPost).not.to.be.undefined;
-        loadedPost!.should.be.eql({
+        expect(loadedPost).not.toBeUndefined();
+        expect(loadedPost)!.toEqual({
             id: 1,
             title: "Hello post",
             category: {
