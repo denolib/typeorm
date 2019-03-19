@@ -22,7 +22,7 @@ describe("github issues > #2464 - ManyToMany onDelete option not working", () =>
 
         try {
           await repo.delete(1);
-          expect.fail();
+          fail();
         } catch (e) {
           expect(e).toBeInstanceOf(QueryFailedError);
         }
