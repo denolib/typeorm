@@ -1,21 +1,20 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {Post} from "./entity/Post";
-import {expect} from "chai";
 
 // todo: fix this test
 
 describe("github issues > #176 @CreateDateColumn and @UpdateDateColumn does not read back in UTC", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should return dates in utc", () => Promise.all(connections.map(async connection => {
+    test("should return dates in utc", () => Promise.all(connections.map(async connection => {
 
         const post1 = new Post();
         post1.title = "Hello Post #1";
@@ -26,10 +25,10 @@ describe("github issues > #176 @CreateDateColumn and @UpdateDateColumn does not 
         await connection.manager.save(post1);
 
         const loadedPosts1 = await connection.manager.findOne(Post, { where: { title: "Hello Post #1" } });
-        expect(loadedPosts1!).not.to.be.undefined;
+        expect(loadedPosts1!).not.toBeUndefined();
 
-        // loadedPosts1!.date.toISOString().should.be.equal("2017-01-10T17:38:06.000Z");
-        // loadedPosts1!.localDate.toISOString().should.be.equal("2017-01-10T17:38:06.000Z");
+        // expect(loadedPosts1!.date.toISOString()).toEqual("2017-01-10T17:38:06.000Z");
+        // expect(loadedPosts1!.localDate.toISOString()).toEqual("2017-01-10T17:38:06.000Z");
 
         // also make sure that local date really was saved as a local date (including timezone)
 
