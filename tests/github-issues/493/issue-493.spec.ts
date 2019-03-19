@@ -1,18 +1,18 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {Post} from "./entity/Post";
 
 describe("github issues > #493 pagination should work with string primary keys", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should work perfectly with string primary keys", () => Promise.all(connections.map(async connection => {
+    test("should work perfectly with string primary keys", () => Promise.all(connections.map(async connection => {
 
         for (let i = 0; i < 10; i++) {
             const post = new Post();
@@ -28,12 +28,12 @@ describe("github issues > #493 pagination should work with string primary keys",
             .orderBy("post.id")
             .getMany();
 
-        loadedPosts.length.should.be.equal(5);
-        loadedPosts[0]!.id.should.be.equal("post #0");
-        loadedPosts[1]!.id.should.be.equal("post #1");
-        loadedPosts[2]!.id.should.be.equal("post #2");
-        loadedPosts[3]!.id.should.be.equal("post #3");
-        loadedPosts[4]!.id.should.be.equal("post #4");
+        expect(loadedPosts.length).toEqual(5);
+        expect(loadedPosts[0]!.id).toEqual("post #0");
+        expect(loadedPosts[1]!.id).toEqual("post #1");
+        expect(loadedPosts[2]!.id).toEqual("post #2");
+        expect(loadedPosts[3]!.id).toEqual("post #3");
+        expect(loadedPosts[4]!.id).toEqual("post #4");
     })));
 
 });
