@@ -1,6 +1,6 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {Foo} from "./entity/Foo";
 import {FooMetadata} from "./entity/FooMetadata";
 import {FooChildMetadata} from "./entity/FooChildMetadata";
@@ -8,13 +8,13 @@ import {FooChildMetadata} from "./entity/FooChildMetadata";
 describe("github issues > #762 Nullable @Embedded inside @Embedded", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should work perfectly with all data set", () => Promise.all(connections.map(async connection => {
+    test("should work perfectly with all data set", () => Promise.all(connections.map(async connection => {
 
         const foo = new Foo();
         foo.name = "Apple";
@@ -26,7 +26,7 @@ describe("github issues > #762 Nullable @Embedded inside @Embedded", () => {
         await connection.manager.save(foo);
 
         const loadedFoo = await connection.getRepository(Foo).findOne({ name: "Apple" });
-        loadedFoo!.should.be.eql({
+        expect(loadedFoo)!.toEqual({
             id: 1,
             name: "Apple",
             metadata: {
@@ -39,7 +39,7 @@ describe("github issues > #762 Nullable @Embedded inside @Embedded", () => {
         });
     })));
 
-    it("should work perfectly with some data not set", () => Promise.all(connections.map(async connection => {
+    test("should work perfectly with some data not set", () => Promise.all(connections.map(async connection => {
 
         const foo = new Foo();
         foo.name = "Apple";
@@ -50,7 +50,7 @@ describe("github issues > #762 Nullable @Embedded inside @Embedded", () => {
         await connection.manager.save(foo);
 
         const loadedFoo = await connection.getRepository(Foo).findOne({ name: "Apple" });
-        loadedFoo!.should.be.eql({
+        expect(loadedFoo)!.toEqual({
             id: 1,
             name: "Apple",
             metadata: {
@@ -70,7 +70,7 @@ describe("github issues > #762 Nullable @Embedded inside @Embedded", () => {
         await connection.manager.save(foo2);
 
         const loadedFoo2 = await connection.getRepository(Foo).findOne({ name: "Apple2" });
-        loadedFoo2!.should.be.eql({
+        expect(loadedFoo2)!.toEqual({
             id: 2,
             name: "Apple2",
             metadata: {
@@ -88,7 +88,7 @@ describe("github issues > #762 Nullable @Embedded inside @Embedded", () => {
         await connection.manager.save(foo3);
 
         const loadedFoo3 = await connection.getRepository(Foo).findOne({ name: "Apple3" });
-        loadedFoo3!.should.be.eql({
+        expect(loadedFoo3)!.toEqual({
             id: 3,
             name: "Apple3",
             metadata: {
@@ -102,13 +102,13 @@ describe("github issues > #762 Nullable @Embedded inside @Embedded", () => {
 
     })));
 
-    it("should work perfectly without any data set", () => Promise.all(connections.map(async connection => {
+    test("should work perfectly without any data set", () => Promise.all(connections.map(async connection => {
         const foo = new Foo();
         foo.name = "Orange";
         await connection.manager.save(foo);
 
         const loadedFoo = await connection.getRepository(Foo).findOne({ name: "Orange" });
-        loadedFoo!.should.be.eql({
+        expect(loadedFoo)!.toEqual({
             id: 1,
             name: "Orange",
             metadata: {
