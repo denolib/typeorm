@@ -42,9 +42,9 @@ describe("github issues > #70 cascade deleting works incorrect", () => {
             .getMany();
 
         expect(loadedPost!).not.toBeUndefined();
-        expect(loadedPost)!.toEqual({
+        expect(loadedPost).toMatchObject({
             id: 1,
-            title: "Hello Post #1"
+            title: "Hello Post #1",
         });
 
         expect(loadedPost!.categories.length).toEqual(2);
