@@ -1,8 +1,7 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {Participant} from "./entity/Participant";
-import {expect} from "chai";
 import {Message} from "./entity/Message";
 import {Translation} from "./entity/Translation";
 import {Locale} from "./entity/Locale";
@@ -10,14 +9,14 @@ import {Locale} from "./entity/Locale";
 describe("github issues > #720 `.save()` not updating composite key with Postgres", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
         enabledDrivers: ["postgres"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should not insert new entity when entity already exist with same primary keys", () => Promise.all(connections.map(async connection => {
+    test("should not insert new entity when entity already exist with same primary keys", () => Promise.all(connections.map(async connection => {
 
         const participants = [];
 
@@ -39,7 +38,7 @@ describe("github issues > #720 `.save()` not updating composite key with Postgre
         await connection.manager.save(participants);
 
         const count1 = await connection.manager.count(Participant);
-        expect(count1).to.be.equal(3);
+        expect(count1).toEqual(3);
 
         const updatedParticipants = [];
         updatedParticipants[0] = new Participant();
@@ -55,21 +54,21 @@ describe("github issues > #720 `.save()` not updating composite key with Postgre
         await connection.manager.save(updatedParticipants);
 
         const count2 = await connection.manager.count(Participant);
-        expect(count2).to.be.equal(3);
+        expect(count2).toEqual(3);
 
         const loadedParticipant1 = await connection.manager.findOne(Participant, { order_id: 1, distance: "one" });
-        expect(loadedParticipant1!.order_id).to.be.equal(1);
-        expect(loadedParticipant1!.distance).to.be.equal("one");
-        expect(loadedParticipant1!.price).to.be.equal("150$");
+        expect(loadedParticipant1!.order_id).toEqual(1);
+        expect(loadedParticipant1!.distance).toEqual("one");
+        expect(loadedParticipant1!.price).toEqual("150$");
 
         const loadedParticipant2 = await connection.manager.findOne(Participant, { order_id: 1, distance: "two" });
-        expect(loadedParticipant2!.order_id).to.be.equal(1);
-        expect(loadedParticipant2!.distance).to.be.equal("two");
-        expect(loadedParticipant2!.price).to.be.equal("250$");
+        expect(loadedParticipant2!.order_id).toEqual(1);
+        expect(loadedParticipant2!.distance).toEqual("two");
+        expect(loadedParticipant2!.price).toEqual("250$");
 
     })));
 
-    it("reproducing second comment issue", () => Promise.all(connections.map(async connection => {
+    test("reproducing second comment issue", () => Promise.all(connections.map(async connection => {
 
         const message = new Message();
         await connection.manager.save(message);
@@ -98,7 +97,7 @@ describe("github issues > #720 `.save()` not updating composite key with Postgre
                 id: "1"
             }
         });
-        expect(foundTranslation).to.be.eql({
+        expect(foundTranslation).toEqual({
             text: "Changed Text"
         });
     })));
