@@ -1,20 +1,19 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {User} from "./entity/User";
-import {expect} from "chai";
 import {AccessToken} from "./entity/AccessToken";
 
 describe.skip("github issues > #56 relationships only work when both primary keys have the same name", () => { // skipped because of CI error. todo: needs investigation
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should persist successfully and return persisted entity", () => Promise.all(connections.map(async connection => {
+    test("should persist successfully and return persisted entity", () => Promise.all(connections.map(async connection => {
 
         const token = new AccessToken();
         token.access_token = "12345";
@@ -26,8 +25,8 @@ describe.skip("github issues > #56 relationships only work when both primary key
         return connection.getRepository(AccessToken).save(token).then(token => {
             return connection.getRepository(User).save(user);
         }).then (user => {
-            expect(user).not.to.be.undefined;
-            user.should.be.eql({
+            expect(user).not.toBeUndefined();
+            expect(user).toEqual({
                 id: 1,
                 email: "mwelnick@test.com",
                 access_token: {
