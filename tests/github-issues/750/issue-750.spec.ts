@@ -1,14 +1,13 @@
 import "reflect-metadata";
-import {Connection} from "../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils";
+import {Connection} from "../../../src";
+import {closeTestingConnections, createTestingConnections} from "../../../test/utils/test-utils";
 import {Post} from "./entity/Post";
 import {IndexMetadata} from "../../../src/metadata/IndexMetadata";
-import {expect} from "chai";
 
 describe("github issues > #750 Need option for Mysql's full text search", () => {
 
     let connections: Connection[];
-    before(async () => {
+    beforeAll(async () => {
         connections = await createTestingConnections({
             entities: [__dirname + "/entity/*{.js,.ts}"],
             enabledDrivers: ["mysql"],
@@ -16,16 +15,16 @@ describe("github issues > #750 Need option for Mysql's full text search", () => 
             dropSchema: true,
         });
     });
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should correctly create SPATIAL and FULLTEXT indices", () => Promise.all(connections.map(async connection => {
+    test("should correctly create SPATIAL and FULLTEXT indices", () => Promise.all(connections.map(async connection => {
         const queryRunner = connection.createQueryRunner();
         let table = await queryRunner.getTable("post");
-        table!.indices.length.should.be.equal(2);
+        expect(table!.indices.length).toEqual(2);
         const spatialIndex = table!.indices.find(index => !!index.isSpatial);
-        spatialIndex!.should.be.exist;
+        expect(spatialIndex)!.toBeDefined();
         const fulltextIndex = table!.indices.find(index => !!index.isFulltext);
-        fulltextIndex!.should.be.exist;
+        expect(fulltextIndex)!.toBeDefined();
 
         const metadata = connection.getMetadata(Post);
         const polygonColumn = metadata.findColumnWithPropertyName("polygon");
@@ -45,11 +44,11 @@ describe("github issues > #750 Need option for Mysql's full text search", () => 
 
         await connection.synchronize();
         table = await queryRunner.getTable("post");
-        table!.indices.length.should.be.equal(3);
+        expect(table!.indices.length).toEqual(3);
         const spatialIndices = table!.indices.filter(index => !!index.isSpatial);
-        spatialIndices.length.should.be.equal(2);
+        expect(spatialIndices.length).toEqual(2);
         const fulltextIndex2 = table!.indices.find(index => !!index.isFulltext);
-        expect(fulltextIndex2).to.be.undefined;
+        expect(fulltextIndex2).toBeUndefined();
 
         await queryRunner.release();
     })));
