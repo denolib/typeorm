@@ -1,22 +1,21 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {User} from "./entity/User";
-import {expect} from "chai";
 import {AccessToken} from "./entity/AccessToken";
 
 describe("github issues > #57 cascade insert not working with OneToOne relationship", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
     // this test is no absolutely complete because cascade is now only allowed from one side of the relation
 
-    it("should persist successfully from inverse side", () => Promise.all(connections.map(async connection => {
+    test("should persist successfully from inverse side", () => Promise.all(connections.map(async connection => {
 
         // create
         const token = new AccessToken();
@@ -34,8 +33,8 @@ describe("github issues > #57 cascade insert not working with OneToOne relations
             .innerJoinAndSelect("token.user", "user")
             .getMany();
 
-        expect(tokens).not.to.be.undefined;
-        tokens.should.be.eql([{
+        expect(tokens).not.toBeUndefined();
+        expect(tokens).toEqual([{
             primaryKey: 1,
             user: {
                 primaryKey: 1,
@@ -49,8 +48,8 @@ describe("github issues > #57 cascade insert not working with OneToOne relations
             .innerJoinAndSelect("user.access_token", "token")
             .getMany();
 
-        expect(users).not.to.be.undefined;
-        users.should.be.eql([{
+        expect(users).not.toBeUndefined();
+        expect(users).toEqual([{
             primaryKey: 1,
             email: "mwelnick@test.com",
             access_token: {
