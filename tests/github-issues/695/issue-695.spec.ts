@@ -1,20 +1,20 @@
 import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../test/utils/test-utils";
+import {Connection} from "../../../src";
 import {Device} from "./entity/Device";
 import {DeviceInstance} from "./entity/DeviceInstance";
 
 describe("github issues > #695 Join columns are not using correct length", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({
+    beforeAll(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
         enabledDrivers: ["mysql"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
-    after(() => closeTestingConnections(connections));
+    afterAll(() => closeTestingConnections(connections));
 
-    it("should set correct length on to join columns", () => Promise.all(connections.map(async connection => {
+    test("should set correct length on to join columns", () => Promise.all(connections.map(async connection => {
 
         const queryRunner = connection.createQueryRunner();
         const table = await queryRunner.getTable("device_instances");
@@ -32,8 +32,8 @@ describe("github issues > #695 Join columns are not using correct length", () =>
         deviceInstance.type = "type";
         await connection.manager.save(deviceInstance);
 
-        table!.findColumnByName("device_id")!.type.should.be.equal("char");
-        table!.findColumnByName("device_id")!.length!.should.be.equal("12");
+        expect(table!.findColumnByName("device_id")!.type).toEqual("char");
+        expect(table!.findColumnByName("device_id")!.length)!.toEqual("12");
 
     })));
 
