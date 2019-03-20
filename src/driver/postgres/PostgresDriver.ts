@@ -763,25 +763,33 @@ export class PostgresDriver implements Driver {
             if (!tableColumn)
                 return false; // we don't need new columns, we only need exist and changed
 
+            console.log("table:", columnMetadata.entityMetadata.tableName);
+            console.log("name:", tableColumn.name, columnMetadata.databaseName);
+            // console.log("type:", tableColumn.type, this.normalizeType(columnMetadata));
+            // console.log("length:", tableColumn.length, columnMetadata.length);
+            // console.log("width:", tableColumn.width, columnMetadata.width);
+            // console.log("precision:", tableColumn.precision, columnMetadata.precision);
+            // console.log("scale:", tableColumn.scale, columnMetadata.scale);
+            // console.log("comment:", tableColumn.comment, columnMetadata.comment);
+            console.log("default:", this.lowerDefaultValueIfNecessary(tableColumn.default), this.lowerDefaultValueIfNecessary(this.normalizeDefault(columnMetadata)));
+            // console.log("default changed:", !this.compareDefaultValues(this.normalizeDefault(columnMetadata), tableColumn.default));
+            // console.log("isPrimary:", tableColumn.isPrimary, columnMetadata.isPrimary);
+            // console.log("isNullable:", tableColumn.isNullable, columnMetadata.isNullable);
+            // console.log("isUnique:", tableColumn.isUnique, this.normalizeIsUnique(columnMetadata));
+            // console.log("isGenerated:", tableColumn.isGenerated, columnMetadata.isGenerated);
+            // console.log("==========================================");
+
             return tableColumn.name !== columnMetadata.databaseName
                 || tableColumn.type !== this.normalizeType(columnMetadata)
                 || tableColumn.length !== columnMetadata.length
                 || tableColumn.precision !== columnMetadata.precision
                 || tableColumn.scale !== columnMetadata.scale
                 // || tableColumn.comment !== columnMetadata.comment // todo
-                || (!tableColumn.isGenerated && this.lowerDefaultValueIfNecessary(this.normalizeDefault(columnMetadata)) !== tableColumn.default) // we included check for generated here, because generated columns already can have default values
+                || (!tableColumn.isGenerated && this.lowerDefaultValueIfNecessary(this.normalizeDefault(columnMetadata)) !== this.lowerDefaultValueIfNecessary(tableColumn.default)) // we included check for generated here, because generated columns also can have default values
                 || tableColumn.isPrimary !== columnMetadata.isPrimary
                 || tableColumn.isNullable !== columnMetadata.isNullable
                 || tableColumn.isUnique !== this.normalizeIsUnique(columnMetadata)
-                || (
-                    tableColumn.enum
-                    && columnMetadata.enum
-                    // enums in postgres are always strings
-                    && !OrmUtils.isArraysEqual(
-                        tableColumn.enum,
-                        columnMetadata.enum.map(val => val + "")
-                    )
-                )
+                || (tableColumn.enum && columnMetadata.enum && !OrmUtils.isArraysEqual(tableColumn.enum, columnMetadata.enum.map(val => val + ""))) // enums in postgres are always strings
                 || tableColumn.isGenerated !== columnMetadata.isGenerated
                 || (tableColumn.spatialFeatureType || "").toLowerCase() !== (columnMetadata.spatialFeatureType || "").toLowerCase()
                 || tableColumn.srid !== columnMetadata.srid;
