@@ -776,6 +776,7 @@ export abstract class QueryBuilder<Entity> {
                             if (parameterValue === undefined)
                                 return;
                             const parameterName = "where_" + whereIndex + "_" + propertyIndex + "_" + columnIndex;
+                            const parameterBaseCount = Object.keys(this.expressionMap.nativeParameters).filter(x => x.startsWith(parameterName)).length;
 
                             if (parameterValue === null) {
                                 return `${aliasPath} IS NULL`;
@@ -791,9 +792,9 @@ export abstract class QueryBuilder<Entity> {
                                             parameters.push(realParameterValue);
 
                                         } else {
-                                            this.expressionMap.nativeParameters[parameterName + realParameterValueIndex] = realParameterValue;
+                                            this.expressionMap.nativeParameters[parameterName + (parameterBaseCount + realParameterValueIndex)] = realParameterValue;
                                             parameterIndex++;
-                                            parameters.push(this.connection.driver.createParameter(parameterName + realParameterValueIndex, parameterIndex - 1));
+                                            parameters.push(this.connection.driver.createParameter(parameterName + (parameterBaseCount + realParameterValueIndex), parameterIndex - 1));
                                         }
                                     });
                                 }
