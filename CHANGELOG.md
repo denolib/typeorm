@@ -13,7 +13,15 @@ feel free to ask us and community.
 * added observer methods to repositories and entity manager
 * `findOne` now throws error if no (or wrong) criteria supplied
 
-## 0.2.15
+## 0.2.16 (under development)
+
+### Bug fixes
+
+* removed unused parameters from `insert`, `update`, `delete` methods ([#3888](https://github.com/typeorm/typeorm/pull/3888))
+
+### Features
+
+## 0.2.15 (2019-03-14)
 
 ### Bug fixes
 
