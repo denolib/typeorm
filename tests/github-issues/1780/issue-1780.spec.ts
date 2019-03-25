@@ -82,12 +82,12 @@ describe("github issues > #1780 Support for insertion ignore on duplicate error"
            throw new Error(err);
       }
      })));
+
      test("should save one row without duplicate error in PostgreSQL", () => Promise.all(connections.map(async connection => {
          try {
             if (connection.driver instanceof PostgresDriver) {
-
                 const UserRepository = connection.manager.getRepository(User);
-                 // ignore while insertion duplicated row
+                // ignore while insertion duplicated row
                 await UserRepository
                     .createQueryBuilder()
                     .insert()

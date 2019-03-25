@@ -250,7 +250,7 @@ describe("multi-schema-and-database > basic-functionality", () => {
             if (connection.driver instanceof MysqlDriver)
                 expect(sql).toEqual("SELECT `person`.`id` AS `person_id`, `person`.`name` AS `person_name` FROM `secondDB`.`person` `person` WHERE `person`.`id` = ?");
 
-            expect(table!.name).toEqual(tablePath);
+            expect(table!.name.toLowerCase()).toEqual(tablePath.toLowerCase()); // TODO: Dima
         })));
 
     });

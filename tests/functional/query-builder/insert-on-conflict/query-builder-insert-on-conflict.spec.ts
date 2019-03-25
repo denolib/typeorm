@@ -13,7 +13,7 @@ describe("query builder > insertion > on conflict", () => {
     beforeEach(() => reloadTestingDatabases(connections));
     afterAll(() => closeTestingConnections(connections));
 
-    test("should perform insertion correctly", () => Promise.all(connections.map(async connection => { // TODO: Bakhrom
+    test("should perform insertion correctly", () => Promise.all(connections.map(async connection => { // TODO:
 
         const post1 = new Post();
         post1.id = "post#1";
