@@ -9,7 +9,8 @@ describe("other issues > sqlite relations too many parameters", () => {
     let connections: Connection[];
     before(async () => connections = await createTestingConnections({
         entities: [__dirname + "/entity/*{.js,.ts}"],
-        enabledDrivers: ["sqlite"]
+        enabledDrivers: ["sqlite"],
+        // logging: true
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
@@ -51,6 +52,11 @@ describe("other issues > sqlite relations too many parameters", () => {
         const postWithCategory = await connection.manager.findOne(Post, 1, {
             relations: ["categories"]
         });
+
+        // todo: tests are failing and I don't know what to do in there
+        // we probably need to change ids loading mechanizm or something
+        // because we cant avoid max argument number issue here
+        // because id is a string type, not a number
 
         postWithCategory!.categories.length.should.be.equal(1200);
 
