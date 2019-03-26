@@ -13,7 +13,7 @@ feel free to ask us and community.
 * added observer methods to repositories and entity manager
 * `findOne` now throws error if no (or wrong) criteria supplied
 
-## 0.2.16 (under development)
+## 0.2.16 (2019-03-26)
 
 ### Bug fixes
 
