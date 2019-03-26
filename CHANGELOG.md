@@ -13,6 +13,14 @@ feel free to ask us and community.
 * added observer methods to repositories and entity manager
 * `findOne` now throws error if no (or wrong) criteria supplied
 
+## 0.2.17 (under development)
+
+### Bug fixes
+
+* fixed transform embeddeds with boolean values (mongodb) ([#3900](https://github.com/typeorm/typeorm/pull/3900))
+
+### Features
+
 ## 0.2.16 (2019-03-26)
 
 ### Bug fixes
