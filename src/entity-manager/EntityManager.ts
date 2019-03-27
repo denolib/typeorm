@@ -487,7 +487,6 @@ export class EntityManager {
             .insert()
             .into(target)
             .values(entity)
-            .callListeners(false)
             .execute();
     }
 
@@ -518,7 +517,6 @@ export class EntityManager {
                 .update(target)
                 .set(partialEntity)
                 .whereInIds(criteria)
-                .callListeners(false)
                 .execute();
 
         } else {
@@ -526,7 +524,6 @@ export class EntityManager {
                 .update(target)
                 .set(partialEntity)
                 .where(criteria)
-                .callListeners(false)
                 .execute();
         }
     }
@@ -558,7 +555,6 @@ export class EntityManager {
                 .delete()
                 .from(targetOrEntity)
                 .whereInIds(criteria)
-                .callListeners(false)
                 .execute();
 
         } else {
@@ -566,7 +562,6 @@ export class EntityManager {
                 .delete()
                 .from(targetOrEntity)
                 .where(criteria)
-                .callListeners(false)
                 .execute();
         }
     }
