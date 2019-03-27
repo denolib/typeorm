@@ -5,6 +5,7 @@ import {ObjectLiteral} from "../common/ObjectLiteral";
 import {ColumnMetadata} from "./ColumnMetadata";
 import {EmbeddedMetadata} from "./EmbeddedMetadata";
 import {RelationMetadataArgs} from "../metadata-args/RelationMetadataArgs";
+import {DeferrableType} from "./types/DeferrableType";
 import {OnUpdateType} from "./types/OnUpdateType";
 import {OnDeleteType} from "./types/OnDeleteType";
 import {PropertyTypeFactory} from "./types/PropertyTypeInFunction";
@@ -139,6 +140,11 @@ export class RelationMetadata {
     onUpdate?: OnUpdateType;
 
     /**
+     * What to do with a relation on update of the row containing a foreign key.
+     */
+    deferrable?: DeferrableType;
+
+    /**
      * Gets the property's type to which this relation is applied.
      *
      * For example for @ManyToMany(type => Category) in Post, target will be Category.
@@ -271,6 +277,7 @@ export class RelationMetadata {
         this.isNullable = args.options.nullable === false ? false : true;
         this.onDelete = args.options.onDelete;
         this.onUpdate = args.options.onUpdate;
+        this.deferrable = args.options.deferrable;
         this.isEager = args.options.eager || false;
         this.persistenceEnabled = args.options.persistence === false ? false : true;
         this.isTreeParent = args.isTreeParent || false;
