@@ -38,8 +38,8 @@ import {MysqlDriver} from "../driver/mysql/MysqlDriver";
 import {ObjectUtils} from "../util/ObjectUtils";
 import {PromiseUtils} from "../";
 import {IsolationLevel} from "../driver/types/IsolationLevel";
-import { EntityFactoryInterface } from '../entity-factory/EntityFactoryInterface';
-import { DefaultEntityFactory } from '../entity-factory/DefaultEntityFactory';
+import { EntityFactoryInterface } from "../entity-factory/EntityFactoryInterface";
+import { DefaultEntityFactory } from "../entity-factory/DefaultEntityFactory";
 
 /**
  * Connection is a single database ORM connection to a specific database.

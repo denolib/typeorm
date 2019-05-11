@@ -3,7 +3,7 @@ import {LoggerOptions} from "../logger/LoggerOptions";
 import {NamingStrategyInterface} from "../naming-strategy/NamingStrategyInterface";
 import {DatabaseType} from "../driver/types/DatabaseType";
 import {Logger} from "../logger/Logger";
-import { EntityFactoryInterface } from '../entity-factory/EntityFactoryInterface';
+import { EntityFactoryInterface } from "../entity-factory/EntityFactoryInterface";
 
 /**
  * BaseConnectionOptions is set of connection options shared by all database types.

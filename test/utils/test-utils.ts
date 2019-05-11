@@ -7,7 +7,7 @@ import {EntitySchema} from "../../src/entity-schema/EntitySchema";
 import {createConnections} from "../../src/index";
 import {NamingStrategyInterface} from "../../src/naming-strategy/NamingStrategyInterface";
 import {PromiseUtils} from "../../src/util/PromiseUtils";
-import { EntityFactoryInterface } from '../../src/entity-factory/EntityFactoryInterface';
+import { EntityFactoryInterface } from "../../src/entity-factory/EntityFactoryInterface";
 
 /**
  * Interface in which data is stored in ormconfig.json of the project.

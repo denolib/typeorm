@@ -3,7 +3,7 @@ import {expect} from "chai";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
 import {Connection} from "../../../src/connection/Connection";
 import {Post} from "./entity/Post";
-import { OldEntityFactory } from '../../../src';
+import { OldEntityFactory } from "../../../src";
 
 describe("entity-factory > old entity factory", () => {
     
