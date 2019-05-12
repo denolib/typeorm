@@ -1,4 +1,4 @@
-import {EntityMetadata} from '../metadata/EntityMetadata';
+import {EntityMetadata} from "../metadata/EntityMetadata";
 
 /**
  * Class that implements this interface is en entity factory used by the orm to 

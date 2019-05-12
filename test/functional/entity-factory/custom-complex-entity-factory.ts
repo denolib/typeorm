@@ -4,7 +4,7 @@ import { closeTestingConnections, createTestingConnections, reloadTestingDatabas
 import { Connection } from "../../../src/connection/Connection";
 import { Post } from "./entity/Post";
 import { PostVersioned } from "./entity/PostVersioned";
-import { EntityMetadata } from '../../../src';
+import { EntityMetadata } from "../../../src";
 
 describe("entity-factory > custom complex entity factory", () => {
 
@@ -31,7 +31,7 @@ describe("entity-factory > custom complex entity factory", () => {
                                 const property = target[propKey];
                                 
                                 if (property instanceof Function) {
-                                    return function (...args:any[]) {
+                                    return function (...args: any[]) {
                                         const result = property.apply(this, args);
                                         return result + " !!!";
                                     };
@@ -40,7 +40,7 @@ describe("entity-factory > custom complex entity factory", () => {
                                 return property;
                             }
                         }
-                    )
+                    );
                 }
 
                 return entity;
