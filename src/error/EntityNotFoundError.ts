@@ -11,8 +11,8 @@ export class EntityNotFoundError extends Error {
         super();
         Object.setPrototypeOf(this, EntityNotFoundError.prototype);
         let targetName: string;
-        if (entityClass instanceof EntitySchema) {
-            targetName = entityClass.options.name;
+        if (entityClass instanceof EntitySchema || entityClass.constructor.name === "EntitySchema") {
+            targetName = (entityClass as EntitySchema).options.name;
         } else if (typeof entityClass === "function") {
             targetName = entityClass.name;
         } else {
