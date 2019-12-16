@@ -98,7 +98,7 @@ If you want to set a base prefix for all database tables in your application you
 
 When using an entity constructor its arguments **must be optional**. Since ORM creates instances of entity classes when loading from the database, therefore it is not aware of your constructor arguments.
 
-Learn more about parameters @Entity in [Decorators reference](decorator-reference.md).
+Learn more about parameters `@Entity` in [Decorators reference](decorator-reference.md).
 
 ## Entity columns
 
@@ -294,7 +294,7 @@ or
 `bit`, `int`, `integer`, `tinyint`, `smallint`, `mediumint`, `bigint`, `float`, `double`,
 `double precision`, `dec`, `decimal`, `numeric`, `fixed`, `bool`, `boolean`, `date`, `datetime`,
 `timestamp`, `time`, `year`, `char`, `nchar`, `national char`, `varchar`, `nvarchar`, `national varchar`,
-`text`, `tinytext`, `mediumtext`, `blob`, `longtext`, `tinyblob`, `mediumblob`, `longblob`, `enum`,
+`text`, `tinytext`, `mediumtext`, `blob`, `longtext`, `tinyblob`, `mediumblob`, `longblob`, `enum`, `set`,
 `json`, `binary`, `varbinary`, `geometry`, `point`, `linestring`, `polygon`, `multipoint`, `multilinestring`,
 `multipolygon`, `geometrycollection`
 
@@ -307,7 +307,7 @@ or
 `date`, `time`, `time without time zone`, `time with time zone`, `interval`, `bool`, `boolean`,
 `enum`, `point`, `line`, `lseg`, `box`, `path`, `polygon`, `circle`, `cidr`, `inet`, `macaddr`,
 `tsvector`, `tsquery`, `uuid`, `xml`, `json`, `jsonb`, `int4range`, `int8range`, `numrange`,
-`tsrange`, `tstzrange`, `daterange`, `geometry`, `geography`
+`tsrange`, `tstzrange`, `daterange`, `geometry`, `geography`, `cube`
 
 ### Column types for `cockroachdb`
 
@@ -390,6 +390,52 @@ export class User {
 }
 ```
 
+### `set` column type
+
+`set` column type is supported by `mariadb` and `mysql`. There are various possible column definitions:
+
+Using typescript enums:
+```typescript
+export enum UserRole {
+    ADMIN = "admin",
+    EDITOR = "editor",
+    GHOST = "ghost"
+}
+
+@Entity()
+export class User {
+
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @Column({
+        type: "set",
+        enum: UserRole,
+        default: [UserRole.GHOST, UserRole.EDITOR]
+    })
+    roles: UserRole[]
+
+}
+```
+
+Using array with `set` values:
+```typescript
+export type UserRoleType = "admin" | "editor" | "ghost",
+
+@Entity()
+export class User {
+
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @Column({
+        type: "set",
+        enum: ["admin", "editor", "ghost"],
+        default: ["ghost", "editor"]
+    })
+    roles: UserRoleType[]
+}
+```
 
 ### `simple-array` column type
 
@@ -504,7 +550,8 @@ You can change it by specifying your own name.
 * `width: number` - column type's display width. Used only for [MySQL integer types](https://dev.mysql.com/doc/refman/5.7/en/integer-types.html)
 * `onUpdate: string` - `ON UPDATE` trigger. Used only in [MySQL](https://dev.mysql.com/doc/refman/5.7/en/timestamp-initialization.html).
 * `nullable: boolean` - Makes column `NULL` or `NOT NULL` in the database. By default column is `nullable: false`.
-* `readonly: boolean` - Indicates if column value is not updated by "save" operation. It means you'll be able to write this value only when you first time insert the object. Default value is `false`.
+* `update: boolean` - Indicates if column value is updated by "save" operation. If false, you'll be able to write this value only when you first time insert the object. Default value is `true`.
+* `insert: boolean` - Indicates if column value is set the first time you insert the object.  Default value is `true`.
 * `select: boolean` - Defines whether or not to hide this column by default when making queries. When set to `false`, the column data will not show with a standard query. By default column is `select: true`
 * `default: string` - Adds database-level column's `DEFAULT` value.
 * `primary: boolean` - Marks column as primary. Same if you use `@PrimaryColumn`.
@@ -522,7 +569,7 @@ You can change it by specifying your own name.
 * `generatedType: "VIRTUAL"|"STORED"` - Generated column type. Used only in [MySQL](https://dev.mysql.com/doc/refman/5.7/en/create-table-generated-columns.html).
 * `hstoreType: "object"|"string"` - Return type of `HSTORE` column. Returns value as string or as object. Used only in [Postgres](https://www.postgresql.org/docs/9.6/static/hstore.html).
 * `array: boolean` - Used for postgres and cockroachdb column types which can be array (for example int[])
-* `transformer: { from(value: DatabaseType): EntityType, to(value: EntityType): DatabaseType }` - Used to marshal properties of arbitrary type `EntityType` into a type `DatabaseType` supported by the database.
+* `transformer: { from(value: DatabaseType): EntityType, to(value: EntityType): DatabaseType }` - Used to marshal properties of arbitrary type `EntityType` into a type `DatabaseType` supported by the database. Array of transformers are also supported and will be applied in natural order when writing, and in reverse order when reading. e.g. `[lowercase, encrypt]` will first lowercase the string then encrypt it when writing, and will decrypt then do nothing when reading.
 
 Note: most of those column options are RDBMS-specific and aren't available in `MongoDB`.
 

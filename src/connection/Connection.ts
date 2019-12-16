@@ -38,6 +38,7 @@ import {MysqlDriver} from "../driver/mysql/MysqlDriver";
 import {ObjectUtils} from "../util/ObjectUtils";
 import {PromiseUtils} from "../";
 import {IsolationLevel} from "../driver/types/IsolationLevel";
+import {AuroraDataApiDriver} from "../driver/aurora-data-api/AuroraDataApiDriver";
 import { EntityFactoryInterface } from "../entity-factory/EntityFactoryInterface";
 import { DefaultEntityFactory } from "../entity-factory/DefaultEntityFactory";
 
@@ -65,7 +66,7 @@ export class Connection {
     /**
      * Indicates if connection is initialized or not.
      */
-    readonly isConnected = false;
+    readonly isConnected: boolean;
 
     /**
      * Database driver used by this connection.
@@ -142,6 +143,7 @@ export class Connection {
         this.queryResultCache = options.cache ? new QueryResultCacheFactory(this).create() : undefined;
         this.relationLoader = new RelationLoader(this);
         this.relationIdLoader = new RelationIdLoader(this);
+        this.isConnected = false;
     }
 
     // -------------------------------------------------------------------------
@@ -216,6 +218,10 @@ export class Connection {
             if (this.options.synchronize)
                 await this.synchronize();
 
+            // if option is set - automatically synchronize a schema
+            // if (this.options.migrationsRun)
+            //     await this.runMigrations({ transaction: this.options.migrationsTransactionMode });
+
         } catch (error) {
 
             // if for some reason build metadata fail (for example validation error during entity metadata check)
@@ -271,7 +277,7 @@ export class Connection {
     async dropDatabase(): Promise<void> {
         const queryRunner = await this.createQueryRunner("master");
         try {
-            if (this.driver instanceof SqlServerDriver || this.driver instanceof MysqlDriver) {
+            if (this.driver instanceof SqlServerDriver || this.driver instanceof MysqlDriver || this.driver instanceof AuroraDataApiDriver) {
                 const databases: string[] = this.driver.database ? [this.driver.database] : [];
                 this.entityMetadatas.forEach(metadata => {
                     if (metadata.database && databases.indexOf(metadata.database) === -1)
@@ -290,14 +296,13 @@ export class Connection {
      * Runs all pending migrations.
      * Can be used only after connection to the database is established.
      */
-    async runMigrations(options?: { transaction?: boolean }): Promise<Migration[]> {
+    async runMigrations(options?: { transaction?: "all" | "none" | "each" }): Promise<Migration[]> {
         if (!this.isConnected)
             throw new CannotExecuteNotConnectedError(this.name);
 
         const migrationExecutor = new MigrationExecutor(this);
-        if (options && options.transaction === false) {
-            migrationExecutor.transaction = false;
-        }
+        migrationExecutor.transaction = (options && options.transaction) || "all";
+
         const successMigrations = await migrationExecutor.executePendingMigrations();
         return successMigrations;
     }
@@ -306,16 +311,27 @@ export class Connection {
      * Reverts last executed migration.
      * Can be used only after connection to the database is established.
      */
-    async undoLastMigration(options?: { transaction?: boolean }): Promise<void> {
+    async undoLastMigration(options?: { transaction?: "all" | "none" | "each" }): Promise<void> {
 
         if (!this.isConnected)
             throw new CannotExecuteNotConnectedError(this.name);
 
         const migrationExecutor = new MigrationExecutor(this);
-        if (options && options.transaction === false) {
-            migrationExecutor.transaction = false;
-        }
+        migrationExecutor.transaction = (options && options.transaction) || "all";
+
         await migrationExecutor.undoLastMigration();
+    }
+
+    /**
+     * Lists all migrations and whether they have been run.
+     * Returns true if there are pending migrations
+     */
+    async showMigrations(): Promise<boolean> {
+        if (!this.isConnected) {
+            throw new CannotExecuteNotConnectedError(this.name);
+        }
+        const migrationExecutor = new MigrationExecutor(this);
+        return await migrationExecutor.showMigrations();
     }
 
     /**
@@ -481,8 +497,12 @@ export class Connection {
      */
     protected findMetadata(target: Function|EntitySchema<any>|string): EntityMetadata|undefined {
         return this.entityMetadatas.find(metadata => {
-            if (metadata.target === target)
+            if (typeof metadata.target === "function" && typeof target === "function" && metadata.target.name === target.name) {
                 return true;
+            }
+            if (metadata.target === target) {
+                return true;
+            }
             if (target instanceof EntitySchema) {
                 return metadata.name === target.options.name;
             }
@@ -518,8 +538,26 @@ export class Connection {
         const migrations = connectionMetadataBuilder.buildMigrations(this.options.migrations || []);
         ObjectUtils.assign(this, { migrations: migrations });
 
+        this.driver.database = this.getDatabaseName();
+
         // validate all created entity metadatas to make sure user created entities are valid and correct
-        entityMetadataValidator.validateMany(this.entityMetadatas, this.driver);
+        entityMetadataValidator.validateMany(this.entityMetadatas.filter(metadata => metadata.tableType !== "view"), this.driver);
     }
+
+    // This database name property is nested for replication configs.
+    protected getDatabaseName(): string {
+    const options = this.options;
+    switch (options.type) {
+        case "mysql" :
+        case "mariadb" :
+        case "postgres":
+        case "cockroachdb":
+        case "mssql":
+        case "oracle":
+            return (options.replication ? options.replication.master.database : options.database) as string;
+        default:
+            return options.database as string;
+    }
+}
 
 }

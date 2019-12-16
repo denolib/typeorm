@@ -1,29 +1,29 @@
-import {ColumnMetadata} from "./ColumnMetadata";
-import {RelationMetadata} from "./RelationMetadata";
-import {IndexMetadata} from "./IndexMetadata";
-import {ForeignKeyMetadata} from "./ForeignKeyMetadata";
-import {EmbeddedMetadata} from "./EmbeddedMetadata";
+import {QueryRunner, SelectQueryBuilder} from "..";
 import {ObjectLiteral} from "../common/ObjectLiteral";
-import {RelationIdMetadata} from "./RelationIdMetadata";
-import {RelationCountMetadata} from "./RelationCountMetadata";
-import {TableType} from "./types/TableTypes";
-import {OrderByCondition} from "../find-options/OrderByCondition";
-import {OrmUtils} from "../util/OrmUtils";
-import {TableMetadataArgs} from "../metadata-args/TableMetadataArgs";
 import {Connection} from "../connection/Connection";
-import {EntityListenerMetadata} from "./EntityListenerMetadata";
-import {PostgresDriver} from "../driver/postgres/PostgresDriver";
-import {SqlServerDriver} from "../driver/sqlserver/SqlServerDriver";
 import {PostgresConnectionOptions} from "../driver/postgres/PostgresConnectionOptions";
+import {PostgresDriver} from "../driver/postgres/PostgresDriver";
 import {SqlServerConnectionOptions} from "../driver/sqlserver/SqlServerConnectionOptions";
+import {SqlServerDriver} from "../driver/sqlserver/SqlServerDriver";
 import {CannotCreateEntityIdMapError} from "../error/CannotCreateEntityIdMapError";
-import {TreeType} from "./types/TreeTypes";
+import {OrderByCondition} from "../find-options/OrderByCondition";
+import {TableMetadataArgs} from "../metadata-args/TableMetadataArgs";
 import {TreeMetadataArgs} from "../metadata-args/TreeMetadataArgs";
-import {UniqueMetadata} from "./UniqueMetadata";
+import {OrmUtils} from "../util/OrmUtils";
+import {shorten} from "../util/StringUtils";
 import {CheckMetadata} from "./CheckMetadata";
-import {QueryRunner} from "..";
+import {ColumnMetadata} from "./ColumnMetadata";
+import {EmbeddedMetadata} from "./EmbeddedMetadata";
+import {EntityListenerMetadata} from "./EntityListenerMetadata";
 import {ExclusionMetadata} from "./ExclusionMetadata";
-import { shorten } from "../util/StringUtils";
+import {ForeignKeyMetadata} from "./ForeignKeyMetadata";
+import {IndexMetadata} from "./IndexMetadata";
+import {RelationCountMetadata} from "./RelationCountMetadata";
+import {RelationIdMetadata} from "./RelationIdMetadata";
+import {RelationMetadata} from "./RelationMetadata";
+import {TableType} from "./types/TableTypes";
+import {TreeType} from "./types/TreeTypes";
+import {UniqueMetadata} from "./UniqueMetadata";
 
 /**
  * Contains all entity metadata.
@@ -94,6 +94,17 @@ export class EntityMetadata {
      * If target class is not then then it equals to table name.
      */
     name: string;
+
+    /**
+     * View's expression.
+     * Used in views
+     */
+    expression?: string|((connection: Connection) => SelectQueryBuilder<any>);
+
+    /**
+     * Enables Sqlite "WITHOUT ROWID" modifier for the "CREATE TABLE" statement
+     */
+    withoutRowid?: boolean = false;    
 
     /**
      * Original user-given table name (taken from schema or @Entity(tableName) decorator).
@@ -489,6 +500,8 @@ export class EntityMetadata {
         this.tableMetadataArgs = options.args;
         this.target = this.tableMetadataArgs.target;
         this.tableType = this.tableMetadataArgs.type;
+        this.expression = this.tableMetadataArgs.expression;
+        this.withoutRowid = this.tableMetadataArgs.withoutRowid;
     }
 
     // -------------------------------------------------------------------------
@@ -768,7 +781,15 @@ export class EntityMetadata {
         const entityPrefix = this.connection.options.entityPrefix;
         this.engine = this.tableMetadataArgs.engine;
         this.database = this.tableMetadataArgs.type === "entity-child" && this.parentEntityMetadata ? this.parentEntityMetadata.database : this.tableMetadataArgs.database;
-        this.schema = this.tableMetadataArgs.schema || (this.connection.options as PostgresConnectionOptions|SqlServerConnectionOptions).schema;
+        if (this.tableMetadataArgs.schema) {
+            this.schema = this.tableMetadataArgs.schema;
+        }
+        else if ((this.tableMetadataArgs.type === "entity-child") && this.parentEntityMetadata) {
+            this.schema = this.parentEntityMetadata.schema;
+        }
+        else {
+            this.schema = (this.connection.options as PostgresConnectionOptions|SqlServerConnectionOptions).schema;
+        }
         this.givenTableName = this.tableMetadataArgs.type === "entity-child" && this.parentEntityMetadata ? this.parentEntityMetadata.givenTableName : this.tableMetadataArgs.name;
         this.synchronize = this.tableMetadataArgs.synchronize === false ? false : true;
         this.targetName = this.tableMetadataArgs.target instanceof Function ? (this.tableMetadataArgs.target as any).name : this.tableMetadataArgs.target;
@@ -786,6 +807,8 @@ export class EntityMetadata {
         this.tableName = entityPrefix ? namingStrategy.prefixTableName(entityPrefix, this.tableNameWithoutPrefix) : this.tableNameWithoutPrefix;
         this.target = this.target ? this.target : this.tableName;
         this.name = this.targetName ? this.targetName : this.tableName;
+        this.expression = this.tableMetadataArgs.expression;
+        this.withoutRowid = this.tableMetadataArgs.withoutRowid === true ? true : false;
         this.tablePath = this.buildTablePath();
         this.schemaPath = this.buildSchemaPath();
         this.orderBy = (this.tableMetadataArgs.orderBy instanceof Function) ? this.tableMetadataArgs.orderBy(this.propertiesMap) : this.tableMetadataArgs.orderBy; // todo: is propertiesMap available here? Looks like its not
@@ -831,8 +854,10 @@ export class EntityMetadata {
      */
     protected buildTablePath(): string {
         let tablePath = this.tableName;
-        if (this.schema)
+        if (this.schema && ((this.connection.driver instanceof PostgresDriver) || (this.connection.driver instanceof SqlServerDriver))) {
             tablePath = this.schema + "." + tablePath;
+        }
+
         if (this.database && !(this.connection.driver instanceof PostgresDriver)) {
             if (!this.schema && this.connection.driver instanceof SqlServerDriver) {
                 tablePath = this.database + ".." + tablePath;

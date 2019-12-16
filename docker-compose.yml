@@ -27,7 +27,7 @@ services:
 
   # mariadb
   mariadb:
-    image: "mariadb:10.1.37"
+    image: "mariadb:10.4.8"
     container_name: "typeorm-mariadb"
     ports:
       - "3307:3306"
@@ -63,7 +63,7 @@ services:
 
   # cockroachdb
   cockroachdb:
-    image: "cockroachdb/cockroach-unstable:latest"
+    image: "cockroachdb/cockroach-unstable:v19.1.0-rc.2"
     container_name: "typeorm-cockroachdb"
     command: start --insecure
     ports:

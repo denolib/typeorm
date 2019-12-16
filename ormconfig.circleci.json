@@ -60,6 +60,16 @@
     "sid": "xe.oracle.docker"
   },
   {
+    "skip": true,
+    "name": "cockroachdb",
+    "type": "cockroachdb",
+    "host": "localhost",
+    "port": 26257,
+    "username": "root",
+    "password": "",
+    "database": "defaultdb"
+  },
+  {
     "skip": false,
     "name": "cockroachdb",
     "type": "cockroachdb",
@@ -75,6 +85,7 @@
     "name": "mongodb",
     "type": "mongodb",
     "database": "test",
-    "useNewUrlParser": true
+    "useNewUrlParser": true,
+    "useUnifiedTopology": true
   }
 ]

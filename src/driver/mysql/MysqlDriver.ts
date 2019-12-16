@@ -17,6 +17,7 @@ import {TableColumn} from "../../schema-builder/table/TableColumn";
 import {MysqlConnectionCredentialsOptions} from "./MysqlConnectionCredentialsOptions";
 import {EntityMetadata} from "../../metadata/EntityMetadata";
 import {OrmUtils} from "../../util/OrmUtils";
+import {ApplyValueTransformers} from "../../util/ApplyValueTransformers";
 
 /**
  * Organizes communication with MySQL DBMS.
@@ -119,6 +120,7 @@ export class MysqlDriver implements Driver {
         "longblob",
         "longtext",
         "enum",
+        "set",
         "binary",
         "varbinary",
         // json data type
@@ -245,6 +247,12 @@ export class MysqlDriver implements Driver {
         cacheDuration: "int",
         cacheQuery: "text",
         cacheResult: "text",
+        metadataType: "varchar",
+        metadataDatabase: "varchar",
+        metadataSchema: "varchar",
+        metadataTable: "varchar",
+        metadataName: "varchar",
+        metadataValue: "text",
     };
 
     /**
@@ -289,7 +297,10 @@ export class MysqlDriver implements Driver {
 
     constructor(connection: Connection) {
         this.connection = connection;
-        this.options = connection.options as MysqlConnectionOptions;
+        this.options = {
+            legacySpatialSupport: true,
+            ...connection.options
+        } as MysqlConnectionOptions;
         this.isReplicated = this.options.replication ? true : false;
 
         // load mysql package
@@ -424,7 +435,7 @@ export class MysqlDriver implements Driver {
      */
     preparePersistentValue(value: any, columnMetadata: ColumnMetadata): any {
         if (columnMetadata.transformer)
-            value = columnMetadata.transformer.to(value);
+            value = ApplyValueTransformers.transformTo(columnMetadata.transformer, value);
 
         if (value === null || value === undefined)
             return value;
@@ -452,6 +463,9 @@ export class MysqlDriver implements Driver {
 
         } else if (columnMetadata.type === "enum" || columnMetadata.type === "simple-enum") {
             return "" + value;
+
+        } else if (columnMetadata.type === "set") {
+            return DateUtils.simpleArrayToString(value);
         }
 
         return value;
@@ -462,7 +476,7 @@ export class MysqlDriver implements Driver {
      */
     prepareHydratedValue(value: any, columnMetadata: ColumnMetadata): any {
         if (value === null || value === undefined)
-            return columnMetadata.transformer ? columnMetadata.transformer.from(value) : value;
+            return columnMetadata.transformer ? ApplyValueTransformers.transformFrom(columnMetadata.transformer, value) : value;
 
         if (columnMetadata.type === Boolean || columnMetadata.type === "bool" || columnMetadata.type === "boolean") {
             value = value ? true : false;
@@ -491,10 +505,12 @@ export class MysqlDriver implements Driver {
             && columnMetadata.enum.indexOf(parseInt(value)) >= 0) {
             // convert to number if that exists in possible enum options
             value = parseInt(value);
+        } else if (columnMetadata.type === "set") {
+            value = DateUtils.stringToSimpleArray(value);
         }
 
         if (columnMetadata.transformer)
-            value = columnMetadata.transformer.from(value);
+            value = ApplyValueTransformers.transformFrom(columnMetadata.transformer, value);
 
         return value;
     }
@@ -555,6 +571,10 @@ export class MysqlDriver implements Driver {
 
         if ((columnMetadata.type === "enum" || columnMetadata.type === "simple-enum") && defaultValue !== undefined) {
             return `'${defaultValue}'`;
+        }
+
+        if ((columnMetadata.type === "set") && defaultValue !== undefined) {
+            return `'${DateUtils.simpleArrayToString(defaultValue)}'`;
         }
 
         if (typeof defaultValue === "number") {
@@ -808,7 +828,7 @@ export class MysqlDriver implements Driver {
      */
     protected createConnectionOptions(options: MysqlConnectionOptions, credentials: MysqlConnectionCredentialsOptions): Promise<any> {
 
-        credentials = Object.assign(credentials, DriverUtils.buildDriverOptions(credentials)); // todo: do it better way
+        credentials = Object.assign({}, credentials, DriverUtils.buildDriverOptions(credentials)); // todo: do it better way
 
         // build connection options for the driver
         return Object.assign({}, {

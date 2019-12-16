@@ -346,49 +346,6 @@ export class User {
 }
 ```
 
-### `simple-array` column type
-
-`postgres`和`mysql`支持`enum`列类型。 有多种列定义方式：
-
-使用 typescript 枚举:
-
-```typescript
-export enum UserRole {
-    ADMIN = "admin",
-    EDITOR = "editor"
-    GHOST = "ghost"
-}
- @Entity()
-export class User {
-     @PrimaryGeneratedColumn()
-    id: number;
-     @Column({
-        type: "enum",
-        enum: UserRole,
-        default: UserRole.GHOST
-    })
-    role: UserRole
- }
-```
-
-> 注意：支持字符串，数字和异构枚举。
-> 使用带枚举值的数组：
-
-```typescript
-export type UserRoleType = "admin" | "editor" | "ghost",
- @Entity()
-export class User {
-     @PrimaryGeneratedColumn()
-    id: number;
-     @Column({
-        type: "enum",
-        enum: ["admin", "editor", "ghost"],
-        default: "ghost"
-    })
-    role: UserRoleType
-}
-```
-
 ### `simple-array`的列类型
 
 有一种称为`simple-array`的特殊列类型，它可以将原始数组值存储在单个字符串列中。
@@ -487,7 +444,8 @@ name: string;
 -   `width: number` - 列类型的显示范围。 仅用于[MySQL integer types](https://dev.mysql.com/doc/refman/5.7/en/integer-types.html)
 -   `onUpdate: string` - `ON UPDATE`触发器。 仅用于 [MySQL](https://dev.mysql.com/doc/refman/5.7/en/timestamp-initialization.html).
 -   `nullable: boolean` - 在数据库中使列`NULL`或`NOT NULL`。 默认情况下，列是`nullable：false`。
--   `readonly: boolean` - 指示`save`操作是否未更新列值。 这意味着只有在第一次插入对象时才能写入此值。 默认值为`false`。
+-   `update: boolean` - 指示"save"操作是否更新列值。如果为false，则只能在第一次插入对象时编写该值。
+    默认值为"true"。
 -   `select: boolean` - 定义在进行查询时是否默认隐藏此列。 设置为`false`时，列数据不会显示标准查询。 默认情况下，列是`select：true`
 -   `default: string` - 添加数据库级列的`DEFAULT`值。
 -   `primary: boolean` - 将列标记为主要列。 使用方式和`@ PrimaryColumn`相同。

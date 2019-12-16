@@ -49,6 +49,11 @@ export interface BaseConnectionOptions {
     readonly migrationsTableName?: string;
 
     /**
+     * Transaction mode for migrations to run in
+     */
+    readonly migrationsTransactionMode?: "all" | "none" | "each";
+
+    /**
      * Naming strategy to be used to name tables and columns in the database.
      */
     readonly namingStrategy?: NamingStrategyInterface;
@@ -122,6 +127,12 @@ export interface BaseConnectionOptions {
          * - "redis" means cached values will be stored inside redis. You must provide redis connection options.
          */
         readonly type?: "database" | "redis" | "ioredis" | "ioredis/cluster"; // todo: add mongodb and other cache providers as well in the future
+
+        /**
+         * Configurable table name for "database" type cache.
+         * Default value is "query-result-cache"
+         */
+        readonly tableName?: string;
 
         /**
          * Used to provide redis connection options.

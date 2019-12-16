@@ -18,6 +18,7 @@ import {TableColumn} from "../../schema-builder/table/TableColumn";
 import {SqlServerConnectionCredentialsOptions} from "./SqlServerConnectionCredentialsOptions";
 import {EntityMetadata} from "../../metadata/EntityMetadata";
 import {OrmUtils} from "../../util/OrmUtils";
+import {ApplyValueTransformers} from "../../util/ApplyValueTransformers";
 
 /**
  * Organizes communication with SQL Server DBMS.
@@ -174,6 +175,12 @@ export class SqlServerDriver implements Driver {
         cacheDuration: "int",
         cacheQuery: "nvarchar(MAX)" as any,
         cacheResult: "nvarchar(MAX)" as any,
+        metadataType: "varchar",
+        metadataDatabase: "varchar",
+        metadataSchema: "varchar",
+        metadataTable: "varchar",
+        metadataName: "varchar",
+        metadataValue: "nvarchar(MAX)" as any,
     };
 
     /**
@@ -359,7 +366,7 @@ export class SqlServerDriver implements Driver {
      */
     preparePersistentValue(value: any, columnMetadata: ColumnMetadata): any {
         if (columnMetadata.transformer)
-            value = columnMetadata.transformer.to(value);
+            value = ApplyValueTransformers.transformTo(columnMetadata.transformer, value);
 
         if (value === null || value === undefined)
             return value;
@@ -401,7 +408,7 @@ export class SqlServerDriver implements Driver {
      */
     prepareHydratedValue(value: any, columnMetadata: ColumnMetadata): any {
         if (value === null || value === undefined)
-            return columnMetadata.transformer ? columnMetadata.transformer.from(value) : value;
+            return columnMetadata.transformer ? ApplyValueTransformers.transformFrom(columnMetadata.transformer, value) : value;
 
         if (columnMetadata.type === Boolean) {
             value = value ? true : false;
@@ -431,7 +438,7 @@ export class SqlServerDriver implements Driver {
         }
 
         if (columnMetadata.transformer)
-            value = columnMetadata.transformer.from(value);
+            value = ApplyValueTransformers.transformFrom(columnMetadata.transformer, value);
 
         return value;
     }
@@ -716,7 +723,7 @@ export class SqlServerDriver implements Driver {
      */
     protected createPool(options: SqlServerConnectionOptions, credentials: SqlServerConnectionCredentialsOptions): Promise<any> {
 
-        credentials = Object.assign(credentials, DriverUtils.buildDriverOptions(credentials)); // todo: do it better way
+        credentials = Object.assign({}, credentials, DriverUtils.buildDriverOptions(credentials)); // todo: do it better way
 
         // build connection options for the driver
         const connectionOptions = Object.assign({}, {
@@ -744,11 +751,13 @@ export class SqlServerDriver implements Driver {
             const pool = new this.mssql.ConnectionPool(connectionOptions);
 
             const { logger } = this.connection;
+
+            const poolErrorHandler = (options.pool && options.pool.errorHandler) || ((error: any) => logger.log("warn", `MSSQL pool raised an error. ${error}`));
             /*
               Attaching an error handler to pool errors is essential, as, otherwise, errors raised will go unhandled and
               cause the hosting app to crash.
              */
-            pool.on("error", (error: any) => logger.log("warn", `MSSQL pool raised an error. ${error}`));
+            pool.on("error", poolErrorHandler);
 
             const connection = pool.connect((err: any) => {
                 if (err) return fail(err);

@@ -17,6 +17,7 @@ import {OracleConnectionCredentialsOptions} from "./OracleConnectionCredentialsO
 import {DriverUtils} from "../DriverUtils";
 import {EntityMetadata} from "../../metadata/EntityMetadata";
 import {OrmUtils} from "../../util/OrmUtils";
+import {ApplyValueTransformers} from "../../util/ApplyValueTransformers";
 
 /**
  * Organizes communication with Oracle RDBMS.
@@ -165,6 +166,12 @@ export class OracleDriver implements Driver {
         cacheDuration: "number",
         cacheQuery: "clob",
         cacheResult: "clob",
+        metadataType: "varchar2",
+        metadataDatabase: "varchar2",
+        metadataSchema: "varchar2",
+        metadataTable: "varchar2",
+        metadataName: "varchar2",
+        metadataValue: "clob",
     };
 
     /**
@@ -346,7 +353,7 @@ export class OracleDriver implements Driver {
      */
     preparePersistentValue(value: any, columnMetadata: ColumnMetadata): any {
         if (columnMetadata.transformer)
-            value = columnMetadata.transformer.to(value);
+            value = ApplyValueTransformers.transformTo(columnMetadata.transformer, value);
 
         if (value === null || value === undefined)
             return value;
@@ -380,7 +387,7 @@ export class OracleDriver implements Driver {
      */
     prepareHydratedValue(value: any, columnMetadata: ColumnMetadata): any {
         if (value === null || value === undefined)
-            return columnMetadata.transformer ? columnMetadata.transformer.from(value) : value;
+            return columnMetadata.transformer ? ApplyValueTransformers.transformFrom(columnMetadata.transformer, value) : value;
 
         if (columnMetadata.type === Boolean) {
             value = !!value;
@@ -408,7 +415,7 @@ export class OracleDriver implements Driver {
         }
 
         if (columnMetadata.transformer)
-            value = columnMetadata.transformer.from(value);
+            value = ApplyValueTransformers.transformFrom(columnMetadata.transformer, value);
 
         return value;
     }
@@ -673,7 +680,7 @@ export class OracleDriver implements Driver {
      */
     protected async createPool(options: OracleConnectionOptions, credentials: OracleConnectionCredentialsOptions): Promise<any> {
 
-        credentials = Object.assign(credentials, DriverUtils.buildDriverOptions(credentials)); // todo: do it better way
+        credentials = Object.assign({}, credentials, DriverUtils.buildDriverOptions(credentials)); // todo: do it better way
 
         // build connection options for the driver
         const connectionOptions = Object.assign({}, {
