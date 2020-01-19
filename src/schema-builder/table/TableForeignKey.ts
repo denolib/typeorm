@@ -1,5 +1,5 @@
-import {ForeignKeyMetadata} from "../../metadata/ForeignKeyMetadata";
-import {TableForeignKeyOptions} from "../options/TableForeignKeyOptions";
+import {ForeignKeyMetadata} from "../../metadata/ForeignKeyMetadata.ts";
+import {TableForeignKeyOptions} from "../options/TableForeignKeyOptions.ts";
 
 /**
  * Foreign key from the database stored in this class.

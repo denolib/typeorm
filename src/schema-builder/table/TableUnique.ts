@@ -1,5 +1,5 @@
-import {TableUniqueOptions} from "../options/TableUniqueOptions";
-import {UniqueMetadata} from "../../metadata/UniqueMetadata";
+import {TableUniqueOptions} from "../options/TableUniqueOptions.ts";
+import {UniqueMetadata} from "../../metadata/UniqueMetadata.ts";
 
 /**
  * Database's table unique constraint stored in this class.

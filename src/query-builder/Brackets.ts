@@ -1,4 +1,4 @@
-import {WhereExpression} from "./WhereExpression";
+import {WhereExpression} from "./WhereExpression.ts";
 
 /**
  * Syntax sugar.

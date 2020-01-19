@@ -1,4 +1,4 @@
-import {EventListenerType} from "../metadata/types/EventListenerTypes";
+import {EventListenerType} from "../metadata/types/EventListenerTypes.ts";
 
 /**
  * Arguments for EntityListenerMetadata class.

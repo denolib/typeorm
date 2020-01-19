@@ -1,7 +1,7 @@
-import {Subject} from "../Subject";
-import {OrmUtils} from "../../util/OrmUtils";
-import {ObjectLiteral} from "../../common/ObjectLiteral";
-import {RelationMetadata} from "../../metadata/RelationMetadata";
+import {Subject} from "../Subject.ts";
+import {OrmUtils} from "../../util/OrmUtils.ts";
+import {ObjectLiteral} from "../../common/ObjectLiteral.ts";
+import {RelationMetadata} from "../../metadata/RelationMetadata.ts";
 
 /**
  * Builds operations needs to be executed for one-to-one non-owner relations of the given subjects.

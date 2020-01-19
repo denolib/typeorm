@@ -1,5 +1,5 @@
-import {ColumnOptions, getMetadataArgsStorage} from "../../";
-import {ColumnMetadataArgs} from "../../metadata-args/ColumnMetadataArgs";
+import {ColumnOptions, getMetadataArgsStorage} from "../../index.ts";
+import {ColumnMetadataArgs} from "../../metadata-args/ColumnMetadataArgs.ts";
 
 /**
  * Special type of column that is available only for MongoDB database.

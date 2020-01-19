@@ -1,5 +1,5 @@
-import {getMetadataArgsStorage} from "../";
-import {CheckMetadataArgs} from "../metadata-args/CheckMetadataArgs";
+import {getMetadataArgsStorage} from "../index.ts";
+import {CheckMetadataArgs} from "../metadata-args/CheckMetadataArgs.ts";
 
 /**
  * Creates a database check.

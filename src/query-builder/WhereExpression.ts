@@ -1,5 +1,5 @@
-import {ObjectLiteral} from "../common/ObjectLiteral";
-import {Brackets} from "./Brackets";
+import {ObjectLiteral} from "../common/ObjectLiteral.ts";
+import {Brackets} from "./Brackets.ts";
 
 /**
  * Query Builders can implement this interface to support where expression

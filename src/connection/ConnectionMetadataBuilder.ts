@@ -1,14 +1,14 @@
-import {importClassesFromDirectories} from "../util/DirectoryExportedClassesLoader";
-import {OrmUtils} from "../util/OrmUtils";
-import {getFromContainer} from "../container";
-import {MigrationInterface} from "../migration/MigrationInterface";
-import {getMetadataArgsStorage} from "../index";
-import {EntityMetadataBuilder} from "../metadata-builder/EntityMetadataBuilder";
-import {EntitySchemaTransformer} from "../entity-schema/EntitySchemaTransformer";
-import {Connection} from "./Connection";
-import {EntitySchema} from "../entity-schema/EntitySchema";
-import {EntityMetadata} from "../metadata/EntityMetadata";
-import {EntitySubscriberInterface} from "../subscriber/EntitySubscriberInterface";
+import {importClassesFromDirectories} from "../util/DirectoryExportedClassesLoader.ts";
+import {OrmUtils} from "../util/OrmUtils.ts";
+import {getFromContainer} from "../container.ts";
+import {MigrationInterface} from "../migration/MigrationInterface.ts";
+import {getMetadataArgsStorage} from "../index.ts";
+import {EntityMetadataBuilder} from "../metadata-builder/EntityMetadataBuilder.ts";
+import {EntitySchemaTransformer} from "../entity-schema/EntitySchemaTransformer.ts";
+import {Connection} from "./Connection.ts";
+import {EntitySchema} from "../entity-schema/EntitySchema.ts";
+import {EntityMetadata} from "../metadata/EntityMetadata.ts";
+import {EntitySubscriberInterface} from "../subscriber/EntitySubscriberInterface.ts";
 
 /**
  * Builds migration instances, subscriber instances and entity metadatas for the given classes.

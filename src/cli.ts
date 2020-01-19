@@ -1,20 +1,20 @@
 #!/usr/bin/env node
 import "reflect-metadata";
 import * as yargs from "yargs";
-import {SchemaSyncCommand} from "./commands/SchemaSyncCommand";
-import {SchemaDropCommand} from "./commands/SchemaDropCommand";
-import {QueryCommand} from "./commands/QueryCommand";
-import {EntityCreateCommand} from "./commands/EntityCreateCommand";
-import {MigrationCreateCommand} from "./commands/MigrationCreateCommand";
-import {MigrationRunCommand} from "./commands/MigrationRunCommand";
-import {MigrationRevertCommand} from "./commands/MigrationRevertCommand";
-import {MigrationShowCommand} from "./commands/MigrationShowCommand";
-import {SubscriberCreateCommand} from "./commands/SubscriberCreateCommand";
-import {SchemaLogCommand} from "./commands/SchemaLogCommand";
-import {MigrationGenerateCommand} from "./commands/MigrationGenerateCommand";
-import {VersionCommand} from "./commands/VersionCommand";
-import {InitCommand} from "./commands/InitCommand";
-import {CacheClearCommand} from "./commands/CacheClearCommand";
+import {SchemaSyncCommand} from "./commands/SchemaSyncCommand.ts";
+import {SchemaDropCommand} from "./commands/SchemaDropCommand.ts";
+import {QueryCommand} from "./commands/QueryCommand.ts";
+import {EntityCreateCommand} from "./commands/EntityCreateCommand.ts";
+import {MigrationCreateCommand} from "./commands/MigrationCreateCommand.ts";
+import {MigrationRunCommand} from "./commands/MigrationRunCommand.ts";
+import {MigrationRevertCommand} from "./commands/MigrationRevertCommand.ts";
+import {MigrationShowCommand} from "./commands/MigrationShowCommand.ts";
+import {SubscriberCreateCommand} from "./commands/SubscriberCreateCommand.ts";
+import {SchemaLogCommand} from "./commands/SchemaLogCommand.ts";
+import {MigrationGenerateCommand} from "./commands/MigrationGenerateCommand.ts";
+import {VersionCommand} from "./commands/VersionCommand.ts";
+import {InitCommand} from "./commands/InitCommand.ts";
+import {CacheClearCommand} from "./commands/CacheClearCommand.ts";
 
 yargs
     .usage("Usage: $0 <command> [options]")

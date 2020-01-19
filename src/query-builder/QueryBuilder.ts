@@ -1,24 +1,24 @@
-import {ObjectLiteral} from "../common/ObjectLiteral";
-import {QueryRunner} from "../query-runner/QueryRunner";
-import {Connection} from "../connection/Connection";
-import {QueryExpressionMap} from "./QueryExpressionMap";
-import {SelectQueryBuilder} from "./SelectQueryBuilder";
-import {UpdateQueryBuilder} from "./UpdateQueryBuilder";
-import {DeleteQueryBuilder} from "./DeleteQueryBuilder";
-import {InsertQueryBuilder} from "./InsertQueryBuilder";
-import {RelationQueryBuilder} from "./RelationQueryBuilder";
-import {ObjectType} from "../common/ObjectType";
-import {Alias} from "./Alias";
-import {Brackets} from "./Brackets";
-import {QueryDeepPartialEntity} from "./QueryPartialEntity";
-import {EntityMetadata} from "../metadata/EntityMetadata";
-import {ColumnMetadata} from "../metadata/ColumnMetadata";
-import {SqljsDriver} from "../driver/sqljs/SqljsDriver";
-import {SqlServerDriver} from "../driver/sqlserver/SqlServerDriver";
-import {OracleDriver} from "../driver/oracle/OracleDriver";
-import {EntitySchema} from "../";
-import {FindOperator} from "../find-options/FindOperator";
-import {In} from "../find-options/operator/In";
+import {ObjectLiteral} from "../common/ObjectLiteral.ts";
+import {QueryRunner} from "../query-runner/QueryRunner.ts";
+import {Connection} from "../connection/Connection.ts";
+import {QueryExpressionMap} from "./QueryExpressionMap.ts";
+import {SelectQueryBuilder} from "./SelectQueryBuilder.ts";
+import {UpdateQueryBuilder} from "./UpdateQueryBuilder.ts";
+import {DeleteQueryBuilder} from "./DeleteQueryBuilder.ts";
+import {InsertQueryBuilder} from "./InsertQueryBuilder.ts";
+import {RelationQueryBuilder} from "./RelationQueryBuilder.ts";
+import {ObjectType} from "../common/ObjectType.ts";
+import {Alias} from "./Alias.ts";
+import {Brackets} from "./Brackets.ts";
+import {QueryDeepPartialEntity} from "./QueryPartialEntity.ts";
+import {EntityMetadata} from "../metadata/EntityMetadata.ts";
+import {ColumnMetadata} from "../metadata/ColumnMetadata.ts";
+import {EntitySchema} from "../index.ts";
+import {FindOperator} from "../find-options/FindOperator.ts";
+import {In} from "../find-options/operator/In.ts";
+import { createRequire } from "../../vendor/https/deno.land/std/node/module.ts";
+
+const require = createRequire(import.meta.url);
 
 // todo: completely cover query builder with tests
 // todo: entityOrProperty can be target name. implement proper behaviour if it is.
@@ -151,7 +151,7 @@ export abstract class QueryBuilder<Entity> {
         }
 
         // loading it dynamically because of circular issue
-        const SelectQueryBuilderCls = require("./SelectQueryBuilder").SelectQueryBuilder;
+        const SelectQueryBuilderCls = require("./SelectQueryBuilder.ts").SelectQueryBuilder;
         if (this instanceof SelectQueryBuilderCls)
             return this as any;
 
@@ -165,7 +165,7 @@ export abstract class QueryBuilder<Entity> {
         this.expressionMap.queryType = "insert";
 
         // loading it dynamically because of circular issue
-        const InsertQueryBuilderCls = require("./InsertQueryBuilder").InsertQueryBuilder;
+        const InsertQueryBuilderCls = require("./InsertQueryBuilder.ts").InsertQueryBuilder;
         if (this instanceof InsertQueryBuilderCls)
             return this as any;
 
@@ -218,7 +218,7 @@ export abstract class QueryBuilder<Entity> {
         this.expressionMap.valuesSet = updateSet;
 
         // loading it dynamically because of circular issue
-        const UpdateQueryBuilderCls = require("./UpdateQueryBuilder").UpdateQueryBuilder;
+        const UpdateQueryBuilderCls = require("./UpdateQueryBuilder.ts").UpdateQueryBuilder;
         if (this instanceof UpdateQueryBuilderCls)
             return this as any;
 
@@ -232,7 +232,7 @@ export abstract class QueryBuilder<Entity> {
         this.expressionMap.queryType = "delete";
 
         // loading it dynamically because of circular issue
-        const DeleteQueryBuilderCls = require("./DeleteQueryBuilder").DeleteQueryBuilder;
+        const DeleteQueryBuilderCls = require("./DeleteQueryBuilder.ts").DeleteQueryBuilder;
         if (this instanceof DeleteQueryBuilderCls)
             return this as any;
 
@@ -265,7 +265,7 @@ export abstract class QueryBuilder<Entity> {
         }
 
         // loading it dynamically because of circular issue
-        const RelationQueryBuilderCls = require("./RelationQueryBuilder").RelationQueryBuilder;
+      const RelationQueryBuilderCls = require("./RelationQueryBuilder.ts").RelationQueryBuilder;
         if (this instanceof RelationQueryBuilderCls)
             return this as any;
 
@@ -406,9 +406,6 @@ export abstract class QueryBuilder<Entity> {
         } finally {
             if (queryRunner !== this.queryRunner) { // means we created our own query runner
                 await queryRunner.release();
-            }
-            if (this.connection.driver instanceof SqljsDriver) {
-                await this.connection.driver.autoSave();
             }
         }
     }
@@ -617,24 +614,9 @@ export abstract class QueryBuilder<Entity> {
         if (columns.length) {
             let columnsExpression = columns.map(column => {
                 const name = this.escape(column.databaseName);
-                if (driver instanceof SqlServerDriver) {
-                    if (this.expressionMap.queryType === "insert" || this.expressionMap.queryType === "update") {
-                        return "INSERTED." + name;
-                    } else {
-                        return this.escape(this.getMainTableName()) + "." + name;
-                    }
-                } else {
-                    return name;
-                }
+                return name;
             }).join(", ");
 
-            if (driver instanceof OracleDriver) {
-                columnsExpression += " INTO " + columns.map(column => {
-                    const parameterName = "output_" + column.databaseName;
-                    this.expressionMap.nativeParameters[parameterName] = { type: driver.columnTypeToNativeParameter(column.type), dir: driver.oracle.BIND_OUT };
-                    return this.connection.driver.createParameter(parameterName, Object.keys(this.expressionMap.nativeParameters).length);
-                }).join(", ");
-            }
             return columnsExpression;
 
         } else if (typeof this.expressionMap.returning === "string") {
@@ -816,3 +798,4 @@ export abstract class QueryBuilder<Entity> {
     }
 
 }
+

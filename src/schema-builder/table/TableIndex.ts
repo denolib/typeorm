@@ -1,5 +1,5 @@
-import {IndexMetadata} from "../../metadata/IndexMetadata";
-import {TableIndexOptions} from "../options/TableIndexOptions";
+import {IndexMetadata} from "../../metadata/IndexMetadata.ts";
+import {TableIndexOptions} from "../options/TableIndexOptions.ts";
 
 /**
  * Database's table index stored in this class.

@@ -1,6 +1,6 @@
-import {getMetadataArgsStorage} from "../../";
-import {TreeMetadataArgs} from "../../metadata-args/TreeMetadataArgs";
-import {TreeType} from "../../metadata/types/TreeTypes";
+import {getMetadataArgsStorage} from "../../index.ts";
+import {TreeMetadataArgs} from "../../metadata-args/TreeMetadataArgs.ts";
+import {TreeType} from "../../metadata/types/TreeTypes.ts";
 
 /**
  * Marks entity to work like a tree.

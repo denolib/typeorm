@@ -1,16 +1,16 @@
-import {ColumnType} from "../driver/types/ColumnTypes";
-import {EntityMetadata} from "./EntityMetadata";
-import {EmbeddedMetadata} from "./EmbeddedMetadata";
-import {RelationMetadata} from "./RelationMetadata";
-import {ObjectLiteral} from "../common/ObjectLiteral";
-import {ColumnMetadataArgs} from "../metadata-args/ColumnMetadataArgs";
-import {Connection} from "../connection/Connection";
-import {OrmUtils} from "../util/OrmUtils";
-import {ValueTransformer} from "../decorator/options/ValueTransformer";
-import {MongoDriver} from "../driver/mongodb/MongoDriver";
-import {PromiseUtils} from "../util/PromiseUtils";
-import {FindOperator} from "../find-options/FindOperator";
-import {ApplyValueTransformers} from "../util/ApplyValueTransformers";
+import {ColumnType} from "../driver/types/ColumnTypes.ts";
+import {EntityMetadata} from "./EntityMetadata.ts";
+import {EmbeddedMetadata} from "./EmbeddedMetadata.ts";
+import {RelationMetadata} from "./RelationMetadata.ts";
+import {ObjectLiteral} from "../common/ObjectLiteral.ts";
+import {ColumnMetadataArgs} from "../metadata-args/ColumnMetadataArgs.ts";
+import {Connection} from "../connection/Connection.ts";
+import {OrmUtils} from "../util/OrmUtils.ts";
+import {ValueTransformer} from "../decorator/options/ValueTransformer.ts";
+import {MongoDriver} from "../driver/mongodb/MongoDriver.ts";
+import {PromiseUtils} from "../util/PromiseUtils.ts";
+import {FindOperator} from "../find-options/FindOperator.ts";
+import {ApplyValueTransformers} from "../util/ApplyValueTransformers.ts";
 
 /**
  * This metadata contains all information about entity's column.

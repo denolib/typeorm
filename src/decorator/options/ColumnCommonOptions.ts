@@ -1,4 +1,4 @@
-import {ValueTransformer} from "./ValueTransformer";
+import {ValueTransformer} from "./ValueTransformer.ts";
 
 /**
  * Column options specific to all column types.

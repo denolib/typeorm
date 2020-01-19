@@ -1,6 +1,6 @@
-import {createConnection} from "../index";
-import {ConnectionOptionsReader} from "../connection/ConnectionOptionsReader";
-import {Connection} from "../connection/Connection";
+import {createConnection} from "../index.ts";
+import {ConnectionOptionsReader} from "../connection/ConnectionOptionsReader.ts";
+import {Connection} from "../connection/Connection.ts";
 import * as process from "process";
 import * as yargs from "yargs";
 const chalk = require("chalk");

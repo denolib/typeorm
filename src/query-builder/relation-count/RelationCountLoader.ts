@@ -1,8 +1,8 @@
-import {ColumnMetadata} from "../../metadata/ColumnMetadata";
-import {Connection} from "../../connection/Connection";
-import {RelationCountAttribute} from "./RelationCountAttribute";
-import {RelationCountLoadResult} from "./RelationCountLoadResult";
-import {QueryRunner} from "../../query-runner/QueryRunner";
+import {ColumnMetadata} from "../../metadata/ColumnMetadata.ts";
+import {Connection} from "../../connection/Connection.ts";
+import {RelationCountAttribute} from "./RelationCountAttribute.ts";
+import {RelationCountLoadResult} from "./RelationCountLoadResult.ts";
+import {QueryRunner} from "../../query-runner/QueryRunner.ts";
 
 export class RelationCountLoader {
 

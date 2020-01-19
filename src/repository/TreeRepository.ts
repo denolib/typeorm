@@ -1,7 +1,7 @@
-import {Repository} from "./Repository";
-import {SelectQueryBuilder} from "../query-builder/SelectQueryBuilder";
-import {ObjectLiteral} from "../common/ObjectLiteral";
-import {AbstractSqliteDriver} from "../driver/sqlite-abstract/AbstractSqliteDriver";
+import {Repository} from "./Repository.ts";
+import {SelectQueryBuilder} from "../query-builder/SelectQueryBuilder.ts";
+import {ObjectLiteral} from "../common/ObjectLiteral.ts";
+import {AbstractSqliteDriver} from "../driver/sqlite-abstract/AbstractSqliteDriver.ts";
 
 /**
  * Repository with additional functions to work with trees.

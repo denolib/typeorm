@@ -1,10 +1,10 @@
-import {TreeRepository} from "./TreeRepository";
-import {EntityMetadata} from "../metadata/EntityMetadata";
-import {Repository} from "./Repository";
-import {MongoDriver} from "../driver/mongodb/MongoDriver";
-import {MongoRepository} from "./MongoRepository";
-import {QueryRunner} from "../query-runner/QueryRunner";
-import {EntityManager} from "../entity-manager/EntityManager";
+import {TreeRepository} from "./TreeRepository.ts";
+import {EntityMetadata} from "../metadata/EntityMetadata.ts";
+import {Repository} from "./Repository.ts";
+import {MongoDriver} from "../driver/mongodb/MongoDriver.ts";
+import {MongoRepository} from "./MongoRepository.ts";
+import {QueryRunner} from "../query-runner/QueryRunner.ts";
+import {EntityManager} from "../entity-manager/EntityManager.ts";
 
 /**
  * Factory used to create different types of repositories.

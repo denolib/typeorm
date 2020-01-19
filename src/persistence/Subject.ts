@@ -1,9 +1,9 @@
-import {ObjectLiteral} from "../common/ObjectLiteral";
-import {EntityMetadata} from "../metadata/EntityMetadata";
-import {SubjectChangeMap} from "./SubjectChangeMap";
-import {OrmUtils} from "../util/OrmUtils";
-import {RelationMetadata} from "../metadata/RelationMetadata";
-import {ColumnMetadata} from "../metadata/ColumnMetadata";
+import {ObjectLiteral} from "../common/ObjectLiteral.ts";
+import {EntityMetadata} from "../metadata/EntityMetadata.ts";
+import {SubjectChangeMap} from "./SubjectChangeMap.ts";
+import {OrmUtils} from "../util/OrmUtils.ts";
+import {RelationMetadata} from "../metadata/RelationMetadata.ts";
+import {ColumnMetadata} from "../metadata/ColumnMetadata.ts";
 
 /**
  * Subject is a subject of persistence.

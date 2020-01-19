@@ -1,6 +1,6 @@
-import {TableColumnOptions} from "../options/TableColumnOptions";
-import {ColumnMetadata} from "../../metadata/ColumnMetadata";
-import {Driver} from "../../driver/Driver";
+import {TableColumnOptions} from "../options/TableColumnOptions.ts";
+import {ColumnMetadata} from "../../metadata/ColumnMetadata.ts";
+import {Driver} from "../../driver/Driver.ts";
 
 export class TableUtils {
 
@@ -27,7 +27,7 @@ export class TableUtils {
             isPrimary: columnMetadata.isPrimary,
             isUnique: driver.normalizeIsUnique(columnMetadata),
             isArray: columnMetadata.isArray || false,
-            enum: columnMetadata.enum ? columnMetadata.enum.map(val => val + "") : columnMetadata.enum,
+            enum: columnMetadata.enum ? columnMetadata.enum.map(val => val + "") : columnMetadata.enum as undefined,
             enumName: columnMetadata.enumName,
             spatialFeatureType: columnMetadata.spatialFeatureType,
             srid: columnMetadata.srid

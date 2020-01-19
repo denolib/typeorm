@@ -1,10 +1,10 @@
-import {AbstractSqliteDriver} from "../sqlite-abstract/AbstractSqliteDriver";
-import {ExpoConnectionOptions} from "./ExpoConnectionOptions";
-import {ExpoQueryRunner} from "./ExpoQueryRunner";
-import {QueryRunner} from "../../query-runner/QueryRunner";
-import {Connection} from "../../connection/Connection";
-import {DriverOptionNotSetError} from "../../error/DriverOptionNotSetError";
-import {DriverPackageNotInstalledError} from "../../error/DriverPackageNotInstalledError";
+import {AbstractSqliteDriver} from "../sqlite-abstract/AbstractSqliteDriver.ts";
+import {ExpoConnectionOptions} from "./ExpoConnectionOptions.ts";
+import {ExpoQueryRunner} from "./ExpoQueryRunner.ts";
+import {QueryRunner} from "../../query-runner/QueryRunner.ts";
+import {Connection} from "../../connection/Connection.ts";
+import {DriverOptionNotSetError} from "../../error/DriverOptionNotSetError.ts";
+import {DriverPackageNotInstalledError} from "../../error/DriverPackageNotInstalledError.ts";
 
 // needed for typescript compiler
 interface Window {

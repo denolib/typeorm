@@ -1,6 +1,6 @@
-import {DeferrableType} from "../../metadata/types/DeferrableType";
-import {OnDeleteType} from "../../metadata/types/OnDeleteType";
-import {OnUpdateType} from "../../metadata/types/OnUpdateType";
+import {DeferrableType} from "../../metadata/types/DeferrableType.ts";
+import {OnDeleteType} from "../../metadata/types/OnDeleteType.ts";
+import {OnUpdateType} from "../../metadata/types/OnUpdateType.ts";
 
 /**
  * Describes all relation's options.

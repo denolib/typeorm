@@ -1,4 +1,4 @@
-import {PrimaryGeneratedColumnType} from "../../driver/types/ColumnTypes";
+import {PrimaryGeneratedColumnType} from "../../driver/types/ColumnTypes.ts";
 
 /**
  * Describes all options for PrimaryGeneratedColumn decorator with numeric generation strategy.

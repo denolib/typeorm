@@ -1,9 +1,9 @@
-import {Logger} from "./Logger";
-import {LoggerOptions} from "./LoggerOptions";
-import {SimpleConsoleLogger} from "./SimpleConsoleLogger";
-import {AdvancedConsoleLogger} from "./AdvancedConsoleLogger";
-import {FileLogger} from "./FileLogger";
-import {DebugLogger} from "./DebugLogger";
+import {Logger} from "./Logger.ts";
+import {LoggerOptions} from "./LoggerOptions.ts";
+import {SimpleConsoleLogger} from "./SimpleConsoleLogger.ts";
+import {AdvancedConsoleLogger} from "./AdvancedConsoleLogger.ts";
+import {FileLogger} from "./FileLogger.ts";
+import {DebugLogger} from "./DebugLogger.ts";
 
 /**
  * Helps to create logger instances.

@@ -1,4 +1,4 @@
-import {RelationCountAttribute} from "./RelationCountAttribute";
+import {RelationCountAttribute} from "./RelationCountAttribute.ts";
 
 export interface RelationCountLoadResult {
     relationCountAttribute: RelationCountAttribute;

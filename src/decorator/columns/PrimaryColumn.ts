@@ -1,8 +1,8 @@
-import {ColumnOptions, ColumnType, getMetadataArgsStorage} from "../../";
-import {ColumnTypeUndefinedError} from "../../error/ColumnTypeUndefinedError";
-import {PrimaryColumnCannotBeNullableError} from "../../error/PrimaryColumnCannotBeNullableError";
-import {ColumnMetadataArgs} from "../../metadata-args/ColumnMetadataArgs";
-import { GeneratedMetadataArgs } from "../../metadata-args/GeneratedMetadataArgs";
+import {ColumnOptions, ColumnType, getMetadataArgsStorage} from "../../index.ts";
+import {ColumnTypeUndefinedError} from "../../error/ColumnTypeUndefinedError.ts";
+import {PrimaryColumnCannotBeNullableError} from "../../error/PrimaryColumnCannotBeNullableError.ts";
+import {ColumnMetadataArgs} from "../../metadata-args/ColumnMetadataArgs.ts";
+import { GeneratedMetadataArgs } from "../../metadata-args/GeneratedMetadataArgs.ts";
 
 /**
  * Column decorator is used to mark a specific class property as a table column.

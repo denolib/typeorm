@@ -1,4 +1,4 @@
-import {EntitySchema} from "../index";
+import {EntitySchema} from "../index.ts";
 
 /**
  * Thrown when repository for the given class is not found.

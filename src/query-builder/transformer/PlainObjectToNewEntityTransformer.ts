@@ -1,5 +1,5 @@
-import {EntityMetadata} from "../../metadata/EntityMetadata";
-import {ObjectLiteral} from "../../common/ObjectLiteral";
+import {EntityMetadata} from "../../metadata/EntityMetadata.ts";
+import {ObjectLiteral} from "../../common/ObjectLiteral.ts";
 
 /**
  * Transforms plain old javascript object

@@ -1,9 +1,9 @@
-import {ColumnMetadata} from "./ColumnMetadata";
-import {EntityMetadata} from "./EntityMetadata";
-import {NamingStrategyInterface} from "../naming-strategy/NamingStrategyInterface";
-import {DeferrableType} from "./types/DeferrableType";
-import {OnDeleteType} from "./types/OnDeleteType";
-import {OnUpdateType} from "./types/OnUpdateType";
+import {ColumnMetadata} from "./ColumnMetadata.ts";
+import {EntityMetadata} from "./EntityMetadata.ts";
+import {NamingStrategyInterface} from "../naming-strategy/NamingStrategyInterface.ts";
+import {DeferrableType} from "./types/DeferrableType.ts";
+import {OnDeleteType} from "./types/OnDeleteType.ts";
+import {OnUpdateType} from "./types/OnUpdateType.ts";
 
 /**
  * Contains all information about entity's foreign key.

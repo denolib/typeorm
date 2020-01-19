@@ -1,4 +1,4 @@
-import {QueryRunner} from "../query-runner/QueryRunner";
+import {QueryRunner} from "../query-runner/QueryRunner.ts";
 
 /**
  * Performs logging of the events in TypeORM.

@@ -1,5 +1,5 @@
-import {BaseConnectionOptions} from "../../connection/BaseConnectionOptions";
-import {MysqlConnectionCredentialsOptions} from "./MysqlConnectionCredentialsOptions";
+import {BaseConnectionOptions} from "../../connection/BaseConnectionOptions.ts";
+import {MysqlConnectionCredentialsOptions} from "./MysqlConnectionCredentialsOptions.ts";
 
 /**
  * MySQL specific connection options.

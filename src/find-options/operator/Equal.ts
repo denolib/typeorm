@@ -1,4 +1,4 @@
-import {FindOperator} from "../FindOperator";
+import {FindOperator} from "../FindOperator.ts";
 
 /**
  * Find Options Operator.

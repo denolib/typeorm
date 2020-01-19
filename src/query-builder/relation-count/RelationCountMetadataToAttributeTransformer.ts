@@ -1,6 +1,6 @@
-import {QueryExpressionMap} from "../QueryExpressionMap";
-import {RelationCountMetadata} from "../../metadata/RelationCountMetadata";
-import {RelationCountAttribute} from "./RelationCountAttribute";
+import {QueryExpressionMap} from "../QueryExpressionMap.ts";
+import {RelationCountMetadata} from "../../metadata/RelationCountMetadata.ts";
+import {RelationCountAttribute} from "./RelationCountAttribute.ts";
 
 export class RelationCountMetadataToAttributeTransformer {
 

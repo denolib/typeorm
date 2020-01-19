@@ -1,5 +1,5 @@
-import {getMetadataArgsStorage, ObjectType, RelationOptions} from "../../";
-import {RelationMetadataArgs} from "../../metadata-args/RelationMetadataArgs";
+import {getMetadataArgsStorage, ObjectType, RelationOptions} from "../../index.ts";
+import {RelationMetadataArgs} from "../../metadata-args/RelationMetadataArgs.ts";
 
 /**
  * One-to-one relation allows to create direct relation between two entities. Entity1 have only one Entity2.

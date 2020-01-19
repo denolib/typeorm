@@ -1,4 +1,4 @@
-import { ColumnMetadata } from "../metadata/ColumnMetadata";
+import { ColumnMetadata } from "../metadata/ColumnMetadata.ts";
 
 /**
  * Provides utilities to transform hydrated and persisted data.

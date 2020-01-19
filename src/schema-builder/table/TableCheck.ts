@@ -1,5 +1,5 @@
-import {TableCheckOptions} from "../options/TableCheckOptions";
-import {CheckMetadata} from "../../metadata/CheckMetadata";
+import {TableCheckOptions} from "../options/TableCheckOptions.ts";
+import {CheckMetadata} from "../../metadata/CheckMetadata.ts";
 
 /**
  * Database's table check constraint stored in this class.

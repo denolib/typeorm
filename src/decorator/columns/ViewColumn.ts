@@ -1,5 +1,5 @@
-import {getMetadataArgsStorage} from "../../";
-import {ColumnMetadataArgs} from "../../metadata-args/ColumnMetadataArgs";
+import {getMetadataArgsStorage} from "../../index.ts";
+import {ColumnMetadataArgs} from "../../metadata-args/ColumnMetadataArgs.ts";
 
 /**
  * ViewColumn decorator is used to mark a specific class property as a view column.

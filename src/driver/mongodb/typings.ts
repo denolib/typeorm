@@ -1,4 +1,4 @@
-import { EventEmitter, Readable, Writable } from "../../platform/PlatformTools";
+import { EventEmitter, Readable, Writable } from "../../platform/PlatformTools.ts";
 
 /**
  * Creates a new MongoClient instance.
@@ -190,7 +190,7 @@ export interface MongoClientOptions {
     /**
      * SSL Certificate store binary buffer.
      */
-    sslCA?: Buffer;
+    sslCA?: any; // TODO(uki00a) implement `Buffer`
 
     /**
      * Uri decode the user name and password for authentication.
@@ -437,22 +437,22 @@ export interface ServerOptions {
     /**
      * Array of valid certificates either as Buffers or Strings (needs to have a mongod server with ssl support, 2.4 or higher).
      */
-    sslCA?: Array<Buffer | string>;
+    sslCA?: Array<string>;
 
     /**
      * String or buffer containing the certificate we wish to present (needs to have a mongod server with ssl support, 2.4 or higher).
      */
-    sslCert?: Buffer | string;
+    sslCert?: string;
 
     /**
      * String or buffer containing the certificate private key we wish to present (needs to have a mongod server with ssl support, 2.4 or higher).
      */
-    sslKey?: Buffer | string;
+    sslKey?: string;
 
     /**
      * String or buffer containing the certificate password (needs to have a mongod server with ssl support, 2.4 or higher).
      */
-    sslPass?: Buffer | string;
+    sslPass?: string;
 
     /**
      * Socket options.
@@ -525,22 +525,22 @@ export interface ReplSetOptions {
     /**
      * Array of valid certificates either as Buffers or Strings (needs to have a mongod server with ssl support, 2.4 or higher).
      */
-    sslCA?: Array<Buffer | string>;
+    sslCA?: Array<string>;
 
     /**
      * String or buffer containing the certificate we wish to present (needs to have a mongod server with ssl support, 2.4 or higher).
      */
-    sslCert?: Buffer | string;
+    sslCert?: string;
 
     /**
      * String or buffer containing the certificate private key we wish to present (needs to have a mongod server with ssl support, 2.4 or higher).
      */
-    sslKey?: Buffer | string;
+    sslKey?: string;
 
     /**
      * String or buffer containing the certificate private key we wish to present (needs to have a mongod server with ssl support, 2.4 or higher).
      */
-    sslPass?: Buffer | string;
+    sslPass?: string;
 
     /**
      * Socket options.
@@ -588,22 +588,22 @@ export interface MongosOptions {
     /**
      * Array of valid certificates either as Buffers or Strings (needs to have a mongod server with ssl support, 2.4 or higher).
      */
-    sslCA?: Array<Buffer | string>;
+    sslCA?: Array<string>;
 
     /**
      * String or buffer containing the certificate we wish to present (needs to have a mongod server with ssl support, 2.4 or higher).
      */
-    sslCert?: Buffer | string;
+    sslCert?: string;
 
     /**
      * String or buffer containing the certificate private key we wish to present (needs to have a mongod server with ssl support, 2.4 or higher).
      */
-    sslKey?: Buffer | string;
+    sslKey?: string;
 
     /**
      * String or buffer containing the certificate password (needs to have a mongod server with ssl support, 2.4 or higher).
      */
-    sslPass?: Buffer | string;
+    sslPass?: string;
 
     /**
      * Socket options.
@@ -1942,7 +1942,7 @@ export declare class Binary {
      * @param buffer A buffer object containing the binary data.
      * @param subType The option binary type.
      */
-    constructor(buffer: Buffer, subType?: number);
+    constructor(buffer: any /* Buffer */, subType?: number); // TODO(uki00a) avoid using any
 
     /**
      * Byte Array BSON type.
@@ -1997,7 +1997,7 @@ export declare class Binary {
      * @param position Read from the given position in the Binary.
      * @param length The number of bytes to read.
      */
-    read(position: number, length: number): Buffer;
+    read(position: number, length: number): any; // TODO(uki000a) avoid using any
 
     /**
      * Returns the value of this binary as a string.
@@ -2010,7 +2010,7 @@ export declare class Binary {
      * @param buffer A string or buffer to be written to the Binary BSON object.
      * @param offset Specify the binary of where to write the content.
      */
-    write(buffer: Buffer | string, offset: number): void;
+    write(buffer: string, offset: number): void; // TODO(uki00a) avoid using any
 }
 /**
  * A class representation of the BSON Double type.
@@ -5121,7 +5121,7 @@ export declare class Cursor<T> extends Readable {
      * @param size Optional argument to specify how much data to read.
      * @see http://mongodb.github.io/node-mongodb-native/2.1/api/Cursor.html#read
      */
-    read(size: number): string | Buffer | void;
+    read(size: number): string | void;
 
     /**
      * Set the cursor returnKey.
@@ -5215,7 +5215,7 @@ export declare class Cursor<T> extends Readable {
      * @param stream Chunk of data to unshift onto the read queue.
      * @see http://mongodb.github.io/node-mongodb-native/2.1/api/Cursor.html#unshift
      */
-    unshift(stream: Buffer | string): void;
+    unshift(stream: string): void;
 }
 
 /**
@@ -5689,7 +5689,7 @@ export interface AggregationCursor<T> extends Readable {
      * @param size Optional argument to specify how much data to read.
      * @see http://mongodb.github.io/node-mongodb-native/2.1/api/AggregationCursor.html#read
      */
-    read(size: number): string | Buffer | void;
+    read(size: number): string | void;
 
     /**
      * Add a redact stage to the aggregation pipeline.
@@ -5744,7 +5744,7 @@ export interface AggregationCursor<T> extends Readable {
      * @param stream Chunk of data to unshift onto the read queue.
      * @see http://mongodb.github.io/node-mongodb-native/2.1/api/AggregationCursor.html#unshift
      */
-    unshift(stream: Buffer | string): void;
+    unshift(stream: string): void;
 
     /**
      * Add a unwind stage to the aggregation pipeline.
@@ -5825,7 +5825,7 @@ export interface CommandCursor extends Readable {
      * @param size Optional argument to specify how much data to read.
      * @see http://mongodb.github.io/node-mongodb-native/2.1/api/CommandCursor.html#read
      */
-    read(size: number): string | Buffer | void;
+    read(size: number): string | void;
 
     /**
      * Resets the cursor.
@@ -5862,7 +5862,7 @@ export interface CommandCursor extends Readable {
      * @param stream Chunk of data to unshift onto the read queue.
      * @see http://mongodb.github.io/node-mongodb-native/2.1/api/CommandCursor.html#unshift
      */
-    unshift(stream: Buffer | string): void;
+    unshift(stream: string): void;
 }
 
 /**

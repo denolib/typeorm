@@ -1,10 +1,10 @@
-import { QueryRunner } from "../../query-runner/QueryRunner";
-import { ObjectLiteral } from "../../common/ObjectLiteral";
-import { TableColumn } from "../../schema-builder/table/TableColumn";
-import { Table } from "../../schema-builder/table/Table";
-import { TableForeignKey } from "../../schema-builder/table/TableForeignKey";
-import { TableIndex } from "../../schema-builder/table/TableIndex";
-import {View} from "../../schema-builder/view/View";
+import { QueryRunner } from "../../query-runner/QueryRunner.ts";
+import { ObjectLiteral } from "../../common/ObjectLiteral.ts";
+import { TableColumn } from "../../schema-builder/table/TableColumn.ts";
+import { Table } from "../../schema-builder/table/Table.ts";
+import { TableForeignKey } from "../../schema-builder/table/TableForeignKey.ts";
+import { TableIndex } from "../../schema-builder/table/TableIndex.ts";
+import {View} from "../../schema-builder/view/View.ts";
 import {
     AggregationCursor,
     BulkWriteOpResultObject,
@@ -37,15 +37,15 @@ import {
     ReplaceOneOptions,
     UnorderedBulkOperation,
     UpdateWriteOpResult
-} from "./typings";
-import { Connection } from "../../connection/Connection";
-import { ReadStream } from "../../platform/PlatformTools";
-import { MongoEntityManager } from "../../entity-manager/MongoEntityManager";
-import { SqlInMemory } from "../SqlInMemory";
-import { TableUnique } from "../../schema-builder/table/TableUnique";
-import { Broadcaster } from "../../subscriber/Broadcaster";
-import { TableCheck } from "../../schema-builder/table/TableCheck";
-import { TableExclusion } from "../../schema-builder/table/TableExclusion";
+} from "./typings.ts";
+import { Connection } from "../../connection/Connection.ts";
+import { ReadStream } from "../../platform/PlatformTools.ts";
+import { MongoEntityManager } from "../../entity-manager/MongoEntityManager.ts";
+import { SqlInMemory } from "../SqlInMemory.ts";
+import { TableUnique } from "../../schema-builder/table/TableUnique.ts";
+import { Broadcaster } from "../../subscriber/Broadcaster.ts";
+import { TableCheck } from "../../schema-builder/table/TableCheck.ts";
+import { TableExclusion } from "../../schema-builder/table/TableExclusion.ts";
 
 /**
  * Runs queries on a single MongoDB connection.

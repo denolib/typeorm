@@ -1,12 +1,11 @@
-import {MysqlDriver} from "../driver/mysql/MysqlDriver";
-import {ColumnMetadata} from "../metadata/ColumnMetadata";
-import {Connection} from "../connection/Connection";
-import {EntityMetadata} from "../metadata/EntityMetadata";
-import {ForeignKeyMetadata} from "../metadata/ForeignKeyMetadata";
-import {IndexMetadata} from "../metadata/IndexMetadata";
-import {JoinTableMetadataArgs} from "../metadata-args/JoinTableMetadataArgs";
-import {RelationMetadata} from "../metadata/RelationMetadata";
-import {AuroraDataApiDriver} from "../driver/aurora-data-api/AuroraDataApiDriver";
+import {MysqlDriver} from "../driver/mysql/MysqlDriver.ts";
+import {ColumnMetadata} from "../metadata/ColumnMetadata.ts";
+import {Connection} from "../connection/Connection.ts";
+import {EntityMetadata} from "../metadata/EntityMetadata.ts";
+import {ForeignKeyMetadata} from "../metadata/ForeignKeyMetadata.ts";
+import {IndexMetadata} from "../metadata/IndexMetadata.ts";
+import {JoinTableMetadataArgs} from "../metadata-args/JoinTableMetadataArgs.ts";
+import {RelationMetadata} from "../metadata/RelationMetadata.ts";
 
 /**
  * Creates EntityMetadata for junction tables.
@@ -71,7 +70,7 @@ export class JunctionEntityMetadataBuilder {
                     options: {
                         name: columnName,
                         length: !referencedColumn.length
-                        && (this.connection.driver instanceof MysqlDriver || this.connection.driver instanceof AuroraDataApiDriver)
+                        && this.connection.driver instanceof MysqlDriver
                         && (referencedColumn.generationStrategy === "uuid" || referencedColumn.type === "uuid")
                             ? "36"
                             : referencedColumn.length, // fix https://github.com/typeorm/typeorm/issues/3604
@@ -109,7 +108,7 @@ export class JunctionEntityMetadataBuilder {
                     propertyName: columnName,
                     options: {
                         length: !inverseReferencedColumn.length
-                        && (this.connection.driver instanceof MysqlDriver || this.connection.driver instanceof AuroraDataApiDriver)
+                        && this.connection.driver instanceof MysqlDriver
                         && (inverseReferencedColumn.generationStrategy === "uuid" || inverseReferencedColumn.type === "uuid")
                             ? "36"
                             : inverseReferencedColumn.length, // fix https://github.com/typeorm/typeorm/issues/3604

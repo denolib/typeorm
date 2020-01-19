@@ -1,5 +1,5 @@
-import {QueryResultCacheOptions} from "./QueryResultCacheOptions";
-import {QueryRunner} from "../query-runner/QueryRunner";
+import {QueryResultCacheOptions} from "./QueryResultCacheOptions.ts";
+import {QueryRunner} from "../query-runner/QueryRunner.ts";
 
 /**
  * Implementations of this interface provide different strategies to cache query builder results.

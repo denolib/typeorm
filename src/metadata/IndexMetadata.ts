@@ -1,8 +1,8 @@
-import {EntityMetadata} from "./EntityMetadata";
-import {IndexMetadataArgs} from "../metadata-args/IndexMetadataArgs";
-import {NamingStrategyInterface} from "../naming-strategy/NamingStrategyInterface";
-import {ColumnMetadata} from "./ColumnMetadata";
-import {EmbeddedMetadata} from "./EmbeddedMetadata";
+import {EntityMetadata} from "./EntityMetadata.ts";
+import {IndexMetadataArgs} from "../metadata-args/IndexMetadataArgs.ts";
+import {NamingStrategyInterface} from "../naming-strategy/NamingStrategyInterface.ts";
+import {ColumnMetadata} from "./ColumnMetadata.ts";
+import {EmbeddedMetadata} from "./EmbeddedMetadata.ts";
 
 /**
  * Index metadata contains all information about table's index.

@@ -1,4 +1,4 @@
-import {TreeType} from "../metadata/types/TreeTypes";
+import {TreeType} from "../metadata/types/TreeTypes.ts";
 
 /**
  * Stores metadata collected for Tree entities.

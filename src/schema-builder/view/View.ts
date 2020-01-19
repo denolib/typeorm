@@ -1,6 +1,6 @@
-import {Connection, Driver, SelectQueryBuilder} from "../..";
-import {EntityMetadata} from "../..";
-import {ViewOptions} from "../options/ViewOptions";
+import {Connection, Driver, SelectQueryBuilder} from "../../index.ts";
+import {EntityMetadata} from "../../index.ts";
+import {ViewOptions} from "../options/ViewOptions.ts";
 
 /**
  * View in the database represented in this class.

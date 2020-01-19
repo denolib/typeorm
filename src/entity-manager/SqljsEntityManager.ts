@@ -1,7 +1,7 @@
-import {Connection} from "../connection/Connection";
-import {QueryRunner} from "../query-runner/QueryRunner";
-import {EntityManager} from "./EntityManager";
-import {SqljsDriver} from "../driver/sqljs/SqljsDriver";
+import {Connection} from "../connection/Connection.ts";
+import {QueryRunner} from "../query-runner/QueryRunner.ts";
+import {EntityManager} from "./EntityManager.ts";
+import {SqljsDriver} from "../driver/sqljs/SqljsDriver.ts";
 
 /**
  * A special EntityManager that includes import/export and load/save function

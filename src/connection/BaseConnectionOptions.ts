@@ -1,8 +1,8 @@
-import {EntitySchema} from "../entity-schema/EntitySchema";
-import {LoggerOptions} from "../logger/LoggerOptions";
-import {NamingStrategyInterface} from "../naming-strategy/NamingStrategyInterface";
-import {DatabaseType} from "../driver/types/DatabaseType";
-import {Logger} from "../logger/Logger";
+import {EntitySchema} from "../entity-schema/EntitySchema.ts";
+import {LoggerOptions} from "../logger/LoggerOptions.ts";
+import {NamingStrategyInterface} from "../naming-strategy/NamingStrategyInterface.ts";
+import {DatabaseType} from "../driver/types/DatabaseType.ts";
+import {Logger} from "../logger/Logger.ts";
 
 /**
  * BaseConnectionOptions is set of connection options shared by all database types.

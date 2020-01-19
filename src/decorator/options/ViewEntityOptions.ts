@@ -1,7 +1,7 @@
 /**
  * Describes all entity view's options.
  */
-import {Connection, SelectQueryBuilder} from "../..";
+import {Connection, SelectQueryBuilder} from "../../index.ts";
 
 export interface ViewEntityOptions {
 

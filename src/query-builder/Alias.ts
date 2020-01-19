@@ -1,5 +1,5 @@
-import {EntityMetadata} from "../metadata/EntityMetadata";
-import { ObjectUtils } from "../util/ObjectUtils";
+import {EntityMetadata} from "../metadata/EntityMetadata.ts";
+import { ObjectUtils } from "../util/ObjectUtils.ts";
 
 /**
  */

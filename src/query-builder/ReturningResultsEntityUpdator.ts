@@ -1,11 +1,11 @@
-import {ObjectLiteral} from "../common/ObjectLiteral";
-import {QueryRunner} from "../query-runner/QueryRunner";
-import {OrmUtils} from "../util/OrmUtils";
-import {QueryExpressionMap} from "./QueryExpressionMap";
-import {ColumnMetadata} from "../metadata/ColumnMetadata";
-import {UpdateResult} from "./result/UpdateResult";
-import {InsertResult} from "./result/InsertResult";
-import {OracleDriver} from "../driver/oracle/OracleDriver";
+import {ObjectLiteral} from "../common/ObjectLiteral.ts";
+import {QueryRunner} from "../query-runner/QueryRunner.ts";
+import {OrmUtils} from "../util/OrmUtils.ts";
+import {QueryExpressionMap} from "./QueryExpressionMap.ts";
+import {ColumnMetadata} from "../metadata/ColumnMetadata.ts";
+import {UpdateResult} from "./result/UpdateResult.ts";
+import {InsertResult} from "./result/InsertResult.ts";
+import {OracleDriver} from "../driver/oracle/OracleDriver.ts";
 
 /**
  * Updates entity with returning results in the entity insert and update operations.
@@ -69,7 +69,7 @@ export class ReturningResultsEntityUpdator {
                         .getOne();
 
                     if (loadedReturningColumns) {
-                        this.queryRunner.manager.merge(metadata.target as any, entity, loadedReturningColumns);
+                        this.queryRunner.manager.merge(metadata.target as any, entity, loadedReturningColumns as any); // TODO avoid using any
                         updateResult.generatedMaps.push(loadedReturningColumns);
                     }
                 }

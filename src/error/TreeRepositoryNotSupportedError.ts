@@ -1,4 +1,4 @@
-import {Driver} from "../driver/Driver";
+import {Driver} from "../driver/Driver.ts";
 
 export class TreeRepositoryNotSupportedError extends Error {
     name = "TreeRepositoryNotSupportedError";

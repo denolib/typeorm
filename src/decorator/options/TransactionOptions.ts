@@ -1,4 +1,4 @@
-import { IsolationLevel } from "../../driver/types/IsolationLevel";
+import { IsolationLevel } from "../../driver/types/IsolationLevel.ts";
 
 export interface TransactionOptions {
   connectionName?: string;

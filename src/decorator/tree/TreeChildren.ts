@@ -1,5 +1,5 @@
-import {getMetadataArgsStorage, RelationOptions} from "../../";
-import {RelationMetadataArgs} from "../../metadata-args/RelationMetadataArgs";
+import {getMetadataArgsStorage, RelationOptions} from "../../index.ts";
+import {RelationMetadataArgs} from "../../metadata-args/RelationMetadataArgs.ts";
 
 /**
  * Marks a entity property as a children of the tree.

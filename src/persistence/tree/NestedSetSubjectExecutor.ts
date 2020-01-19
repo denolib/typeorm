@@ -1,6 +1,6 @@
-import {Subject} from "../Subject";
-import {QueryRunner} from "../../query-runner/QueryRunner";
-import {OrmUtils} from "../../util/OrmUtils";
+import {Subject} from "../Subject.ts";
+import {QueryRunner} from "../../query-runner/QueryRunner.ts";
+import {OrmUtils} from "../../util/OrmUtils.ts";
 
 /**
  * Executes subject operations for nested set tree entities.

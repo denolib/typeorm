@@ -1,5 +1,5 @@
-import {BaseConnectionOptions} from "../../connection/BaseConnectionOptions";
-import {OracleConnectionCredentialsOptions} from "./OracleConnectionCredentialsOptions";
+import {BaseConnectionOptions} from "../../connection/BaseConnectionOptions.ts";
+import {OracleConnectionCredentialsOptions} from "./OracleConnectionCredentialsOptions.ts";
 
 /**
  * Oracle-specific connection options.

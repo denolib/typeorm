@@ -1,30 +1,25 @@
-import {QueryRunner, SelectQueryBuilder} from "..";
-import {ObjectLiteral} from "../common/ObjectLiteral";
-import {Connection} from "../connection/Connection";
-import {PostgresConnectionOptions} from "../driver/postgres/PostgresConnectionOptions";
-import {PostgresDriver} from "../driver/postgres/PostgresDriver";
-import {SapDriver} from "../driver/sap/SapDriver";
-import {SqlServerConnectionOptions} from "../driver/sqlserver/SqlServerConnectionOptions";
-import {SqlServerDriver} from "../driver/sqlserver/SqlServerDriver";
-import {CannotCreateEntityIdMapError} from "../error/CannotCreateEntityIdMapError";
-import {OrderByCondition} from "../find-options/OrderByCondition";
-import {TableMetadataArgs} from "../metadata-args/TableMetadataArgs";
-import {TreeMetadataArgs} from "../metadata-args/TreeMetadataArgs";
-import {OrmUtils} from "../util/OrmUtils";
-import {shorten} from "../util/StringUtils";
-import {CheckMetadata} from "./CheckMetadata";
-import {ColumnMetadata} from "./ColumnMetadata";
-import {EmbeddedMetadata} from "./EmbeddedMetadata";
-import {EntityListenerMetadata} from "./EntityListenerMetadata";
-import {ExclusionMetadata} from "./ExclusionMetadata";
-import {ForeignKeyMetadata} from "./ForeignKeyMetadata";
-import {IndexMetadata} from "./IndexMetadata";
-import {RelationCountMetadata} from "./RelationCountMetadata";
-import {RelationIdMetadata} from "./RelationIdMetadata";
-import {RelationMetadata} from "./RelationMetadata";
-import {TableType} from "./types/TableTypes";
-import {TreeType} from "./types/TreeTypes";
-import {UniqueMetadata} from "./UniqueMetadata";
+import {QueryRunner, SelectQueryBuilder} from "../index.ts";
+import {ObjectLiteral} from "../common/ObjectLiteral.ts";
+import {Connection} from "../connection/Connection.ts";
+import {CannotCreateEntityIdMapError} from "../error/CannotCreateEntityIdMapError.ts";
+import {OrderByCondition} from "../find-options/OrderByCondition.ts";
+import {TableMetadataArgs} from "../metadata-args/TableMetadataArgs.ts";
+import {TreeMetadataArgs} from "../metadata-args/TreeMetadataArgs.ts";
+import {OrmUtils} from "../util/OrmUtils.ts";
+import {shorten} from "../util/StringUtils.ts";
+import {CheckMetadata} from "./CheckMetadata.ts";
+import {ColumnMetadata} from "./ColumnMetadata.ts";
+import {EmbeddedMetadata} from "./EmbeddedMetadata.ts";
+import {EntityListenerMetadata} from "./EntityListenerMetadata.ts";
+import {ExclusionMetadata} from "./ExclusionMetadata.ts";
+import {ForeignKeyMetadata} from "./ForeignKeyMetadata.ts";
+import {IndexMetadata} from "./IndexMetadata.ts";
+import {RelationCountMetadata} from "./RelationCountMetadata.ts";
+import {RelationIdMetadata} from "./RelationIdMetadata.ts";
+import {RelationMetadata} from "./RelationMetadata.ts";
+import {TableType} from "./types/TableTypes.ts";
+import {TreeType} from "./types/TreeTypes.ts";
+import {UniqueMetadata} from "./UniqueMetadata.ts";
 
 /**
  * Contains all entity metadata.
@@ -781,7 +776,8 @@ export class EntityMetadata {
             this.schema = this.parentEntityMetadata.schema;
         }
         else {
-            this.schema = (this.connection.options as PostgresConnectionOptions|SqlServerConnectionOptions).schema;
+            // TODO(uki00a) avoid using any
+            this.schema = (this.connection.options as any).schema;
         }
         this.givenTableName = this.tableMetadataArgs.type === "entity-child" && this.parentEntityMetadata ? this.parentEntityMetadata.givenTableName : this.tableMetadataArgs.name;
         this.synchronize = this.tableMetadataArgs.synchronize === false ? false : true;
@@ -847,16 +843,12 @@ export class EntityMetadata {
      */
     protected buildTablePath(): string {
         let tablePath = this.tableName;
-        if (this.schema && ((this.connection.driver instanceof PostgresDriver) || (this.connection.driver instanceof SqlServerDriver) || (this.connection.driver instanceof SapDriver))) {
+        if (this.schema) {
             tablePath = this.schema + "." + tablePath;
         }
 
-        if (this.database && !(this.connection.driver instanceof PostgresDriver)) {
-            if (!this.schema && this.connection.driver instanceof SqlServerDriver) {
-                tablePath = this.database + ".." + tablePath;
-            } else {
-                tablePath = this.database + "." + tablePath;
-            }
+        if (this.database/* && !(this.connection.driver instanceof PostgresDriver)*/) {
+            tablePath = this.database + "." + tablePath;
         }
 
         return tablePath;
@@ -869,7 +861,7 @@ export class EntityMetadata {
         if (!this.schema)
             return undefined;
 
-        return this.database && !(this.connection.driver instanceof PostgresDriver) ? this.database + "." + this.schema : this.schema;
+        return this.database /*&& !(this.connection.driver instanceof PostgresDriver)*/ ? this.database + "." + this.schema : this.schema;
     }
 
 }

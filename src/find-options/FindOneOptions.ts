@@ -1,6 +1,6 @@
-import {JoinOptions} from "./JoinOptions";
-import {ObjectLiteral} from "../common/ObjectLiteral";
-import {FindConditions} from "./FindConditions";
+import {JoinOptions} from "./JoinOptions.ts";
+import {ObjectLiteral} from "../common/ObjectLiteral.ts";
+import {FindConditions} from "./FindConditions.ts";
 
 /**
  * Defines a special criteria to find specific entity.

@@ -1,8 +1,8 @@
-import {EventListenerType} from "./types/EventListenerTypes";
-import {EntityListenerMetadataArgs} from "../metadata-args/EntityListenerMetadataArgs";
-import {ObjectLiteral} from "../common/ObjectLiteral";
-import {EntityMetadata} from "./EntityMetadata";
-import {EmbeddedMetadata} from "./EmbeddedMetadata";
+import {EventListenerType} from "./types/EventListenerTypes.ts";
+import {EntityListenerMetadataArgs} from "../metadata-args/EntityListenerMetadataArgs.ts";
+import {ObjectLiteral} from "../common/ObjectLiteral.ts";
+import {EntityMetadata} from "./EntityMetadata.ts";
+import {EmbeddedMetadata} from "./EmbeddedMetadata.ts";
 
 /**
  * This metadata contains all information about entity's listeners.

@@ -1,4 +1,4 @@
-import {Connection, SelectQueryBuilder} from "../..";
+import {Connection, SelectQueryBuilder} from "../../index.ts";
 
 /**
  * View options.

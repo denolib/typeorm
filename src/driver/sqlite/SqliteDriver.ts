@@ -1,12 +1,12 @@
-import {DriverPackageNotInstalledError} from "../../error/DriverPackageNotInstalledError";
-import {SqliteQueryRunner} from "./SqliteQueryRunner";
-import {DriverOptionNotSetError} from "../../error/DriverOptionNotSetError";
-import {PlatformTools} from "../../platform/PlatformTools";
-import {Connection} from "../../connection/Connection";
-import {SqliteConnectionOptions} from "./SqliteConnectionOptions";
-import {ColumnType} from "../types/ColumnTypes";
-import {QueryRunner} from "../../query-runner/QueryRunner";
-import {AbstractSqliteDriver} from "../sqlite-abstract/AbstractSqliteDriver";
+import {DriverPackageNotInstalledError} from "../../error/DriverPackageNotInstalledError.ts";
+import {SqliteQueryRunner} from "./SqliteQueryRunner.ts";
+import {DriverOptionNotSetError} from "../../error/DriverOptionNotSetError.ts";
+import {PlatformTools} from "../../platform/PlatformTools.ts";
+import {Connection} from "../../connection/Connection.ts";
+import {SqliteConnectionOptions} from "./SqliteConnectionOptions.ts";
+import {ColumnType} from "../types/ColumnTypes.ts";
+import {QueryRunner} from "../../query-runner/QueryRunner.ts";
+import {AbstractSqliteDriver} from "../sqlite-abstract/AbstractSqliteDriver.ts";
 
 /**
  * Organizes communication with sqlite DBMS.
@@ -71,7 +71,7 @@ export class SqliteDriver extends AbstractSqliteDriver {
     }
 
     normalizeType(column: { type?: ColumnType, length?: number | string, precision?: number|null, scale?: number }): string {
-        if ((column.type as any) === Buffer) {
+        if ((column.type as any) === Uint8Array) {
             return "blob";
         }
 

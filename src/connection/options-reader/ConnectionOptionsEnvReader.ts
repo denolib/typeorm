@@ -1,6 +1,6 @@
-import {ConnectionOptions} from "../ConnectionOptions";
-import {PlatformTools} from "../../platform/PlatformTools";
-import {OrmUtils} from "../../util/OrmUtils";
+import {ConnectionOptions} from "../ConnectionOptions.ts";
+import {PlatformTools} from "../../platform/PlatformTools.ts";
+import {OrmUtils} from "../../util/OrmUtils.ts";
 
 /**
  * Reads connection options from environment variables.
@@ -47,7 +47,7 @@ export class ConnectionOptionsEnvReader {
             },
             cache: this.transformCaching(),
             uuidExtension: PlatformTools.getEnvVariable("TYPEORM_UUID_EXTENSION")
-        };
+        } as ConnectionOptions; // TODO(uki00a) remove this cast
     }
 
     // -------------------------------------------------------------------------

@@ -1,8 +1,8 @@
-import {RelationIdMetadataArgs} from "../metadata-args/RelationIdMetadataArgs";
-import {EntityMetadata} from "./EntityMetadata";
-import {RelationMetadata} from "./RelationMetadata";
-import {SelectQueryBuilder} from "../query-builder/SelectQueryBuilder";
-import {ObjectLiteral} from "../common/ObjectLiteral";
+import {RelationIdMetadataArgs} from "../metadata-args/RelationIdMetadataArgs.ts";
+import {EntityMetadata} from "./EntityMetadata.ts";
+import {RelationMetadata} from "./RelationMetadata.ts";
+import {SelectQueryBuilder} from "../query-builder/SelectQueryBuilder.ts";
+import {ObjectLiteral} from "../common/ObjectLiteral.ts";
 
 /**
  * Contains all information about entity's relation count.

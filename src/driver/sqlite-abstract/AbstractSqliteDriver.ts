@@ -1,18 +1,18 @@
-import {Driver} from "../Driver";
-import {ObjectLiteral} from "../../common/ObjectLiteral";
-import {ColumnMetadata} from "../../metadata/ColumnMetadata";
-import {DateUtils} from "../../util/DateUtils";
-import {Connection} from "../../connection/Connection";
-import {RdbmsSchemaBuilder} from "../../schema-builder/RdbmsSchemaBuilder";
-import {MappedColumnTypes} from "../types/MappedColumnTypes";
-import {ColumnType} from "../types/ColumnTypes";
-import {QueryRunner} from "../../query-runner/QueryRunner";
-import {DataTypeDefaults} from "../types/DataTypeDefaults";
-import {TableColumn} from "../../schema-builder/table/TableColumn";
-import {BaseConnectionOptions} from "../../connection/BaseConnectionOptions";
-import {EntityMetadata} from "../../metadata/EntityMetadata";
-import {OrmUtils} from "../../util/OrmUtils";
-import {ApplyValueTransformers} from "../../util/ApplyValueTransformers";
+import {Driver} from "../Driver.ts";
+import {ObjectLiteral} from "../../common/ObjectLiteral.ts";
+import {ColumnMetadata} from "../../metadata/ColumnMetadata.ts";
+import {DateUtils} from "../../util/DateUtils.ts";
+import {Connection} from "../../connection/Connection.ts";
+import {RdbmsSchemaBuilder} from "../../schema-builder/RdbmsSchemaBuilder.ts";
+import {MappedColumnTypes} from "../types/MappedColumnTypes.ts";
+import {ColumnType} from "../types/ColumnTypes.ts";
+import {QueryRunner} from "../../query-runner/QueryRunner.ts";
+import {DataTypeDefaults} from "../types/DataTypeDefaults.ts";
+import {TableColumn} from "../../schema-builder/table/TableColumn.ts";
+import {BaseConnectionOptions} from "../../connection/BaseConnectionOptions.ts";
+import {EntityMetadata} from "../../metadata/EntityMetadata.ts";
+import {OrmUtils} from "../../util/OrmUtils.ts";
+import {ApplyValueTransformers} from "../../util/ApplyValueTransformers.ts";
 
 /**
  * Organizes communication with sqlite DBMS.

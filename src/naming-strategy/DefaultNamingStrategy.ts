@@ -1,7 +1,7 @@
-import {NamingStrategyInterface} from "./NamingStrategyInterface";
-import {RandomGenerator} from "../util/RandomGenerator";
-import {camelCase, snakeCase, titleCase} from "../util/StringUtils";
-import {Table} from "../schema-builder/table/Table";
+import {NamingStrategyInterface} from "./NamingStrategyInterface.ts";
+import {RandomGenerator} from "../util/RandomGenerator.ts";
+import {camelCase, snakeCase, titleCase} from "../util/StringUtils.ts";
+import {Table} from "../schema-builder/table/Table.ts";
 
 /**
  * Naming strategy that is used by default.

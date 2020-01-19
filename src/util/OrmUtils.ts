@@ -1,4 +1,4 @@
-import { ObjectLiteral } from "../common/ObjectLiteral";
+import { ObjectLiteral } from "../common/ObjectLiteral.ts";
 
 export class OrmUtils {
 
@@ -85,7 +85,7 @@ export class OrmUtils {
                     && !(source[propertyKey] instanceof Map)
                     && !(source[propertyKey] instanceof Set)
                     && !(source[propertyKey] instanceof Date)
-                    && !(source[propertyKey] instanceof Buffer)) {
+                    && !(source[propertyKey] instanceof Uint8Array)) { // TODO(uki00a) needs Buffer support?
                     if (!target[key]) Object.assign(target, { [key]: Object.create(Object.getPrototypeOf(source[propertyKey])) });
                     this.mergeDeep(target[key], source[propertyKey]);
                 } else {

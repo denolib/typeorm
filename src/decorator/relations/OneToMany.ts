@@ -1,5 +1,5 @@
-import {getMetadataArgsStorage, ObjectType, RelationOptions} from "../../";
-import {RelationMetadataArgs} from "../../metadata-args/RelationMetadataArgs";
+import {getMetadataArgsStorage, ObjectType, RelationOptions} from "../../index.ts";
+import {RelationMetadataArgs} from "../../metadata-args/RelationMetadataArgs.ts";
 
 /**
  * One-to-many relation allows to create type of relation when Entity2 can have multiple instances of Entity1.

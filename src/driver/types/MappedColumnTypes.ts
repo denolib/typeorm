@@ -1,4 +1,4 @@
-import {ColumnType} from "./ColumnTypes";
+import {ColumnType} from "./ColumnTypes.ts";
 
 /**
  * Orm has special columns and we need to know what database column types should be for those types.

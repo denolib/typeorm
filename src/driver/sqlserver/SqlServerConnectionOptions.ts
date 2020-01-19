@@ -1,5 +1,5 @@
-import {BaseConnectionOptions} from "../../connection/BaseConnectionOptions";
-import {SqlServerConnectionCredentialsOptions} from "./SqlServerConnectionCredentialsOptions";
+import {BaseConnectionOptions} from "../../connection/BaseConnectionOptions.ts";
+import {SqlServerConnectionCredentialsOptions} from "./SqlServerConnectionCredentialsOptions.ts";
 
 /**
  * Microsoft Sql Server specific connection options.

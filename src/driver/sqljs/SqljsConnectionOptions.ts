@@ -1,4 +1,4 @@
-import {BaseConnectionOptions} from "../../connection/BaseConnectionOptions";
+import {BaseConnectionOptions} from "../../connection/BaseConnectionOptions.ts";
 
 /**
  * Sql.js-specific connection options.

@@ -1,4 +1,4 @@
-import {RelationMetadata} from "../metadata/RelationMetadata";
+import {RelationMetadata} from "../metadata/RelationMetadata.ts";
 
 /**
  * Thrown when relation has array initialized which is forbidden my ORM.

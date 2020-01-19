@@ -1,4 +1,4 @@
-import {Table} from "../schema-builder/table/Table";
+import {Table} from "../schema-builder/table/Table.ts";
 
 /**
  * Naming strategy defines how auto-generated names for such things like table name, or table column gonna be

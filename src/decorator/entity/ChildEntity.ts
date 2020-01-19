@@ -1,6 +1,6 @@
-import {getMetadataArgsStorage} from "../../";
-import {TableMetadataArgs} from "../../metadata-args/TableMetadataArgs";
-import {DiscriminatorValueMetadataArgs} from "../../metadata-args/DiscriminatorValueMetadataArgs";
+import {getMetadataArgsStorage} from "../../index.ts";
+import {TableMetadataArgs} from "../../metadata-args/TableMetadataArgs.ts";
+import {DiscriminatorValueMetadataArgs} from "../../metadata-args/DiscriminatorValueMetadataArgs.ts";
 
 /**
  * Special type of the table used in the single-table inherited tables.

@@ -1,18 +1,18 @@
-import {EntitySchema} from "./EntitySchema";
-import {MetadataArgsStorage} from "../metadata-args/MetadataArgsStorage";
-import {TableMetadataArgs} from "../metadata-args/TableMetadataArgs";
-import {ColumnMetadataArgs} from "../metadata-args/ColumnMetadataArgs";
-import {IndexMetadataArgs} from "../metadata-args/IndexMetadataArgs";
-import {RelationMetadataArgs} from "../metadata-args/RelationMetadataArgs";
-import {JoinColumnMetadataArgs} from "../metadata-args/JoinColumnMetadataArgs";
-import {JoinTableMetadataArgs} from "../metadata-args/JoinTableMetadataArgs";
-import {JoinTableOptions} from "../decorator/options/JoinTableOptions";
-import {JoinTableMultipleColumnsOptions} from "../decorator/options/JoinTableMultipleColumnsOptions";
-import {ColumnMode} from "../metadata-args/types/ColumnMode";
-import {GeneratedMetadataArgs} from "../metadata-args/GeneratedMetadataArgs";
-import {UniqueMetadataArgs} from "../metadata-args/UniqueMetadataArgs";
-import {CheckMetadataArgs} from "../metadata-args/CheckMetadataArgs";
-import {ExclusionMetadataArgs} from "../metadata-args/ExclusionMetadataArgs";
+import {EntitySchema} from "./EntitySchema.ts";
+import {MetadataArgsStorage} from "../metadata-args/MetadataArgsStorage.ts";
+import {TableMetadataArgs} from "../metadata-args/TableMetadataArgs.ts";
+import {ColumnMetadataArgs} from "../metadata-args/ColumnMetadataArgs.ts";
+import {IndexMetadataArgs} from "../metadata-args/IndexMetadataArgs.ts";
+import {RelationMetadataArgs} from "../metadata-args/RelationMetadataArgs.ts";
+import {JoinColumnMetadataArgs} from "../metadata-args/JoinColumnMetadataArgs.ts";
+import {JoinTableMetadataArgs} from "../metadata-args/JoinTableMetadataArgs.ts";
+import {JoinTableOptions} from "../decorator/options/JoinTableOptions.ts";
+import {JoinTableMultipleColumnsOptions} from "../decorator/options/JoinTableMultipleColumnsOptions.ts";
+import {ColumnMode} from "../metadata-args/types/ColumnMode.ts";
+import {GeneratedMetadataArgs} from "../metadata-args/GeneratedMetadataArgs.ts";
+import {UniqueMetadataArgs} from "../metadata-args/UniqueMetadataArgs.ts";
+import {CheckMetadataArgs} from "../metadata-args/CheckMetadataArgs.ts";
+import {ExclusionMetadataArgs} from "../metadata-args/ExclusionMetadataArgs.ts";
 
 /**
  * Transforms entity schema into metadata args storage.

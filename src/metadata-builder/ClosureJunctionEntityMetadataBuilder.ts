@@ -1,8 +1,8 @@
-import {EntityMetadata} from "../metadata/EntityMetadata";
-import {ColumnMetadata} from "../metadata/ColumnMetadata";
-import {ForeignKeyMetadata} from "../metadata/ForeignKeyMetadata";
-import {Connection} from "../connection/Connection";
-import {IndexMetadata} from "../metadata/IndexMetadata";
+import {EntityMetadata} from "../metadata/EntityMetadata.ts";
+import {ColumnMetadata} from "../metadata/ColumnMetadata.ts";
+import {ForeignKeyMetadata} from "../metadata/ForeignKeyMetadata.ts";
+import {Connection} from "../connection/Connection.ts";
+import {IndexMetadata} from "../metadata/IndexMetadata.ts";
 
 /**
  * Creates EntityMetadata for junction tables of the closure entities.

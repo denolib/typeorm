@@ -1,19 +1,19 @@
-import {ObjectLiteral} from "../common/ObjectLiteral";
-import {SaveOptions} from "../repository/SaveOptions";
-import {RemoveOptions} from "../repository/RemoveOptions";
-import {MustBeEntityError} from "../error/MustBeEntityError";
-import {SubjectExecutor} from "./SubjectExecutor";
-import {CannotDetermineEntityError} from "../error/CannotDetermineEntityError";
-import {QueryRunner} from "../query-runner/QueryRunner";
-import {Connection} from "../connection/Connection";
-import {Subject} from "./Subject";
-import {OneToManySubjectBuilder} from "./subject-builder/OneToManySubjectBuilder";
-import {OneToOneInverseSideSubjectBuilder} from "./subject-builder/OneToOneInverseSideSubjectBuilder";
-import {ManyToManySubjectBuilder} from "./subject-builder/ManyToManySubjectBuilder";
-import {SubjectDatabaseEntityLoader} from "./SubjectDatabaseEntityLoader";
-import {CascadesSubjectBuilder} from "./subject-builder/CascadesSubjectBuilder";
-import {OrmUtils} from "../util/OrmUtils";
-import {PromiseUtils} from "../util/PromiseUtils";
+import {ObjectLiteral} from "../common/ObjectLiteral.ts";
+import {SaveOptions} from "../repository/SaveOptions.ts";
+import {RemoveOptions} from "../repository/RemoveOptions.ts";
+import {MustBeEntityError} from "../error/MustBeEntityError.ts";
+import {SubjectExecutor} from "./SubjectExecutor.ts";
+import {CannotDetermineEntityError} from "../error/CannotDetermineEntityError.ts";
+import {QueryRunner} from "../query-runner/QueryRunner.ts";
+import {Connection} from "../connection/Connection.ts";
+import {Subject} from "./Subject.ts";
+import {OneToManySubjectBuilder} from "./subject-builder/OneToManySubjectBuilder.ts";
+import {OneToOneInverseSideSubjectBuilder} from "./subject-builder/OneToOneInverseSideSubjectBuilder.ts";
+import {ManyToManySubjectBuilder} from "./subject-builder/ManyToManySubjectBuilder.ts";
+import {SubjectDatabaseEntityLoader} from "./SubjectDatabaseEntityLoader.ts";
+import {CascadesSubjectBuilder} from "./subject-builder/CascadesSubjectBuilder.ts";
+import {OrmUtils} from "../util/OrmUtils.ts";
+import {PromiseUtils} from "../util/PromiseUtils.ts";
 
 /**
  * Persists a single entity or multiple entities - saves or removes them.

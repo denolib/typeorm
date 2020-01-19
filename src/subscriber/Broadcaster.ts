@@ -1,10 +1,10 @@
-import {EntitySubscriberInterface} from "./EntitySubscriberInterface";
-import {ObjectLiteral} from "../common/ObjectLiteral";
-import {QueryRunner} from "../query-runner/QueryRunner";
-import {EntityMetadata} from "../metadata/EntityMetadata";
-import {BroadcasterResult} from "./BroadcasterResult";
-import {ColumnMetadata} from "../metadata/ColumnMetadata";
-import {RelationMetadata} from "../metadata/RelationMetadata";
+import {EntitySubscriberInterface} from "./EntitySubscriberInterface.ts";
+import {ObjectLiteral} from "../common/ObjectLiteral.ts";
+import {QueryRunner} from "../query-runner/QueryRunner.ts";
+import {EntityMetadata} from "../metadata/EntityMetadata.ts";
+import {BroadcasterResult} from "./BroadcasterResult.ts";
+import {ColumnMetadata} from "../metadata/ColumnMetadata.ts";
+import {RelationMetadata} from "../metadata/RelationMetadata.ts";
 
 /**
  * Broadcaster provides a helper methods to broadcast events to the subscribers.

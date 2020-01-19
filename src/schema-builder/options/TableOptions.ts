@@ -1,9 +1,9 @@
-import {TableColumnOptions} from "./TableColumnOptions";
-import {TableIndexOptions} from "./TableIndexOptions";
-import {TableForeignKeyOptions} from "./TableForeignKeyOptions";
-import {TableUniqueOptions} from "./TableUniqueOptions";
-import {TableCheckOptions} from "./TableCheckOptions";
-import {TableExclusionOptions} from "./TableExclusionOptions";
+import {TableColumnOptions} from "./TableColumnOptions.ts";
+import {TableIndexOptions} from "./TableIndexOptions.ts";
+import {TableForeignKeyOptions} from "./TableForeignKeyOptions.ts";
+import {TableUniqueOptions} from "./TableUniqueOptions.ts";
+import {TableCheckOptions} from "./TableCheckOptions.ts";
+import {TableExclusionOptions} from "./TableExclusionOptions.ts";
 
 /**
  * Table options.

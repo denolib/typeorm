@@ -1,0 +1,29 @@
+{
+  "modules": [
+    {
+      "protocol": "https",
+      "path": "deno.land/std",
+      "version": "v0.30.0",
+      "files": [
+        "/fmt/colors.ts",
+        "/fs/mod.ts",
+        "/node/module.ts",
+        "/path/mod.ts"
+      ]
+    },
+    {
+      "protocol": "https",
+      "path": "deno.land/x/sha256",
+      "version": "v1.0.0",
+      "files": [
+        "/mod.ts"
+      ]
+    },
+    {
+      "protocol": "https",
+      "path": "deno.land/x/sqlite",
+      "version": "defb9c019165f23d072451b7c56176be440161e7",
+      "files": []
+    }
+  ]
+}

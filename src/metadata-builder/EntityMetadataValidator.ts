@@ -1,16 +1,16 @@
-import {EntityMetadata} from "../metadata/EntityMetadata";
-import {MissingPrimaryColumnError} from "../error/MissingPrimaryColumnError";
-import {CircularRelationsError} from "../error/CircularRelationsError";
-import {DepGraph} from "../util/DepGraph";
-import {Driver} from "../driver/Driver";
-import {DataTypeNotSupportedError} from "../error/DataTypeNotSupportedError";
-import {ColumnType} from "../driver/types/ColumnTypes";
-import {MongoDriver} from "../driver/mongodb/MongoDriver";
-import {SqlServerDriver} from "../driver/sqlserver/SqlServerDriver";
-import {MysqlDriver} from "../driver/mysql/MysqlDriver";
-import {NoConnectionOptionError} from "../error/NoConnectionOptionError";
-import {InitializedRelationError} from "../error/InitializedRelationError";
-import {AuroraDataApiDriver} from "../driver/aurora-data-api/AuroraDataApiDriver";
+import {EntityMetadata} from "../metadata/EntityMetadata.ts";
+import {MissingPrimaryColumnError} from "../error/MissingPrimaryColumnError.ts";
+import {CircularRelationsError} from "../error/CircularRelationsError.ts";
+import {DepGraph} from "../util/DepGraph.ts";
+import {Driver} from "../driver/Driver.ts";
+import {DataTypeNotSupportedError} from "../error/DataTypeNotSupportedError.ts";
+import {ColumnType} from "../driver/types/ColumnTypes.ts";
+import {MongoDriver} from "../driver/mongodb/MongoDriver.ts";
+import {SqlServerDriver} from "../driver/sqlserver/SqlServerDriver.ts";
+import {MysqlDriver} from "../driver/mysql/MysqlDriver.ts";
+import {NoConnectionOptionError} from "../error/NoConnectionOptionError.ts";
+import {InitializedRelationError} from "../error/InitializedRelationError.ts";
+import {AuroraDataApiDriver} from "../driver/aurora-data-api/AuroraDataApiDriver.ts";
 
 /// todo: add check if there are multiple tables with the same name
 /// todo: add checks when generated column / table names are too long for the specific driver

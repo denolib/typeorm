@@ -1,6 +1,6 @@
-import {getConnection, getMetadataArgsStorage, MongoRepository, Repository, TreeRepository, EntityManager} from "../../";
-import {TransactionOptions} from "../options/TransactionOptions";
-import {IsolationLevel} from "../../driver/types/IsolationLevel";
+import {getConnection, getMetadataArgsStorage, MongoRepository, Repository, TreeRepository, EntityManager} from "../../index.ts";
+import {TransactionOptions} from "../options/TransactionOptions.ts";
+import {IsolationLevel} from "../../driver/types/IsolationLevel.ts";
 
 /**
  * Wraps some method into the transaction.

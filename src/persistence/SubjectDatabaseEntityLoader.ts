@@ -1,7 +1,7 @@
-import {Subject} from "./Subject";
-import {ObjectLiteral} from "../common/ObjectLiteral";
-import {QueryRunner} from "../query-runner/QueryRunner";
-import {FindManyOptions} from "../find-options/FindManyOptions";
+import {Subject} from "./Subject.ts";
+import {ObjectLiteral} from "../common/ObjectLiteral.ts";
+import {QueryRunner} from "../query-runner/QueryRunner.ts";
+import {FindManyOptions} from "../find-options/FindManyOptions.ts";
 
 /**
  * Loads database entities for all operate subjects which do not have database entity set.

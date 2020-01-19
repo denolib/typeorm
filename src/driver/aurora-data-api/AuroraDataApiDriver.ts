@@ -1,21 +1,21 @@
-import {Driver} from "../Driver";
-import {DriverUtils} from "../DriverUtils";
-import {AuroraDataApiQueryRunner} from "./AuroraDataApiQueryRunner";
-import {ObjectLiteral} from "../../common/ObjectLiteral";
-import {ColumnMetadata} from "../../metadata/ColumnMetadata";
-import {DateUtils} from "../../util/DateUtils";
-import {PlatformTools} from "../../platform/PlatformTools";
-import {Connection} from "../../connection/Connection";
-import {RdbmsSchemaBuilder} from "../../schema-builder/RdbmsSchemaBuilder";
-import {AuroraDataApiConnectionOptions} from "./AuroraDataApiConnectionOptions";
-import {MappedColumnTypes} from "../types/MappedColumnTypes";
-import {ColumnType} from "../types/ColumnTypes";
-import {DataTypeDefaults} from "../types/DataTypeDefaults";
-import {TableColumn} from "../../schema-builder/table/TableColumn";
-import {AuroraDataApiConnectionCredentialsOptions} from "./AuroraDataApiConnectionCredentialsOptions";
-import {EntityMetadata} from "../../metadata/EntityMetadata";
-import {OrmUtils} from "../../util/OrmUtils";
-import {ApplyValueTransformers} from "../../util/ApplyValueTransformers";
+import {Driver} from "../Driver.ts";
+import {DriverUtils} from "../DriverUtils.ts";
+import {AuroraDataApiQueryRunner} from "./AuroraDataApiQueryRunner.ts";
+import {ObjectLiteral} from "../../common/ObjectLiteral.ts";
+import {ColumnMetadata} from "../../metadata/ColumnMetadata.ts";
+import {DateUtils} from "../../util/DateUtils.ts";
+import {PlatformTools} from "../../platform/PlatformTools.ts";
+import {Connection} from "../../connection/Connection.ts";
+import {RdbmsSchemaBuilder} from "../../schema-builder/RdbmsSchemaBuilder.ts";
+import {AuroraDataApiConnectionOptions} from "./AuroraDataApiConnectionOptions.ts";
+import {MappedColumnTypes} from "../types/MappedColumnTypes.ts";
+import {ColumnType} from "../types/ColumnTypes.ts";
+import {DataTypeDefaults} from "../types/DataTypeDefaults.ts";
+import {TableColumn} from "../../schema-builder/table/TableColumn.ts";
+import {AuroraDataApiConnectionCredentialsOptions} from "./AuroraDataApiConnectionCredentialsOptions.ts";
+import {EntityMetadata} from "../../metadata/EntityMetadata.ts";
+import {OrmUtils} from "../../util/OrmUtils.ts";
+import {ApplyValueTransformers} from "../../util/ApplyValueTransformers.ts";
 
 /**
  * Organizes communication with MySQL DBMS.
@@ -292,7 +292,7 @@ export class AuroraDataApiDriver implements Driver {
 
     constructor(connection: Connection) {
         this.connection = connection;
-        this.options = connection.options as AuroraDataApiConnectionOptions;
+        this.options = connection.options as any; // TODO(uki00a) avoid using any
 
         // load mysql package
         this.loadDependencies();
@@ -490,9 +490,6 @@ export class AuroraDataApiDriver implements Driver {
 
         } else if (column.type === Date) {
             return "datetime";
-
-        } else if ((column.type as any) === Buffer) {
-            return "blob";
 
         } else if (column.type === Boolean) {
             return "tinyint";

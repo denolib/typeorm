@@ -1,11 +1,29 @@
-import * as path from "path";
-import * as fs from "fs";
-import {highlight, Theme} from "cli-highlight";
-export {ReadStream} from "fs";
-export {EventEmitter} from "events";
-export {Readable, Writable} from "stream";
+import * as path from "../../vendor/https/deno.land/std/path/mod.ts";
+import * as colors from "../../vendor/https/deno.land/std/fmt/colors.ts";
+import * as fs from "../../vendor/https/deno.land/std/fs/mod.ts";
+import {NotImplementedError} from "../error/NotImplementedError.ts";
+type Buffer = unknown;
+export type ReadStream = unknown;
 
-const chalk = require("chalk");
+// TODO(uki00a) implement EventEmitter
+export class EventEmitter {
+    constructor() {
+        throw new NotImplementedError('EventEmitter.constructor');
+    }
+}
+// TODO(uki00a) implement Readable
+export class Readable {
+    constructor() {
+        throw new NotImplementedError('Readable.constructor');
+    } 
+}
+
+// TODO(uki00a) implement Writable
+export class Writable {
+    constructor() {
+        throw new NotImplementedError('Writable.constructor');
+    }
+}
 
 /**
  * Platform-specific tools.
@@ -15,13 +33,13 @@ export class PlatformTools {
     /**
      * Type of the currently running platform.
      */
-    static type: "browser"|"node" = "node";
+    static type: "browser"|"deno" = "deno";
 
     /**
      * Gets global variable where global stuff can be stored.
      */
     static getGlobalVariable(): any {
-        return global;
+        return window;
     }
 
     /**
@@ -34,117 +52,7 @@ export class PlatformTools {
         // this is useful when we are using typeorm package globally installed and it accesses drivers
         // that are not installed globally
 
-        try {
-
-            // switch case to explicit require statements for webpack compatibility.
-
-            switch (name) {
-
-                /**
-                * mongodb
-                */
-                case "mongodb":
-                    return require("mongodb");
-
-                /**
-                * hana
-                */
-                case "@sap/hdbext":
-                    return require("@sap/hdbext");
-
-                /**
-                * mysql
-                */
-                case "mysql":
-                    return require("mysql");
-
-                case "mysql2":
-                    return require("mysql2");
-
-                /**
-                * oracle
-                */
-                case "oracledb":
-                    return require("oracledb");
-
-                /**
-                * postgres
-                */
-                case "pg":
-                    return require("pg");
-
-                case "pg-native":
-                    return require("pg-native");
-
-                case "pg-query-stream":
-                    return require("pg-query-stream");
-
-                /**
-                * redis
-                */
-                case "redis":
-                    return require("redis");
-
-                /**
-                 * ioredis
-                 */
-                case "ioredis":
-                case "ioredis/cluster":
-                    return require("ioredis");
-
-                /**
-                * sqlite
-                */
-                case "sqlite3":
-                    return require("sqlite3");
-
-                /**
-                * sql.js
-                */
-                case "sql.js":
-                    return require("sql.js");
-
-                /**
-                * sqlserver
-                */
-                case "mssql":
-                    return require("mssql");
-
-                /**
-                * other modules
-                */
-                case "mkdirp":
-                    return require("mkdirp");
-
-                case "path":
-                    return require("path");
-
-                case "debug":
-                    return require("debug");
-
-                case "app-root-path":
-                    return require("app-root-path");
-
-                case "glob":
-                    return require("glob");
-
-                case "typeorm-aurora-data-api-driver":
-                    return require("typeorm-aurora-data-api-driver");
-                /**
-                * default
-                */
-                default:
-                    return require(name);
-
-            }
-
-        } catch (err) {
-            if (!path.isAbsolute(name) && name.substr(0, 2) !== "./" && name.substr(0, 3) !== "../") {
-                return require(path.resolve(process.cwd() + "/node_modules/" + name));
-            }
-
-            throw err;
-        }
+        throw new NotImplementedError('PlatformTools.load');
     }
 
     /**
@@ -176,71 +84,60 @@ export class PlatformTools {
     }
 
     static readFileSync(filename: string): Buffer {
-        return fs.readFileSync(filename);
+        throw new NotImplementedError('PlatformTools.readFileSync');
     }
 
     static appendFileSync(filename: string, data: any): void {
-        fs.appendFileSync(filename, data);
+        throw new NotImplementedError('PlatformTools.appendFileSync');
     }
 
     static async writeFile(path: string, data: any): Promise<void> {
-        return new Promise<void>((ok, fail) => {
-            fs.writeFile(path, data, (err) => {
-                if (err) fail(err);
-                ok();
-            });
-        });
+        throw new NotImplementedError('PlatformTools.writeFile');
     }
 
     /**
      * Gets environment variable.
      */
     static getEnvVariable(name: string): any {
-        return process.env[name];
+        return Deno.env()[name];
     }
 
     /**
      * Highlights sql string to be print in the console.
      */
     static highlightSql(sql: string) {
-        const theme: Theme = {
-            "keyword": chalk.blueBright,
-            "literal": chalk.blueBright,
-            "string": chalk.white,
-            "type": chalk.magentaBright,
-            "built_in": chalk.magentaBright,
-            "comment": chalk.gray,
-        };
-        return highlight(sql, { theme: theme, language: "sql" });
+        console.warn('PlatformTools.highlightSql is not implemented');
+        return sql;
     }
 
     /**
      * Highlights json string to be print in the console.
      */
     static highlightJson(json: string) {
-        return highlight(json, { language: "json" });
+        console.warn('PlatformTools.highlightSql is not implemented');
+        return json;
     }
 
     /**
      * Logging functions needed by AdvancedConsoleLogger
      */
     static logInfo(prefix: string, info: any) {
-        console.log(chalk.gray.underline(prefix), info);
+        console.log(colors.underline(colors.gray(prefix)), info);
     }
 
     static logError(prefix: string, error: any) {
-        console.log(chalk.underline.red(prefix), error);
+        console.log(colors.underline(colors.red(prefix)), error);
     }
 
     static logWarn(prefix: string, warning: any) {
-        console.log(chalk.underline.yellow(prefix), warning);
+        console.log(colors.underline(colors.yellow(prefix)), warning);
     }
 
     static log(message: string) {
-        console.log(chalk.underline(message));
+        console.log(colors.underline(message));
     }
 
     static warn(message: string) {
-        return chalk.yellow(message);
+        return colors.yellow(message);
     }
 }

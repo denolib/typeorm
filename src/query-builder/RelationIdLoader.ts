@@ -1,6 +1,6 @@
-import {Connection, ObjectLiteral} from "../";
-import {RelationMetadata} from "../metadata/RelationMetadata";
-import {ColumnMetadata} from "../metadata/ColumnMetadata";
+import {Connection, ObjectLiteral} from "../index.ts";
+import {RelationMetadata} from "../metadata/RelationMetadata.ts";
+import {ColumnMetadata} from "../metadata/ColumnMetadata.ts";
 
 /**
  * Loads relation ids for the given entities.

@@ -1,4 +1,4 @@
-import {EntitySchemaOptions} from "./EntitySchemaOptions";
+import {EntitySchemaOptions} from "./EntitySchemaOptions.ts";
 
 /**
  * Interface for entity metadata mappings stored inside "schemas" instead of models decorated by decorators.

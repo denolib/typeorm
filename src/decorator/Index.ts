@@ -1,5 +1,5 @@
-import {getMetadataArgsStorage, IndexOptions} from "../";
-import {IndexMetadataArgs} from "../metadata-args/IndexMetadataArgs";
+import {getMetadataArgsStorage, IndexOptions} from "../index.ts";
+import {IndexMetadataArgs} from "../metadata-args/IndexMetadataArgs.ts";
 
 /**
  * Creates a database index.

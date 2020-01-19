@@ -1,9 +1,9 @@
-import {RelationMetadata} from "../../metadata/RelationMetadata";
-import {QueryBuilderUtils} from "../QueryBuilderUtils";
-import {EntityMetadata} from "../../metadata/EntityMetadata";
-import {QueryExpressionMap} from "../QueryExpressionMap";
-import {SelectQueryBuilder} from "../SelectQueryBuilder";
-import {ObjectUtils} from "../../util/ObjectUtils";
+import {RelationMetadata} from "../../metadata/RelationMetadata.ts";
+import {QueryBuilderUtils} from "../QueryBuilderUtils.ts";
+import {EntityMetadata} from "../../metadata/EntityMetadata.ts";
+import {QueryExpressionMap} from "../QueryExpressionMap.ts";
+import {SelectQueryBuilder} from "../SelectQueryBuilder.ts";
+import {ObjectUtils} from "../../util/ObjectUtils.ts";
 
 /**
  * Stores all join relation id attributes which will be used to build a JOIN query.

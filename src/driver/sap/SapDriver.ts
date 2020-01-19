@@ -1,16 +1,16 @@
-import {ColumnType, Connection, EntityMetadata, ObjectLiteral, TableColumn} from "../..";
-import {DriverPackageNotInstalledError} from "../../error/DriverPackageNotInstalledError";
-import {ColumnMetadata} from "../../metadata/ColumnMetadata";
-import {PlatformTools} from "../../platform/PlatformTools";
-import {RdbmsSchemaBuilder} from "../../schema-builder/RdbmsSchemaBuilder";
-import {ApplyValueTransformers} from "../../util/ApplyValueTransformers";
-import {DateUtils} from "../../util/DateUtils";
-import {OrmUtils} from "../../util/OrmUtils";
-import {Driver} from "../Driver";
-import {DataTypeDefaults} from "../types/DataTypeDefaults";
-import {MappedColumnTypes} from "../types/MappedColumnTypes";
-import {SapConnectionOptions} from "./SapConnectionOptions";
-import {SapQueryRunner} from "./SapQueryRunner";
+import {ColumnType, Connection, EntityMetadata, ObjectLiteral, TableColumn} from "../../index.ts";
+import {DriverPackageNotInstalledError} from "../../error/DriverPackageNotInstalledError.ts";
+import {ColumnMetadata} from "../../metadata/ColumnMetadata.ts";
+import {PlatformTools} from "../../platform/PlatformTools.ts";
+import {RdbmsSchemaBuilder} from "../../schema-builder/RdbmsSchemaBuilder.ts";
+import {ApplyValueTransformers} from "../../util/ApplyValueTransformers.ts";
+import {DateUtils} from "../../util/DateUtils.ts";
+import {OrmUtils} from "../../util/OrmUtils.ts";
+import {Driver} from "../Driver.ts";
+import {DataTypeDefaults} from "../types/DataTypeDefaults.ts";
+import {MappedColumnTypes} from "../types/MappedColumnTypes.ts";
+import {SapConnectionOptions} from "./SapConnectionOptions.ts";
+import {SapQueryRunner} from "./SapQueryRunner.ts";
 
 /**
  * Organizes communication with SAP Hana DBMS.
@@ -193,7 +193,7 @@ export class SapDriver implements Driver {
 
     constructor(connection: Connection) {
         this.connection = connection;
-        this.options = connection.options as SapConnectionOptions;
+        this.options = connection.options as any // TODO(uki00a) avoid using any;
         this.loadDependencies();
     }
 
@@ -403,9 +403,6 @@ export class SapDriver implements Driver {
 
         } else if (column.type === Boolean) {
             return "boolean";
-
-        } else if ((column.type as any) === Buffer) {
-            return "blob";
 
         } else if (column.type === "uuid") {
             return "nvarchar";

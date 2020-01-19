@@ -1,21 +1,21 @@
-import {Driver} from "../Driver";
-import {ConnectionIsNotSetError} from "../../error/ConnectionIsNotSetError";
-import {DriverPackageNotInstalledError} from "../../error/DriverPackageNotInstalledError";
-import {MongoQueryRunner} from "./MongoQueryRunner";
-import {ObjectLiteral} from "../../common/ObjectLiteral";
-import {ColumnMetadata} from "../../metadata/ColumnMetadata";
-import {PlatformTools} from "../../platform/PlatformTools";
-import {Connection} from "../../connection/Connection";
-import {MongoConnectionOptions} from "./MongoConnectionOptions";
-import {MappedColumnTypes} from "../types/MappedColumnTypes";
-import {ColumnType} from "../types/ColumnTypes";
-import {MongoSchemaBuilder} from "../../schema-builder/MongoSchemaBuilder";
-import {DataTypeDefaults} from "../types/DataTypeDefaults";
-import {TableColumn} from "../../schema-builder/table/TableColumn";
-import {ConnectionOptions} from "../../connection/ConnectionOptions";
-import {EntityMetadata} from "../../metadata/EntityMetadata";
-import {ObjectUtils} from "../../util/ObjectUtils";
-import {ApplyValueTransformers} from "../../util/ApplyValueTransformers";
+import {Driver} from "../Driver.ts";
+import {ConnectionIsNotSetError} from "../../error/ConnectionIsNotSetError.ts";
+import {DriverPackageNotInstalledError} from "../../error/DriverPackageNotInstalledError.ts";
+import {MongoQueryRunner} from "./MongoQueryRunner.ts";
+import {ObjectLiteral} from "../../common/ObjectLiteral.ts";
+import {ColumnMetadata} from "../../metadata/ColumnMetadata.ts";
+import {PlatformTools} from "../../platform/PlatformTools.ts";
+import {Connection} from "../../connection/Connection.ts";
+import {MongoConnectionOptions} from "./MongoConnectionOptions.ts";
+import {MappedColumnTypes} from "../types/MappedColumnTypes.ts";
+import {ColumnType} from "../types/ColumnTypes.ts";
+import {MongoSchemaBuilder} from "../../schema-builder/MongoSchemaBuilder.ts";
+import {DataTypeDefaults} from "../types/DataTypeDefaults.ts";
+import {TableColumn} from "../../schema-builder/table/TableColumn.ts";
+import {ConnectionOptions} from "../../connection/ConnectionOptions.ts";
+import {EntityMetadata} from "../../metadata/EntityMetadata.ts";
+import {ObjectUtils} from "../../util/ObjectUtils.ts";
+import {ApplyValueTransformers} from "../../util/ApplyValueTransformers.ts";
 
 /**
  * Organizes communication with MongoDB.
@@ -201,7 +201,7 @@ export class MongoDriver implements Driver {
     // -------------------------------------------------------------------------
 
     constructor(protected connection: Connection) {
-        this.options = connection.options as MongoConnectionOptions;
+        this.options = connection.options as any; // TODO(uki00a) avoid using any
 
         // validate options to make sure everything is correct and driver will be able to establish connection
         this.validateOptions(connection.options);

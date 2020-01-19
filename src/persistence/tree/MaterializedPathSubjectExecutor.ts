@@ -1,5 +1,5 @@
-import {Subject} from "../Subject";
-import {QueryRunner} from "../../query-runner/QueryRunner";
+import {Subject} from "../Subject.ts";
+import {QueryRunner} from "../../query-runner/QueryRunner.ts";
 
 /**
  * Executes subject operations for materialized-path tree entities.

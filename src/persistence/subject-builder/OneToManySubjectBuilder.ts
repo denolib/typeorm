@@ -1,8 +1,8 @@
-import {Subject} from "../Subject";
-import {OrmUtils} from "../../util/OrmUtils";
-import {ObjectLiteral} from "../../common/ObjectLiteral";
-import {EntityMetadata} from "../../metadata/EntityMetadata";
-import {RelationMetadata} from "../../metadata/RelationMetadata";
+import {Subject} from "../Subject.ts";
+import {OrmUtils} from "../../util/OrmUtils.ts";
+import {ObjectLiteral} from "../../common/ObjectLiteral.ts";
+import {EntityMetadata} from "../../metadata/EntityMetadata.ts";
+import {RelationMetadata} from "../../metadata/RelationMetadata.ts";
 
 /**
  * Builds operations needs to be executed for one-to-many relations of the given subjects.

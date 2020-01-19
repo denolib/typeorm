@@ -1,4 +1,4 @@
-import { ObjectUtils } from "../util/ObjectUtils";
+import { ObjectUtils } from "../util/ObjectUtils.ts";
 
 /**
  * Thrown when query execution has failed.

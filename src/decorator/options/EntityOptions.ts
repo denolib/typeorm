@@ -1,4 +1,4 @@
-import {OrderByCondition} from "../../find-options/OrderByCondition";
+import {OrderByCondition} from "../../find-options/OrderByCondition.ts";
 
 /**
  * Describes all entity's options.

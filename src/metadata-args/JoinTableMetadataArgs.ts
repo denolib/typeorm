@@ -1,4 +1,4 @@
-import {JoinColumnMetadataArgs} from "./JoinColumnMetadataArgs";
+import {JoinColumnMetadataArgs} from "./JoinColumnMetadataArgs.ts";
 
 /**
  * Arguments for JoinTableMetadata class.

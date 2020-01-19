@@ -1,6 +1,6 @@
-import {ColumnType} from "../../driver/types/ColumnTypes";
-import {ValueTransformer} from "./ValueTransformer";
-import { ColumnCommonOptions } from "./ColumnCommonOptions";
+import {ColumnType} from "../../driver/types/ColumnTypes.ts";
+import {ValueTransformer} from "./ValueTransformer.ts";
+import { ColumnCommonOptions } from "./ColumnCommonOptions.ts";
 
 /**
  * Describes all column's options.

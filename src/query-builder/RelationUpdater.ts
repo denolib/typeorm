@@ -1,8 +1,8 @@
-import {SapDriver} from "../driver/sap/SapDriver";
-import {QueryBuilder} from "./QueryBuilder";
-import {ObjectLiteral} from "../common/ObjectLiteral";
-import {QueryExpressionMap} from "./QueryExpressionMap";
-import {OracleDriver} from "../driver/oracle/OracleDriver";
+import {SapDriver} from "../driver/sap/SapDriver.ts";
+import {QueryBuilder} from "./QueryBuilder.ts";
+import {ObjectLiteral} from "../common/ObjectLiteral.ts";
+import {QueryExpressionMap} from "./QueryExpressionMap.ts";
+import {OracleDriver} from "../driver/oracle/OracleDriver.ts";
 
 /**
  * Allows to work with entity relations and perform specific operations with those relations.

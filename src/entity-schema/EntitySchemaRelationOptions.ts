@@ -1,10 +1,10 @@
-import {JoinColumnOptions} from "../decorator/options/JoinColumnOptions";
-import {RelationType} from "../metadata/types/RelationTypes";
-import {JoinTableMultipleColumnsOptions} from "../decorator/options/JoinTableMultipleColumnsOptions";
-import {DeferrableType} from "../metadata/types/DeferrableType";
-import {OnDeleteType} from "../metadata/types/OnDeleteType";
-import {OnUpdateType} from "../metadata/types/OnUpdateType";
-import {JoinTableOptions} from "../index";
+import {JoinColumnOptions} from "../decorator/options/JoinColumnOptions.ts";
+import {RelationType} from "../metadata/types/RelationTypes.ts";
+import {JoinTableMultipleColumnsOptions} from "../decorator/options/JoinTableMultipleColumnsOptions.ts";
+import {DeferrableType} from "../metadata/types/DeferrableType.ts";
+import {OnDeleteType} from "../metadata/types/OnDeleteType.ts";
+import {OnUpdateType} from "../metadata/types/OnUpdateType.ts";
+import {JoinTableOptions} from "../index.ts";
 
 export interface EntitySchemaRelationOptions {
 

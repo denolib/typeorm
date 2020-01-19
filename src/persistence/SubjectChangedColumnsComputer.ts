@@ -1,8 +1,8 @@
-import {Subject} from "./Subject";
-import {DateUtils} from "../util/DateUtils";
-import {ObjectLiteral} from "../common/ObjectLiteral";
-import {EntityMetadata} from "../metadata/EntityMetadata";
-import {OrmUtils} from "../util/OrmUtils";
+import {Subject} from "./Subject.ts";
+import {DateUtils} from "../util/DateUtils.ts";
+import {ObjectLiteral} from "../common/ObjectLiteral.ts";
+import {EntityMetadata} from "../metadata/EntityMetadata.ts";
+import {OrmUtils} from "../util/OrmUtils.ts";
 
 /**
  * Finds what columns are changed in the subject entities.

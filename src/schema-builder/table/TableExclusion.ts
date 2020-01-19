@@ -1,5 +1,5 @@
-import {TableExclusionOptions} from "../options/TableExclusionOptions";
-import {ExclusionMetadata} from "../../metadata/ExclusionMetadata";
+import {TableExclusionOptions} from "../options/TableExclusionOptions.ts";
+import {ExclusionMetadata} from "../../metadata/ExclusionMetadata.ts";
 
 /**
  * Database's table exclusion constraint stored in this class.

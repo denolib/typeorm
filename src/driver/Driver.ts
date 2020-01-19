@@ -1,13 +1,13 @@
-import {QueryRunner} from "../query-runner/QueryRunner";
-import {ColumnMetadata} from "../metadata/ColumnMetadata";
-import {ObjectLiteral} from "../common/ObjectLiteral";
-import {ColumnType} from "./types/ColumnTypes";
-import {MappedColumnTypes} from "./types/MappedColumnTypes";
-import {SchemaBuilder} from "../schema-builder/SchemaBuilder";
-import {DataTypeDefaults} from "./types/DataTypeDefaults";
-import {BaseConnectionOptions} from "../connection/BaseConnectionOptions";
-import {TableColumn} from "../schema-builder/table/TableColumn";
-import {EntityMetadata} from "../metadata/EntityMetadata";
+import {QueryRunner} from "../query-runner/QueryRunner.ts";
+import {ColumnMetadata} from "../metadata/ColumnMetadata.ts";
+import {ObjectLiteral} from "../common/ObjectLiteral.ts";
+import {ColumnType} from "./types/ColumnTypes.ts";
+import {MappedColumnTypes} from "./types/MappedColumnTypes.ts";
+import {SchemaBuilder} from "../schema-builder/SchemaBuilder.ts";
+import {DataTypeDefaults} from "./types/DataTypeDefaults.ts";
+import {BaseConnectionOptions} from "../connection/BaseConnectionOptions.ts";
+import {TableColumn} from "../schema-builder/table/TableColumn.ts";
+import {EntityMetadata} from "../metadata/EntityMetadata.ts";
 
 /**
  * Driver organizes TypeORM communication with specific database management system.

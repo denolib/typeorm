@@ -1,24 +1,24 @@
-import {Driver} from "../Driver";
-import {ConnectionIsNotSetError} from "../../error/ConnectionIsNotSetError";
-import {DriverPackageNotInstalledError} from "../../error/DriverPackageNotInstalledError";
-import {DriverUtils} from "../DriverUtils";
-import {SqlServerQueryRunner} from "./SqlServerQueryRunner";
-import {ObjectLiteral} from "../../common/ObjectLiteral";
-import {ColumnMetadata} from "../../metadata/ColumnMetadata";
-import {DateUtils} from "../../util/DateUtils";
-import {PlatformTools} from "../../platform/PlatformTools";
-import {Connection} from "../../connection/Connection";
-import {RdbmsSchemaBuilder} from "../../schema-builder/RdbmsSchemaBuilder";
-import {SqlServerConnectionOptions} from "./SqlServerConnectionOptions";
-import {MappedColumnTypes} from "../types/MappedColumnTypes";
-import {ColumnType} from "../types/ColumnTypes";
-import {DataTypeDefaults} from "../types/DataTypeDefaults";
-import {MssqlParameter} from "./MssqlParameter";
-import {TableColumn} from "../../schema-builder/table/TableColumn";
-import {SqlServerConnectionCredentialsOptions} from "./SqlServerConnectionCredentialsOptions";
-import {EntityMetadata} from "../../metadata/EntityMetadata";
-import {OrmUtils} from "../../util/OrmUtils";
-import {ApplyValueTransformers} from "../../util/ApplyValueTransformers";
+import {Driver} from "../Driver.ts";
+import {ConnectionIsNotSetError} from "../../error/ConnectionIsNotSetError.ts";
+import {DriverPackageNotInstalledError} from "../../error/DriverPackageNotInstalledError.ts";
+import {DriverUtils} from "../DriverUtils.ts";
+import {SqlServerQueryRunner} from "./SqlServerQueryRunner.ts";
+import {ObjectLiteral} from "../../common/ObjectLiteral.ts";
+import {ColumnMetadata} from "../../metadata/ColumnMetadata.ts";
+import {DateUtils} from "../../util/DateUtils.ts";
+import {PlatformTools} from "../../platform/PlatformTools.ts";
+import {Connection} from "../../connection/Connection.ts";
+import {RdbmsSchemaBuilder} from "../../schema-builder/RdbmsSchemaBuilder.ts";
+import {SqlServerConnectionOptions} from "./SqlServerConnectionOptions.ts";
+import {MappedColumnTypes} from "../types/MappedColumnTypes.ts";
+import {ColumnType} from "../types/ColumnTypes.ts";
+import {DataTypeDefaults} from "../types/DataTypeDefaults.ts";
+import {MssqlParameter} from "./MssqlParameter.ts";
+import {TableColumn} from "../../schema-builder/table/TableColumn.ts";
+import {SqlServerConnectionCredentialsOptions} from "./SqlServerConnectionCredentialsOptions.ts";
+import {EntityMetadata} from "../../metadata/EntityMetadata.ts";
+import {OrmUtils} from "../../util/OrmUtils.ts";
+import {ApplyValueTransformers} from "../../util/ApplyValueTransformers.ts";
 
 /**
  * Organizes communication with SQL Server DBMS.
@@ -213,7 +213,7 @@ export class SqlServerDriver implements Driver {
 
     constructor(connection: Connection) {
         this.connection = connection;
-        this.options = connection.options as SqlServerConnectionOptions;
+        this.options = connection.options as any; // TODO(uki00a) avoid using any
         this.isReplicated = this.options.replication ? true : false;
 
         // load mssql package
@@ -458,9 +458,6 @@ export class SqlServerDriver implements Driver {
 
         } else if (column.type === Boolean) {
             return "bit";
-
-        } else if ((column.type as any) === Buffer) {
-            return "binary";
 
         } else if (column.type === "uuid") {
             return "uniqueidentifier";

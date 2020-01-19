@@ -1,5 +1,5 @@
-import {getMetadataArgsStorage, SelectQueryBuilder} from "../../";
-import {RelationIdMetadataArgs} from "../../metadata-args/RelationIdMetadataArgs";
+import {getMetadataArgsStorage, SelectQueryBuilder} from "../../index.ts";
+import {RelationIdMetadataArgs} from "../../metadata-args/RelationIdMetadataArgs.ts";
 
 /**
  * Special decorator used to extract relation id into separate entity property.

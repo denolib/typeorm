@@ -1,5 +1,5 @@
-import {getMetadataArgsStorage} from "../";
-import {GeneratedMetadataArgs} from "../metadata-args/GeneratedMetadataArgs";
+import {getMetadataArgsStorage} from "../index.ts";
+import {GeneratedMetadataArgs} from "../metadata-args/GeneratedMetadataArgs.ts";
 
 /**
  * Marks a column to generate a value on entity insertion.

@@ -1,6 +1,6 @@
-import {EntityMetadata} from "./EntityMetadata";
-import {NamingStrategyInterface} from "../naming-strategy/NamingStrategyInterface";
-import {CheckMetadataArgs} from "../metadata-args/CheckMetadataArgs";
+import {EntityMetadata} from "./EntityMetadata.ts";
+import {NamingStrategyInterface} from "../naming-strategy/NamingStrategyInterface.ts";
+import {CheckMetadataArgs} from "../metadata-args/CheckMetadataArgs.ts";
 
 /**
  * Check metadata contains all information about table's check constraints.

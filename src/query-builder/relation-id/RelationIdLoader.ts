@@ -1,9 +1,9 @@
-import {RelationIdAttribute} from "./RelationIdAttribute";
-import {Connection} from "../../connection/Connection";
-import {RelationIdLoadResult} from "./RelationIdLoadResult";
-import {ObjectLiteral} from "../../common/ObjectLiteral";
-import {QueryRunner} from "../../query-runner/QueryRunner";
-import {DriverUtils} from "../../driver/DriverUtils";
+import {RelationIdAttribute} from "./RelationIdAttribute.ts";
+import {Connection} from "../../connection/Connection.ts";
+import {RelationIdLoadResult} from "./RelationIdLoadResult.ts";
+import {ObjectLiteral} from "../../common/ObjectLiteral.ts";
+import {QueryRunner} from "../../query-runner/QueryRunner.ts";
+import {DriverUtils} from "../../driver/DriverUtils.ts";
 
 export class RelationIdLoader {
 

@@ -1,5 +1,5 @@
-import {getMetadataArgsStorage} from "../";
-import {ExclusionMetadataArgs} from "../metadata-args/ExclusionMetadataArgs";
+import {getMetadataArgsStorage} from "../index.ts";
+import {ExclusionMetadataArgs} from "../metadata-args/ExclusionMetadataArgs.ts";
 
 /**
  * Creates a database exclusion.

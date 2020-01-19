@@ -1,5 +1,5 @@
-import {Connection, ObjectLiteral, QueryRunner} from "../";
-import {RelationMetadata} from "../metadata/RelationMetadata";
+import {Connection, ObjectLiteral, QueryRunner} from "../index.ts";
+import {RelationMetadata} from "../metadata/RelationMetadata.ts";
 
 /**
  * Wraps entities and creates getters/setters for their relations

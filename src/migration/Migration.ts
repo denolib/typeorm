@@ -1,4 +1,4 @@
-import {MigrationInterface} from "./MigrationInterface";
+import {MigrationInterface} from "./MigrationInterface.ts";
 
 /**
  * Represents entity of the migration in the database.

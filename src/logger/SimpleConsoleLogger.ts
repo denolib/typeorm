@@ -1,6 +1,6 @@
-import {LoggerOptions} from "./LoggerOptions";
-import {QueryRunner} from "../query-runner/QueryRunner";
-import {Logger} from "./Logger";
+import {LoggerOptions} from "./LoggerOptions.ts";
+import {QueryRunner} from "../query-runner/QueryRunner.ts";
+import {Logger} from "./Logger.ts";
 
 /**
  * Performs logging of the events in TypeORM.

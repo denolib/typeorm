@@ -1,18 +1,18 @@
-import {TableColumn} from "../schema-builder/table/TableColumn";
-import {Table} from "../schema-builder/table/Table";
-import {TableForeignKey} from "../schema-builder/table/TableForeignKey";
-import {TableIndex} from "../schema-builder/table/TableIndex";
-import {Connection} from "../connection/Connection";
-import {ReadStream} from "../platform/PlatformTools";
-import {EntityManager} from "../entity-manager/EntityManager";
-import {ObjectLiteral} from "../common/ObjectLiteral";
-import {SqlInMemory} from "../driver/SqlInMemory";
-import {TableUnique} from "../schema-builder/table/TableUnique";
-import {View} from "../schema-builder/view/View";
-import {Broadcaster} from "../subscriber/Broadcaster";
-import {TableCheck} from "../schema-builder/table/TableCheck";
-import {IsolationLevel} from "../driver/types/IsolationLevel";
-import {TableExclusion} from "../schema-builder/table/TableExclusion";
+import {TableColumn} from "../schema-builder/table/TableColumn.ts";
+import {Table} from "../schema-builder/table/Table.ts";
+import {TableForeignKey} from "../schema-builder/table/TableForeignKey.ts";
+import {TableIndex} from "../schema-builder/table/TableIndex.ts";
+import {Connection} from "../connection/Connection.ts";
+import {ReadStream} from "../platform/PlatformTools.ts";
+import {EntityManager} from "../entity-manager/EntityManager.ts";
+import {ObjectLiteral} from "../common/ObjectLiteral.ts";
+import {SqlInMemory} from "../driver/SqlInMemory.ts";
+import {TableUnique} from "../schema-builder/table/TableUnique.ts";
+import {View} from "../schema-builder/view/View.ts";
+import {Broadcaster} from "../subscriber/Broadcaster.ts";
+import {TableCheck} from "../schema-builder/table/TableCheck.ts";
+import {IsolationLevel} from "../driver/types/IsolationLevel.ts";
+import {TableExclusion} from "../schema-builder/table/TableExclusion.ts";
 
 /**
  * Runs queries on a single database connection.

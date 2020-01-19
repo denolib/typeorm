@@ -1,6 +1,6 @@
-import {PlatformTools} from "../platform/PlatformTools";
-import {EntitySchema} from "../index";
-import {Logger} from "../logger/Logger";
+import {PlatformTools} from "../platform/PlatformTools.ts";
+import {EntitySchema} from "../index.ts";
+import {Logger} from "../logger/Logger.ts";
 /**
  * Loads all exported classes from the given directory.
  */

@@ -1,6 +1,6 @@
-import {Connection, SelectQueryBuilder} from "..";
-import {OrderByCondition} from "../find-options/OrderByCondition";
-import {TableType} from "../metadata/types/TableTypes";
+import {Connection, SelectQueryBuilder} from "../index.ts";
+import {OrderByCondition} from "../find-options/OrderByCondition.ts";
+import {TableType} from "../metadata/types/TableTypes.ts";
 
 /**
  * Arguments for TableMetadata class, helps to construct an TableMetadata object.

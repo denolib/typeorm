@@ -1,6 +1,6 @@
-import {QueryBuilder} from "./QueryBuilder";
-import {ObjectLiteral} from "../common/ObjectLiteral";
-import {QueryExpressionMap} from "./QueryExpressionMap";
+import {QueryBuilder} from "./QueryBuilder.ts";
+import {ObjectLiteral} from "../common/ObjectLiteral.ts";
+import {QueryExpressionMap} from "./QueryExpressionMap.ts";
 
 /**
  * Allows to work with entity relations and perform specific operations with those relations.

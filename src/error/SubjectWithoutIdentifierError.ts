@@ -1,4 +1,4 @@
-import {Subject} from "../persistence/Subject";
+import {Subject} from "../persistence/Subject.ts";
 
 /**
  * Thrown when operation is going to be executed on a subject without identifier.

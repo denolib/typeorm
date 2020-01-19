@@ -1,5 +1,5 @@
-import {getMetadataArgsStorage, SelectQueryBuilder} from "../../";
-import {RelationCountMetadataArgs} from "../../metadata-args/RelationCountMetadataArgs";
+import {getMetadataArgsStorage, SelectQueryBuilder} from "../../index.ts";
+import {RelationCountMetadataArgs} from "../../metadata-args/RelationCountMetadataArgs.ts";
 
 /**
  * Holds a number of children in the closure table of the column.

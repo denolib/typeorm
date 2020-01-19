@@ -1,9 +1,9 @@
-import {FindManyOptions} from "./FindManyOptions";
-import {FindOneOptions} from "./FindOneOptions";
-import {SelectQueryBuilder} from "../query-builder/SelectQueryBuilder";
-import {FindRelationsNotFoundError} from "../error/FindRelationsNotFoundError";
-import {EntityMetadata} from "../metadata/EntityMetadata";
-import {shorten} from "../util/StringUtils";
+import {FindManyOptions} from "./FindManyOptions.ts";
+import {FindOneOptions} from "./FindOneOptions.ts";
+import {SelectQueryBuilder} from "../query-builder/SelectQueryBuilder.ts";
+import {FindRelationsNotFoundError} from "../error/FindRelationsNotFoundError.ts";
+import {EntityMetadata} from "../metadata/EntityMetadata.ts";
+import {shorten} from "../util/StringUtils.ts";
 
 /**
  * Utilities to work with FindOptions.

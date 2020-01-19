@@ -1,4 +1,4 @@
-import {SelectQueryBuilder} from "../query-builder/SelectQueryBuilder";
+import {SelectQueryBuilder} from "../query-builder/SelectQueryBuilder.ts";
 /**
  * Arguments for RelationIdMetadataArgs class.
  */

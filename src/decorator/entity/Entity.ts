@@ -1,5 +1,5 @@
-import {EntityOptions, getMetadataArgsStorage} from "../../";
-import {TableMetadataArgs} from "../../metadata-args/TableMetadataArgs";
+import {EntityOptions, getMetadataArgsStorage} from "../../index.ts";
+import {TableMetadataArgs} from "../../metadata-args/TableMetadataArgs.ts";
 
 /**
  * This decorator is used to mark classes that will be an entity (table or document depend on database type).

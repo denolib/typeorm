@@ -1,7 +1,7 @@
-import {UpdateEvent} from "./event/UpdateEvent";
-import {RemoveEvent} from "./event/RemoveEvent";
-import {InsertEvent} from "./event/InsertEvent";
-import {LoadEvent} from "./event/LoadEvent";
+import {UpdateEvent} from "./event/UpdateEvent.ts";
+import {RemoveEvent} from "./event/RemoveEvent.ts";
+import {InsertEvent} from "./event/InsertEvent.ts";
+import {LoadEvent} from "./event/LoadEvent.ts";
 
 /**
  * Classes that implement this interface are subscribers that subscribe for the specific events in the ORM.

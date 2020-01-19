@@ -1,14 +1,14 @@
-import {AbstractSqliteDriver} from "../sqlite-abstract/AbstractSqliteDriver";
-import {SqljsConnectionOptions} from "./SqljsConnectionOptions";
-import {SqljsQueryRunner} from "./SqljsQueryRunner";
-import {QueryRunner} from "../../query-runner/QueryRunner";
-import {Connection} from "../../connection/Connection";
-import {DriverPackageNotInstalledError} from "../../error/DriverPackageNotInstalledError";
-import {DriverOptionNotSetError} from "../../error/DriverOptionNotSetError";
-import {PlatformTools} from "../../platform/PlatformTools";
-import {EntityMetadata} from "../../metadata/EntityMetadata";
-import {OrmUtils} from "../../util/OrmUtils";
-import {ObjectLiteral} from "../../common/ObjectLiteral";
+import {AbstractSqliteDriver} from "../sqlite-abstract/AbstractSqliteDriver.ts";
+import {SqljsConnectionOptions} from "./SqljsConnectionOptions.ts";
+import {SqljsQueryRunner} from "./SqljsQueryRunner.ts";
+import {QueryRunner} from "../../query-runner/QueryRunner.ts";
+import {Connection} from "../../connection/Connection.ts";
+import {DriverPackageNotInstalledError} from "../../error/DriverPackageNotInstalledError.ts";
+import {DriverOptionNotSetError} from "../../error/DriverOptionNotSetError.ts";
+import {PlatformTools} from "../../platform/PlatformTools.ts";
+import {EntityMetadata} from "../../metadata/EntityMetadata.ts";
+import {OrmUtils} from "../../util/OrmUtils.ts";
+import {ObjectLiteral} from "../../common/ObjectLiteral.ts";
 
 // This is needed to satisfy the typescript compiler.
 interface Window {
@@ -83,12 +83,12 @@ export class SqljsDriver extends AbstractSqliteDriver {
     async load(fileNameOrLocalStorageOrData: string | Uint8Array, checkIfFileOrLocalStorageExists: boolean = true): Promise<any> {
         if (typeof fileNameOrLocalStorageOrData === "string") {
             // content has to be loaded
-            if (PlatformTools.type === "node") {
+            if (PlatformTools.type === "deno") {
                 // Node.js
                 // fileNameOrLocalStorageOrData should be a path to the file
                 if (PlatformTools.fileExist(fileNameOrLocalStorageOrData)) {
                     const database = PlatformTools.readFileSync(fileNameOrLocalStorageOrData);
-                    return this.createDatabaseConnectionWithImport(database);
+                    return this.createDatabaseConnectionWithImport(database as any); // TODO(uki00a) avoid using any
                 }
                 else if (checkIfFileOrLocalStorageExists) {
                     throw new Error(`File ${fileNameOrLocalStorageOrData} does not exist`);
@@ -152,10 +152,10 @@ export class SqljsDriver extends AbstractSqliteDriver {
             path = this.options.location;
         }
 
-        if (PlatformTools.type === "node") {
+        if (PlatformTools.type === "deno") {
             try {
-                const content = new Buffer(this.databaseConnection.export());
-                await PlatformTools.writeFile(path, content);
+                const content = new /*Buffer*/Uint8Array(this.databaseConnection.export()); // TODO(uki00a) implement Buffer
+                await PlatformTools.writeFile(path, content as any); // TODO(uki00a) avoid using any
             }
             catch (e) {
                 throw new Error(`Could not save database, error: ${e}`);

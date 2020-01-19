@@ -1,7 +1,7 @@
-import {Subject} from "../Subject";
-import {QueryRunner} from "../../query-runner/QueryRunner";
-import {ObjectLiteral} from "../../common/ObjectLiteral";
-import {CannotAttachTreeChildrenEntityError} from "../../error/CannotAttachTreeChildrenEntityError";
+import {Subject} from "../Subject.ts";
+import {QueryRunner} from "../../query-runner/QueryRunner.ts";
+import {ObjectLiteral} from "../../common/ObjectLiteral.ts";
+import {CannotAttachTreeChildrenEntityError} from "../../error/CannotAttachTreeChildrenEntityError.ts";
 
 /**
  * Executes subject operations for closure entities.

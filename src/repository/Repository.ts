@@ -1,19 +1,19 @@
-import {EntityMetadata} from "../metadata/EntityMetadata";
-import {FindManyOptions} from "../find-options/FindManyOptions";
-import {ObjectLiteral} from "../common/ObjectLiteral";
-import {FindOneOptions} from "../find-options/FindOneOptions";
-import {DeepPartial} from "../common/DeepPartial";
-import {SaveOptions} from "./SaveOptions";
-import {RemoveOptions} from "./RemoveOptions";
-import {EntityManager} from "../entity-manager/EntityManager";
-import {QueryRunner} from "../query-runner/QueryRunner";
-import {SelectQueryBuilder} from "../query-builder/SelectQueryBuilder";
-import {DeleteResult} from "../query-builder/result/DeleteResult";
-import {UpdateResult} from "../query-builder/result/UpdateResult";
-import {InsertResult} from "../query-builder/result/InsertResult";
-import {QueryDeepPartialEntity} from "../query-builder/QueryPartialEntity";
-import {ObjectID} from "../driver/mongodb/typings";
-import {FindConditions} from "../find-options/FindConditions";
+import {EntityMetadata} from "../metadata/EntityMetadata.ts";
+import {FindManyOptions} from "../find-options/FindManyOptions.ts";
+import {ObjectLiteral} from "../common/ObjectLiteral.ts";
+import {FindOneOptions} from "../find-options/FindOneOptions.ts";
+import {DeepPartial} from "../common/DeepPartial.ts";
+import {SaveOptions} from "./SaveOptions.ts";
+import {RemoveOptions} from "./RemoveOptions.ts";
+import {EntityManager} from "../entity-manager/EntityManager.ts";
+import {QueryRunner} from "../query-runner/QueryRunner.ts";
+import {SelectQueryBuilder} from "../query-builder/SelectQueryBuilder.ts";
+import {DeleteResult} from "../query-builder/result/DeleteResult.ts";
+import {UpdateResult} from "../query-builder/result/UpdateResult.ts";
+import {InsertResult} from "../query-builder/result/InsertResult.ts";
+import {QueryDeepPartialEntity} from "../query-builder/QueryPartialEntity.ts";
+import {ObjectID} from "../driver/mongodb/typings.ts";
+import {FindConditions} from "../find-options/FindConditions.ts";
 
 /**
  * Repository is supposed to work with your entity objects. Find entities, insert, update, delete, etc.

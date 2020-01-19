@@ -1,6 +1,6 @@
-import {QueryBuilder} from "./QueryBuilder";
-import {RelationUpdater} from "./RelationUpdater";
-import {RelationRemover} from "./RelationRemover";
+import {QueryBuilder} from "./QueryBuilder.ts";
+import {RelationUpdater} from "./RelationUpdater.ts";
+import {RelationRemover} from "./RelationRemover.ts";
 
 /**
  * Allows to work with entity relations and perform specific operations with those relations.

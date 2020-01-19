@@ -1,5 +1,5 @@
-import {BaseConnectionOptions} from "../../connection/BaseConnectionOptions";
-import {SapConnectionCredentialsOptions} from "./SapConnectionCredentialsOptions";
+import {BaseConnectionOptions} from "../../connection/BaseConnectionOptions.ts";
+import {SapConnectionCredentialsOptions} from "./SapConnectionCredentialsOptions.ts";
 
 /**
  * SAP Hana specific connection options.

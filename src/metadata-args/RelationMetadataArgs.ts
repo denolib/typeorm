@@ -1,7 +1,7 @@
-import {RelationType} from "../metadata/types/RelationTypes";
-import {RelationOptions} from "../decorator/options/RelationOptions";
-import {PropertyTypeFactory} from "../metadata/types/PropertyTypeInFunction";
-import {RelationTypeInFunction} from "../metadata/types/RelationTypeInFunction";
+import {RelationType} from "../metadata/types/RelationTypes.ts";
+import {RelationOptions} from "../decorator/options/RelationOptions.ts";
+import {PropertyTypeFactory} from "../metadata/types/PropertyTypeInFunction.ts";
+import {RelationTypeInFunction} from "../metadata/types/RelationTypeInFunction.ts";
 
 /**
  * Arguments for RelationMetadata class.

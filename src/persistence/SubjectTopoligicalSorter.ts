@@ -1,5 +1,5 @@
-import {Subject} from "./Subject";
-import {EntityMetadata} from "../metadata/EntityMetadata";
+import {Subject} from "./Subject.ts";
+import {EntityMetadata} from "../metadata/EntityMetadata.ts";
 
 /**
  * Orders insert or remove subjects in proper order (using topological sorting)

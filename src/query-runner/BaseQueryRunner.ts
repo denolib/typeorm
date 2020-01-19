@@ -1,14 +1,12 @@
-import {PostgresConnectionOptions} from "../driver/postgres/PostgresConnectionOptions";
-import {Query} from "../driver/Query";
-import {SqlInMemory} from "../driver/SqlInMemory";
-import {SqlServerConnectionOptions} from "../driver/sqlserver/SqlServerConnectionOptions";
-import {View} from "../schema-builder/view/View";
-import {PromiseUtils} from "../util/PromiseUtils";
-import {Connection} from "../connection/Connection";
-import {Table} from "../schema-builder/table/Table";
-import {EntityManager} from "../entity-manager/EntityManager";
-import {TableColumn} from "../schema-builder/table/TableColumn";
-import {Broadcaster} from "../subscriber/Broadcaster";
+import {Query} from "../driver/Query.ts";
+import {SqlInMemory} from "../driver/SqlInMemory.ts";
+import {View} from "../schema-builder/view/View.ts";
+import {PromiseUtils} from "../util/PromiseUtils.ts";
+import {Connection} from "../connection/Connection.ts";
+import {Table} from "../schema-builder/table/Table.ts";
+import {EntityManager} from "../entity-manager/EntityManager.ts";
+import {TableColumn} from "../schema-builder/table/TableColumn.ts";
+import {Broadcaster} from "../subscriber/Broadcaster.ts";
 
 export abstract class BaseQueryRunner {
 
@@ -240,8 +238,7 @@ export abstract class BaseQueryRunner {
     }
 
     protected getTypeormMetadataTableName(): string {
-        const options = <SqlServerConnectionOptions|PostgresConnectionOptions>this.connection.driver.options;
-        return this.connection.driver.buildTableName("typeorm_metadata", options.schema, options.database);
+        return this.connection.driver.buildTableName("typeorm_metadata");
     }
 
     /**

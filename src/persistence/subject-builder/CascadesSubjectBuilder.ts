@@ -1,5 +1,5 @@
-import {Subject} from "../Subject";
-import {ObjectLiteral} from "../../common/ObjectLiteral";
+import {Subject} from "../Subject.ts";
+import {ObjectLiteral} from "../../common/ObjectLiteral.ts";
 
 /**
  * Finds all cascade operations of the given subject and cascade operations of the found cascaded subjects,

@@ -1,21 +1,14 @@
-import {CockroachDriver} from "../driver/cockroachdb/CockroachDriver";
-import {OracleDriver} from "../driver/oracle/OracleDriver";
-import {QueryBuilder} from "./QueryBuilder";
-import {ObjectLiteral} from "../common/ObjectLiteral";
-import {ObjectType} from "../common/ObjectType";
-import {Connection} from "../connection/Connection";
-import {QueryRunner} from "../query-runner/QueryRunner";
-import {SqlServerDriver} from "../driver/sqlserver/SqlServerDriver";
-import {PostgresDriver} from "../driver/postgres/PostgresDriver";
-import {WhereExpression} from "./WhereExpression";
-import {Brackets} from "./Brackets";
-import {DeleteResult} from "./result/DeleteResult";
-import {ReturningStatementNotSupportedError} from "../error/ReturningStatementNotSupportedError";
-import {SqljsDriver} from "../driver/sqljs/SqljsDriver";
-import {MysqlDriver} from "../driver/mysql/MysqlDriver";
-import {BroadcasterResult} from "../subscriber/BroadcasterResult";
-import {EntitySchema} from "../index";
-import {AuroraDataApiDriver} from "../driver/aurora-data-api/AuroraDataApiDriver";
+import {QueryBuilder} from "./QueryBuilder.ts";
+import {ObjectLiteral} from "../common/ObjectLiteral.ts";
+import {ObjectType} from "../common/ObjectType.ts";
+import {Connection} from "../connection/Connection.ts";
+import {QueryRunner} from "../query-runner/QueryRunner.ts";
+import {WhereExpression} from "./WhereExpression.ts";
+import {Brackets} from "./Brackets.ts";
+import {DeleteResult} from "./result/DeleteResult.ts";
+import {ReturningStatementNotSupportedError} from "../error/ReturningStatementNotSupportedError.ts";
+import {BroadcasterResult} from "../subscriber/BroadcasterResult.ts";
+import {EntitySchema} from "../index.ts";
 
 /**
  * Allows to build complex sql queries in a fashion way and execute those queries.
@@ -70,22 +63,7 @@ export class DeleteQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
             const deleteResult = new DeleteResult();
             const result = await queryRunner.query(sql, parameters);
 
-            const driver = queryRunner.connection.driver;
-            if (driver instanceof MysqlDriver || driver instanceof AuroraDataApiDriver) {
-                deleteResult.raw = result;
-                deleteResult.affected = result.affectedRows;
-
-            } else if (driver instanceof SqlServerDriver || driver instanceof PostgresDriver || driver instanceof CockroachDriver) {
-                deleteResult.raw = result[0] ? result[0] : null;
-                // don't return 0 because it could confuse. null means that we did not receive this value
-                deleteResult.affected = typeof result[1] === "number" ? result[1] : null;
-
-            } else if (driver instanceof OracleDriver) {
-                deleteResult.affected = result;
-
-            } else {
-                deleteResult.raw = result;
-            }
+            deleteResult.raw = result;
 
             // call after deletion methods in listeners and subscribers
             if (this.expressionMap.callListeners === true && this.expressionMap.mainAlias!.hasMetadata) {
@@ -113,9 +91,6 @@ export class DeleteQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
         } finally {
             if (queryRunner !== this.queryRunner) { // means we created our own query runner
                 await queryRunner.release();
-            }
-            if (this.connection.driver instanceof SqljsDriver && !queryRunner.isTransactionActive) {
-                await this.connection.driver.autoSave();
             }
         }
     }
@@ -257,15 +232,8 @@ export class DeleteQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
         const whereExpression = this.createWhereExpression();
         const returningExpression = this.createReturningExpression();
 
-        if (returningExpression && (this.connection.driver instanceof PostgresDriver || this.connection.driver instanceof CockroachDriver)) {
-            return `DELETE FROM ${tableName}${whereExpression} RETURNING ${returningExpression}`;
 
-        } else if (returningExpression !== "" && this.connection.driver instanceof SqlServerDriver) {
-            return `DELETE FROM ${tableName} OUTPUT ${returningExpression}${whereExpression}`;
-
-        } else {
-            return `DELETE FROM ${tableName}${whereExpression}`;
-        }
+        return `DELETE FROM ${tableName}${whereExpression}`;
     }
 
 }

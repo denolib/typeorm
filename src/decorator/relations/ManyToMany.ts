@@ -1,5 +1,5 @@
-import {getMetadataArgsStorage, ObjectType, RelationOptions} from "../../";
-import {RelationMetadataArgs} from "../../metadata-args/RelationMetadataArgs";
+import {getMetadataArgsStorage, ObjectType, RelationOptions} from "../../index.ts";
+import {RelationMetadataArgs} from "../../metadata-args/RelationMetadataArgs.ts";
 
 /**
  * Many-to-many is a type of relationship when Entity1 can have multiple instances of Entity2, and Entity2 can have

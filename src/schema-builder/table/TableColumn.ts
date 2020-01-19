@@ -1,4 +1,4 @@
-import {TableColumnOptions} from "../options/TableColumnOptions";
+import {TableColumnOptions} from "../options/TableColumnOptions.ts";
 
 /**
  * Table's columns in the database represented in this class.

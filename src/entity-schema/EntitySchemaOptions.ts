@@ -1,12 +1,12 @@
-import {Connection, SelectQueryBuilder} from "..";
-import {EntitySchemaIndexOptions} from "./EntitySchemaIndexOptions";
-import {EntitySchemaColumnOptions} from "./EntitySchemaColumnOptions";
-import {EntitySchemaRelationOptions} from "./EntitySchemaRelationOptions";
-import {OrderByCondition} from "../find-options/OrderByCondition";
-import {TableType} from "../metadata/types/TableTypes";
-import {EntitySchemaUniqueOptions} from "./EntitySchemaUniqueOptions";
-import {EntitySchemaCheckOptions} from "./EntitySchemaCheckOptions";
-import {EntitySchemaExclusionOptions} from "./EntitySchemaExclusionOptions";
+import {Connection, SelectQueryBuilder} from "../index.ts";
+import {EntitySchemaIndexOptions} from "./EntitySchemaIndexOptions.ts";
+import {EntitySchemaColumnOptions} from "./EntitySchemaColumnOptions.ts";
+import {EntitySchemaRelationOptions} from "./EntitySchemaRelationOptions.ts";
+import {OrderByCondition} from "../find-options/OrderByCondition.ts";
+import {TableType} from "../metadata/types/TableTypes.ts";
+import {EntitySchemaUniqueOptions} from "./EntitySchemaUniqueOptions.ts";
+import {EntitySchemaCheckOptions} from "./EntitySchemaCheckOptions.ts";
+import {EntitySchemaExclusionOptions} from "./EntitySchemaExclusionOptions.ts";
 
 /**
  * Interface for entity metadata mappings stored inside "schemas" instead of models decorated by decorators.

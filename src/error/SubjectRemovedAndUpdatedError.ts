@@ -1,4 +1,4 @@
-import {Subject} from "../persistence/Subject";
+import {Subject} from "../persistence/Subject.ts";
 
 /**
  * Thrown when same object is scheduled for remove and updation at the same time.

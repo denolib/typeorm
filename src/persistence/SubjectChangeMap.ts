@@ -1,6 +1,6 @@
-import {ColumnMetadata} from "../metadata/ColumnMetadata";
-import {RelationMetadata} from "../metadata/RelationMetadata";
-import {Subject} from "./Subject";
+import {ColumnMetadata} from "../metadata/ColumnMetadata.ts";
+import {RelationMetadata} from "../metadata/RelationMetadata.ts";
+import {Subject} from "./Subject.ts";
 
 /**
  * Change for insertion or updation of the column of the subject.

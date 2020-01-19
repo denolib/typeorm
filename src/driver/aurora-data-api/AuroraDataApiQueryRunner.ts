@@ -1,25 +1,25 @@
-import {QueryRunner} from "../../query-runner/QueryRunner";
-import {ObjectLiteral} from "../../common/ObjectLiteral";
-import {TransactionAlreadyStartedError} from "../../error/TransactionAlreadyStartedError";
-import {TransactionNotStartedError} from "../../error/TransactionNotStartedError";
-import {TableColumn} from "../../schema-builder/table/TableColumn";
-import {Table} from "../../schema-builder/table/Table";
-import {TableForeignKey} from "../../schema-builder/table/TableForeignKey";
-import {TableIndex} from "../../schema-builder/table/TableIndex";
-import {QueryRunnerAlreadyReleasedError} from "../../error/QueryRunnerAlreadyReleasedError";
-import {View} from "../../schema-builder/view/View";
-import {Query} from "../Query";
-import {AuroraDataApiDriver} from "./AuroraDataApiDriver";
-import {ReadStream} from "../../platform/PlatformTools";
-import {OrmUtils} from "../../util/OrmUtils";
-import {TableIndexOptions} from "../../schema-builder/options/TableIndexOptions";
-import {TableUnique} from "../../schema-builder/table/TableUnique";
-import {BaseQueryRunner} from "../../query-runner/BaseQueryRunner";
-import {Broadcaster} from "../../subscriber/Broadcaster";
-import {ColumnType, PromiseUtils} from "../../index";
-import {TableCheck} from "../../schema-builder/table/TableCheck";
-import {IsolationLevel} from "../types/IsolationLevel";
-import {TableExclusion} from "../../schema-builder/table/TableExclusion";
+import {QueryRunner} from "../../query-runner/QueryRunner.ts";
+import {ObjectLiteral} from "../../common/ObjectLiteral.ts";
+import {TransactionAlreadyStartedError} from "../../error/TransactionAlreadyStartedError.ts";
+import {TransactionNotStartedError} from "../../error/TransactionNotStartedError.ts";
+import {TableColumn} from "../../schema-builder/table/TableColumn.ts";
+import {Table} from "../../schema-builder/table/Table.ts";
+import {TableForeignKey} from "../../schema-builder/table/TableForeignKey.ts";
+import {TableIndex} from "../../schema-builder/table/TableIndex.ts";
+import {QueryRunnerAlreadyReleasedError} from "../../error/QueryRunnerAlreadyReleasedError.ts";
+import {View} from "../../schema-builder/view/View.ts";
+import {Query} from "../Query.ts";
+import {AuroraDataApiDriver} from "./AuroraDataApiDriver.ts";
+import {ReadStream} from "../../platform/PlatformTools.ts";
+import {OrmUtils} from "../../util/OrmUtils.ts";
+import {TableIndexOptions} from "../../schema-builder/options/TableIndexOptions.ts";
+import {TableUnique} from "../../schema-builder/table/TableUnique.ts";
+import {BaseQueryRunner} from "../../query-runner/BaseQueryRunner.ts";
+import {Broadcaster} from "../../subscriber/Broadcaster.ts";
+import {ColumnType, PromiseUtils} from "../../index.ts";
+import {TableCheck} from "../../schema-builder/table/TableCheck.ts";
+import {IsolationLevel} from "../types/IsolationLevel.ts";
+import {TableExclusion} from "../../schema-builder/table/TableExclusion.ts";
 
 /**
  * Runs queries on a single mysql database connection.

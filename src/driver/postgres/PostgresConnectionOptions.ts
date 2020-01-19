@@ -1,5 +1,5 @@
-import {BaseConnectionOptions} from "../../connection/BaseConnectionOptions";
-import {PostgresConnectionCredentialsOptions} from "./PostgresConnectionCredentialsOptions";
+import {BaseConnectionOptions} from "../../connection/BaseConnectionOptions.ts";
+import {PostgresConnectionCredentialsOptions} from "./PostgresConnectionCredentialsOptions.ts";
 
 /**
  * Postgres-specific connection options.

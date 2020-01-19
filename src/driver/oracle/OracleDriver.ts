@@ -1,23 +1,23 @@
-import {Driver} from "../Driver";
-import {ConnectionIsNotSetError} from "../../error/ConnectionIsNotSetError";
-import {DriverPackageNotInstalledError} from "../../error/DriverPackageNotInstalledError";
-import {OracleQueryRunner} from "./OracleQueryRunner";
-import {ObjectLiteral} from "../../common/ObjectLiteral";
-import {ColumnMetadata} from "../../metadata/ColumnMetadata";
-import {DateUtils} from "../../util/DateUtils";
-import {PlatformTools} from "../../platform/PlatformTools";
-import {Connection} from "../../connection/Connection";
-import {RdbmsSchemaBuilder} from "../../schema-builder/RdbmsSchemaBuilder";
-import {OracleConnectionOptions} from "./OracleConnectionOptions";
-import {MappedColumnTypes} from "../types/MappedColumnTypes";
-import {ColumnType} from "../types/ColumnTypes";
-import {DataTypeDefaults} from "../types/DataTypeDefaults";
-import {TableColumn} from "../../schema-builder/table/TableColumn";
-import {OracleConnectionCredentialsOptions} from "./OracleConnectionCredentialsOptions";
-import {DriverUtils} from "../DriverUtils";
-import {EntityMetadata} from "../../metadata/EntityMetadata";
-import {OrmUtils} from "../../util/OrmUtils";
-import {ApplyValueTransformers} from "../../util/ApplyValueTransformers";
+import {Driver} from "../Driver.ts";
+import {ConnectionIsNotSetError} from "../../error/ConnectionIsNotSetError.ts";
+import {DriverPackageNotInstalledError} from "../../error/DriverPackageNotInstalledError.ts";
+import {OracleQueryRunner} from "./OracleQueryRunner.ts";
+import {ObjectLiteral} from "../../common/ObjectLiteral.ts";
+import {ColumnMetadata} from "../../metadata/ColumnMetadata.ts";
+import {DateUtils} from "../../util/DateUtils.ts";
+import {PlatformTools} from "../../platform/PlatformTools.ts";
+import {Connection} from "../../connection/Connection.ts";
+import {RdbmsSchemaBuilder} from "../../schema-builder/RdbmsSchemaBuilder.ts";
+import {OracleConnectionOptions} from "./OracleConnectionOptions.ts";
+import {MappedColumnTypes} from "../types/MappedColumnTypes.ts";
+import {ColumnType} from "../types/ColumnTypes.ts";
+import {DataTypeDefaults} from "../types/DataTypeDefaults.ts";
+import {TableColumn} from "../../schema-builder/table/TableColumn.ts";
+import {OracleConnectionCredentialsOptions} from "./OracleConnectionCredentialsOptions.ts";
+import {DriverUtils} from "../DriverUtils.ts";
+import {EntityMetadata} from "../../metadata/EntityMetadata.ts";
+import {OrmUtils} from "../../util/OrmUtils.ts";
+import {ApplyValueTransformers} from "../../util/ApplyValueTransformers.ts";
 
 /**
  * Organizes communication with Oracle RDBMS.
@@ -211,7 +211,7 @@ export class OracleDriver implements Driver {
 
     constructor(connection: Connection) {
         this.connection = connection;
-        this.options = connection.options as OracleConnectionOptions;
+        this.options = connection.options as any; // TODO(uki00a) avoid using any
 
         // load oracle package
         this.loadDependencies();
@@ -437,9 +437,6 @@ export class OracleDriver implements Driver {
 
         } else if (column.type === Date) {
             return "timestamp";
-
-        } else if ((column.type as any) === Buffer) {
-            return "blob";
 
         } else if (column.type === "uuid") {
             return "varchar2";

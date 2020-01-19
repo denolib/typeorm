@@ -1,6 +1,6 @@
-import {getMetadataArgsStorage} from "../../";
-import {TableMetadataArgs} from "../../metadata-args/TableMetadataArgs";
-import {ViewEntityOptions} from "../options/ViewEntityOptions";
+import {getMetadataArgsStorage} from "../../index.ts";
+import {TableMetadataArgs} from "../../metadata-args/TableMetadataArgs.ts";
+import {ViewEntityOptions} from "../options/ViewEntityOptions.ts";
 
 /**
  * This decorator is used to mark classes that will be an entity view.

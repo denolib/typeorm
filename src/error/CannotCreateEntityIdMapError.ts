@@ -1,5 +1,5 @@
-import {EntityMetadata} from "../metadata/EntityMetadata";
-import {ObjectLiteral} from "../common/ObjectLiteral";
+import {EntityMetadata} from "../metadata/EntityMetadata.ts";
+import {ObjectLiteral} from "../common/ObjectLiteral.ts";
 
 /**
  * Thrown when user tries to create entity id map from the mixed id value,

@@ -1,43 +1,38 @@
-import {Driver} from "../driver/Driver";
-import {Repository} from "../repository/Repository";
-import {EntitySubscriberInterface} from "../subscriber/EntitySubscriberInterface";
-import {ObjectType} from "../common/ObjectType";
-import {EntityManager} from "../entity-manager/EntityManager";
-import {DefaultNamingStrategy} from "../naming-strategy/DefaultNamingStrategy";
-import {CannotExecuteNotConnectedError} from "../error/CannotExecuteNotConnectedError";
-import {CannotConnectAlreadyConnectedError} from "../error/CannotConnectAlreadyConnectedError";
-import {TreeRepository} from "../repository/TreeRepository";
-import {NamingStrategyInterface} from "../naming-strategy/NamingStrategyInterface";
-import {EntityMetadata} from "../metadata/EntityMetadata";
-import {Logger} from "../logger/Logger";
-import {EntityMetadataNotFoundError} from "../error/EntityMetadataNotFoundError";
-import {MigrationInterface} from "../migration/MigrationInterface";
-import {MigrationExecutor} from "../migration/MigrationExecutor";
-import {Migration} from "../migration/Migration";
-import {MongoRepository} from "../repository/MongoRepository";
-import {MongoDriver} from "../driver/mongodb/MongoDriver";
-import {MongoEntityManager} from "../entity-manager/MongoEntityManager";
-import {EntityMetadataValidator} from "../metadata-builder/EntityMetadataValidator";
-import {ConnectionOptions} from "./ConnectionOptions";
-import {QueryRunnerProviderAlreadyReleasedError} from "../error/QueryRunnerProviderAlreadyReleasedError";
-import {EntityManagerFactory} from "../entity-manager/EntityManagerFactory";
-import {DriverFactory} from "../driver/DriverFactory";
-import {ConnectionMetadataBuilder} from "./ConnectionMetadataBuilder";
-import {QueryRunner} from "../query-runner/QueryRunner";
-import {SelectQueryBuilder} from "../query-builder/SelectQueryBuilder";
-import {LoggerFactory} from "../logger/LoggerFactory";
-import {QueryResultCacheFactory} from "../cache/QueryResultCacheFactory";
-import {QueryResultCache} from "../cache/QueryResultCache";
-import {SqljsEntityManager} from "../entity-manager/SqljsEntityManager";
-import {RelationLoader} from "../query-builder/RelationLoader";
-import {RelationIdLoader} from "../query-builder/RelationIdLoader";
-import {EntitySchema} from "../";
-import {SqlServerDriver} from "../driver/sqlserver/SqlServerDriver";
-import {MysqlDriver} from "../driver/mysql/MysqlDriver";
-import {ObjectUtils} from "../util/ObjectUtils";
-import {PromiseUtils} from "../";
-import {IsolationLevel} from "../driver/types/IsolationLevel";
-import {AuroraDataApiDriver} from "../driver/aurora-data-api/AuroraDataApiDriver";
+import {Driver} from "../driver/Driver.ts";
+import {Repository} from "../repository/Repository.ts";
+import {EntitySubscriberInterface} from "../subscriber/EntitySubscriberInterface.ts";
+import {ObjectType} from "../common/ObjectType.ts";
+import {EntityManager} from "../entity-manager/EntityManager.ts";
+import {DefaultNamingStrategy} from "../naming-strategy/DefaultNamingStrategy.ts";
+import {CannotExecuteNotConnectedError} from "../error/CannotExecuteNotConnectedError.ts";
+import {CannotConnectAlreadyConnectedError} from "../error/CannotConnectAlreadyConnectedError.ts";
+import {TreeRepository} from "../repository/TreeRepository.ts";
+import {NamingStrategyInterface} from "../naming-strategy/NamingStrategyInterface.ts";
+import {EntityMetadata} from "../metadata/EntityMetadata.ts";
+import {Logger} from "../logger/Logger.ts";
+import {EntityMetadataNotFoundError} from "../error/EntityMetadataNotFoundError.ts";
+import {MigrationInterface} from "../migration/MigrationInterface.ts";
+import {MigrationExecutor} from "../migration/MigrationExecutor.ts";
+import {Migration} from "../migration/Migration.ts";
+import {MongoRepository} from "../repository/MongoRepository.ts";
+import {MongoEntityManager} from "../entity-manager/MongoEntityManager.ts";
+import {EntityMetadataValidator} from "../metadata-builder/EntityMetadataValidator.ts";
+import {ConnectionOptions} from "./ConnectionOptions.ts";
+import {QueryRunnerProviderAlreadyReleasedError} from "../error/QueryRunnerProviderAlreadyReleasedError.ts";
+import {EntityManagerFactory} from "../entity-manager/EntityManagerFactory.ts";
+import {DriverFactory} from "../driver/DriverFactory.ts";
+import {ConnectionMetadataBuilder} from "./ConnectionMetadataBuilder.ts";
+import {QueryRunner} from "../query-runner/QueryRunner.ts";
+import {SelectQueryBuilder} from "../query-builder/SelectQueryBuilder.ts";
+import {LoggerFactory} from "../logger/LoggerFactory.ts";
+import {QueryResultCacheFactory} from "../cache/QueryResultCacheFactory.ts";
+import {QueryResultCache} from "../cache/QueryResultCache.ts";
+import {SqljsEntityManager} from "../entity-manager/SqljsEntityManager.ts";
+import {RelationLoader} from "../query-builder/RelationLoader.ts";
+import {RelationIdLoader} from "../query-builder/RelationIdLoader.ts";
+import {EntitySchema} from "../index.ts";
+import {ObjectUtils} from "../util/ObjectUtils.ts";
+import {IsolationLevel} from "../driver/types/IsolationLevel.ts";
 
 /**
  * Connection is a single database ORM connection to a specific database.
@@ -259,16 +254,7 @@ export class Connection {
     async dropDatabase(): Promise<void> {
         const queryRunner = this.createQueryRunner("master");
         try {
-            if (this.driver instanceof SqlServerDriver || this.driver instanceof MysqlDriver || this.driver instanceof AuroraDataApiDriver) {
-                const databases: string[] = this.driver.database ? [this.driver.database] : [];
-                this.entityMetadatas.forEach(metadata => {
-                    if (metadata.database && databases.indexOf(metadata.database) === -1)
-                        databases.push(metadata.database);
-                });
-                await PromiseUtils.runInSequence(databases, database => queryRunner.clearDatabase(database));
-            } else {
-                await queryRunner.clearDatabase();
-            }
+            await queryRunner.clearDatabase();
         } finally {
             await queryRunner.release();
         }
@@ -354,10 +340,7 @@ export class Connection {
      * Works only if connection is mongodb-specific.
      */
     getMongoRepository<Entity>(target: ObjectType<Entity>|EntitySchema<Entity>|string): MongoRepository<Entity> {
-        if (!(this.driver instanceof MongoDriver))
-            throw new Error(`You can use getMongoRepository only for MongoDB connections.`);
-
-        return this.manager.getRepository(target) as any;
+        throw new Error('currently MongoDB is not supported');
     }
 
     /**
@@ -530,13 +513,13 @@ export class Connection {
     protected getDatabaseName(): string {
     const options = this.options;
     switch (options.type) {
-        case "mysql" :
-        case "mariadb" :
-        case "postgres":
-        case "cockroachdb":
-        case "mssql":
-        case "oracle":
-            return (options.replication ? options.replication.master.database : options.database) as string;
+        // case "mysql" :
+        // case "mariadb" :
+        // case "postgres":
+        // case "cockroachdb":
+        // case "mssql":
+        // case "oracle":
+        //     return (options.replication ? options.replication.master.database : options.database) as string;
         default:
             return options.database as string;
     }

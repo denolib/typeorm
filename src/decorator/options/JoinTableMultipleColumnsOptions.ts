@@ -1,4 +1,4 @@
-import {JoinColumnOptions} from "./JoinColumnOptions";
+import {JoinColumnOptions} from "./JoinColumnOptions.ts";
 
 /**
  * Describes all join table with multiple column options.

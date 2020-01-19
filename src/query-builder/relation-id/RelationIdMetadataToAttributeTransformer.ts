@@ -1,6 +1,6 @@
-import {RelationIdAttribute} from "./RelationIdAttribute";
-import {QueryExpressionMap} from "../QueryExpressionMap";
-import {RelationIdMetadata} from "../../metadata/RelationIdMetadata";
+import {RelationIdAttribute} from "./RelationIdAttribute.ts";
+import {QueryExpressionMap} from "../QueryExpressionMap.ts";
+import {RelationIdMetadata} from "../../metadata/RelationIdMetadata.ts";
 
 export class RelationIdMetadataToAttributeTransformer {
 

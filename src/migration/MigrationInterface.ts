@@ -1,4 +1,4 @@
-import {QueryRunner} from "../query-runner/QueryRunner";
+import {QueryRunner} from "../query-runner/QueryRunner.ts";
 
 /**
  * Migrations should implement this interface and all its methods.

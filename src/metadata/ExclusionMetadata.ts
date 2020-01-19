@@ -1,6 +1,6 @@
-import {EntityMetadata} from "./EntityMetadata";
-import {NamingStrategyInterface} from "../naming-strategy/NamingStrategyInterface";
-import {ExclusionMetadataArgs} from "../metadata-args/ExclusionMetadataArgs";
+import {EntityMetadata} from "./EntityMetadata.ts";
+import {NamingStrategyInterface} from "../naming-strategy/NamingStrategyInterface.ts";
+import {ExclusionMetadataArgs} from "../metadata-args/ExclusionMetadataArgs.ts";
 
 /**
  * Exclusion metadata contains all information about table's exclusion constraints.

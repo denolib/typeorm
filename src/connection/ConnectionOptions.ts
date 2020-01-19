@@ -1,17 +1,5 @@
-import {CockroachConnectionOptions} from "../driver/cockroachdb/CockroachConnectionOptions";
-import {MysqlConnectionOptions} from "../driver/mysql/MysqlConnectionOptions";
-import {PostgresConnectionOptions} from "../driver/postgres/PostgresConnectionOptions";
-import {SqliteConnectionOptions} from "../driver/sqlite/SqliteConnectionOptions";
-import {SqlServerConnectionOptions} from "../driver/sqlserver/SqlServerConnectionOptions";
-import {OracleConnectionOptions} from "../driver/oracle/OracleConnectionOptions";
-import {MongoConnectionOptions} from "../driver/mongodb/MongoConnectionOptions";
-import {CordovaConnectionOptions} from "../driver/cordova/CordovaConnectionOptions";
-import {SqljsConnectionOptions} from "../driver/sqljs/SqljsConnectionOptions";
-import {ReactNativeConnectionOptions} from "../driver/react-native/ReactNativeConnectionOptions";
-import {NativescriptConnectionOptions} from "../driver/nativescript/NativescriptConnectionOptions";
-import {ExpoConnectionOptions} from "../driver/expo/ExpoConnectionOptions";
-import {AuroraDataApiConnectionOptions} from "../driver/aurora-data-api/AuroraDataApiConnectionOptions";
-import {SapConnectionOptions} from "../driver/sap/SapConnectionOptions";
+import {SqliteConnectionOptions} from "../driver/sqlite/SqliteConnectionOptions.ts";
+import {MysqlConnectionOptions} from "../driver/mysql/MysqlConnectionOptions.ts";
 
 
 /**
@@ -20,17 +8,5 @@ import {SapConnectionOptions} from "../driver/sap/SapConnectionOptions";
  * Consumer must provide connection options for each of your connections.
  */
 export type ConnectionOptions =
-    MysqlConnectionOptions|
-    PostgresConnectionOptions|
-    CockroachConnectionOptions|
     SqliteConnectionOptions|
-    SqlServerConnectionOptions|
-    SapConnectionOptions|
-    OracleConnectionOptions|
-    CordovaConnectionOptions|
-    NativescriptConnectionOptions|
-    ReactNativeConnectionOptions|
-    SqljsConnectionOptions|
-    MongoConnectionOptions|
-    AuroraDataApiConnectionOptions|
-    ExpoConnectionOptions;
+    MysqlConnectionOptions;

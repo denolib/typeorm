@@ -1,13 +1,13 @@
-import {TableColumn} from "./TableColumn";
-import {TableIndex} from "./TableIndex";
-import {TableForeignKey} from "./TableForeignKey";
-import {Driver} from "../../driver/Driver";
-import {TableOptions} from "../options/TableOptions";
-import {EntityMetadata} from "../../metadata/EntityMetadata";
-import {TableUtils} from "../util/TableUtils";
-import {TableUnique} from "./TableUnique";
-import {TableCheck} from "./TableCheck";
-import {TableExclusion} from "./TableExclusion";
+import {TableColumn} from "./TableColumn.ts";
+import {TableIndex} from "./TableIndex.ts";
+import {TableForeignKey} from "./TableForeignKey.ts";
+import {Driver} from "../../driver/Driver.ts";
+import {TableOptions} from "../options/TableOptions.ts";
+import {EntityMetadata} from "../../metadata/EntityMetadata.ts";
+import {TableUtils} from "../util/TableUtils.ts";
+import {TableUnique} from "./TableUnique.ts";
+import {TableCheck} from "./TableCheck.ts";
+import {TableExclusion} from "./TableExclusion.ts";
 
 /**
  * Table in the database represented in this class.

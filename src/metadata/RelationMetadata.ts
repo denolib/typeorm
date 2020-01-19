@@ -1,14 +1,14 @@
-import {RelationType} from "./types/RelationTypes";
-import {EntityMetadata} from "./EntityMetadata";
-import {ForeignKeyMetadata} from "./ForeignKeyMetadata";
-import {ObjectLiteral} from "../common/ObjectLiteral";
-import {ColumnMetadata} from "./ColumnMetadata";
-import {EmbeddedMetadata} from "./EmbeddedMetadata";
-import {RelationMetadataArgs} from "../metadata-args/RelationMetadataArgs";
-import {DeferrableType} from "./types/DeferrableType";
-import {OnUpdateType} from "./types/OnUpdateType";
-import {OnDeleteType} from "./types/OnDeleteType";
-import {PropertyTypeFactory} from "./types/PropertyTypeInFunction";
+import {RelationType} from "./types/RelationTypes.ts";
+import {EntityMetadata} from "./EntityMetadata.ts";
+import {ForeignKeyMetadata} from "./ForeignKeyMetadata.ts";
+import {ObjectLiteral} from "../common/ObjectLiteral.ts";
+import {ColumnMetadata} from "./ColumnMetadata.ts";
+import {EmbeddedMetadata} from "./EmbeddedMetadata.ts";
+import {RelationMetadataArgs} from "../metadata-args/RelationMetadataArgs.ts";
+import {DeferrableType} from "./types/DeferrableType.ts";
+import {OnUpdateType} from "./types/OnUpdateType.ts";
+import {OnDeleteType} from "./types/OnDeleteType.ts";
+import {PropertyTypeFactory} from "./types/PropertyTypeInFunction.ts";
 
 /**
  * Contains all information about some entity's relation.

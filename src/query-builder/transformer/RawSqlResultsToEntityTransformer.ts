@@ -1,15 +1,15 @@
-import {Driver} from "../../driver/Driver";
-import {RelationIdLoadResult} from "../relation-id/RelationIdLoadResult";
-import {ObjectLiteral} from "../../common/ObjectLiteral";
-import {ColumnMetadata} from "../../metadata/ColumnMetadata";
-import {Alias} from "../Alias";
-import {RelationCountLoadResult} from "../relation-count/RelationCountLoadResult";
-import {RelationMetadata} from "../../metadata/RelationMetadata";
-import {OrmUtils} from "../../util/OrmUtils";
-import {QueryExpressionMap} from "../QueryExpressionMap";
-import {EntityMetadata} from "../../metadata/EntityMetadata";
-import {QueryRunner} from "../..";
-import {DriverUtils} from "../../driver/DriverUtils";
+import {Driver} from "../../driver/Driver.ts";
+import {RelationIdLoadResult} from "../relation-id/RelationIdLoadResult.ts";
+import {ObjectLiteral} from "../../common/ObjectLiteral.ts";
+import {ColumnMetadata} from "../../metadata/ColumnMetadata.ts";
+import {Alias} from "../Alias.ts";
+import {RelationCountLoadResult} from "../relation-count/RelationCountLoadResult.ts";
+import {RelationMetadata} from "../../metadata/RelationMetadata.ts";
+import {OrmUtils} from "../../util/OrmUtils.ts";
+import {QueryExpressionMap} from "../QueryExpressionMap.ts";
+import {EntityMetadata} from "../../metadata/EntityMetadata.ts";
+import {QueryRunner} from "../../index.ts";
+import {DriverUtils} from "../../driver/DriverUtils.ts";
 
 /**
  * Transforms raw sql results returned from the database into entity object.
@@ -65,10 +65,6 @@ export class RawSqlResultsToEntityTransformer {
         rawResults.forEach(rawResult => {
             const id = keys.map(key => {
                 const keyValue = rawResult[key];
-
-                if (Buffer.isBuffer(keyValue)) {
-                    return keyValue.toString("hex");
-                }
 
                 return keyValue;
             }).join("_"); // todo: check partial
