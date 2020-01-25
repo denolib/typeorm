@@ -1,6 +1,5 @@
 /*!
  */
-import "./Reflect.ts";
 import {ConnectionManager} from "./connection/ConnectionManager.ts";
 import {Connection} from "./connection/Connection.ts";
 import {MetadataArgsStorage} from "./metadata-args/MetadataArgsStorage.ts";

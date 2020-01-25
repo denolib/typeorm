@@ -37,13 +37,7 @@ export function ManyToOne<T>(typeFunctionOrTarget: string|((type?: any) => Objec
     return function (object: Object, propertyName: string) {
         if (!options) options = {} as RelationOptions;
 
-        // now try to determine it its lazy relation
         let isLazy = options && options.lazy === true ? true : false;
-        if (!isLazy && Reflect && (Reflect as any).getMetadata) { // automatic determination
-            const reflectedType = (Reflect as any).getMetadata("design:type", object, propertyName);
-            if (reflectedType && typeof reflectedType.name === "string" && reflectedType.name.toLowerCase() === "promise")
-                isLazy = true;
-        }
 
         getMetadataArgsStorage().relations.push({
             target: object.constructor,

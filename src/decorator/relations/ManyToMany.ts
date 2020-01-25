@@ -6,7 +6,7 @@ import {RelationMetadataArgs} from "../../metadata-args/RelationMetadataArgs.ts"
  * multiple instances of Entity1. To achieve it, this type of relation creates a junction table, where it storage
  * entity1 and entity2 ids. This is owner side of the relationship.
  */
-export function ManyToMany<T>(typeFunctionOrTarget: string|((type?: any) => ObjectType<T>), 
+export function ManyToMany<T>(typeFunctionOrTarget: string|((type?: any) => ObjectType<T>),
                               options?: RelationOptions): Function;
 
 /**
@@ -38,13 +38,7 @@ export function ManyToMany<T>(typeFunctionOrTarget: string|((type?: any) => Obje
     return function (object: Object, propertyName: string) {
         if (!options) options = {} as RelationOptions;
 
-        // now try to determine it its lazy relation
         let isLazy = options.lazy === true;
-        if (!isLazy && Reflect && (Reflect as any).getMetadata) { // automatic determination
-            const reflectedType = (Reflect as any).getMetadata("design:type", object, propertyName);
-            if (reflectedType && typeof reflectedType.name === "string" && reflectedType.name.toLowerCase() === "promise")
-                isLazy = true;
-        }
 
         getMetadataArgsStorage().relations.push({
             target: object.constructor,

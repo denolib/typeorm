@@ -35,11 +35,6 @@ export function PrimaryColumn(typeOrOptions?: ColumnType|ColumnOptions, options?
         }
         if (!options) options = {} as ColumnOptions;
 
-        // if type is not given explicitly then try to guess it
-        const reflectMetadataType = Reflect && (Reflect as any).getMetadata ? (Reflect as any).getMetadata("design:type", object, propertyName) : undefined;
-        if (!type && reflectMetadataType)
-            type = reflectMetadataType;
-
         // check if there is no type in column options then set type from first function argument, or guessed one
         if (!options.type && type)
             options.type = type;

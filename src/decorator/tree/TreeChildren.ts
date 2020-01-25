@@ -9,16 +9,12 @@ export function TreeChildren(options?: { cascade?: boolean|("insert"|"update"|"r
     return function (object: Object, propertyName: string) {
         if (!options) options = {} as RelationOptions;
 
-        // now try to determine it its lazy relation
-        const reflectedType = Reflect && (Reflect as any).getMetadata ? Reflect.getMetadata("design:type", object, propertyName) : undefined;
-        const isLazy = (reflectedType && typeof reflectedType.name === "string" && reflectedType.name.toLowerCase() === "promise") || false;
-
-        // add one-to-many relation for this 
+        // add one-to-many relation for this
         getMetadataArgsStorage().relations.push({
             isTreeChildren: true,
             target: object.constructor,
             propertyName: propertyName,
-            isLazy: isLazy,
+            isLazy: false,
             relationType: "one-to-many",
             type: () => object.constructor,
             options: options
