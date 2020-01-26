@@ -1,4 +1,4 @@
-import {Column, Entity, PrimaryGeneratedColumn} from "../../../src/index";
+import {Column, Entity, PrimaryGeneratedColumn} from "../../../src/index.ts";
 
 @Entity("sample3_post_category")
 export class PostCategory {
@@ -6,7 +6,7 @@ export class PostCategory {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     name: string;
 
 }

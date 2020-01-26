@@ -1,15 +1,14 @@
-import "reflect-metadata";
-import {expect} from "chai";
-import {Connection} from "../../src/connection/Connection";
-import {Post} from "../../sample/sample1-simple-entity/entity/Post";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../utils/test-utils";
+import {expect} from "../deps/chai.ts";
+import {runIfMain} from "../deps/mocha.ts";
+import {Connection} from "../../src/connection/Connection.ts";
+import {Post} from "../../sample/sample1-simple-entity/entity/Post.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../utils/test-utils.ts";
 
 describe("insertion", function() {
 
     // -------------------------------------------------------------------------
     // Setup
     // -------------------------------------------------------------------------
-
     let connections: Connection[];
     before(async () => connections = await createTestingConnections({
         entities: [Post],
@@ -34,6 +33,7 @@ describe("insertion", function() {
         expect(savedPost.id).not.to.be.undefined;
 
         const insertedPost = await postRepository.findOne(savedPost.id);
+        expect(insertedPost).not.to.be.undefined;
         insertedPost!.should.be.eql({
             id: savedPost.id,
             text: "Hello post",
@@ -43,3 +43,5 @@ describe("insertion", function() {
     })));
 
 });
+
+runIfMain(import.meta);

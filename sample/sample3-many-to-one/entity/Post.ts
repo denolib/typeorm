@@ -1,10 +1,10 @@
-import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "../../../src/index";
-import {PostDetails} from "./PostDetails";
-import {PostCategory} from "./PostCategory";
-import {PostAuthor} from "./PostAuthor";
-import {PostInformation} from "./PostInformation";
-import {PostImage} from "./PostImage";
-import {PostMetadata} from "./PostMetadata";
+import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "../../../src/index.ts";
+import {PostDetails} from "./PostDetails.ts";
+import {PostCategory} from "./PostCategory.ts";
+import {PostAuthor} from "./PostAuthor.ts";
+import {PostInformation} from "./PostInformation.ts";
+import {PostImage} from "./PostImage.ts";
+import {PostMetadata} from "./PostMetadata.ts";
 
 @Entity("sample3_post")
 export class Post {
@@ -12,10 +12,10 @@ export class Post {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     title: string;
 
-    @Column()
+    @Column({ type: String })
     text: string;
 
     // post has relation with category, however inverse relation is not set (category does not have relation with post set)
@@ -24,7 +24,7 @@ export class Post {
     })
     category: PostCategory;
 
-    // post has relation with details. cascade inserts here means if new PostDetails instance will be set to this 
+    // post has relation with details. cascade inserts here means if new PostDetails instance will be set to this
     // relation it will be inserted automatically to the db when you save this Post entity
     @ManyToOne(type => PostDetails, details => details.posts, {
         cascade: ["insert"]

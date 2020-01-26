@@ -1,5 +1,5 @@
-import {Column, Entity, ManyToMany, PrimaryGeneratedColumn} from "../../../src/index";
-import {Post} from "./Post";
+import {Column, Entity, ManyToMany, PrimaryGeneratedColumn} from "../../../src/index.ts";
+import {Post} from "./Post.ts";
 
 @Entity("sample4_post_details")
 export class PostDetails {
@@ -24,7 +24,7 @@ export class PostDetails {
         nullable: true
     })
     metadata: string|null;
-    
+
     @ManyToMany(type => Post, post => post.details, {
         cascade: true
     })

@@ -1,11 +1,11 @@
-import {Column, Entity, ManyToMany, PrimaryGeneratedColumn} from "../../../src/index";
-import {PostDetails} from "./PostDetails";
-import {PostCategory} from "./PostCategory";
-import {PostAuthor} from "./PostAuthor";
-import {PostInformation} from "./PostInformation";
-import {PostImage} from "./PostImage";
-import {PostMetadata} from "./PostMetadata";
-import {JoinTable} from "../../../src/decorator/relations/JoinTable";
+import {Column, Entity, ManyToMany, PrimaryGeneratedColumn} from "../../../src/index.ts";
+import {PostDetails} from "./PostDetails.ts";
+import {PostCategory} from "./PostCategory.ts";
+import {PostAuthor} from "./PostAuthor.ts";
+import {PostInformation} from "./PostInformation.ts";
+import {PostImage} from "./PostImage.ts";
+import {PostMetadata} from "./PostMetadata.ts";
+import {JoinTable} from "../../../src/decorator/relations/JoinTable.ts";
 
 @Entity("sample4_post")
 export class Post {
@@ -13,10 +13,10 @@ export class Post {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     title: string;
 
-    @Column()
+    @Column({ type: String })
     text: string;
 
     // Post has relation with PostCategory, however inverse relation is not set

@@ -1,5 +1,5 @@
-import {Column, Entity, OneToMany, PrimaryGeneratedColumn} from "../../../src/index";
-import {Post} from "./Post";
+import {Column, Entity, OneToMany, PrimaryGeneratedColumn} from "../../../src/index.ts";
+import {Post} from "./Post.ts";
 
 @Entity("sample3_post_author")
 export class PostAuthor {
@@ -7,7 +7,7 @@ export class PostAuthor {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     name: string;
 
     @OneToMany(type => Post, post => post.author)

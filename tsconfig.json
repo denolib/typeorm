@@ -1,8 +1,6 @@
 {
     "version": "2.1.1",
     "compilerOptions": {
-        "lib": ["es5", "es6"],
-        "outDir": "build/compiled",
         "target": "esnext",
         "experimentalDecorators": true,
         "sourceMap": true,

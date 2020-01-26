@@ -1,12 +1,21 @@
-import {Connection} from "../../src/connection/Connection";
-import {ConnectionOptions} from "../../src/connection/ConnectionOptions";
-import {PostgresDriver} from "../../src/driver/postgres/PostgresDriver";
-import {SqlServerDriver} from "../../src/driver/sqlserver/SqlServerDriver";
-import {DatabaseType} from "../../src/driver/types/DatabaseType";
-import {EntitySchema} from "../../src/entity-schema/EntitySchema";
-import {createConnections} from "../../src/index";
-import {NamingStrategyInterface} from "../../src/naming-strategy/NamingStrategyInterface";
-import {PromiseUtils} from "../../src/util/PromiseUtils";
+import {Connection} from "../../src/connection/Connection.ts";
+import {ConnectionOptions} from "../../src/connection/ConnectionOptions.ts";
+//import {PostgresDriver} from "../../src/driver/postgres/PostgresDriver.ts";
+//import {SqlServerDriver} from "../../src/driver/sqlserver/SqlServerDriver.ts";
+import {DatabaseType} from "../../src/driver/types/DatabaseType.ts";
+import {EntitySchema} from "../../src/entity-schema/EntitySchema.ts";
+import {createConnections} from "../../src/index.ts";
+import {NamingStrategyInterface} from "../../src/naming-strategy/NamingStrategyInterface.ts";
+import {PromiseUtils} from "../../src/util/PromiseUtils.ts";
+import {createRequire} from "../../vendor/https/deno.land/std/node/module.ts";
+import {join} from "../../vendor/https/deno.land/std/path/mod.ts";
+
+const require = createRequire(import.meta.url);
+const __dirname = getDirnameOfCurrentModule(import.meta);
+
+export function getDirnameOfCurrentModule(meta: ImportMeta): string {
+    return new URL(".", meta.url).pathname;
+}
 
 /**
  * Interface in which data is stored in ormconfig.json of the project.
@@ -163,7 +172,7 @@ export function getTypeOrmConfig(): TestingConnectionOptions[] {
             return require(__dirname + "/../../../../ormconfig.json");
 
         } catch (err) {
-            return require(__dirname + "/../../ormconfig.json");
+            return require(join(__dirname + "../../ormconfig.json"));
         }
 
     } catch (err) {
@@ -241,22 +250,23 @@ export async function createTestingConnections(options?: TestingOptions): Promis
         await PromiseUtils.runInSequence(databases, database => queryRunner.createDatabase(database, true));
 
         // create new schemas
-        if (connection.driver instanceof PostgresDriver || connection.driver instanceof SqlServerDriver) {
-            const schemaPaths: string[] = [];
-            connection.entityMetadatas
-                .filter(entityMetadata => !!entityMetadata.schemaPath)
-                .forEach(entityMetadata => {
-                    const existSchemaPath = schemaPaths.find(path => path === entityMetadata.schemaPath);
-                    if (!existSchemaPath)
-                        schemaPaths.push(entityMetadata.schemaPath!);
-                });
+        // TODO(uki00a) Uncomment this when PostgresDriver is implemented.
+        // if (connection.driver instanceof PostgresDriver || connection.driver instanceof SqlServerDriver) {
+        //     const schemaPaths: string[] = [];
+        //     connection.entityMetadatas
+        //         .filter(entityMetadata => !!entityMetadata.schemaPath)
+        //         .forEach(entityMetadata => {
+        //             const existSchemaPath = schemaPaths.find(path => path === entityMetadata.schemaPath);
+        //             if (!existSchemaPath)
+        //                 schemaPaths.push(entityMetadata.schemaPath!);
+        //         });
 
-            const schema = connection.driver.options.schema;
-            if (schema && schemaPaths.indexOf(schema) === -1)
-                schemaPaths.push(schema);
+        //     const schema = connection.driver.options.schema;
+        //     if (schema && schemaPaths.indexOf(schema) === -1)
+        //         schemaPaths.push(schema);
 
-            await PromiseUtils.runInSequence(schemaPaths, schemaPath => queryRunner.createSchema(schemaPath, true));
-        }
+        //     await PromiseUtils.runInSequence(schemaPaths, schemaPath => queryRunner.createSchema(schemaPath, true));
+        // }
 
         await queryRunner.release();
     }));

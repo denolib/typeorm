@@ -1,6 +1,6 @@
-import {Column, Entity} from "../../../src/index";
-import {PrimaryColumn} from "../../../src/decorator/columns/PrimaryColumn";
-import {Generated} from "../../../src/decorator/Generated";
+import {Column, Entity} from "../../../src/index.ts";
+import {PrimaryColumn} from "../../../src/decorator/columns/PrimaryColumn.ts";
+import {Generated} from "../../../src/decorator/Generated.ts";
 
 @Entity("sample01_post")
 export class Post {
@@ -9,13 +9,13 @@ export class Post {
     @Generated()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     title: string;
 
-    @Column()
+    @Column({ type: String })
     text: string;
 
-    @Column({ nullable: false })
+    @Column({ nullable: false, type: Number })
     likesCount: number;
 
 }

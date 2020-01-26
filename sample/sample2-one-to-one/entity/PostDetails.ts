@@ -1,5 +1,5 @@
-import {Column, Entity, OneToOne, PrimaryGeneratedColumn} from "../../../src/index";
-import {Post} from "./Post";
+import {Column, Entity, OneToOne, PrimaryGeneratedColumn} from "../../../src/index.ts";
+import {Post} from "./Post.ts";
 
 @Entity("sample2_post_details")
 export class PostDetails {
@@ -7,15 +7,15 @@ export class PostDetails {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     authorName: string;
 
-    @Column()
+    @Column({ type: String })
     comment: string;
 
-    @Column()
+    @Column({ type: String })
     metadata: string;
-    
+
     @OneToOne(type => Post, post => post.details, {
         cascade: true
     })

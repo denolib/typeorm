@@ -1,18 +1,19 @@
-import "reflect-metadata";
-import {expect} from "chai";
-import {Connection} from "../../src/connection/Connection";
-import {createConnection} from "../../src/index";
-import {Repository} from "../../src/repository/Repository";
-import {PostDetails} from "../../sample/sample3-many-to-one/entity/PostDetails";
-import {Post} from "../../sample/sample3-many-to-one/entity/Post";
-import {PostCategory} from "../../sample/sample3-many-to-one/entity/PostCategory";
-import {PostAuthor} from "../../sample/sample3-many-to-one/entity/PostAuthor";
-import {PostMetadata} from "../../sample/sample3-many-to-one/entity/PostMetadata";
-import {PostImage} from "../../sample/sample3-many-to-one/entity/PostImage";
-import {PostInformation} from "../../sample/sample3-many-to-one/entity/PostInformation";
-import {setupSingleTestingConnection} from "../utils/test-utils";
+import {runIfMain} from "../deps/mocha.ts";
+import {expect} from "../deps/chai.ts";
+import {Connection} from "../../src/connection/Connection.ts";
+import {createConnection} from "../../src/index.ts";
+import {Repository} from "../../src/repository/Repository.ts";
+import {PostDetails} from "../../sample/sample3-many-to-one/entity/PostDetails.ts";
+import {Post} from "../../sample/sample3-many-to-one/entity/Post.ts";
+import {PostCategory} from "../../sample/sample3-many-to-one/entity/PostCategory.ts";
+import {PostAuthor} from "../../sample/sample3-many-to-one/entity/PostAuthor.ts";
+import {PostMetadata} from "../../sample/sample3-many-to-one/entity/PostMetadata.ts";
+import {PostImage} from "../../sample/sample3-many-to-one/entity/PostImage.ts";
+import {PostInformation} from "../../sample/sample3-many-to-one/entity/PostInformation.ts";
+import {setupSingleTestingConnection} from "../utils/test-utils.ts";
 
-describe("many-to-one", function() {
+// TODO(uki00a) Remove `.skip` when mysql driver is implemented.
+describe.skip("many-to-one", function() {
 
     // -------------------------------------------------------------------------
     // Configuration
@@ -62,7 +63,7 @@ describe("many-to-one", function() {
         if (!connection)
             return;
         let newPost: Post, details: PostDetails, savedPost: Post;
-        
+
         before(reloadDatabase);
 
         before(function() {
@@ -70,7 +71,7 @@ describe("many-to-one", function() {
             details.authorName = "Umed";
             details.comment = "this is post";
             details.metadata = "post,posting,postman";
-            
+
             newPost = new Post();
             newPost.text = "Hello post";
             newPost.title = "this is post title";
@@ -91,18 +92,18 @@ describe("many-to-one", function() {
             expect(savedPost.details.id).not.to.be.undefined;
         });
 
-        it("should have inserted post in the database", function() {
+        it("should have inserted post in the database", async function() {
             if (!connection)
                 return;
             const expectedPost = new Post();
             expectedPost.id = savedPost.id;
             expectedPost.text = savedPost.text;
             expectedPost.title = savedPost.title;
-            
-            return postRepository.findOne(savedPost.id).should.eventually.eql(expectedPost);
+
+            expect(await postRepository.findOne(savedPost.id)).to.eql(expectedPost);
         });
 
-        it("should have inserted post details in the database", function() {
+        it("should have inserted post details in the database", async function() {
             if (!connection)
                 return;
             const expectedDetails = new PostDetails();
@@ -110,11 +111,11 @@ describe("many-to-one", function() {
             expectedDetails.authorName = savedPost.details.authorName;
             expectedDetails.comment = savedPost.details.comment;
             expectedDetails.metadata = savedPost.details.metadata;
-            
-            return postDetailsRepository.findOne(savedPost.details.id).should.eventually.eql(expectedDetails);
+
+            return expect(await postDetailsRepository.findOne(savedPost.details.id)).to.eql(expectedDetails);
         });
 
-        it("should load post and its details if left join used", function() {
+        it("should load post and its details if left join used", async function() {
             if (!connection)
                 return;
             const expectedPost = new Post();
@@ -126,17 +127,17 @@ describe("many-to-one", function() {
             expectedPost.details.authorName = savedPost.details.authorName;
             expectedPost.details.comment = savedPost.details.comment;
             expectedPost.details.metadata = savedPost.details.metadata;
-            
-            return postRepository
+
+            const actualPost = await postRepository
                 .createQueryBuilder("post")
                 .leftJoinAndSelect("post.details", "details")
                 .where("post.id=:id")
                 .setParameter("id", savedPost.id)
-                .getOne()
-                .should.eventually.eql(expectedPost);
+                .getOne();
+            expect(actualPost).to.eql(expectedPost);
         });
 
-        it("should load details and its post if left join used (from reverse side)", function() {
+        it("should load details and its post if left join used (from reverse side)", async function() {
             if (!connection)
                 return;
 
@@ -150,35 +151,35 @@ describe("many-to-one", function() {
             expectedPost.id = savedPost.id;
             expectedPost.text = savedPost.text;
             expectedPost.title = savedPost.title;
-            
+
             expectedDetails.posts = [];
             expectedDetails.posts.push(expectedPost);
-            
-            return postDetailsRepository
+
+            const actualDetails = await postDetailsRepository
                 .createQueryBuilder("details")
                 .leftJoinAndSelect("details.posts", "posts")
                 .where("details.id=:id")
                 .setParameter("id", savedPost.id)
-                .getOne()
-                .should.eventually.eql(expectedDetails);
+                .getOne();
+            expect(actualDetails).to.eql(expectedDetails);
         });
 
-        it("should load saved post without details if left joins are not specified", function() {
+        it("should load saved post without details if left joins are not specified", async function() {
             if (!connection)
                 return;
             const expectedPost = new Post();
             expectedPost.id = savedPost.id;
             expectedPost.text = savedPost.text;
             expectedPost.title = savedPost.title;
-            
-            return postRepository
+
+            const actualPost = await postRepository
                 .createQueryBuilder("post")
                 .where("post.id=:id", { id: savedPost.id })
-                .getOne()
-                .should.eventually.eql(expectedPost);
+                .getOne();
+            expect(actualPost).to.eql(expectedPost);
         });
 
-        it("should load saved post without details if left joins are not specified", function() {
+        it("should load saved post without details if left joins are not specified", async function() {
             if (!connection)
                 return;
             const expectedDetails = new PostDetails();
@@ -186,12 +187,12 @@ describe("many-to-one", function() {
             expectedDetails.authorName = savedPost.details.authorName;
             expectedDetails.comment = savedPost.details.comment;
             expectedDetails.metadata = savedPost.details.metadata;
-            
-            return postDetailsRepository
+
+            const actualDetails = await postDetailsRepository
                 .createQueryBuilder("details")
                 .where("details.id=:id", { id: savedPost.id })
-                .getOne()
-                .should.eventually.eql(expectedDetails);
+                .getOne();
+            expect(actualDetails).to.eql(expectedDetails);
         });
 
     });
@@ -228,26 +229,26 @@ describe("many-to-one", function() {
             expect(savedPost.category.id).not.to.be.undefined;
         });
 
-        it("should have inserted post in the database", function() {
+        it("should have inserted post in the database", async function() {
             if (!connection)
                 return;
             const expectedPost = new Post();
             expectedPost.id = savedPost.id;
             expectedPost.text = savedPost.text;
             expectedPost.title = savedPost.title;
-            return postRepository.findOne(savedPost.id).should.eventually.eql(expectedPost);
+            expect(await postRepository.findOne(savedPost.id)).to.eql(expectedPost);
         });
 
-        it("should have inserted category in the database", function() {
+        it("should have inserted category in the database", async function() {
             if (!connection)
                 return;
             const expectedPost = new PostCategory();
             expectedPost.id = savedPost.category.id;
             expectedPost.name = "technology";
-            return postCategoryRepository.findOne(savedPost.category.id).should.eventually.eql(expectedPost);
+            expect(await postCategoryRepository.findOne(savedPost.category.id)).to.eql(expectedPost);
         });
 
-        it("should load post and its category if left join used", function() {
+        it("should load post and its category if left join used", async function() {
             if (!connection)
                 return;
             const expectedPost = new Post();
@@ -258,12 +259,12 @@ describe("many-to-one", function() {
             expectedPost.category.id = savedPost.category.id;
             expectedPost.category.name = savedPost.category.name;
 
-            return postRepository
+            const actualPost = await postRepository
                 .createQueryBuilder("post")
                 .leftJoinAndSelect("post.category", "category")
                 .where("post.id=:id", { id: savedPost.id })
-                .getOne()
-                .should.eventually.eql(expectedPost);
+                .getOne();
+            expect(actualPost).to.eql(expectedPost);
         });
 
         it("should load details and its post if left join used (from reverse side)", function() {
@@ -275,7 +276,7 @@ describe("many-to-one", function() {
                 .getSingleResult()
                 .should.be.rejectedWith(Error);*/ // not working, find fix
         });
-        
+
     });
 
     describe("cascade updates should not be executed when cascadeUpdate option is not set", function() {
@@ -395,7 +396,7 @@ describe("many-to-one", function() {
                         .where("post.id=:id")
                         .setParameter("id", newPost.id)
                         .getOne();
-                    
+
                 }).then(reloadedPost => {
                     reloadedPost!.image.url.should.be.equal("new-logo.png");
                 });
@@ -486,24 +487,24 @@ describe("many-to-one", function() {
             expect(details.id).not.to.be.undefined;
         });
 
-        it("should have inserted post in the database", function() {
+        it("should have inserted post in the database", async function() {
             const expectedPost = new Post();
             expectedPost.id = newPost.id;
             expectedPost.text = newPost.text;
             expectedPost.title = newPost.title;
-            return postRepository.findOne(savedDetails.id).should.eventually.eql(expectedPost);
+            expect(await postRepository.findOne(savedDetails.id)).to.eql(expectedPost);
         });
 
-        it("should have inserted details in the database", function() {
+        it("should have inserted details in the database", async function() {
             const expectedDetails = new PostDetails();
             expectedDetails.id = details.id;
             expectedDetails.comment = details.comment;
             expectedDetails.metadata = null;
             expectedDetails.authorName = null;
-            return postDetailsRepository.findOne(details.id).should.eventually.eql(expectedDetails);
+            expect(await postDetailsRepository.findOne(details.id)).to.eql(expectedDetails);
         });
 
-        it("should load post and its details if left join used", function() {
+        it("should load post and its details if left join used", async function() {
             const expectedDetails = new PostDetails();
             expectedDetails.id = savedDetails.id;
             expectedDetails.comment = savedDetails.comment;
@@ -515,14 +516,16 @@ describe("many-to-one", function() {
             expectedDetails.posts[0].text = newPost.text;
             expectedDetails.posts[0].title = newPost.title;
 
-            return postDetailsRepository
+            const actualDetails = await postDetailsRepository
                 .createQueryBuilder("details")
                 .leftJoinAndSelect("details.posts", "posts")
                 .where("details.id=:id", { id: savedDetails.id })
-                .getOne()
-                .should.eventually.eql(expectedDetails);
+                .getOne();
+            expect(actualDetails).to.eql(expectedDetails);
         });
 
     });
 
 });
+
+runIfMain(import.meta);
