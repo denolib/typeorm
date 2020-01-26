@@ -9,6 +9,7 @@ import {DeleteResult} from "./result/DeleteResult.ts";
 import {ReturningStatementNotSupportedError} from "../error/ReturningStatementNotSupportedError.ts";
 import {BroadcasterResult} from "../subscriber/BroadcasterResult.ts";
 import {EntitySchema} from "../index.ts";
+import {AbstractQueryBuilderFactory} from "./AbstractQueryBuilderFactory.ts";
 
 /**
  * Allows to build complex sql queries in a fashion way and execute those queries.
@@ -19,8 +20,8 @@ export class DeleteQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
     // Constructor
     // -------------------------------------------------------------------------
 
-    constructor(connectionOrQueryBuilder: Connection|QueryBuilder<any>, queryRunner?: QueryRunner) {
-        super(connectionOrQueryBuilder as any, queryRunner);
+    constructor(queryBuilderFactory: AbstractQueryBuilderFactory, connectionOrQueryBuilder: Connection|QueryBuilder<any>, queryRunner?: QueryRunner) {
+        super(queryBuilderFactory, connectionOrQueryBuilder as any, queryRunner);
         this.expressionMap.aliasNamePrefixingEnabled = false;
     }
 

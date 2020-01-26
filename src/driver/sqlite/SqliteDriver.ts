@@ -71,6 +71,11 @@ export class SqliteDriver extends AbstractSqliteDriver {
         return super.normalizeType(column);
     }
 
+    // TODO(uki00a) Make this method private or move to appropriate object
+    isInMemory(): boolean {
+        return this.database === ':memory:';
+    }
+
     // -------------------------------------------------------------------------
     // Protected Methods
     // -------------------------------------------------------------------------
@@ -109,9 +114,5 @@ export class SqliteDriver extends AbstractSqliteDriver {
      */
     protected createDatabaseDirectory(fullPath: string): Promise<void> {
         return ensureDir(dirname(fullPath));
-    }
-
-    private isInMemory(): boolean {
-        return this.database === ':memory:';
     }
 }

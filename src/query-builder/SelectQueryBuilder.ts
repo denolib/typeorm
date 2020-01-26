@@ -1729,7 +1729,7 @@ export class SelectQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
                 return `${distinctAlias}.${columnAlias} as "ids_${DriverUtils.buildColumnAlias(this.connection.driver, mainAliasName, primaryColumn.databaseName)}"`;
             });
 
-            rawResults = await new SelectQueryBuilder(this.connection, queryRunner)
+            rawResults = await new SelectQueryBuilder(this.queryBuilderFactory, this.connection, queryRunner)
                 .select(`DISTINCT ${querySelects.join(", ")}`)
                 .addSelect(selects)
                 .from(`(${this.clone().orderBy().getQuery()})`, "distinctAlias")

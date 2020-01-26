@@ -50,14 +50,14 @@ export class SqliteQueryRunner extends AbstractSqliteQueryRunner {
 
         const run = () => {
             if (isInsertQuery) {
-                databaseConnection.query(query, ...parameters);
+                databaseConnection.query(query, ...(parameters || []));
                 const lastID = this.getLastInsertRowID(databaseConnection);
                 reportSlowQuery();
                 return lastID;
             } else {
-                const rows = databaseConnection.query(query, ...parameters);
+                const rows = databaseConnection.query(query, ...(parameters || []));
                 reportSlowQuery();
-                return this.convertRowsIntoArray(rows);
+                return this.convertRowsIntoArray(rows, query);
             }
         };
 
@@ -70,6 +70,7 @@ export class SqliteQueryRunner extends AbstractSqliteQueryRunner {
             await this.saveDatabaseToFileIfNeeded(databaseConnection, query);
             return result;
         } catch (err) {
+            console.error(err)
             connection.logger.logQueryError(err, query, parameters, this);
             throw new QueryFailedError(query, parameters, err);
         }
@@ -77,6 +78,10 @@ export class SqliteQueryRunner extends AbstractSqliteQueryRunner {
 
     // TODO(uki00a) Optimize this method.
     private async saveDatabaseToFileIfNeeded(databaseConnection: DB, executedQuery: string): Promise<void> {
+        if (this.driver.isInMemory()) {
+            return;
+        }
+
         // FIXME(uki00a) I'm not sure if this is correct or not.
         if (SqlUtils.isCommitQuery(executedQuery)) {
             this.connection.logger.log("info", "Saving database to file...", this);
@@ -101,11 +106,31 @@ export class SqliteQueryRunner extends AbstractSqliteQueryRunner {
         }
     }
 
-    private convertRowsIntoArray(rows: ReturnType<DB['query']>): unknown[] {
+    private convertRowsIntoArray(rows: ReturnType<DB['query']>, executedQuery: string): unknown[] {
+        const columnNames = this.extractColumnNamesFromQuery(executedQuery);
         const array = [] as unknown[];
         for (const row of rows) {
-            array.push(row);
+            const converted = {};
+            for (let columnIndex = 0; columnIndex < row.length; ++columnIndex) {
+                const columnName = columnNames[columnIndex];
+                const columnValue = row[columnIndex];
+                converted[columnName] = columnValue;
+            }
+            array.push(converted);
         }
         return array;
+    }
+
+    // FIXME(uki00a) This is terrible...
+    private extractColumnNamesFromQuery(query: string): string[] {
+        const match = /^SELECT (?:DISTINCT)? (.+) FROM/.exec(query);
+        if (match == null) {
+            return [];
+        }
+
+        return match[1].split(',').map(expression => {
+            const match = /.+ AS "(.+)"/.exec(expression);
+            return match == null ? '' : match[1];
+        });
     }
 }

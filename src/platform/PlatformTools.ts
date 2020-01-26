@@ -15,7 +15,7 @@ export class EventEmitter {
 export class Readable {
     constructor() {
         throw new NotImplementedError('Readable.constructor');
-    } 
+    }
 }
 
 // TODO(uki00a) implement Writable
@@ -102,19 +102,19 @@ export class PlatformTools {
         return Deno.env()[name];
     }
 
+    // TODO(uki00a) implement this method.
     /**
      * Highlights sql string to be print in the console.
      */
     static highlightSql(sql: string) {
-        console.warn('PlatformTools.highlightSql is not implemented');
         return sql;
     }
 
+    // TODO(uki00a) implement this method.
     /**
      * Highlights json string to be print in the console.
      */
     static highlightJson(json: string) {
-        console.warn('PlatformTools.highlightSql is not implemented');
         return json;
     }
 
