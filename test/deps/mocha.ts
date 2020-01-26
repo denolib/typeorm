@@ -3,5 +3,7 @@ import "https://unpkg.com/mocha@7.0.0/mocha.js";
 mocha.setup({ ui: 'bdd', reporter: 'spec' });
 
 export function runIfMain(meta: ImportMeta): void {
-  mocha.run();
+    if (meta.main) {
+        mocha.run();
+    }
 }
