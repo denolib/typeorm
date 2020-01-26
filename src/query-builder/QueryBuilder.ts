@@ -16,9 +16,7 @@ import {ColumnMetadata} from "../metadata/ColumnMetadata.ts";
 import {EntitySchema} from "../index.ts";
 import {FindOperator} from "../find-options/FindOperator.ts";
 import {In} from "../find-options/operator/In.ts";
-import { createRequire } from "../../vendor/https/deno.land/std/node/module.ts";
-
-const require = createRequire(import.meta.url);
+import {AbstractQueryBuilderFactory} from "./AbstractQueryBuilderFactory.ts";
 
 // todo: completely cover query builder with tests
 // todo: entityOrProperty can be target name. implement proper behaviour if it is.
@@ -63,6 +61,8 @@ export abstract class QueryBuilder<Entity> {
      */
     protected queryRunner?: QueryRunner;
 
+    protected readonly queryBuilderFactory: AbstractQueryBuilderFactory;
+
     // -------------------------------------------------------------------------
     // Constructor
     // -------------------------------------------------------------------------
@@ -70,17 +70,18 @@ export abstract class QueryBuilder<Entity> {
     /**
      * QueryBuilder can be initialized from given Connection and QueryRunner objects or from given other QueryBuilder.
      */
-    constructor(queryBuilder: QueryBuilder<any>);
+    constructor(queryBuilderFactory: AbstractQueryBuilderFactory, queryBuilder: QueryBuilder<any>);
 
     /**
      * QueryBuilder can be initialized from given Connection and QueryRunner objects or from given other QueryBuilder.
      */
-    constructor(connection: Connection, queryRunner?: QueryRunner);
+    constructor(queryBuilderFactory: AbstractQueryBuilderFactory, connection: Connection, queryRunner?: QueryRunner);
 
     /**
      * QueryBuilder can be initialized from given Connection and QueryRunner objects or from given other QueryBuilder.
      */
-    constructor(connectionOrQueryBuilder: Connection|QueryBuilder<any>, queryRunner?: QueryRunner) {
+    constructor(queryBuilderFactory: AbstractQueryBuilderFactory, connectionOrQueryBuilder: Connection|QueryBuilder<any>, queryRunner?: QueryRunner) {
+        this.queryBuilderFactory = queryBuilderFactory;
         if (connectionOrQueryBuilder instanceof QueryBuilder) {
             this.connection = connectionOrQueryBuilder.connection;
             this.queryRunner = connectionOrQueryBuilder.queryRunner;
@@ -150,12 +151,7 @@ export abstract class QueryBuilder<Entity> {
             this.expressionMap.selects = [{ selection: selection, aliasName: selectionAliasName }];
         }
 
-        // loading it dynamically because of circular issue
-        const SelectQueryBuilderCls = require("./SelectQueryBuilder.ts").SelectQueryBuilder;
-        if (this instanceof SelectQueryBuilderCls)
-            return this as any;
-
-        return new SelectQueryBuilderCls(this);
+        return this.queryBuilderFactory.select(this);
     }
 
     /**
@@ -163,13 +159,7 @@ export abstract class QueryBuilder<Entity> {
      */
     insert(): InsertQueryBuilder<Entity> {
         this.expressionMap.queryType = "insert";
-
-        // loading it dynamically because of circular issue
-        const InsertQueryBuilderCls = require("./InsertQueryBuilder.ts").InsertQueryBuilder;
-        if (this instanceof InsertQueryBuilderCls)
-            return this as any;
-
-        return new InsertQueryBuilderCls(this);
+        return this.queryBuilderFactory.insert(this);
     }
 
     /**
@@ -217,12 +207,7 @@ export abstract class QueryBuilder<Entity> {
         this.expressionMap.queryType = "update";
         this.expressionMap.valuesSet = updateSet;
 
-        // loading it dynamically because of circular issue
-        const UpdateQueryBuilderCls = require("./UpdateQueryBuilder.ts").UpdateQueryBuilder;
-        if (this instanceof UpdateQueryBuilderCls)
-            return this as any;
-
-        return new UpdateQueryBuilderCls(this);
+        return this.queryBuilderFactory.update(this);
     }
 
     /**
@@ -230,13 +215,7 @@ export abstract class QueryBuilder<Entity> {
      */
     delete(): DeleteQueryBuilder<Entity> {
         this.expressionMap.queryType = "delete";
-
-        // loading it dynamically because of circular issue
-        const DeleteQueryBuilderCls = require("./DeleteQueryBuilder.ts").DeleteQueryBuilder;
-        if (this instanceof DeleteQueryBuilderCls)
-            return this as any;
-
-        return new DeleteQueryBuilderCls(this);
+        return this.queryBuilderFactory.delete(this);
     }
 
     /**
@@ -264,12 +243,7 @@ export abstract class QueryBuilder<Entity> {
             this.expressionMap.setMainAlias(mainAlias);
         }
 
-        // loading it dynamically because of circular issue
-      const RelationQueryBuilderCls = require("./RelationQueryBuilder.ts").RelationQueryBuilder;
-        if (this instanceof RelationQueryBuilderCls)
-            return this as any;
-
-        return new RelationQueryBuilderCls(this);
+        return this.queryBuilderFactory.relation(this);
     }
 
 

@@ -33,6 +33,7 @@ import {RelationIdLoader} from "../query-builder/RelationIdLoader.ts";
 import {EntitySchema} from "../index.ts";
 import {ObjectUtils} from "../util/ObjectUtils.ts";
 import {IsolationLevel} from "../driver/types/IsolationLevel.ts";
+import {QueryBuilderFactory} from "../query-builder/QueryBuilderFactory.ts";
 
 /**
  * Connection is a single database ORM connection to a specific database.
@@ -406,12 +407,12 @@ export class Connection {
 
         if (alias) {
             const metadata = this.getMetadata(entityOrRunner as Function|EntitySchema<Entity>|string);
-            return new SelectQueryBuilder(this, queryRunner)
+            return new SelectQueryBuilder(new QueryBuilderFactory(), this, queryRunner)
                 .select(alias)
                 .from(metadata.target, alias);
 
         } else {
-            return new SelectQueryBuilder(this, entityOrRunner as QueryRunner|undefined);
+            return new SelectQueryBuilder(new QueryBuilderFactory(), this, entityOrRunner as QueryRunner|undefined);
         }
     }
 

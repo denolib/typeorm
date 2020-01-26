@@ -15,6 +15,7 @@ import {LimitOnUpdateNotSupportedError} from "../error/LimitOnUpdateNotSupported
 import {UpdateValuesMissingError} from "../error/UpdateValuesMissingError.ts";
 import {EntityColumnNotFound} from "../error/EntityColumnNotFound.ts";
 import {QueryDeepPartialEntity} from "./QueryPartialEntity.ts";
+import {AbstractQueryBuilderFactory} from "./AbstractQueryBuilderFactory.ts";
 
 /**
  * Allows to build complex sql queries in a fashion way and execute those queries.
@@ -25,8 +26,8 @@ export class UpdateQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
     // Constructor
     // -------------------------------------------------------------------------
 
-    constructor(connectionOrQueryBuilder: Connection|QueryBuilder<any>, queryRunner?: QueryRunner) {
-        super(connectionOrQueryBuilder as any, queryRunner);
+    constructor(queryBuilderFactory: AbstractQueryBuilderFactory, connectionOrQueryBuilder: Connection|QueryBuilder<any>, queryRunner?: QueryRunner) {
+        super(queryBuilderFactory, connectionOrQueryBuilder as any, queryRunner);
         this.expressionMap.aliasNamePrefixingEnabled = false;
     }
 

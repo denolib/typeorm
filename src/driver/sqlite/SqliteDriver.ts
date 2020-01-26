@@ -1,7 +1,8 @@
-import {DriverPackageNotInstalledError} from "../../error/DriverPackageNotInstalledError.ts";
+import {open, DB} from "../../../vendor/https/deno.land/x/sqlite/mod.ts";
+import {ensureDir} from "../../../vendor/https/deno.land/std/fs/mod.ts";
+import {dirname} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {SqliteQueryRunner} from "./SqliteQueryRunner.ts";
 import {DriverOptionNotSetError} from "../../error/DriverOptionNotSetError.ts";
-import {PlatformTools} from "../../platform/PlatformTools.ts";
 import {Connection} from "../../connection/Connection.ts";
 import {SqliteConnectionOptions} from "./SqliteConnectionOptions.ts";
 import {ColumnType} from "../types/ColumnTypes.ts";
@@ -22,10 +23,7 @@ export class SqliteDriver extends AbstractSqliteDriver {
      */
     options: SqliteConnectionOptions;
 
-    /**
-     * SQLite underlying library.
-     */
-    sqlite: any;
+    databaseConnection: DB;
 
     // -------------------------------------------------------------------------
     // Constructor
@@ -41,9 +39,6 @@ export class SqliteDriver extends AbstractSqliteDriver {
         // validate options to make sure everything is set
         if (!this.options.database)
             throw new DriverOptionNotSetError("database");
-
-        // load sqlite package
-        this.loadDependencies();
     }
 
     // -------------------------------------------------------------------------
@@ -54,10 +49,8 @@ export class SqliteDriver extends AbstractSqliteDriver {
      * Closes connection with database.
      */
     async disconnect(): Promise<void> {
-        return new Promise<void>((ok, fail) => {
-            this.queryRunner = undefined;
-            this.databaseConnection.close((err: any) => err ? fail(err) : ok());
-        });
+        this.queryRunner = undefined;
+        this.databaseConnection.close();
     }
 
     /**
@@ -78,6 +71,11 @@ export class SqliteDriver extends AbstractSqliteDriver {
         return super.normalizeType(column);
     }
 
+    // TODO(uki00a) Make this method private or move to appropriate object
+    isInMemory(): boolean {
+        return this.database === ':memory:';
+    }
+
     // -------------------------------------------------------------------------
     // Protected Methods
     // -------------------------------------------------------------------------
@@ -86,32 +84,19 @@ export class SqliteDriver extends AbstractSqliteDriver {
      * Creates connection with the database.
      */
     protected async createDatabaseConnection() {
-        await this.createDatabaseDirectory(this.options.database);
-
-        const databaseConnection: any = await new Promise((ok, fail) => {
-            const connection = new this.sqlite.Database(this.options.database, (err: any) => {
-                if (err) return fail(err);
-                ok(connection);
-            });
-        });
-
-        // Internal function to run a command on the connection and fail if an error occured.
-        function run(line: string): Promise<void> {
-            return new Promise((ok, fail) => {
-                databaseConnection.run(line, (err: any) => {
-                    if (err) return fail(err);
-                    ok();
-                });
-            });
+        if (!this.isInMemory()) {
+            await this.createDatabaseDirectory(this.options.database);
         }
+
+        const databaseConnection = await open(this.options.database);
 
         // we need to enable foreign keys in sqlite to make sure all foreign key related features
         // working properly. this also makes onDelete to work with sqlite.
-        await run(`PRAGMA foreign_keys = ON;`);
+        databaseConnection.query(`PRAGMA foreign_keys = ON;`);
 
         // in the options, if encryption key for SQLCipher is setted.
         if (this.options.key) {
-            await run(`PRAGMA key = ${JSON.stringify(this.options.key)};`);
+            databaseConnection.query(`PRAGMA key = ${JSON.stringify(this.options.key)};`);
         }
 
         return databaseConnection;
@@ -121,23 +106,13 @@ export class SqliteDriver extends AbstractSqliteDriver {
      * If driver dependency is not given explicitly, then try to load it via "require".
      */
     protected loadDependencies(): void {
-        try {
-            this.sqlite = PlatformTools.load("sqlite3").verbose();
-
-        } catch (e) {
-            throw new DriverPackageNotInstalledError("SQLite", "sqlite3");
-        }
+        // TODO(uki00a) Remove this method.
     }
 
     /**
      * Auto creates database directory if it does not exist.
      */
     protected createDatabaseDirectory(fullPath: string): Promise<void> {
-        return new Promise<void>((resolve, reject) => {
-            const mkdirp = PlatformTools.load("mkdirp");
-            const path = PlatformTools.load("path");
-            mkdirp(path.dirname(fullPath), (err: any) => err ? reject(err) : resolve());
-        });
+        return ensureDir(dirname(fullPath));
     }
-
 }
