@@ -2,6 +2,10 @@
 import "https://unpkg.com/mocha@7.0.0/mocha.js";
 mocha.setup({ ui: 'bdd', reporter: 'spec' });
 
+export function runTests(): void {
+    mocha.run();
+}
+
 export function runIfMain(meta: ImportMeta): void {
     if (meta.main) {
         mocha.run();

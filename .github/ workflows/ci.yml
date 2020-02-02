@@ -1,0 +1,12 @@
+name: ci
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - uses: denolib/setup-deno@master
+    - name: Run tests
+      run: |
+        cp ./ormconfig.gh-actions.json ./ormconfig.json
+        deno run --allow-read --allow-write --config ./tsconfig.json ./test.ts
