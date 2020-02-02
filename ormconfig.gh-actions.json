@@ -3,7 +3,7 @@
     "skip": false,
     "name": "sqlite",
     "type": "sqlite",
-    "database": "./sqlite.db",
+    "database": "temp/sqlitedb.db",
     "logging": true
   }
 ]
