@@ -50,12 +50,12 @@ export class SqliteQueryRunner extends AbstractSqliteQueryRunner {
 
         const run = () => {
             if (isInsertQuery) {
-                databaseConnection.query(query, ...(parameters || []));
+                databaseConnection.query(query, parameters || []);
                 const lastID = this.getLastInsertRowID(databaseConnection);
                 reportSlowQuery();
                 return lastID;
             } else {
-                const rows = databaseConnection.query(query, ...(parameters || []));
+                const rows = databaseConnection.query(query, parameters || []);
                 reportSlowQuery();
                 return this.convertRowsIntoArray(rows, query);
             }
@@ -107,7 +107,7 @@ export class SqliteQueryRunner extends AbstractSqliteQueryRunner {
     }
 
     private convertRowsIntoArray(rows: ReturnType<DB['query']>, executedQuery: string): unknown[] {
-        const columnNames = this.extractColumnNamesFromQuery(executedQuery);
+        const columnNames = this.extractColumns(rows);
         const array = [] as unknown[];
         for (const row of rows) {
             const converted = {};
@@ -121,16 +121,11 @@ export class SqliteQueryRunner extends AbstractSqliteQueryRunner {
         return array;
     }
 
-    // FIXME(uki00a) This is terrible...
-    private extractColumnNamesFromQuery(query: string): string[] {
-        const match = /^SELECT (?:DISTINCT)? (.+) FROM/.exec(query);
-        if (match == null) {
+    private extractColumns(rows: ReturnType<DB['query']>): string[] {
+        try {
+            return rows.columns().map(column => column.name);
+        } catch {
             return [];
         }
-
-        return match[1].split(',').map(expression => {
-            const match = /.+ AS "(.+)"/.exec(expression);
-            return match == null ? '' : match[1];
-        });
     }
 }

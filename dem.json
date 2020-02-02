@@ -22,7 +22,7 @@
     {
       "protocol": "https",
       "path": "deno.land/x/sqlite",
-      "version": "defb9c019165f23d072451b7c56176be440161e7",
+      "version": "d451a28e55180730a296a9383cd5dd26155a2c11",
       "files": [
         "/mod.ts"
       ]
