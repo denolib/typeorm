@@ -1,4 +1,3 @@
-import {expandGlob} from "../../vendor/https/deno.land/std/fs/mod.ts";
 import {PlatformTools} from "../platform/PlatformTools.ts";
 import {EntitySchema} from "../index.ts";
 import {Logger} from "../logger/Logger.ts";
@@ -26,7 +25,7 @@ export async function importClassesFromDirectories(logger: Logger, directories: 
 
     const allFiles = [] as string[];
     for (const dir of directories) {
-        for await (const {filename} of expandGlob(dir, { includeDirs: false })) {
+        for await (const {filename} of PlatformTools.expandGlob(dir)) {
             allFiles.push(filename);
         }
     }

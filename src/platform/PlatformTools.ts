@@ -76,6 +76,10 @@ export class PlatformTools {
         return path.resolve(pathStr);
     }
 
+    static expandGlob(pattern: string): AsyncIterableIterator<{filename: string}> {
+        return fs.expandGlob(pattern, { includeDirs: false });
+    }
+
     /**
      * Synchronously checks if file exist. Does "fs.existsSync".
      */
