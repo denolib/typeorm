@@ -1,14 +1,15 @@
-import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
-import {Connection} from "../../../../src/connection/Connection";
-import {Post} from "./entity/Post";
-import {PostDetails} from "./entity/PostDetails";
+import {runIfMain} from "../../../deps/mocha.ts";
+import {expect} from "../../../deps/chai.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
+import {Connection} from "../../../../src/connection/Connection.ts";
+import {Post} from "./entity/Post.ts";
+import {PostDetails} from "./entity/PostDetails.ts";
 
 describe("cascades > should insert by cascades from both sides (#57)", () => {
 
     let connections: Connection[];
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [Post, PostDetails],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
@@ -35,7 +36,7 @@ describe("cascades > should insert by cascades from both sides (#57)", () => {
             }
         });
 
-        posts.should.be.eql([{
+        expect(posts).to.eql([{
             key: post1.key,
             title: post1.title,
             details: {
@@ -46,3 +47,5 @@ describe("cascades > should insert by cascades from both sides (#57)", () => {
     })));
 
 });
+
+runIfMain(import.meta);
