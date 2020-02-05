@@ -1,7 +1,7 @@
-import { Column } from "../../../../../src/decorator/columns/Column";
+import { Column } from "../../../../../src/decorator/columns/Column.ts";
 
 export class Information {
 
-    @Column({ name: "descr" })
+    @Column({ name: "descr", type: String })
     description: string;
 }
