@@ -1,15 +1,17 @@
 import {runIfMain} from "../../../deps/mocha.ts";
 import {expect} from "../../../deps/chai.ts";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
 import {Connection} from "../../../../src/connection/Connection.ts";
 import {Post} from "./entity/Post.ts";
 import {PostDetails} from "./entity/PostDetails.ts";
+import {join} from "../../../../vendor/https/deno.land/std/path/mod.ts"
 
 describe("cascades > should insert by cascades from both sides (#57)", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [Post, PostDetails],
+        entities: [join(__dirname, "/entity/*.ts")]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
