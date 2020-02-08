@@ -10,5 +10,6 @@ import "./test/functional/columns/value-transformer/value-transformer.ts";
 import "./test/functional/connection/connection.ts";
 import "./test/functional/connection-manager/connection-manager.ts";
 import "./test/functional/connection-options-reader/connection-options-reader.ts";
+import "./test/functional/cube/postgres/cube-postgres.ts";
 
 runTests();
