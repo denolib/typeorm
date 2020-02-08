@@ -3,11 +3,19 @@ import "https://unpkg.com/mocha@7.0.0/mocha.js";
 mocha.setup({ ui: 'bdd', reporter: 'spec' });
 
 export function runTests(): void {
-    mocha.run();
+    mocha.run(onCompleted);
 }
 
 export function runIfMain(meta: ImportMeta): void {
     if (meta.main) {
-        mocha.run();
+        mocha.run(onCompleted);
+    }
+}
+
+function onCompleted(failures: number): void {
+    if (failures > 0) {
+        Deno.exit(1);
+    } else {
+        Deno.exit(0);
     }
 }
