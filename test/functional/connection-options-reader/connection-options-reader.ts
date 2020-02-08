@@ -6,13 +6,13 @@ import {ConnectionOptionsReader} from "../../../src/connection/ConnectionOptions
 
 describe("ConnectionOptionsReader", () => {
   const __dirname = getDirnameOfCurrentModule(import.meta);
-  console.log(__dirname);
   after(() => {
     delete Deno.env().TYPEORM_CONNECTION;
     delete Deno.env().TYPEORM_DATABASE;
   });
 
-  it("properly loads config with entities specified", async () => {
+  it("properly loads config with entities specified", async function() {
+    this.timeout(10000); // This is because it takes some time to compile TypeScript.
     type EntititesList = Function[] | string[];
     const connectionOptionsReader = new ConnectionOptionsReader({ root: __dirname, configName: "configs/class-entities" });
     const options: ConnectionOptions = await connectionOptionsReader.get("test-conn");
