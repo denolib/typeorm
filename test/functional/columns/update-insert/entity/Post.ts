@@ -1,6 +1,6 @@
-import {Entity} from "../../../../../src/decorator/entity/Entity";
-import {Column} from "../../../../../src/decorator/columns/Column";
-import {PrimaryGeneratedColumn} from "../../../../../src/decorator/columns/PrimaryGeneratedColumn";
+import {Entity} from "../../../../../src/decorator/entity/Entity.ts";
+import {Column} from "../../../../../src/decorator/columns/Column.ts";
+import {PrimaryGeneratedColumn} from "../../../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
 
 @Entity()
 export class Post {
@@ -8,18 +8,18 @@ export class Post {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     title: string;
 
-    @Column()
+    @Column({ type: String })
     text: string;
 
-    @Column({ update: false, default: "Default" })
+    @Column({ type: String, update: false, default: "Default" })
     authorFirstName: string;
 
-    @Column({ insert: false, default: "Default" })
+    @Column({ type: String, insert: false, default: "Default" })
     authorMiddleName: string;
 
-    @Column({ insert: false, update: false, default: "Default" })
+    @Column({ type: String, insert: false, update: false, default: "Default" })
     authorLastName: string;
 }
