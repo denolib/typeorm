@@ -16,5 +16,10 @@ import "./test/functional/database-schema/column-collation/mssql/column-collatio
 import "./test/functional/database-schema/column-collation/mysql/column-collation-mysql.ts";
 import "./test/functional/database-schema/column-collation/postgres/column-collation-postgres.ts";
 import "./test/functional/database-schema/column-collation/sqlite/column-collation-sqlite.ts";
+import "./test/functional/database-schema/column-length/mssql/column-length-mssql.ts";
+import "./test/functional/database-schema/column-length/mysql/column-length-mysql.ts";
+import "./test/functional/database-schema/column-length/postgres/column-length-postgres.ts";
+import "./test/functional/database-schema/column-length/sap/column-length-sap.ts";
+import "./test/functional/database-schema/column-length/sqlite/column-length-sqlite.ts";
 
 runTests();
