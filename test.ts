@@ -11,5 +11,10 @@ import "./test/functional/connection/connection.ts";
 import "./test/functional/connection-manager/connection-manager.ts";
 import "./test/functional/connection-options-reader/connection-options-reader.ts";
 import "./test/functional/cube/postgres/cube-postgres.ts";
+import "./test/functional/database-schema/column-collation/cockroach/column-collation-cockroach.ts";
+import "./test/functional/database-schema/column-collation/mssql/column-collation-mssql.ts";
+import "./test/functional/database-schema/column-collation/mysql/column-collation-mysql.ts";
+import "./test/functional/database-schema/column-collation/postgres/column-collation-postgres.ts";
+import "./test/functional/database-schema/column-collation/sqlite/column-collation-sqlite.ts";
 
 runTests();

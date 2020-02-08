@@ -1,14 +1,17 @@
-import "reflect-metadata";
-import {Post} from "./entity/Post";
-import {Connection} from "../../../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils";
+import {join as joinPaths} from "../../../../../vendor/https/deno.land/std/path/mod.ts";
+import "../../../../deps/chai.ts";
+import {runIfMain} from "../../../../deps/mocha.ts";
+import {Post} from "./entity/Post.ts";
+import {Connection} from "../../../../../src/connection/Connection.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils.ts";
 
 describe("database schema > column collation > cockroach", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
-            entities: [__dirname + "/entity/*{.js,.ts}"],
+            entities: [joinPaths(__dirname, "/entity/*.ts")],
             enabledDrivers: ["cockroachdb"],
         });
     });
@@ -31,3 +34,5 @@ describe("database schema > column collation > cockroach", () => {
     })));
 
 });
+
+runIfMain(import.meta);
