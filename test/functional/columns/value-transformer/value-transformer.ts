@@ -1,14 +1,12 @@
-import "reflect-metadata";
-
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
-
-import {Connection} from "../../../../src/connection/Connection";
-import {PhoneBook} from "./entity/PhoneBook";
-import {Post} from "./entity/Post";
-import {User} from "./entity/User";
-import {Category} from "./entity/Category";
-import {View} from "./entity/View";
-import {expect} from "chai";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
+import {Connection} from "../../../../src/connection/Connection.ts";
+import {PhoneBook} from "./entity/PhoneBook.ts";
+import {Post} from "./entity/Post.ts";
+import {User} from "./entity/User.ts";
+import {Category} from "./entity/Category.ts";
+import {View} from "./entity/View.ts";
+import {expect} from "../../../deps/chai.ts";
+import {runIfMain} from "../../../deps/mocha.ts";
 
 describe("columns > value-transformer functionality", () => {
 
@@ -96,3 +94,5 @@ describe("columns > value-transformer functionality", () => {
 
     })));
 });
+
+runIfMain(import.meta);

@@ -106,6 +106,14 @@ export class PlatformTools {
         return Deno.env()[name];
     }
 
+    static encodeToBase64(string: string): string {
+        return window.btoa(string);
+    }
+
+    static decodeFromBase64(base64: string): string {
+        return window.atob(base64);
+    }
+
     // TODO(uki00a) implement this method.
     /**
      * Highlights sql string to be print in the console.

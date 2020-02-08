@@ -6,5 +6,6 @@ import "./test/functional/columns/getters-setters/columns-getters-setters.ts";
 import "./test/functional/columns/no-select/columns-no-select.ts";
 import "./test/functional/columns/readonly/columns-readonly.ts";
 import "./test/functional/columns/update-insert/columns-update-insert.ts";
+import "./test/functional/columns/value-transformer/value-transformer.ts";
 
 runTests();
