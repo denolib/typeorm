@@ -108,10 +108,12 @@ export class ConnectionOptionsReader {
             connectionOptions = new ConnectionOptionsEnvReader().read();
 
         } else if (foundFileFormat === "js") {
-            connectionOptions = await PlatformTools.load(configFile);
+            const mod = await import(configFile);
+            connectionOptions = await mod.default;
 
         } else if (foundFileFormat === "ts") {
-            connectionOptions = await PlatformTools.load(configFile);
+            const mod = await import(configFile);
+            connectionOptions = await mod.default;
 
         } else if (foundFileFormat === "json") {
             connectionOptions = PlatformTools.load(configFile);
@@ -197,10 +199,12 @@ export class ConnectionOptionsReader {
      * Gets directory where configuration file should be located.
      */
     protected get baseDirectory(): string {
-        if (this.options && this.options.root)
-            return this.options.root;
-
-        return PlatformTools.load("app-root-path").path;
+        const baseDirectory = this.options && this.options.root
+            ? this.options.root
+            : PlatformTools.load("app-root-path").path;
+        return baseDirectory.endsWith('/')
+            ? baseDirectory.slice(0, -1)
+            : baseDirectory;
     }
 
     /**

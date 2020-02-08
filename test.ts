@@ -9,5 +9,6 @@ import "./test/functional/columns/update-insert/columns-update-insert.ts";
 import "./test/functional/columns/value-transformer/value-transformer.ts";
 import "./test/functional/connection/connection.ts";
 import "./test/functional/connection-manager/connection-manager.ts";
+import "./test/functional/connection-options-reader/connection-options-reader.ts";
 
 runTests();
