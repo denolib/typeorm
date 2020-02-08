@@ -9,4 +9,4 @@ jobs:
     - name: Run tests
       run: |
         cp ./ormconfig.gh-actions.json ./ormconfig.json
-        deno run --allow-read --allow-write --config ./tsconfig.json ./test.ts
+        deno run --allow-read --allow-write --allow-env --config ./tsconfig.json ./test.ts
