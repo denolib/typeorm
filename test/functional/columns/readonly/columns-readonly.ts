@@ -1,8 +1,8 @@
-import {expect} from "chai";
-import "reflect-metadata";
-import {Connection} from "../../../../src";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
-import {Post} from "./entity/Post";
+import {runIfMain} from "../../../deps/mocha.ts";
+import {expect} from "../../../deps/chai.ts";
+import {Connection} from "../../../../src/index.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
+import {Post} from "./entity/Post.ts";
 
 describe("columns > readonly functionality", () => {
 
@@ -40,3 +40,5 @@ describe("columns > readonly functionality", () => {
 
 
 });
+
+runIfMain(import.meta);
