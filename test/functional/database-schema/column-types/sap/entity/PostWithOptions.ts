@@ -1,11 +1,11 @@
-import {Entity} from "../../../../../../src";
-import {PrimaryColumn} from "../../../../../../src";
-import {Column} from "../../../../../../src";
+import {Entity} from "../../../../../../src/index.ts";
+import {PrimaryColumn} from "../../../../../../src/index.ts";
+import {Column} from "../../../../../../src/index.ts";
 
 @Entity()
 export class PostWithOptions {
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     id: number;
 
     // -------------------------------------------------------------------------

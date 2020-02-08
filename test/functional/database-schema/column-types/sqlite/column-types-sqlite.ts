@@ -1,16 +1,20 @@
-import "reflect-metadata";
-import {Post} from "./entity/Post";
-import {Connection} from "../../../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils";
-import {PostWithoutTypes} from "./entity/PostWithoutTypes";
-import {FruitEnum} from "./enum/FruitEnum";
+import {join as joinPaths} from "../../../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../../../deps/mocha.ts";
+import "../../../../deps/chai.ts";
+import {Post} from "./entity/Post.ts";
+import {Connection} from "../../../../../src/connection/Connection.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils.ts";
+import {PostWithoutTypes} from "./entity/PostWithoutTypes.ts";
+import {FruitEnum} from "./enum/FruitEnum.ts";
 
 describe("database schema > column types > sqlite", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
+    const encoder = new TextEncoder();
     before(async () => {
         connections = await createTestingConnections({
-            entities: [__dirname + "/entity/*{.js,.ts}"],
+            entities: [joinPaths(__dirname, "/entity/*.ts")],
             enabledDrivers: ["sqlite"],
         });
     });
@@ -42,7 +46,8 @@ describe("database schema > column types > sqlite", () => {
         post.nchar = "This is nchar";
         post.nativeCharacter = "This is native character";
         post.nvarchar = "This is nvarchar";
-        post.blob = new Buffer("This is blob");
+        // TODO(uki00a) not fully tested yet.
+        post.blob = encoder.encode("This is blob");/* new Buffer("This is blob"); */
         post.clob = "This is clob";
         post.text = "This is text";
         post.real = 10.5;
@@ -150,7 +155,7 @@ describe("database schema > column types > sqlite", () => {
         post.id = 1;
         post.name = "Post";
         post.boolean = true;
-        post.blob = new Buffer("A");
+        post.blob = encoder.encode("A");/* new Buffer("A"); */
         post.datetime = new Date();
         post.datetime.setMilliseconds(0);
         await postRepository.save(post);
@@ -171,3 +176,5 @@ describe("database schema > column types > sqlite", () => {
     })));
 
 });
+
+runIfMain(import.meta);

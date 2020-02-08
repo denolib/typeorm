@@ -1,14 +1,14 @@
-import {Entity} from "../../../../../../src/decorator/entity/Entity";
-import {PrimaryColumn} from "../../../../../../src/decorator/columns/PrimaryColumn";
-import {Column} from "../../../../../../src/decorator/columns/Column";
+import {Entity} from "../../../../../../src/decorator/entity/Entity.ts";
+import {PrimaryColumn} from "../../../../../../src/decorator/columns/PrimaryColumn.ts";
+import {Column} from "../../../../../../src/decorator/columns/Column.ts";
 
 @Entity()
 export class PostWithOptions {
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     id: number;
 
-    @Column({ length: 10 })
+    @Column({ length: 10, type: String })
     name: string;
 
     @Column("float", { precision: 5, scale: 2 })

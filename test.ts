@@ -1,4 +1,5 @@
 import {runTests} from "./test/deps/mocha.ts";
+
 import "./test/integration/sample1-simple-entity.ts";
 import "./test/functional/cascades/cascade-insert-from-both-sides/cascade-insert-from-both-sides.ts";
 import "./test/functional/columns/embedded-columns/columns-embedded-columns.ts";
@@ -21,5 +22,13 @@ import "./test/functional/database-schema/column-length/mysql/column-length-mysq
 import "./test/functional/database-schema/column-length/postgres/column-length-postgres.ts";
 import "./test/functional/database-schema/column-length/sap/column-length-sap.ts";
 import "./test/functional/database-schema/column-length/sqlite/column-length-sqlite.ts";
+import "./test/functional/database-schema/column-types/cockroachdb/column-types-cockroach.ts";
+import "./test/functional/database-schema/column-types/mssql/column-types-mssql.ts";
+import "./test/functional/database-schema/column-types/mysql/column-types-mysql.ts";
+import "./test/functional/database-schema/column-types/oracle/column-types-oracle.ts";
+import "./test/functional/database-schema/column-types/postgres/column-types-postgres.ts";
+import "./test/functional/database-schema/column-types/postgres-enum/postgres-enum.ts";
+import "./test/functional/database-schema/column-types/sap/column-types-sap.ts";
+import "./test/functional/database-schema/column-types/sqlite/column-types-sqlite.ts";
 
 runTests();

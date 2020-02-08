@@ -1,11 +1,11 @@
-import {Entity} from "../../../../../../src/decorator/entity/Entity";
-import {PrimaryColumn} from "../../../../../../src/decorator/columns/PrimaryColumn";
-import {Column} from "../../../../../../src/decorator/columns/Column";
+import {Entity} from "../../../../../../src/decorator/entity/Entity.ts";
+import {PrimaryColumn} from "../../../../../../src/decorator/columns/PrimaryColumn.ts";
+import {Column} from "../../../../../../src/decorator/columns/Column.ts";
 
 @Entity()
 export class PostWithOptions {
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     id: number;
 
     // -------------------------------------------------------------------------
@@ -38,10 +38,10 @@ export class PostWithOptions {
     nvarchar: string;
 
     @Column("binary", { length: 5 })
-    binary: Buffer;
+    binary: Uint8Array; /* Buffer; */
 
     @Column("varbinary", { length: 5 })
-    varbinary: Buffer;
+    varbinary: Uint8Array; /* Buffer; */
 
     // -------------------------------------------------------------------------
     // Date Types

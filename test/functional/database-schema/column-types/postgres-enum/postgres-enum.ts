@@ -1,16 +1,18 @@
-import "reflect-metadata";
-import {Connection} from "../../../../../src/connection/Connection";
-import {expect} from "chai";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils";
-import {Post} from "./entity/Post";
-import {Table, TableColumn} from "../../../../../src";
+import {join as joinPaths} from "../../../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../../../deps/mocha.ts";
+import {expect} from "../../../../deps/chai.ts";
+import {Connection} from "../../../../../src/connection/Connection.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils.ts";
+import {Post} from "./entity/Post.ts";
+import {Table, TableColumn} from "../../../../../src/index.ts";
 
 describe("database schema > column types > postgres-enum", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
-            entities: [__dirname + "/entity/*{.js,.ts}"],
+            entities: [joinPaths(__dirname, "/entity/*.ts")],
             enabledDrivers: ["postgres"],
         });
     });
@@ -243,3 +245,5 @@ describe("database schema > column types > postgres-enum", () => {
     })));
 
 });
+
+runIfMain(import.meta);

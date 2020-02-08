@@ -1,6 +1,6 @@
-import {Column} from "../../../../../../src/decorator/columns/Column";
-import {Entity} from "../../../../../../src/decorator/entity/Entity";
-import {PrimaryGeneratedColumn} from "../../../../../../src";
+import {Column} from "../../../../../../src/decorator/columns/Column.ts";
+import {Entity} from "../../../../../../src/decorator/entity/Entity.ts";
+import {PrimaryGeneratedColumn} from "../../../../../../src/index.ts";
 
 @Entity()
 export class Post {
@@ -14,6 +14,6 @@ export class Post {
     @Column("simple-enum", { enum: ["A", "B", "C"] })
     simpleEnum: string;
 
-    @Column()
+    @Column({ type: String })
     name: string;
 }

@@ -206,4 +206,5 @@ export type ColumnType = WithPrecisionColumnType
     |BooleanConstructor
     |DateConstructor
     |NumberConstructor
-    |StringConstructor;
+    |StringConstructor
+    |Uint8ArrayConstructor; // TODO(uki001) This type is not fully tested yet.

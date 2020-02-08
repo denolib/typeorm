@@ -1,23 +1,23 @@
-import {Entity} from "../../../../../../src";
-import {PrimaryColumn} from "../../../../../../src";
-import {Column} from "../../../../../../src";
+import {Entity} from "../../../../../../src/index.ts";
+import {PrimaryColumn} from "../../../../../../src/index.ts";
+import {Column} from "../../../../../../src/index.ts";
 
 @Entity()
 export class PostWithoutTypes {
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     id: number;
 
-    @Column()
+    @Column({ type: String })
     name: string;
 
-    @Column()
+    @Column({ type: Boolean })
     boolean: boolean;
 
-    @Column()
-    blob: Buffer;
+    @Column({ type: Uint8Array })
+    blob: Uint8Array; /* Buffer; */
 
-    @Column()
+    @Column({ type: Date })
     timestamp: Date;
 
 }
