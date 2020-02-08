@@ -4,6 +4,6 @@
     "name": "sqlite",
     "type": "sqlite",
     "database": "temp/sqlitedb.db",
-    "logging": true
+    "logging": false
   }
 ]
