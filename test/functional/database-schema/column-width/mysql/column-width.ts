@@ -1,8 +1,8 @@
-import "reflect-metadata";
-import {expect} from "chai";
-import {Post} from "./entity/Post";
-import {Connection} from "../../../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils";
+import {runIfMain} from "../../../../deps/mocha.ts";
+import {expect} from "../../../../deps/chai.ts";
+import {Post} from "./entity/Post.ts";
+import {Connection} from "../../../../../src/connection/Connection.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils.ts";
 
 describe("database schema > column width", () => {
 
@@ -54,3 +54,5 @@ describe("database schema > column width", () => {
     })));
 
 });
+
+runIfMain(import.meta);
