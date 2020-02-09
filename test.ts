@@ -39,5 +39,6 @@ import "./test/functional/database-schema/rowid-column/rowid-column.ts";
 import "./test/functional/database-schema/sequences/sequence-create-test.ts";
 import "./test/functional/database-schema/simple-enums/enums.ts";
 import "./test/functional/database-schema/simple-enums-array/enums-array.ts";
+import "./test/functional/decorators/embedded/query-builder-embedded.ts";
 
 runTests();
