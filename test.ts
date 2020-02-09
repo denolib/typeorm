@@ -31,5 +31,6 @@ import "./test/functional/database-schema/column-types/postgres-enum/postgres-en
 import "./test/functional/database-schema/column-types/sap/column-types-sap.ts";
 import "./test/functional/database-schema/column-types/sqlite/column-types-sqlite.ts";
 import "./test/functional/database-schema/column-width/mysql/column-width.ts";
+import "./test/functional/database-schema/enums/enums.ts";
 
 runTests();

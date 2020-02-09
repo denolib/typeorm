@@ -1,14 +1,17 @@
-import "reflect-metadata";
-import { Connection } from "../../../../src";
-import { closeTestingConnections, createTestingConnections, reloadTestingDatabases } from "../../../utils/test-utils";
-import { EnumEntity, NumericEnum, StringEnum, HeterogeneousEnum, StringNumericEnum } from "./entity/EnumEntity";
+import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
+import { runIfMain } from "../../../deps/mocha.ts";
+import "../../../deps/chai.ts";
+import { Connection } from "../../../../src/index.ts";
+import { getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases } from "../../../utils/test-utils.ts";
+import { EnumEntity, NumericEnum, StringEnum, HeterogeneousEnum, StringNumericEnum } from "./entity/EnumEntity.ts";
 
 describe("database schema > enums", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
-            entities: [__dirname + "/entity/*{.js,.ts}"],
+            entities: [joinPaths(__dirname, "/entity/*.ts")],
             enabledDrivers: ["postgres", "mysql"]
         });
     });
@@ -61,3 +64,5 @@ describe("database schema > enums", () => {
     })));
 
 });
+
+runIfMain(import.meta);
