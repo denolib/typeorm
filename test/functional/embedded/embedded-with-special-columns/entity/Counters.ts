@@ -1,17 +1,17 @@
-import {Column} from "../../../../../src/decorator/columns/Column";
-import {CreateDateColumn} from "../../../../../src/decorator/columns/CreateDateColumn";
-import {UpdateDateColumn} from "../../../../../src/decorator/columns/UpdateDateColumn";
-import {Subcounters} from "./Subcounters";
+import {Column} from "../../../../../src/decorator/columns/Column.ts";
+import {CreateDateColumn} from "../../../../../src/decorator/columns/CreateDateColumn.ts";
+import {UpdateDateColumn} from "../../../../../src/decorator/columns/UpdateDateColumn.ts";
+import {Subcounters} from "./Subcounters.ts";
 
 export class Counters {
 
-    @Column()
+    @Column({ type: Number })
     likes: number;
 
-    @Column()
+    @Column({ type: Number })
     comments: number;
 
-    @Column()
+    @Column({ type: Number })
     favorites: number;
 
     @Column(() => Subcounters, { prefix: "subcnt" })
