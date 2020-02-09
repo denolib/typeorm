@@ -1,17 +1,17 @@
-import {Column} from "../../../../../src/decorator/columns/Column";
-import {PrimaryColumn} from "../../../../../src/decorator/columns/PrimaryColumn";
-import {Entity} from "../../../../../src/decorator/entity/Entity";
-import {ManyToOne} from "../../../../../src/decorator/relations/ManyToOne";
-import {JoinColumn} from "../../../../../src/decorator/relations/JoinColumn";
-import {Post} from "./Post";
+import {Column} from "../../../../../src/decorator/columns/Column.ts";
+import {PrimaryColumn} from "../../../../../src/decorator/columns/PrimaryColumn.ts";
+import {Entity} from "../../../../../src/decorator/entity/Entity.ts";
+import {ManyToOne} from "../../../../../src/decorator/relations/ManyToOne.ts";
+import {JoinColumn} from "../../../../../src/decorator/relations/JoinColumn.ts";
+import {Post} from "./Post.ts";
 
 @Entity()
 export class User {
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     id: number;
 
-    @Column()
+    @Column({ type: String })
     name: string;
 
     @ManyToOne(type => Post)
