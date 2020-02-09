@@ -33,5 +33,6 @@ import "./test/functional/database-schema/column-types/sqlite/column-types-sqlit
 import "./test/functional/database-schema/column-width/mysql/column-width.ts";
 import "./test/functional/database-schema/enums/enums.ts";
 import "./test/functional/database-schema/enums-array/enums-array.ts";
+import "./test/functional/database-schema/indices/indices-create-modify.ts";
 
 runTests();

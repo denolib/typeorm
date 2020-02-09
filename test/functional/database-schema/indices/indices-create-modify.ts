@@ -1,17 +1,19 @@
-import {expect} from "chai";
-import "reflect-metadata";
-import {Connection, EntityMetadata} from "../../../../src";
-import {CockroachDriver} from "../../../../src/driver/cockroachdb/CockroachDriver";
-import {IndexMetadata} from "../../../../src/metadata/IndexMetadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
+import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../../deps/mocha.ts";
+import {expect} from "../../../deps/chai.ts";
+import {Connection, EntityMetadata} from "../../../../src/index.ts";
+// import {CockroachDriver} from "../../../../src/driver/cockroachdb/CockroachDriver.ts";
+import {IndexMetadata} from "../../../../src/metadata/IndexMetadata.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
 
-import {Person} from "./entity/Person";
+import {Person} from "./entity/Person.ts";
 
 describe("database schema > indices > reading index from entity and updating database", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
@@ -43,7 +45,7 @@ describe("database schema > indices > reading index from entity and updating dat
         await queryRunner.release();
 
         // CockroachDB stores unique indices as UNIQUE constraints
-        if (connection.driver instanceof CockroachDriver) {
+        if (false/* connection.driver instanceof CockroachDriver */) { // TODO(uki00a) uncomment this when CockroachDriver is implemented.
             expect(table!.uniques.length).to.be.equal(1);
             expect(table!.uniques[0].name).to.be.equal("IDX_TEST");
             expect(table!.uniques[0].columnNames.length).to.be.equal(2);
@@ -87,3 +89,5 @@ describe("database schema > indices > reading index from entity and updating dat
 
     })));
 });
+
+runIfMain(import.meta);

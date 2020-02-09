@@ -1,7 +1,7 @@
-import {Entity} from "../../../../../src/decorator/entity/Entity";
-import {PrimaryGeneratedColumn} from "../../../../../src/decorator/columns/PrimaryGeneratedColumn";
-import {Column} from "../../../../../src/decorator/columns/Column";
-import {Index} from "../../../../../src/decorator/Index";
+import {Entity} from "../../../../../src/decorator/entity/Entity.ts";
+import {PrimaryGeneratedColumn} from "../../../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
+import {Column} from "../../../../../src/decorator/columns/Column.ts";
+import {Index} from "../../../../../src/decorator/Index.ts";
 
 @Entity()
 @Index("IDX_TEST", ["firstname", "lastname"])
@@ -10,10 +10,10 @@ export class Person {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     firstname: string;
 
-    @Column()
+    @Column({ type: String })
     lastname: string;
 
 }
