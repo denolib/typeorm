@@ -58,5 +58,6 @@ import "./test/functional/embedded/embedded-many-to-many-case5/embedded-many-to-
 import "./test/functional/embedded/embedded-many-to-one-case1/embedded-many-to-one-case1.ts";
 import "./test/functional/embedded/embedded-many-to-one-case2/embedded-many-to-one-case2.ts";
 import "./test/functional/embedded/embedded-many-to-one-case3/embedded-many-to-one-case3.ts";
+import "./test/functional/embedded/embedded-many-to-one-case4/embedded-many-to-one-case4.ts";
 
 runTests();
