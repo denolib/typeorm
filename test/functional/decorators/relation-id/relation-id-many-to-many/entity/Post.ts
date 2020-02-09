@@ -1,21 +1,21 @@
-import {PrimaryColumn} from "../../../../../../src/decorator/columns/PrimaryColumn";
-import {ManyToMany} from "../../../../../../src/decorator/relations/ManyToMany";
-import {Entity} from "../../../../../../src/decorator/entity/Entity";
-import {Column} from "../../../../../../src/decorator/columns/Column";
-import {JoinTable} from "../../../../../../src/decorator/relations/JoinTable";
-import {RelationId} from "../../../../../../src/decorator/relations/RelationId";
-import {Category} from "./Category";
+import {PrimaryColumn} from "../../../../../../src/decorator/columns/PrimaryColumn.ts";
+import {ManyToMany} from "../../../../../../src/decorator/relations/ManyToMany.ts";
+import {Entity} from "../../../../../../src/decorator/entity/Entity.ts";
+import {Column} from "../../../../../../src/decorator/columns/Column.ts";
+import {JoinTable} from "../../../../../../src/decorator/relations/JoinTable.ts";
+import {RelationId} from "../../../../../../src/decorator/relations/RelationId.ts";
+import {Category} from "./Category.ts";
 
 @Entity()
 export class Post {
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     id: number;
 
-    @Column()
+    @Column({ type: String })
     title: string;
 
-    @Column()
+    @Column({ type: Boolean })
     isRemoved: boolean = false;
 
     @ManyToMany(type => Category, category => category.posts)
