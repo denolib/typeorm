@@ -1,14 +1,17 @@
-import "reflect-metadata";
-import { Connection } from "../../../../src";
-import { closeTestingConnections, createTestingConnections, reloadTestingDatabases } from "../../../utils/test-utils";
-import { SimpleEnumEntity, NumericEnum, StringEnum, HeterogeneousEnum, StringNumericEnum } from "./entity/SimpleEnumEntity";
+import { join as joinPaths } from "../../../../vendor/https/deno.land/std/path/mod.ts";
+import "../../../deps/chai.ts";
+import { runIfMain } from "../../../deps/mocha.ts";
+import { Connection } from "../../../../src/index.ts";
+import { getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases } from "../../../utils/test-utils.ts";
+import { SimpleEnumEntity, NumericEnum, StringEnum, HeterogeneousEnum, StringNumericEnum } from "./entity/SimpleEnumEntity.ts";
 
 describe("database schema > simple-enums", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
-            entities: [__dirname + "/entity/*{.js,.ts}"],
+            entities: [joinPaths(__dirname, "/entity/*.ts")],
             enabledDrivers: ["mysql", "mariadb", "postgres", "sqlite", "mssql"]
         });
     });
@@ -61,3 +64,5 @@ describe("database schema > simple-enums", () => {
     })));
 
 });
+
+runIfMain(import.meta);
