@@ -16,7 +16,7 @@ export async function importClassesFromDirectories(logger: Logger, directories: 
         } else if (Array.isArray(mod)) {
             mod.forEach((i: any) => loadFileClasses(i, allLoaded));
 
-        } else {
+        } else if (typeof mod === "object" && mod !== null) {
             Object.keys(mod).forEach(key => loadFileClasses(mod[key], allLoaded));
 
         }
