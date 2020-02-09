@@ -34,5 +34,6 @@ import "./test/functional/database-schema/column-width/mysql/column-width.ts";
 import "./test/functional/database-schema/enums/enums.ts";
 import "./test/functional/database-schema/enums-array/enums-array.ts";
 import "./test/functional/database-schema/indices/indices-create-modify.ts";
+import "./test/functional/database-schema/mssql-parameters/mssql-parameters.ts";
 
 runTests();
