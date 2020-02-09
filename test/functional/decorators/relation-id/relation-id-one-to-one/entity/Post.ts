@@ -1,20 +1,20 @@
-import {PrimaryColumn} from "../../../../../../src/decorator/columns/PrimaryColumn";
-import {Entity} from "../../../../../../src/decorator/entity/Entity";
-import {Column} from "../../../../../../src/decorator/columns/Column";
-import {OneToOne} from "../../../../../../src/decorator/relations/OneToOne";
-import {JoinColumn} from "../../../../../../src/decorator/relations/JoinColumn";
-import {Category} from "./Category";
-import {RelationId} from "../../../../../../src/decorator/relations/RelationId";
+import {PrimaryColumn} from "../../../../../../src/decorator/columns/PrimaryColumn.ts";
+import {Entity} from "../../../../../../src/decorator/entity/Entity.ts";
+import {Column} from "../../../../../../src/decorator/columns/Column.ts";
+import {OneToOne} from "../../../../../../src/decorator/relations/OneToOne.ts";
+import {JoinColumn} from "../../../../../../src/decorator/relations/JoinColumn.ts";
+import {Category} from "./Category.ts";
+import {RelationId} from "../../../../../../src/decorator/relations/RelationId.ts";
 
 @Entity()
 export class Post {
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     id: number;
 
-    @Column()
+    @Column({ type: String })
     title: string;
-    
+
     @OneToOne(type => Category)
     @JoinColumn()
     category: Category;
