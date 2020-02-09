@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryColumn } from "../../../../../src";
+import { Entity, Column, PrimaryColumn } from "../../../../../src/index.ts";
 
 
 export enum NumericEnum {
@@ -35,7 +35,7 @@ export type ArrayDefinedNumericEnumType = 11 | 12 | 13;
 @Entity()
 export class EnumArrayEntity {
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     id: number;
 
     @Column({
