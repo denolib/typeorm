@@ -1,19 +1,19 @@
-import {Entity} from "../../../../../src/decorator/entity/Entity";
-import {OneToMany} from "../../../../../src/decorator/relations/OneToMany";
-import {PrimaryColumn} from "../../../../../src/decorator/columns/PrimaryColumn";
-import {Column} from "../../../../../src/decorator/columns/Column";
-import {Post} from "./Post";
+import {Entity} from "../../../../../src/decorator/entity/Entity.ts";
+import {OneToMany} from "../../../../../src/decorator/relations/OneToMany.ts";
+import {PrimaryColumn} from "../../../../../src/decorator/columns/PrimaryColumn.ts";
+import {Column} from "../../../../../src/decorator/columns/Column.ts";
+import {Post} from "./Post.ts";
 
 @Entity()
 export class User {
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     id: number;
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     personId: number;
 
-    @Column()
+    @Column({ type: String })
     name: string;
 
     @OneToMany(type => Post, post => post.counters.likedUser)
