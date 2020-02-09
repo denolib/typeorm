@@ -46,5 +46,6 @@ import "./test/functional/decorators/relation-id/relation-id-many-to-many/relati
 import "./test/functional/decorators/relation-id/relation-id-many-to-one/relation-id-decorator-many-to-one.ts";
 import "./test/functional/decorators/relation-id/relation-id-one-to-many/relation-id-decorator-one-to-many.ts";
 import "./test/functional/decorators/relation-id/relation-id-one-to-one/relation-id-decorator-one-to-one.ts";
+import "./test/functional/deferrable/deferrable.ts";
 
 runTests();
