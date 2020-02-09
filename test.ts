@@ -51,5 +51,6 @@ import "./test/functional/driver/convert-to-entity/convert-to-entity.ts";
 import "./test/functional/embedded/basic-functionality/basic-functionality.ts";
 import "./test/functional/embedded/embedded-listeners/embedded-listeners.ts";
 import "./test/functional/embedded/embedded-many-to-many-case1/embedded-many-to-many-case1.ts";
+import "./test/functional/embedded/embedded-many-to-many-case2/embedded-many-to-many-case2.ts";
 
 runTests();
