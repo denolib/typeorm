@@ -35,5 +35,6 @@ import "./test/functional/database-schema/enums/enums.ts";
 import "./test/functional/database-schema/enums-array/enums-array.ts";
 import "./test/functional/database-schema/indices/indices-create-modify.ts";
 import "./test/functional/database-schema/mssql-parameters/mssql-parameters.ts";
+import "./test/functional/database-schema/rowid-column/rowid-column.ts";
 
 runTests();
