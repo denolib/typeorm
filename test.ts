@@ -40,5 +40,7 @@ import "./test/functional/database-schema/sequences/sequence-create-test.ts";
 import "./test/functional/database-schema/simple-enums/enums.ts";
 import "./test/functional/database-schema/simple-enums-array/enums-array.ts";
 import "./test/functional/decorators/embedded/query-builder-embedded.ts";
+import "./test/functional/decorators/relation-count/relation-count-many-to-many/relation-count-decorator-many-to-many.ts";
+import "./test/functional/decorators/relation-count/relation-count-one-to-many/relation-count-decorator-one-to-many.ts";
 
 runTests();

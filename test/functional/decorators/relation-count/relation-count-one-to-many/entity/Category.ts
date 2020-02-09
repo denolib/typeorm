@@ -1,22 +1,22 @@
-import {PrimaryColumn} from "../../../../../../src/decorator/columns/PrimaryColumn";
-import {Entity} from "../../../../../../src/decorator/entity/Entity";
-import {Column} from "../../../../../../src/decorator/columns/Column";
-import {ManyToOne} from "../../../../../../src/decorator/relations/ManyToOne";
-import {OneToMany} from "../../../../../../src/decorator/relations/OneToMany";
-import {RelationCount} from "../../../../../../src/decorator/relations/RelationCount";
-import {Image} from "./Image";
-import {Post} from "./Post";
+import {PrimaryColumn} from "../../../../../../src/decorator/columns/PrimaryColumn.ts";
+import {Entity} from "../../../../../../src/decorator/entity/Entity.ts";
+import {Column} from "../../../../../../src/decorator/columns/Column.ts";
+import {ManyToOne} from "../../../../../../src/decorator/relations/ManyToOne.ts";
+import {OneToMany} from "../../../../../../src/decorator/relations/OneToMany.ts";
+import {RelationCount} from "../../../../../../src/decorator/relations/RelationCount.ts";
+import {Image} from "./Image.ts";
+import {Post} from "./Post.ts";
 
 @Entity()
 export class Category {
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     id: number;
 
-    @Column()
+    @Column({ type: String })
     name: string;
 
-    @Column()
+    @Column({ type: Boolean })
     isRemoved: boolean = false;
 
     @ManyToOne(type => Post, post => post.categories)
