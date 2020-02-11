@@ -86,5 +86,6 @@ import "./test/functional/json/jsonb.ts";
 import "./test/functional/metadata-builder/column-metadata/column-metadata.ts";
 import "./test/functional/metadata-builder/metadata-args-storage/metadata-args-storage.ts";
 import "./test/functional/migrations/show-command/command.ts";
+import "./test/functional/mongodb/basic/array-columns/mongodb-array-columns.ts";
 
 runTests();
