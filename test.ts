@@ -112,5 +112,6 @@ import "./test/functional/persistence/many-to-one-bi-directional/persistence-man
 import "./test/functional/persistence/many-to-one-uni-directional/persistence-many-to-one-uni-directional.ts";
 import "./test/functional/persistence/multi-primary-key/multi-primary-key.ts";
 import "./test/functional/persistence/multi-primary-key-on-both-sides/multi-primary-key.ts";
+import "./test/functional/persistence/null-and-default-behaviour/null-and-default-behaviour.ts";
 
 runTests();
