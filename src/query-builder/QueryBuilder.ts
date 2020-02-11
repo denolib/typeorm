@@ -389,7 +389,7 @@ export abstract class QueryBuilder<Entity> {
      * Uses same query runner as current QueryBuilder.
      */
     createQueryBuilder(): this {
-        return new (this.constructor as any)(this.connection, this.queryRunner);
+        return this.queryBuilderFactory.create(this, this.connection, this.queryRunner);
     }
 
     /**
@@ -399,7 +399,7 @@ export abstract class QueryBuilder<Entity> {
      * where queryBuilder is cloned QueryBuilder.
      */
     clone(): this {
-        return new (this.constructor as any)(this);
+        return this.queryBuilderFactory.clone(this);
     }
 
     /**

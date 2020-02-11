@@ -5,8 +5,14 @@ import {DeleteQueryBuilder} from "./DeleteQueryBuilder.ts";
 import {RelationQueryBuilder} from "./RelationQueryBuilder.ts";
 import {QueryBuilder} from "./QueryBuilder.ts";
 import {AbstractQueryBuilderFactory} from "./AbstractQueryBuilderFactory.ts";
+import {Connection} from "../connection/Connection.ts";
+import {QueryRunner} from "../query-runner/QueryRunner.ts";
 
 export class QueryBuilderFactory implements AbstractQueryBuilderFactory {
+    create<T extends QueryBuilder<any>>(queryBuilder: T, connection: Connection, queryRunner?: QueryRunner): T {
+        return new (queryBuilder.constructor as any)(this, connection, queryRunner);
+    }
+
     select(queryBuilder: QueryBuilder<any>): SelectQueryBuilder<any> {
         return queryBuilder instanceof SelectQueryBuilder
             ? queryBuilder
@@ -35,5 +41,9 @@ export class QueryBuilderFactory implements AbstractQueryBuilderFactory {
         return queryBuilder instanceof RelationQueryBuilder
             ? queryBuilder
             : new RelationQueryBuilder(this, queryBuilder);
+    }
+
+    clone<T extends QueryBuilder<any>>(queryBuilder: T): T {
+        return new (queryBuilder.constructor as any)(this, queryBuilder);
     }
 }
