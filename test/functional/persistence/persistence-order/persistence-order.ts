@@ -1,27 +1,35 @@
-import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
-import {Connection} from "../../../../src/connection/Connection";
-import {Post} from "./entity/Post";
-import {Category} from "./entity/Category";
-import {ConnectionMetadataBuilder} from "../../../../src/connection/ConnectionMetadataBuilder";
-import {EntityMetadataValidator} from "../../../../src/metadata-builder/EntityMetadataValidator";
-import {expect} from "chai";
+import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
+import {Connection} from "../../../../src/connection/Connection.ts";
+import {Post} from "./entity/Post.ts";
+import {Category} from "./entity/Category.ts";
+import {ConnectionMetadataBuilder} from "../../../../src/connection/ConnectionMetadataBuilder.ts";
+import {EntityMetadataValidator} from "../../../../src/metadata-builder/EntityMetadataValidator.ts";
+import {expect} from "../../../deps/chai.ts";
+import {runIfMain} from "../../../deps/mocha.ts";
 
 describe("persistence > order of persistence execution operations", () => {
 
+    const __dirname = getDirnameOfCurrentModule(import.meta);
+
     describe("should throw exception when non-resolvable circular relations found", function() {
 
-        it("should throw CircularRelationsError", () => {
+        it("should throw CircularRelationsError", async () => {
             const connection = new Connection({ // dummy connection options, connection won't be established anyway
+                // TODO(uki00a) uncomment this when MysqlDriver is implemented.
+                /*
                 type: "mysql",
                 host: "localhost",
                 username: "test",
                 password: "test",
                 database: "test",
-                entities: [__dirname + "/entity/*{.js,.ts}"]
+                */
+                type: "sqlite",
+                database: ":memory:",
+                entities: [joinPaths(__dirname, "/entity/*.ts}")]
             });
             const connectionMetadataBuilder = new ConnectionMetadataBuilder(connection);
-            const entityMetadatas = connectionMetadataBuilder.buildEntityMetadatas([__dirname + "/entity/*{.js,.ts}"]);
+            const entityMetadatas = await connectionMetadataBuilder.buildEntityMetadatas([joinPaths(__dirname, "/entity/*.ts")]);
             const entityMetadataValidator = new EntityMetadataValidator();
             expect(() => entityMetadataValidator.validateMany(entityMetadatas, connection.driver)).to.throw(Error);
         });
@@ -33,7 +41,7 @@ describe("persistence > order of persistence execution operations", () => {
 
         let connections: Connection[];
         before(async () => connections = await createTestingConnections({
-            entities: [__dirname + "/entity/*{.js,.ts}"],
+            entities: [joinPaths(__dirname, "/entity/*.ts")],
         }));
         beforeEach(() => reloadTestingDatabases(connections));
         after(() => closeTestingConnections(connections));
@@ -81,3 +89,5 @@ describe("persistence > order of persistence execution operations", () => {
 
 
 });
+
+runIfMain(import.meta);

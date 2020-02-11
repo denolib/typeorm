@@ -119,5 +119,6 @@ import "./test/functional/persistence/partial-persist/partial-persist.ts";
 import "./test/functional/persistence/persistence-options/chunks/persistence-options-chunks.ts";
 import "./test/functional/persistence/persistence-options/listeners/persistence-options-listeners.ts";
 import "./test/functional/persistence/persistence-options/transaction/persistence-options-transaction.ts";
+import "./test/functional/persistence/persistence-order/persistence-order.ts";
 
 runTests();
