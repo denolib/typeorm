@@ -246,7 +246,7 @@ describe("Connection", () => {
                 await connection.close(); // CannotCloseNotConnectedError
                 expect.fail("an error to be thrown");
             } catch (err) {
-                expect(err.message).to.equal("an error to be thrown");
+                expect(err.message).not.to.equal("an error to be thrown");
             }
         }));
 
