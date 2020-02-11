@@ -73,5 +73,6 @@ import "./test/functional/entity-metadata-validator/initialized-relations/valida
 import "./test/functional/entity-model/entity-model.ts";
 import "./test/functional/entity-schema/basic/entity-schema-basic.ts";
 import "./test/functional/entity-schema/checks/checks-basic.ts";
+import "./test/functional/entity-schema/columns/mysql/columns-mysql.ts";
 
 runTests();
