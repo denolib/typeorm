@@ -1,14 +1,17 @@
-import "reflect-metadata";
-import {Post} from "./entity/Post";
-import {Category} from "./entity/Category";
-import {Connection} from "../../../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils";
+import {join as joinPaths} from "../../../../../vendor/https/deno.land/std/path/mod.ts";
+import "../../../../deps/chai.ts";
+import {runIfMain} from "../../../../deps/mocha.ts";
+import {Post} from "./entity/Post.ts";
+import {Category} from "./entity/Category.ts";
+import {Connection} from "../../../../../src/connection/Connection.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils.ts";
 
 describe("persistence > insert > update-relation-columns-after-insertion", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
 
     }));
     beforeEach(() => reloadTestingDatabases(connections));
@@ -32,3 +35,5 @@ describe("persistence > insert > update-relation-columns-after-insertion", () =>
     })));
 
 });
+
+runIfMain(import.meta);
