@@ -1,17 +1,18 @@
-import "reflect-metadata";
-import {CockroachDriver} from "../../../../../src/driver/cockroachdb/CockroachDriver";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils";
-import {Connection} from "../../../../../src/connection/Connection";
-import {EntityMetadata} from "../../../../../src/metadata/EntityMetadata";
-import {IndexMetadata} from "../../../../../src/metadata/IndexMetadata";
-import {expect} from "chai";
-import {PersonSchema} from "./entity/Person";
+// TODO(uki00a) uncomment this when CockroachDriver is implemented.
+// import {CockroachDriver} from "../../../../../src/driver/cockroachdb/CockroachDriver.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils.ts";
+import {Connection} from "../../../../../src/connection/Connection.ts";
+import {EntityMetadata} from "../../../../../src/metadata/EntityMetadata.ts";
+import {IndexMetadata} from "../../../../../src/metadata/IndexMetadata.ts";
+import {expect} from "../../../../deps/chai.ts";
+import {runIfMain} from "../../../../deps/mocha.ts";
+import {PersonSchema} from "./entity/Person.ts";
 
 describe("entity-schema > indices > basic", () => {
 
     let connections: Connection[];
     before(async () => connections = await createTestingConnections({
-        entities: [<any>PersonSchema],
+        entities: [PersonSchema as any],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
@@ -43,7 +44,7 @@ describe("entity-schema > indices > basic", () => {
         await queryRunner.release();
 
         // CockroachDB stores unique indices as UNIQUE constraints
-        if (connection.driver instanceof CockroachDriver) {
+        if (false/* connection.driver instanceof CockroachDriver */) { // TODO(uki00a) uncomment this when CockroachDriver is implemented.
             expect(table!.uniques.length).to.be.equal(1);
             expect(table!.uniques[0].name).to.be.equal("IDX_TEST");
             expect(table!.uniques[0].columnNames.length).to.be.equal(2);
@@ -88,3 +89,5 @@ describe("entity-schema > indices > basic", () => {
     })));
 
 });
+
+runIfMain(import.meta);
