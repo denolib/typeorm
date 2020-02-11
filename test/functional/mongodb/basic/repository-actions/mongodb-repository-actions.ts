@@ -1,10 +1,11 @@
-import "reflect-metadata";
-import {expect} from "chai";
-import {Connection} from "../../../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils";
-import {Post} from "./entity/Post";
+import {expect} from "../../../../deps/chai.ts";
+import {runIfMain} from "../../../../deps/mocha.ts";
+import {Connection} from "../../../../../src/connection/Connection.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils.ts";
+import {Post} from "./entity/Post.ts";
 
-describe("mongodb > basic repository actions", () => {
+// TODO(uki00a) Remove `.skip` when MongoDriver is implemented.
+describe.skip("mongodb > basic repository actions", () => {
 
     let connections: Connection[];
     before(async () => connections = await createTestingConnections({
@@ -286,3 +287,5 @@ describe("mongodb > basic repository actions", () => {
     })));
 
 });
+
+runIfMain(import.meta);
