@@ -1,5 +1,5 @@
-import {EntitySchema} from "../../../../../src";
-import {Category} from "../model/Category";
+import {EntitySchema} from "../../../../../src/index.ts";
+import {Category} from "../model/Category.ts";
 
 export const CategoryEntity = new EntitySchema<Category>({
     name: "category",
