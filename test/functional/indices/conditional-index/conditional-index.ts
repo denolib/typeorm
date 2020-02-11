@@ -1,14 +1,17 @@
-import "reflect-metadata";
-import {Connection} from "../../../../src";
-import {closeTestingConnections, createTestingConnections} from "../../../utils/test-utils";
-import {expect} from "chai";
+import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
+import {Connection} from "../../../../src/index.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections} from "../../../utils/test-utils.ts";
+import {expect} from "../../../deps/chai.ts";
+import {runIfMain} from "../../../deps/mocha.ts";
 
-describe("indices > conditional index", () => {
+describe("indices > conditional index", function() {
+    this.timeout(20000); // This is because it takes some time to compile TypeScript.
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
-            entities: [__dirname + "/entity/*{.js,.ts}"],
+            entities: [joinPaths(__dirname, "/entity/*.ts")],
             enabledDrivers: ["mssql", "postgres", "sqlite"], // only these drivers supports conditional indices
             schemaCreate: true,
             dropSchema: true,
@@ -54,3 +57,5 @@ describe("indices > conditional index", () => {
     })));
 
 });
+
+runIfMain(import.meta);
