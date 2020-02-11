@@ -118,5 +118,6 @@ import "./test/functional/persistence/one-to-one/persistence-one-to-one.ts";
 import "./test/functional/persistence/partial-persist/partial-persist.ts";
 import "./test/functional/persistence/persistence-options/chunks/persistence-options-chunks.ts";
 import "./test/functional/persistence/persistence-options/listeners/persistence-options-listeners.ts";
+import "./test/functional/persistence/persistence-options/transaction/persistence-options-transaction.ts";
 
 runTests();
