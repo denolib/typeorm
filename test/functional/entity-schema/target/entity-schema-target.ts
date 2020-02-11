@@ -1,8 +1,9 @@
-import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
-import {Connection} from "../../../../src";
-import {PostEntity} from "./entity/PostEntity";
-import {Post} from "./model/Post";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
+import {Connection} from "../../../../src/index.ts";
+import {PostEntity} from "./entity/PostEntity.ts";
+import {Post} from "./model/Post.ts";
+import {runIfMain} from "../../../deps/mocha.ts";
+import "../../../deps/chai.ts";
 
 describe("entity schemas > target option", () => {
 
@@ -34,3 +35,5 @@ describe("entity schemas > target option", () => {
     })));
 
 });
+
+runIfMain(import.meta);

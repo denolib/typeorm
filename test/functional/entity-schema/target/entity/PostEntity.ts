@@ -1,5 +1,5 @@
-import {EntitySchema} from "../../../../../src";
-import {Post} from "../model/Post";
+import {EntitySchema} from "../../../../../src/index.ts";
+import {Post} from "../model/Post.ts";
 
 export const PostEntity = new EntitySchema<Post>({
     name: "post",

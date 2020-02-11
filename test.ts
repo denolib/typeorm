@@ -77,5 +77,6 @@ import "./test/functional/entity-schema/columns/mysql/columns-mysql.ts";
 import "./test/functional/entity-schema/exclusions/exclusions-basic.ts";
 import "./test/functional/entity-schema/indices/basic/indices-basic.ts";
 import "./test/functional/entity-schema/indices/mysql/indices-mysql.ts";
+import "./test/functional/entity-schema/target/entity-schema-target.ts";
 
 runTests();
