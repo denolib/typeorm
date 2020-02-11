@@ -74,5 +74,6 @@ import "./test/functional/entity-model/entity-model.ts";
 import "./test/functional/entity-schema/basic/entity-schema-basic.ts";
 import "./test/functional/entity-schema/checks/checks-basic.ts";
 import "./test/functional/entity-schema/columns/mysql/columns-mysql.ts";
+import "./test/functional/entity-schema/exclusions/exclusions-basic.ts";
 
 runTests();
