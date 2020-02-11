@@ -83,5 +83,6 @@ import "./test/functional/indices/basic-unique-index-test/basic-unique-index-tes
 import "./test/functional/indices/conditional-index/conditional-index.ts";
 import "./test/functional/indices/embeddeds-index-test/embeddeds-unique-index-test.ts";
 import "./test/functional/json/jsonb.ts";
+import "./test/functional/metadata-builder/column-metadata/column-metadata.ts";
 
 runTests();
