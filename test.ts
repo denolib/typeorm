@@ -70,5 +70,6 @@ import "./test/functional/embedded/prefix/embedded-prefix.ts";
 import "./test/functional/entity-listeners/entity-listeners.ts";
 import "./test/functional/entity-metadata-validator/basic/entity-metadata-validator.ts";
 import "./test/functional/entity-metadata-validator/initialized-relations/validator-intialized-relations.ts";
+import "./test/functional/entity-model/entity-model.ts";
 
 runTests();
