@@ -1,18 +1,18 @@
-import {Column} from "../../../../../src/decorator/columns/Column";
-import {PrimaryColumn} from "../../../../../src/decorator/columns/PrimaryColumn";
+import {Column} from "../../../../../src/decorator/columns/Column.ts";
+import {PrimaryColumn} from "../../../../../src/decorator/columns/PrimaryColumn.ts";
 
 export class Counters {
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     code: number;
 
-    @Column()
+    @Column({ type: Number })
     likes: number;
 
-    @Column()
+    @Column({ type: Number })
     comments: number;
 
-    @Column()
+    @Column({ type: Number })
     favorites: number;
 
 }
