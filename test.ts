@@ -72,5 +72,6 @@ import "./test/functional/entity-metadata-validator/basic/entity-metadata-valida
 import "./test/functional/entity-metadata-validator/initialized-relations/validator-intialized-relations.ts";
 import "./test/functional/entity-model/entity-model.ts";
 import "./test/functional/entity-schema/basic/entity-schema-basic.ts";
+import "./test/functional/entity-schema/checks/checks-basic.ts";
 
 runTests();
