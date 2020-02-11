@@ -1,16 +1,18 @@
-import "reflect-metadata";
-import {Post} from "./entity/Post";
-import {Counters} from "./entity/Counters";
-import {Connection} from "../../../../src/connection/Connection";
-import {expect} from "chai";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
-import {Subcounters} from "./entity/Subcounters";
+import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
+import {Post} from "./entity/Post.ts";
+import {Counters} from "./entity/Counters.ts";
+import {Connection} from "../../../../src/connection/Connection.ts";
+import {runIfMain} from "../../../deps/mocha.ts";
+import {expect} from "../../../deps/chai.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
+import {Subcounters} from "./entity/Subcounters.ts";
 
 describe("embedded > multiple-primary-columns-with-nested-embed", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
@@ -131,3 +133,5 @@ describe("embedded > multiple-primary-columns-with-nested-embed", () => {
     })));
 
 });
+
+runIfMain(import.meta);

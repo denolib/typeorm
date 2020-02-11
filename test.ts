@@ -63,5 +63,6 @@ import "./test/functional/embedded/embedded-many-to-one-case5/embedded-many-to-o
 import "./test/functional/embedded/embedded-one-to-one/embedded-one-to-one.ts";
 import "./test/functional/embedded/embedded-with-special-columns/embedded-with-special-columns.ts";
 import "./test/functional/embedded/multiple-primary-columns/multiple-primary-columns.ts";
+import "./test/functional/embedded/multiple-primary-columns-with-nested-embed/multiple-primary-columns-with-nested-embed.ts";
 
 runTests();
