@@ -1,8 +1,8 @@
-import {Entity} from "../../../../../src/decorator/entity/Entity";
-import {PrimaryGeneratedColumn} from "../../../../../src/decorator/columns/PrimaryGeneratedColumn";
-import {ManyToOne} from "../../../../../src/decorator/relations/ManyToOne";
-import {Post} from "./Post";
-import {Column} from "../../../../../src/decorator/columns/Column";
+import {Entity} from "../../../../../src/decorator/entity/Entity.ts";
+import {PrimaryGeneratedColumn} from "../../../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
+import {ManyToOne} from "../../../../../src/decorator/relations/ManyToOne.ts";
+import {Post} from "./Post.ts";
+import {Column} from "../../../../../src/decorator/columns/Column.ts";
 
 @Entity()
 export class Category {
@@ -12,8 +12,8 @@ export class Category {
 
     @ManyToOne(type => Post, post => post.categories)
     post: Post;
-    
-    @Column()
+
+    @Column({ type: String })
     name: string;
 
 }
