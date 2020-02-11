@@ -107,5 +107,6 @@ import "./test/functional/persistence/custom-column-name-pk/custom-column-name-p
 import "./test/functional/persistence/custom-column-names/persistence-custom-column-names.ts";
 import "./test/functional/persistence/entity-updation/persistence-entity-updation.ts";
 import "./test/functional/persistence/insert/update-relation-columns-after-insertion/update-relation-columns-after-insertion.ts";
+import "./test/functional/persistence/many-to-many/persistence-many-to-many.ts";
 
 runTests();
