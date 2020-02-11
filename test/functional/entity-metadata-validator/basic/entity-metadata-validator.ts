@@ -1,24 +1,36 @@
-import "reflect-metadata";
-import {Connection} from "../../../../src/connection/Connection";
-import {ConnectionMetadataBuilder} from "../../../../src/connection/ConnectionMetadataBuilder";
-import {EntityMetadataValidator} from "../../../../src/metadata-builder/EntityMetadataValidator";
-import {expect} from "chai";
+import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
+import {Connection} from "../../../../src/connection/Connection.ts";
+import {ConnectionMetadataBuilder} from "../../../../src/connection/ConnectionMetadataBuilder.ts";
+import {EntityMetadataValidator} from "../../../../src/metadata-builder/EntityMetadataValidator.ts";
+import {getDirnameOfCurrentModule} from "../../../utils/test-utils.ts";
+import {expect} from "../../../deps/chai.ts";
+import {runIfMain} from "../../../deps/mocha.ts";
 
 describe("entity-metadata-validator", () => {
 
-    it("should throw error if relation count decorator used with ManyToOne or OneToOne relations", () => {
+    it("should throw error if relation count decorator used with ManyToOne or OneToOne relations", async function() {
+        this.timeout(20000); // This is because it takes some time to compile TypeScript.
+        const __dirname = getDirnameOfCurrentModule(import.meta);
         const connection = new Connection({ // dummy connection options, connection won't be established anyway
+            // TODO(uki00a) uncomment this when MysqlDriver is implemented.
+            /*
             type: "mysql",
             host: "localhost",
             username: "test",
             password: "test",
             database: "test",
-            entities: [__dirname + "/entity/*{.js,.ts}"]
+            entities: [joinPaths(__dirname, "/entity/*.ts")]
+            */
+            type: "sqlite",
+            database: ":memory:",
+            entities: [joinPaths(__dirname, "/entity/*.ts")]
         });
         const connectionMetadataBuilder = new ConnectionMetadataBuilder(connection);
-        const entityMetadatas = connectionMetadataBuilder.buildEntityMetadatas([__dirname + "/entity/*{.js,.ts}"]);
+        const entityMetadatas = await connectionMetadataBuilder.buildEntityMetadatas([joinPaths(__dirname, "/entity/*.ts")]);
         const entityMetadataValidator = new EntityMetadataValidator();
         expect(() => entityMetadataValidator.validateMany(entityMetadatas, connection.driver)).to.throw(Error);
     });
 
 });
+
+runIfMain(import.meta);
