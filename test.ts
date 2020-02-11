@@ -120,5 +120,6 @@ import "./test/functional/persistence/persistence-options/chunks/persistence-opt
 import "./test/functional/persistence/persistence-options/listeners/persistence-options-listeners.ts";
 import "./test/functional/persistence/persistence-options/transaction/persistence-options-transaction.ts";
 import "./test/functional/persistence/persistence-order/persistence-order.ts";
+import "./test/functional/persistence/remove-topological-order/remove-topolotical-order.ts";
 
 runTests();
