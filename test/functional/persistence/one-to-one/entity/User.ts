@@ -1,9 +1,9 @@
-import {AccessToken} from "./AccessToken";
-import {OneToOne} from "../../../../../src/decorator/relations/OneToOne";
-import {Column} from "../../../../../src/decorator/columns/Column";
-import {PrimaryColumn} from "../../../../../src/decorator/columns/PrimaryColumn";
-import {Entity} from "../../../../../src/decorator/entity/Entity";
-import {Generated} from "../../../../../src/decorator/Generated";
+import {AccessToken} from "./AccessToken.ts";
+import {OneToOne} from "../../../../../src/decorator/relations/OneToOne.ts";
+import {Column} from "../../../../../src/decorator/columns/Column.ts";
+import {PrimaryColumn} from "../../../../../src/decorator/columns/PrimaryColumn.ts";
+import {Entity} from "../../../../../src/decorator/entity/Entity.ts";
+import {Generated} from "../../../../../src/decorator/Generated.ts";
 
 @Entity()
 export class User {
@@ -12,7 +12,7 @@ export class User {
     @Generated()
     primaryKey: number;
 
-    @Column()
+    @Column({ type: String })
     email: string;
 
     @OneToOne(type => AccessToken, token => token.user)

@@ -1,9 +1,9 @@
-import "reflect-metadata";
-import {expect} from "chai";
-import {Connection} from "../../../../src/connection/Connection";
-import {User} from "./entity/User";
-import {AccessToken} from "./entity/AccessToken";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
+import {expect} from "../../../deps/chai.ts";
+import {runIfMain} from "../../../deps/mocha.ts";
+import {Connection} from "../../../../src/connection/Connection.ts";
+import {User} from "./entity/User.ts";
+import {AccessToken} from "./entity/AccessToken.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
 
 describe("persistence > one-to-one", function() {
 
@@ -82,3 +82,5 @@ describe("persistence > one-to-one", function() {
     });
 
 });
+
+runIfMain(import.meta);
