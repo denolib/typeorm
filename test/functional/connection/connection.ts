@@ -74,8 +74,8 @@ describe("Connection", () => {
             try {
                 await connection.close(); // CannotCloseNotConnectedError
                 expect.fail("an error to be thrown");
-            } catch {
-                // OK
+            } catch (err) {
+                expect(err.message).not.to.be.equal("an error to be thrown");
             }
         });
 
@@ -85,8 +85,8 @@ describe("Connection", () => {
             try {
                 await connection.synchronize(); // CannotCloseNotConnectedError
                 expect.fail("an error to be thrown");
-            } catch {
-                // OK
+            } catch (err) {
+                expect(err.message).not.to.equal("an error to be thrown");
             }
         });
 
@@ -144,8 +144,8 @@ describe("Connection", () => {
             try {
                 await connection.connect(); // CannotConnectAlreadyConnectedError
                 expect.fail("an error to be thrown");
-            } catch {
-                // OK
+            } catch (err) {
+                expect(err.message).not.to.equal("an error to be thrown");
             }
         }));
 
@@ -245,8 +245,8 @@ describe("Connection", () => {
             try {
                 await connection.close(); // CannotCloseNotConnectedError
                 expect.fail("an error to be thrown");
-            } catch {
-                // OK
+            } catch (err) {
+                expect(err.message).to.equal("an error to be thrown");
             }
         }));
 
