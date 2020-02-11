@@ -89,5 +89,6 @@ import "./test/functional/migrations/show-command/command.ts";
 import "./test/functional/mongodb/basic/array-columns/mongodb-array-columns.ts";
 import "./test/functional/mongodb/basic/embedded-columns/mongodb-embedded-columns.ts";
 import "./test/functional/mongodb/basic/embedded-columns-listeners/mongodb-embedded-columns-listeners.ts";
+import "./test/functional/mongodb/basic/mongo-embeddeds-index/mongo-embeddeds-index.ts";
 
 runTests();
