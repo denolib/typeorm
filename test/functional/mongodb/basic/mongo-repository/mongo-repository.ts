@@ -1,10 +1,12 @@
-import "reflect-metadata";
-import {Connection} from "../../../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils";
-import {Post} from "./entity/Post";
-import {MongoRepository} from "../../../../../src/repository/MongoRepository";
+import {Connection} from "../../../../../src/connection/Connection.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils.ts";
+import {Post} from "./entity/Post.ts";
+import {MongoRepository} from "../../../../../src/repository/MongoRepository.ts";
+import "../../../../deps/chai.ts";
+import {runIfMain} from "../../../../deps/mocha.ts";
 
-describe("mongodb > MongoRepository", () => {
+// TODO(uki00a) Remove `.skip` when MongoDriver is implemeneted.
+describe.skip("mongodb > MongoRepository", () => {
 
     let connections: Connection[];
     before(async () => connections = await createTestingConnections({
@@ -89,3 +91,5 @@ describe("mongodb > MongoRepository", () => {
     // todo: cover other methods as well
 
 });
+
+runIfMain(import.meta);
