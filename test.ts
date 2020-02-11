@@ -108,5 +108,6 @@ import "./test/functional/persistence/custom-column-names/persistence-custom-col
 import "./test/functional/persistence/entity-updation/persistence-entity-updation.ts";
 import "./test/functional/persistence/insert/update-relation-columns-after-insertion/update-relation-columns-after-insertion.ts";
 import "./test/functional/persistence/many-to-many/persistence-many-to-many.ts";
+import "./test/functional/persistence/many-to-one-bi-directional/persistence-many-to-one-bi-directional.ts";
 
 runTests();
