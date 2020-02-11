@@ -1,9 +1,9 @@
-import "reflect-metadata";
-import {Connection} from "../../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
-import {Post} from "./entity/Post";
-import {Category} from "./entity/Category";
-import {expect} from "chai";
+import {Connection} from "../../../../src/connection/Connection.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
+import {Post} from "./entity/Post.ts";
+import {Category} from "./entity/Category.ts";
+import {expect} from "../../../deps/chai.ts";
+import {runIfMain} from "../../../deps/mocha.ts";
 
 describe("multi-schema-and-database > custom-junction-schema", () => {
 
@@ -33,3 +33,5 @@ describe("multi-schema-and-database > custom-junction-schema", () => {
     })));
 
 });
+
+runIfMain(import.meta);
