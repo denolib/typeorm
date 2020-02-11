@@ -1,16 +1,17 @@
-import "reflect-metadata";
-import {Connection} from "../../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
-import {expect} from "chai";
-import {Post} from "./entity/Post";
-import {PostgresDriver} from "../../../../src/driver/postgres/PostgresDriver";
-import {SqlServerDriver} from "../../../../src/driver/sqlserver/SqlServerDriver";
-import {User} from "./entity/User";
-import {Category} from "./entity/Category";
-import {Person} from "./entity/Person";
-import {Question} from "./entity/Question";
-import {Answer} from "./entity/Answer";
-import {MysqlDriver} from "../../../../src/driver/mysql/MysqlDriver";
+import {Connection} from "../../../../src/connection/Connection.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
+import {expect} from "../../../deps/chai.ts";
+import {runIfMain} from "../../../deps/mocha.ts";
+import {Post} from "./entity/Post.ts";
+// TODO(uki00a) uncomment this when PostgresDriver is implemented.
+// import {PostgresDriver} from "../../../../src/driver/postgres/PostgresDriver.ts";
+import {SqlServerDriver} from "../../../../src/driver/sqlserver/SqlServerDriver.ts";
+import {User} from "./entity/User.ts";
+import {Category} from "./entity/Category.ts";
+import {Person} from "./entity/Person.ts";
+import {Question} from "./entity/Question.ts";
+import {Answer} from "./entity/Answer.ts";
+import {MysqlDriver} from "../../../../src/driver/mysql/MysqlDriver.ts";
 
 describe("multi-schema-and-database > basic-functionality", () => {
 
@@ -41,7 +42,7 @@ describe("multi-schema-and-database > basic-functionality", () => {
                 .where("post.id = :id", {id: 1})
                 .getSql();
 
-            if (connection.driver instanceof PostgresDriver)
+            if (false/* connection.driver instanceof PostgresDriver */) // TDOO(uki00a) uncomment this when PostgresDriver is implemented.
                 sql.should.be.equal(`SELECT "post"."id" AS "post_id", "post"."name" AS "post_name" FROM "custom"."post" "post" WHERE "post"."id" = $1`);
 
             if (connection.driver instanceof SqlServerDriver)
@@ -64,7 +65,7 @@ describe("multi-schema-and-database > basic-functionality", () => {
                 .where("user.id = :id", {id: 1})
                 .getSql();
 
-            if (connection.driver instanceof PostgresDriver)
+            if (false/* connection.driver instanceof PostgresDriver */) // TODO(uki00a) uncomment this when PostgresDriver is implemented.
                 sql.should.be.equal(`SELECT "user"."id" AS "user_id", "user"."name" AS "user_name" FROM "userSchema"."user" "user" WHERE "user"."id" = $1`);
 
             if (connection.driver instanceof SqlServerDriver)
@@ -102,7 +103,7 @@ describe("multi-schema-and-database > basic-functionality", () => {
                 .where("category.id = :id", {id: 1})
                 .getSql();
 
-            if (connection.driver instanceof PostgresDriver)
+            if (false/* connection.driver instanceof PostgresDriver */) // TODO(uki00a) uncomment this when PostgresDriver is implemeneted.
                 sql.should.be.equal(`SELECT "category"."id" AS "category_id", "category"."name" AS "category_name",` +
                     ` "category"."postId" AS "category_postId", "post"."id" AS "post_id", "post"."name" AS "post_name"` +
                     ` FROM "guest"."category" "category" INNER JOIN "custom"."post" "post" ON "post"."id"="category"."postId" WHERE "category"."id" = $1`);
@@ -140,7 +141,7 @@ describe("multi-schema-and-database > basic-functionality", () => {
 
             (await query.getRawOne())!.should.be.not.empty;
 
-            if (connection.driver instanceof PostgresDriver)
+            if (false/* connection.driver instanceof PostgresDriver */) // TODO(uki00a) uncomment this when PostgresDriver is implemented.
                 query.getSql().should.be.equal(`SELECT * FROM "guest"."category" "category", "userSchema"."user" "user",` +
                     ` "custom"."post" "post" WHERE "category"."id" = $1 AND "post"."id" = "category"."postId"`);
 
@@ -257,3 +258,5 @@ describe("multi-schema-and-database > basic-functionality", () => {
     });
 
 });
+
+runIfMain(import.meta);

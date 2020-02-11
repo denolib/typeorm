@@ -97,5 +97,6 @@ import "./test/functional/mongodb/basic/repository-actions/mongodb-repository-ac
 import "./test/functional/mongodb/basic/timestampable-columns/timestampable-columns.ts";
 import "./test/functional/multi-schema-and-database/custom-junction-database/custom-junction-database.ts";
 import "./test/functional/multi-schema-and-database/custom-junction-schema/custom-junction-schema.ts";
+import "./test/functional/multi-schema-and-database/multi-schema-and-database-basic-functionality/multi-schema-and-database-basic-functionality.ts";
 
 runTests();
