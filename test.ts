@@ -103,5 +103,6 @@ import "./test/functional/persistence/bulk-insert-remove-optimization/bulk-inser
 import "./test/functional/persistence/cascades/cascades-example1/cascades-example1.ts";
 import "./test/functional/persistence/cascades/cascades-example2/cascades-example2.ts";
 import "./test/functional/persistence/cascades/cascades-remove/cascades-remove.ts";
+import "./test/functional/persistence/custom-column-name-pk/custom-column-name-pk.ts";
 
 runTests();
