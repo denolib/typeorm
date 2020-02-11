@@ -99,5 +99,6 @@ import "./test/functional/multi-schema-and-database/custom-junction-database/cus
 import "./test/functional/multi-schema-and-database/custom-junction-schema/custom-junction-schema.ts";
 import "./test/functional/multi-schema-and-database/multi-schema-and-database-basic-functionality/multi-schema-and-database-basic-functionality.ts";
 import "./test/functional/persistence/basic-functionality/persistence-basic-functionality.ts";
+import "./test/functional/persistence/bulk-insert-remove-optimization/bulk-insert-remove-optimization.ts";
 
 runTests();
