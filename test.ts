@@ -94,5 +94,6 @@ import "./test/functional/mongodb/basic/mongo-index/mongo-index.ts";
 import "./test/functional/mongodb/basic/mongo-repository/mongo-repository.ts";
 import "./test/functional/mongodb/basic/object-id/mongodb-object-id.ts";
 import "./test/functional/mongodb/basic/repository-actions/mongodb-repository-actions.ts";
+import "./test/functional/mongodb/basic/timestampable-columns/timestampable-columns.ts";
 
 runTests();
