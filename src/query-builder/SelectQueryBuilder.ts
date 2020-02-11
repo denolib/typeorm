@@ -1407,7 +1407,20 @@ export class SelectQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
      * Creates select | select distinct part of SQL query.
      */
     protected createSelectDistinctExpression(): string {
-        let select = "SELECT DISTINCT ";
+        const {selectDistinct, selectDistinctOn} = this.expressionMap;
+        //const {driver} = this.connection;
+
+        let select = "SELECT ";
+        // TODO(uki00a) uncomment this when PostgresDriver is implemented.
+        /*if (driver instanceof PostgresDriver && selectDistinctOn.length > 0) {
+            const selectDistinctOnMap = selectDistinctOn.map(
+              (on) => this.replacePropertyNames(on)
+            ).join(", ");
+
+            select = `SELECT DISTINCT ON (${selectDistinctOnMap}) `;
+        } */if (selectDistinct) {
+            select = "SELECT DISTINCT ";
+        }
 
         return select;
     }
@@ -1730,7 +1743,7 @@ export class SelectQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
             });
 
             rawResults = await new SelectQueryBuilder(this.queryBuilderFactory, this.connection, queryRunner)
-                .select(`DISTINCT ${querySelects.join(", ")}`)
+                .select(`${querySelects.join(", ")}`)
                 .addSelect(selects)
                 .from(`(${this.clone().orderBy().getQuery()})`, "distinctAlias")
                 .offset(this.expressionMap.skip)
