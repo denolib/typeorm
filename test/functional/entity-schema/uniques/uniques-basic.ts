@@ -1,17 +1,17 @@
-import "reflect-metadata";
-import {SapDriver} from "../../../../src/driver/sap/SapDriver";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
-import {Connection} from "../../../../src/connection/Connection";
-import {expect} from "chai";
-import {PersonSchema} from "./entity/Person";
-import {MysqlDriver} from "../../../../src/driver/mysql/MysqlDriver";
-import {AbstractSqliteDriver} from "../../../../src/driver/sqlite-abstract/AbstractSqliteDriver";
+import {SapDriver} from "../../../../src/driver/sap/SapDriver.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
+import {Connection} from "../../../../src/connection/Connection.ts";
+import {expect} from "../../../deps/chai.ts";
+import {runIfMain} from "../../../deps/mocha.ts";
+import {PersonSchema} from "./entity/Person.ts";
+import {MysqlDriver} from "../../../../src/driver/mysql/MysqlDriver.ts";
+import {AbstractSqliteDriver} from "../../../../src/driver/sqlite-abstract/AbstractSqliteDriver.ts";
 
 describe("entity-schema > uniques", () => {
 
     let connections: Connection[];
     before(async () => connections = await createTestingConnections({
-        entities: [<any>PersonSchema],
+        entities: [PersonSchema as any],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
@@ -44,3 +44,5 @@ describe("entity-schema > uniques", () => {
     })));
 
 });
+
+runIfMain(import.meta);

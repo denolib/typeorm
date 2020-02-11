@@ -78,5 +78,6 @@ import "./test/functional/entity-schema/exclusions/exclusions-basic.ts";
 import "./test/functional/entity-schema/indices/basic/indices-basic.ts";
 import "./test/functional/entity-schema/indices/mysql/indices-mysql.ts";
 import "./test/functional/entity-schema/target/entity-schema-target.ts";
+import "./test/functional/entity-schema/uniques/uniques-basic.ts";
 
 runTests();
