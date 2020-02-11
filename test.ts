@@ -92,5 +92,6 @@ import "./test/functional/mongodb/basic/embedded-columns-listeners/mongodb-embed
 import "./test/functional/mongodb/basic/mongo-embeddeds-index/mongo-embeddeds-index.ts";
 import "./test/functional/mongodb/basic/mongo-index/mongo-index.ts";
 import "./test/functional/mongodb/basic/mongo-repository/mongo-repository.ts";
+import "./test/functional/mongodb/basic/object-id/mongodb-object-id.ts";
 
 runTests();
