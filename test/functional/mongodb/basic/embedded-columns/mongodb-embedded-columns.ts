@@ -1,14 +1,15 @@
-import "reflect-metadata";
-import {Connection} from "../../../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils";
-import {Post} from "./entity/Post";
-import {Counters} from "./entity/Counters";
-import {Information} from "./entity/Information";
-import {ExtraInformation} from "./entity/ExtraInformation";
-import {EditHistory} from "./entity/EditHistory";
-import {expect} from "chai";
+import {Connection} from "../../../../../src/connection/Connection.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils.ts";
+import {Post} from "./entity/Post.ts";
+import {Counters} from "./entity/Counters.ts";
+import {Information} from "./entity/Information.ts";
+import {ExtraInformation} from "./entity/ExtraInformation.ts";
+import {EditHistory} from "./entity/EditHistory.ts";
+import {expect} from "../../../../deps/chai.ts";
+import {runIfMain} from "../../../../deps/mocha.ts";
 
-describe("mongodb > embedded columns", () => {
+// TODO(uki00a) Remove `.skip` when MongoDriver is implemented.
+describe.skip("mongodb > embedded columns", () => {
 
     let connections: Connection[];
     before(async () => connections = await createTestingConnections({
@@ -130,7 +131,7 @@ describe("mongodb > embedded columns", () => {
 
     })));
 
-    
+
     it("should transform entity with nested embedded columns correctly", () => Promise.all(connections.map(async connection => {
         const postRepository = connection.getMongoRepository(Post);
 
@@ -159,3 +160,5 @@ describe("mongodb > embedded columns", () => {
 
     })));
 });
+
+runIfMain(import.meta);

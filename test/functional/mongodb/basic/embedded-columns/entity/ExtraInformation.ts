@@ -1,5 +1,5 @@
-import {Column} from "../../../../../../src/decorator/columns/Column";
-import {EditHistory} from "./EditHistory";
+import {Column} from "../../../../../../src/decorator/columns/Column.ts";
+import {EditHistory} from "./EditHistory.ts";
 
 export class ExtraInformation {
 

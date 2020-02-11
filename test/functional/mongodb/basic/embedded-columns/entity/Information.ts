@@ -1,14 +1,14 @@
-import {Column} from "../../../../../../src/decorator/columns/Column";
+import {Column} from "../../../../../../src/decorator/columns/Column.ts";
 
 export class Information {
 
-    @Column()
+    @Column({ type: String })
     description: string;
 
-    @Column()
+    @Column({ type: Boolean })
     visible: boolean;
 
-    @Column()
+    @Column({ type: Boolean })
     editable: boolean;
 
 }
