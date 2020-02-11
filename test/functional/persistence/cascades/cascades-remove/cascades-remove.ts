@@ -1,13 +1,15 @@
-import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils";
-import {Connection} from "../../../../../src/connection/Connection";
-import {Photo} from "./entity/Photo";
-import {User} from "./entity/User";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils.ts";
+import {Connection} from "../../../../../src/connection/Connection.ts";
+import {Photo} from "./entity/Photo.ts";
+import {User} from "./entity/User.ts";
+import "../../../../deps/chai.ts";
+import {runIfMain} from "../../../../deps/mocha.ts";
 
 // todo: fix later
 describe.skip("persistence > cascades > remove", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({ __dirname, enabledDrivers: ["mysql"] }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
@@ -51,3 +53,5 @@ describe.skip("persistence > cascades > remove", () => {
     })));
 
 });
+
+runIfMain(import.meta);

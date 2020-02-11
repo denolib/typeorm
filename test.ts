@@ -102,5 +102,6 @@ import "./test/functional/persistence/basic-functionality/persistence-basic-func
 import "./test/functional/persistence/bulk-insert-remove-optimization/bulk-insert-remove-optimization.ts";
 import "./test/functional/persistence/cascades/cascades-example1/cascades-example1.ts";
 import "./test/functional/persistence/cascades/cascades-example2/cascades-example2.ts";
+import "./test/functional/persistence/cascades/cascades-remove/cascades-remove.ts";
 
 runTests();

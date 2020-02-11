@@ -1,18 +1,18 @@
-import {PrimaryColumn} from "../../../../../../src/decorator/columns/PrimaryColumn";
-import {Entity} from "../../../../../../src/decorator/entity/Entity";
-import {ManyToMany} from "../../../../../../src/decorator/relations/ManyToMany";
-import {Photo} from "./Photo";
-import {OneToMany} from "../../../../../../src/decorator/relations/OneToMany";
-import {JoinTable} from "../../../../../../src/decorator/relations/JoinTable";
-import {Column} from "../../../../../../src/decorator/columns/Column";
+import {PrimaryColumn} from "../../../../../../src/decorator/columns/PrimaryColumn.ts";
+import {Entity} from "../../../../../../src/decorator/entity/Entity.ts";
+import {ManyToMany} from "../../../../../../src/decorator/relations/ManyToMany.ts";
+import {Photo} from "./Photo.ts";
+import {OneToMany} from "../../../../../../src/decorator/relations/OneToMany.ts";
+import {JoinTable} from "../../../../../../src/decorator/relations/JoinTable.ts";
+import {Column} from "../../../../../../src/decorator/columns/Column.ts";
 
 @Entity()
 export class User { // todo: check one-to-one relation as well, but in another model or test
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     id: number;
 
-    @Column()
+    @Column({ type: String })
     name: string;
 
     @OneToMany(type => Photo, photo => photo.user, { cascade: true })
