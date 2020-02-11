@@ -1,12 +1,12 @@
-import {PrimaryGeneratedColumn} from "../../../../../src/decorator/columns/PrimaryGeneratedColumn";
-import {Column} from "../../../../../src/decorator/columns/Column";
+import {PrimaryGeneratedColumn} from "../../../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
+import {Column} from "../../../../../src/decorator/columns/Column.ts";
 
 export class Unit {
 
     @PrimaryGeneratedColumn()
     id: string;
 
-    @Column()
+    @Column({ type: String })
     type: string;
 
 }

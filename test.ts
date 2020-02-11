@@ -84,5 +84,6 @@ import "./test/functional/indices/conditional-index/conditional-index.ts";
 import "./test/functional/indices/embeddeds-index-test/embeddeds-unique-index-test.ts";
 import "./test/functional/json/jsonb.ts";
 import "./test/functional/metadata-builder/column-metadata/column-metadata.ts";
+import "./test/functional/metadata-builder/metadata-args-storage/metadata-args-storage.ts";
 
 runTests();
