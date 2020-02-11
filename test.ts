@@ -116,5 +116,6 @@ import "./test/functional/persistence/null-and-default-behaviour/null-and-defaul
 import "./test/functional/persistence/one-to-many/persistence-one-to-many.ts";
 import "./test/functional/persistence/one-to-one/persistence-one-to-one.ts";
 import "./test/functional/persistence/partial-persist/partial-persist.ts";
+import "./test/functional/persistence/persistence-options/chunks/persistence-options-chunks.ts";
 
 runTests();
