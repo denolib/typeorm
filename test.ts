@@ -105,5 +105,6 @@ import "./test/functional/persistence/cascades/cascades-example2/cascades-exampl
 import "./test/functional/persistence/cascades/cascades-remove/cascades-remove.ts";
 import "./test/functional/persistence/custom-column-name-pk/custom-column-name-pk.ts";
 import "./test/functional/persistence/custom-column-names/persistence-custom-column-names.ts";
+import "./test/functional/persistence/entity-updation/persistence-entity-updation.ts";
 
 runTests();

@@ -1,20 +1,20 @@
-import {PrimaryColumn} from "../../../../../src/decorator/columns/PrimaryColumn";
-import {UpdateDateColumn} from "../../../../../src/decorator/columns/UpdateDateColumn";
-import {CreateDateColumn} from "../../../../../src/decorator/columns/CreateDateColumn";
-import {VersionColumn} from "../../../../../src/decorator/columns/VersionColumn";
+import {PrimaryColumn} from "../../../../../src/decorator/columns/PrimaryColumn.ts";
+import {UpdateDateColumn} from "../../../../../src/decorator/columns/UpdateDateColumn.ts";
+import {CreateDateColumn} from "../../../../../src/decorator/columns/CreateDateColumn.ts";
+import {VersionColumn} from "../../../../../src/decorator/columns/VersionColumn.ts";
 
 export class PostEmbedded {
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     secondId: number;
 
-    @CreateDateColumn()
+    @CreateDateColumn({ type: Date })
     createDate: Date;
 
-    @UpdateDateColumn()
+    @UpdateDateColumn({ type: Date })
     updateDate: Date;
 
-    @VersionColumn()
+    @VersionColumn({ type: Number })
     version: number;
 
 }

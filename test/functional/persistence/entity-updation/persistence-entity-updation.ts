@@ -1,20 +1,26 @@
-import "reflect-metadata";
-import {Connection} from "../../../../src/connection/Connection";
-import {CockroachDriver} from "../../../../src/driver/cockroachdb/CockroachDriver";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
-import {PostIncrement} from "./entity/PostIncrement";
-import {PostUuid} from "./entity/PostUuid";
-import {PostDefaultValues} from "./entity/PostDefaultValues";
-import {PostSpecialColumns} from "./entity/PostSpecialColumns";
-import {expect} from "chai";
-import {PostMultiplePrimaryKeys} from "./entity/PostMultiplePrimaryKeys";
-import {PostComplex} from "./entity/PostComplex";
-import {PostEmbedded} from "./entity/PostEmbedded";
+import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
+import {Connection} from "../../../../src/connection/Connection.ts";
+// TODO(uki00a) uncomment when CockroachDriver is implemented.
+// import {CockroachDriver} from "../../../../src/driver/cockroachdb/CockroachDriver.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
+import {PostIncrement} from "./entity/PostIncrement.ts";
+import {PostUuid} from "./entity/PostUuid.ts";
+import {PostDefaultValues} from "./entity/PostDefaultValues.ts";
+import {PostSpecialColumns} from "./entity/PostSpecialColumns.ts";
+import {expect} from "../../../deps/chai.ts";
+import {runIfMain} from "../../../deps/mocha.ts";
+import {PostMultiplePrimaryKeys} from "./entity/PostMultiplePrimaryKeys.ts";
+import {PostComplex} from "./entity/PostComplex.ts";
+import {PostEmbedded} from "./entity/PostEmbedded.ts";
 
 describe("persistence > entity updation", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({ __dirname }));
+    const __dirname = getDirnameOfCurrentModule(import.meta);
+    before(async () => connections = await createTestingConnections({
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        enabledDrivers: ["postgres", "mysql", "mssql", "oracle"] // TODO(uki00a) Remove this when deno-sqlite supports `datetime('now')`
+    }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
 
@@ -23,7 +29,7 @@ describe("persistence > entity updation", () => {
         post.text = "Hello Post";
         await connection.manager.save(post);
         // CockroachDB does not use incremental ids
-        if (!(connection.driver instanceof CockroachDriver))
+        if (true/* !(connection.driver instanceof CockroachDriver) */) // TODO(uki00a) uncomment this when CockroachDriver is implemented.
             post.id.should.be.equal(1);
     })));
 
@@ -90,3 +96,5 @@ describe("persistence > entity updation", () => {
     })));
 
 });
+
+runIfMain(import.meta);

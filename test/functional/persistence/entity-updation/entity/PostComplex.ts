@@ -1,15 +1,15 @@
-import {Entity} from "../../../../../src/decorator/entity/Entity";
-import {Column} from "../../../../../src/decorator/columns/Column";
-import {PostEmbedded} from "./PostEmbedded";
-import {PrimaryColumn} from "../../../../../src/decorator/columns/PrimaryColumn";
+import {Entity} from "../../../../../src/decorator/entity/Entity.ts";
+import {Column} from "../../../../../src/decorator/columns/Column.ts";
+import {PostEmbedded} from "./PostEmbedded.ts";
+import {PrimaryColumn} from "../../../../../src/decorator/columns/PrimaryColumn.ts";
 
 @Entity()
 export class PostComplex {
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     firstId: number;
 
-    @Column({ default: "Hello Complexity" })
+    @Column({ default: "Hello Complexity", type: String })
     text: string;
 
     @Column(type => PostEmbedded)
