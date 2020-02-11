@@ -1,12 +1,16 @@
-import {Connection} from "../../../src";
-import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils";
-import {Post} from "./entity/Post";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {Connection} from "../../../src/index.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections} from "../../utils/test-utils.ts";
+import {Post} from "./entity/Post.ts";
+import "../../deps/chai.ts";
+import {runIfMain} from "../../deps/mocha.ts";
 
 describe("entity-listeners", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
         dropSchema: true,
         schemaCreate: true
     }));
@@ -27,3 +31,5 @@ describe("entity-listeners", () => {
     })));
 
 });
+
+runIfMain(import.meta);

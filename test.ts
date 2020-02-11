@@ -67,5 +67,6 @@ import "./test/functional/embedded/multiple-primary-columns-with-nested-embed/mu
 import "./test/functional/embedded/optional-embedded-listeners/optional-embedded-listeners.ts";
 import "./test/functional/embedded/outer-primary-column/outer-primary-column.ts";
 import "./test/functional/embedded/prefix/embedded-prefix.ts";
+import "./test/functional/entity-listeners/entity-listeners.ts";
 
 runTests();
