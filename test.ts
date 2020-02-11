@@ -81,5 +81,6 @@ import "./test/functional/entity-schema/target/entity-schema-target.ts";
 import "./test/functional/entity-schema/uniques/uniques-basic.ts";
 import "./test/functional/indices/basic-unique-index-test/basic-unique-index-test.ts";
 import "./test/functional/indices/conditional-index/conditional-index.ts";
+import "./test/functional/indices/embeddeds-index-test/embeddeds-unique-index-test.ts";
 
 runTests();

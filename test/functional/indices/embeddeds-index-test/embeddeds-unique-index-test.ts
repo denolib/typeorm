@@ -1,14 +1,17 @@
-import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
-import {Connection} from "../../../../src/connection/Connection";
-import {Customer} from "./entity/Customer";
-import {Profile} from "./entity/Profile";
+import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
+import {Connection} from "../../../../src/connection/Connection.ts";
+import {Customer} from "./entity/Customer.ts";
+import {Profile} from "./entity/Profile.ts";
+import "../../../deps/chai.ts";
+import {runIfMain} from "../../../deps/mocha.ts";
 
 describe("indices > embeds index test", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"]
+        entities: [joinPaths(__dirname, "/entity/*.ts")]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
@@ -28,3 +31,5 @@ describe("indices > embeds index test", () => {
     });
 
 });
+
+runIfMain(import.meta);
