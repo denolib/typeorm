@@ -1,6 +1,6 @@
-import {Column} from "../../../../../../src";
-import {Entity} from "../../../../../../src/decorator/entity/Entity";
-import {PrimaryGeneratedColumn} from "../../../../../../src/decorator/columns/PrimaryGeneratedColumn";
+import {Column} from "../../../../../../src/index.ts";
+import {Entity} from "../../../../../../src/decorator/entity/Entity.ts";
+import {PrimaryGeneratedColumn} from "../../../../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
 
 @Entity()
 export class Photo {
@@ -8,7 +8,7 @@ export class Photo {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ default: "My photo" })
+    @Column({ default: "My photo", type: String })
     name: string;
 
 
