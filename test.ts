@@ -110,5 +110,6 @@ import "./test/functional/persistence/insert/update-relation-columns-after-inser
 import "./test/functional/persistence/many-to-many/persistence-many-to-many.ts";
 import "./test/functional/persistence/many-to-one-bi-directional/persistence-many-to-one-bi-directional.ts";
 import "./test/functional/persistence/many-to-one-uni-directional/persistence-many-to-one-uni-directional.ts";
+import "./test/functional/persistence/multi-primary-key/multi-primary-key.ts";
 
 runTests();

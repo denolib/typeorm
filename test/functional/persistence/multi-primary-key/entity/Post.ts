@@ -1,19 +1,19 @@
-import {Entity} from "../../../../../src/decorator/entity/Entity";
-import {PrimaryColumn} from "../../../../../src/decorator/columns/PrimaryColumn";
-import {Column} from "../../../../../src/decorator/columns/Column";
-import {ManyToOne} from "../../../../../src/decorator/relations/ManyToOne";
-import {Category} from "./Category";
+import {Entity} from "../../../../../src/decorator/entity/Entity.ts";
+import {PrimaryColumn} from "../../../../../src/decorator/columns/PrimaryColumn.ts";
+import {Column} from "../../../../../src/decorator/columns/Column.ts";
+import {ManyToOne} from "../../../../../src/decorator/relations/ManyToOne.ts";
+import {Category} from "./Category.ts";
 
 @Entity()
 export class Post {
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     firstId: number;
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     secondId: number;
 
-    @Column()
+    @Column({ type: String })
     title: string;
 
     @ManyToOne(type => Category, category => category.posts)
