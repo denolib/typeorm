@@ -1,14 +1,14 @@
-import {Column} from "../../../../../src/decorator/columns/Column";
+import {Column} from "../../../../../src/decorator/columns/Column.ts";
 
 export class Counters {
 
-    @Column()
+    @Column({ type: Number })
     stars: number;
 
-    @Column()
+    @Column({ type: Number })
     commentCount: number;
 
-    @Column()
+    @Column({ type: String })
     metadata: string;
 
 }

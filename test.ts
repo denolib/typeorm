@@ -115,5 +115,6 @@ import "./test/functional/persistence/multi-primary-key-on-both-sides/multi-prim
 import "./test/functional/persistence/null-and-default-behaviour/null-and-default-behaviour.ts";
 import "./test/functional/persistence/one-to-many/persistence-one-to-many.ts";
 import "./test/functional/persistence/one-to-one/persistence-one-to-one.ts";
+import "./test/functional/persistence/partial-persist/partial-persist.ts";
 
 runTests();
