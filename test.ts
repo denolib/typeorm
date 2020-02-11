@@ -65,5 +65,6 @@ import "./test/functional/embedded/embedded-with-special-columns/embedded-with-s
 import "./test/functional/embedded/multiple-primary-columns/multiple-primary-columns.ts";
 import "./test/functional/embedded/multiple-primary-columns-with-nested-embed/multiple-primary-columns-with-nested-embed.ts";
 import "./test/functional/embedded/optional-embedded-listeners/optional-embedded-listeners.ts";
+import "./test/functional/embedded/outer-primary-column/outer-primary-column.ts";
 
 runTests();
