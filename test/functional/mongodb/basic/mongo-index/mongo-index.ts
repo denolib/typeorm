@@ -1,10 +1,11 @@
-import "reflect-metadata";
-import {Connection} from "../../../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils";
-import {Post} from "./entity/Post";
-import {expect} from "chai";
+import {Connection} from "../../../../../src/connection/Connection.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils.ts";
+import {Post} from "./entity/Post.ts";
+import {expect} from "../../../../deps/chai.ts";
+import {runIfMain} from "../../../../deps/mocha.ts";
 
-describe("mongodb > indices", () => {
+// TODO(uki00a) Remove `.skip` when MongoDriver is implemented.
+describe.skip("mongodb > indices", () => {
 
     let connections: Connection[];
     before(async () => connections = await createTestingConnections({
@@ -30,3 +31,5 @@ describe("mongodb > indices", () => {
     })));
 
 });
+
+runIfMain(import.meta);

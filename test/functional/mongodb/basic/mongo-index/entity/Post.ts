@@ -1,8 +1,8 @@
-import {Entity} from "../../../../../../src/decorator/entity/Entity";
-import {Column} from "../../../../../../src/decorator/columns/Column";
-import {ObjectIdColumn} from "../../../../../../src/decorator/columns/ObjectIdColumn";
-import {Index} from "../../../../../../src/decorator/Index";
-import {ObjectID} from "../../../../../../src/driver/mongodb/typings";
+import {Entity} from "../../../../../../src/decorator/entity/Entity.ts";
+import {Column} from "../../../../../../src/decorator/columns/Column.ts";
+import {ObjectIdColumn} from "../../../../../../src/decorator/columns/ObjectIdColumn.ts";
+import {Index} from "../../../../../../src/decorator/Index.ts";
+import {ObjectID} from "../../../../../../src/driver/mongodb/typings.ts";
 
 @Entity()
 @Index(["title", "name"])
@@ -16,15 +16,15 @@ export class Post {
     @ObjectIdColumn()
     id: ObjectID;
 
-    @Column()
+    @Column({ type: String })
     @Index()
     title: string;
 
-    @Column()
+    @Column({ type: String })
     @Index()
     name: string;
 
-    @Column()
+    @Column({ type: Number })
     @Index({ unique: true })
     count: number;
 
