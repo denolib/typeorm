@@ -125,5 +125,6 @@ import "./test/functional/query-builder/brackets/query-builder-brackets.ts";
 import "./test/functional/query-builder/cache/query-builder-cache.ts";
 import "./test/functional/query-builder/delete/query-builder-delete.ts";
 import "./test/functional/query-builder/distinct-on/query-builder-distinct-on.ts";
+import "./test/functional/query-builder/enabling-transaction/enabling-transaction.ts";
 
 runTests();
