@@ -1,13 +1,18 @@
-import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
-import {Connection} from "../../../../src/connection/Connection";
-import {Post} from "./entity/Post";
-import {expect} from "chai";
+import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../../deps/mocha.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
+import {Connection} from "../../../../src/connection/Connection.ts";
+import {Post} from "./entity/Post.ts";
+import {expect} from "../../../deps/chai.ts";
 
 describe("query builder > entity updation", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({ __dirname }));
+    const __dirname = getDirnameOfCurrentModule(import.meta);
+    before(async () => connections = await createTestingConnections({
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        enabledDrivers: ["postgres", "mysql", "mssql", "oracle", "cockroachdb", "mongodb"] // TODO(uki00a) Remove `enabledDrivers` when deno-sqlite supports `datetime('now')`.
+    }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
 
@@ -117,3 +122,5 @@ describe("query builder > entity updation", () => {
     })));
 
 });
+
+runIfMain(import.meta);
