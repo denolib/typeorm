@@ -1,19 +1,23 @@
-import "reflect-metadata";
-import {expect} from "chai";
+import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
+import {expect} from "../../../deps/chai.ts";
+import {runIfMain} from "../../../deps/mocha.ts";
 import {
+    getDirnameOfCurrentModule,
     closeTestingConnections,
     createTestingConnections,
     reloadTestingDatabases,
     sleep
-} from "../../../utils/test-utils";
-import {Connection} from "../../../../src/connection/Connection";
-import {User} from "./entity/User";
+} from "../../../utils/test-utils.ts";
+import {Connection} from "../../../../src/connection/Connection.ts";
+import {User} from "./entity/User.ts";
 
-describe("query builder > cache", () => {
+describe("query builder > cache", function() {
+    this.timeout(20000); // This suite takes a while to complete.
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
         cache: true,
         // cache: {
         //     type: "redis",
@@ -309,3 +313,5 @@ describe("query builder > cache", () => {
     })));
 
 });
+
+runIfMain(import.meta);

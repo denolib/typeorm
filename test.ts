@@ -122,5 +122,6 @@ import "./test/functional/persistence/persistence-options/transaction/persistenc
 import "./test/functional/persistence/persistence-order/persistence-order.ts";
 import "./test/functional/persistence/remove-topological-order/remove-topolotical-order.ts";
 import "./test/functional/query-builder/brackets/query-builder-brackets.ts";
+import "./test/functional/query-builder/cache/query-builder-cache.ts";
 
 runTests();
