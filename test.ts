@@ -128,5 +128,6 @@ import "./test/functional/query-builder/distinct-on/query-builder-distinct-on.ts
 import "./test/functional/query-builder/enabling-transaction/enabling-transaction.ts";
 import "./test/functional/query-builder/entity-updation/entity-updation.ts";
 import "./test/functional/query-builder/insert/query-builder-insert.ts";
+import "./test/functional/query-builder/insert-on-conflict/query-builder-insert-on-conflict.ts";
 
 runTests();
