@@ -1,15 +1,15 @@
-import {Column} from "../../../../../../../src/decorator/columns/Column";
-import {PrimaryColumn} from "../../../../../../../src/decorator/columns/PrimaryColumn";
-import {OneToOne} from "../../../../../../../src/decorator/relations/OneToOne";
-import {JoinColumn} from "../../../../../../../src/decorator/relations/JoinColumn";
-import {User} from "./User";
+import {Column} from "../../../../../../../src/decorator/columns/Column.ts";
+import {PrimaryColumn} from "../../../../../../../src/decorator/columns/PrimaryColumn.ts";
+import {OneToOne} from "../../../../../../../src/decorator/relations/OneToOne.ts";
+import {JoinColumn} from "../../../../../../../src/decorator/relations/JoinColumn.ts";
+import {User} from "./User.ts";
 
 export class Subcounters {
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     version: number;
 
-    @Column()
+    @Column({ type: Number })
     watches: number;
 
     @OneToOne(type => User)
