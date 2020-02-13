@@ -139,5 +139,6 @@ import "./test/functional/query-builder/relation-id/many-to-many/embedded/embedd
 import "./test/functional/query-builder/relation-id/many-to-many/embedded-with-multiple-pk/embedded-with-multiple-pk.ts";
 import "./test/functional/query-builder/relation-id/many-to-many/multiple-pk/multiple-pk.ts";
 import "./test/functional/query-builder/relation-id/many-to-one/basic-functionality/basic-functionality.ts";
+import "./test/functional/query-builder/relation-id/many-to-one/embedded/embedded.ts";
 
 runTests();
