@@ -1,23 +1,23 @@
-import {Entity} from "../../../../../../../src/decorator/entity/Entity";
-import {Column} from "../../../../../../../src/decorator/columns/Column";
-import {PrimaryColumn} from "../../../../../../../src/decorator/columns/PrimaryColumn";
-import {OneToOne} from "../../../../../../../src/decorator/relations/OneToOne";
-import {JoinColumn} from "../../../../../../../src/decorator/relations/JoinColumn";
-import {Category} from "./Category";
+import {Entity} from "../../../../../../../src/decorator/entity/Entity.ts";
+import {Column} from "../../../../../../../src/decorator/columns/Column.ts";
+import {PrimaryColumn} from "../../../../../../../src/decorator/columns/PrimaryColumn.ts";
+import {OneToOne} from "../../../../../../../src/decorator/relations/OneToOne.ts";
+import {JoinColumn} from "../../../../../../../src/decorator/relations/JoinColumn.ts";
+import {Category} from "./Category.ts";
 
 @Entity()
 export class Post {
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     id: number;
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     authorId: number;
 
-    @Column()
+    @Column({ type: String })
     title: string;
 
-    @Column()
+    @Column({ type: Boolean })
     isRemoved: boolean = false;
 
     @OneToOne(type => Category, category => category.post)
@@ -27,7 +27,7 @@ export class Post {
     @OneToOne(type => Category)
     @JoinColumn()
     subcategory: Category;
-    
+
     categoryId: number;
 
 }
