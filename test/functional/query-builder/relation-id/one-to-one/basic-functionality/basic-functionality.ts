@@ -1,19 +1,22 @@
-import "reflect-metadata";
-import {expect} from "chai";
+import {join as joinPaths} from "../../../../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../../../../deps/mocha.ts";
+import {expect} from "../../../../../deps/chai.ts";
 import {
+    getDirnameOfCurrentModule,
     closeTestingConnections,
     createTestingConnections,
     reloadTestingDatabases
-} from "../../../../../utils/test-utils";
-import {Connection} from "../../../../../../src/connection/Connection";
-import {Category} from "./entity/Category";
-import {Post} from "./entity/Post";
+} from "../../../../../utils/test-utils.ts";
+import {Connection} from "../../../../../../src/connection/Connection.ts";
+import {Category} from "./entity/Category.ts";
+import {Post} from "./entity/Post.ts";
 
 describe("query builder > relation-id > one-to-one > basic-functionality", () => {
-    
+
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
@@ -98,3 +101,5 @@ describe("query builder > relation-id > one-to-one > basic-functionality", () =>
     })));
 
 });
+
+runIfMain(import.meta);
