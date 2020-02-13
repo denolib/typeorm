@@ -1,11 +1,11 @@
-import {Entity} from "../../../../../../../src/decorator/entity/Entity";
-import {Column} from "../../../../../../../src/decorator/columns/Column";
-import {Counters} from "./Counters";
+import {Entity} from "../../../../../../../src/decorator/entity/Entity.ts";
+import {Column} from "../../../../../../../src/decorator/columns/Column.ts";
+import {Counters} from "./Counters.ts";
 
 @Entity()
 export class Post {
 
-    @Column()
+    @Column({ type: String })
     title: string;
 
     @Column(() => Counters)
