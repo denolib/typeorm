@@ -1,17 +1,17 @@
-import {Column} from "../../../../../../../src/decorator/columns/Column";
-import {Category} from "./Category";
-import {Subcounters} from "./Subcounters";
-import {OneToMany} from "../../../../../../../src/decorator/relations/OneToMany";
+import {Column} from "../../../../../../../src/decorator/columns/Column.ts";
+import {Category} from "./Category.ts";
+import {Subcounters} from "./Subcounters.ts";
+import {OneToMany} from "../../../../../../../src/decorator/relations/OneToMany.ts";
 
 export class Counters {
 
-    @Column()
+    @Column({ type: Number })
     likes: number;
 
-    @Column()
+    @Column({ type: Number })
     comments: number;
 
-    @Column()
+    @Column({ type: Number })
     favorites: number;
 
     @OneToMany(type => Category, category => category.posts)
