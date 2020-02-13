@@ -144,5 +144,6 @@ import "./test/functional/query-builder/relation-id/many-to-one/embedded-with-mu
 import "./test/functional/query-builder/relation-id/many-to-many/multiple-pk/multiple-pk.ts";
 import "./test/functional/query-builder/relation-id/one-to-many/basic-functionality/basic-functionality.ts";
 import "./test/functional/query-builder/relation-id/one-to-many/embedded/embedded.ts";
+import "./test/functional/query-builder/relation-id/one-to-many/embedded-with-multiple-pk/embedded-with-multiple-pk.ts";
 
 runTests();

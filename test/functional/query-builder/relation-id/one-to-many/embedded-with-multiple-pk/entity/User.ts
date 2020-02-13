@@ -1,15 +1,15 @@
-import {Entity} from "../../../../../../../src/decorator/entity/Entity";
-import {PrimaryColumn} from "../../../../../../../src/decorator/columns/PrimaryColumn";
-import {ManyToOne} from "../../../../../../../src/decorator/relations/ManyToOne";
-import {Post} from "./Post";
+import {Entity} from "../../../../../../../src/decorator/entity/Entity.ts";
+import {PrimaryColumn} from "../../../../../../../src/decorator/columns/PrimaryColumn.ts";
+import {ManyToOne} from "../../../../../../../src/decorator/relations/ManyToOne.ts";
+import {Post} from "./Post.ts";
 
 @Entity()
 export class User {
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     id: number;
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     name: string;
 
     @ManyToOne(type => Post, post => post.counters.subcounters.watchedUsers)
