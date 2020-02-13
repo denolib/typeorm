@@ -1,16 +1,19 @@
-import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
-import {Connection} from "../../../../src/connection/Connection";
-import {expect} from "chai";
-import {Post} from "./entity/Post";
-import {PostgresDriver} from "../../../../src/driver/postgres/PostgresDriver";
-import {MysqlDriver} from "../../../../src/driver/mysql/MysqlDriver";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
+import {Connection} from "../../../../src/connection/Connection.ts";
+import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../../deps/mocha.ts";
+import {expect} from "../../../deps/chai.ts";
+import {Post} from "./entity/Post.ts";
+// TODO(uki00a) uncomment this when PostgresDriver is implemented.
+// import {PostgresDriver} from "../../../../src/driver/postgres/PostgresDriver.ts";
+import {MysqlDriver} from "../../../../src/driver/mysql/MysqlDriver.ts";
 
 describe("query builder > order-by", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
@@ -50,8 +53,9 @@ describe("query builder > order-by", () => {
 
     })));
 
-    it("should be always in right order(custom order)", () => Promise.all(connections.map(async connection => {
-        if (!(connection.driver instanceof PostgresDriver)) // NULLS FIRST / LAST only supported by postgres
+    // TODO(uki00a) Remove `.skip` when PostgresDriver is implemented.
+    it.skip("should be always in right order(custom order)", () => Promise.all(connections.map(async connection => {
+        if (true/*!(connection.driver instanceof PostgresDriver)*/) // NULLS FIRST / LAST only supported by postgres
             return;
 
         const post1 = new Post();
@@ -136,3 +140,5 @@ describe("query builder > order-by", () => {
     })));
 
 });
+
+runIfMain(import.meta);
