@@ -130,5 +130,6 @@ import "./test/functional/query-builder/entity-updation/entity-updation.ts";
 import "./test/functional/query-builder/insert/query-builder-insert.ts";
 import "./test/functional/query-builder/insert-on-conflict/query-builder-insert-on-conflict.ts";
 import "./test/functional/query-builder/join/query-builder-joins.ts";
+import "./test/functional/query-builder/locking/query-builder-locking.ts";
 
 runTests();

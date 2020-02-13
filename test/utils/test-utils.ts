@@ -306,3 +306,7 @@ export function sleep(ms: number): Promise<void> {
         setTimeout(ok, ms);
     });
 }
+
+export function allSettled(values: any[]): Promise<Array<{ status: 'fulfilled' | 'rejected', value?: any, reason?: any }>> {
+    return (Promise as any).allSettled(values);
+}
