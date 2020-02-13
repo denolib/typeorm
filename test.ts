@@ -133,5 +133,6 @@ import "./test/functional/query-builder/join/query-builder-joins.ts";
 import "./test/functional/query-builder/locking/query-builder-locking.ts";
 import "./test/functional/query-builder/order-by/query-builder-order-by.ts";
 import "./test/functional/query-builder/relation-count/relation-count-many-to-many/load-relation-count-and-map-many-to-many.ts";
+import "./test/functional/query-builder/relation-count/relation-count-one-to-many/load-relation-count-and-map-one-to-many.ts";
 
 runTests();
