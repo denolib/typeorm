@@ -136,5 +136,6 @@ import "./test/functional/query-builder/relation-count/relation-count-many-to-ma
 import "./test/functional/query-builder/relation-count/relation-count-one-to-many/load-relation-count-and-map-one-to-many.ts";
 import "./test/functional/query-builder/relation-id/many-to-many/basic-functionality/basic-functionality.ts";
 import "./test/functional/query-builder/relation-id/many-to-many/embedded/embedded.ts";
+import "./test/functional/query-builder/relation-id/many-to-many/embedded-with-multiple-pk/embedded-with-multiple-pk.ts";
 
 runTests();
