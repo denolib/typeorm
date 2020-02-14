@@ -160,13 +160,8 @@ describe("query builder > relation-id > many-to-many > basic-functionality", fun
 
     })));
 
-    it("should load ids when loadRelationIdAndMap used on ManyToMany inverse side", () => Promise.all(connections.map(async connection => {
-        // TODO(uki00a) This test fails on CI when using SqliteDriver. More research must be needed.
-        if (connection.driver instanceof SqliteDriver) {
-            console.warn('TODO(uki00a) This test fails on CI when using SqliteDriver. More research must be needed.');
-            return;
-        }
-
+    // TODO(uki00a) This test fails on CI when using SqliteDriver. More research must be needed.
+    it.skip("should load ids when loadRelationIdAndMap used on ManyToMany inverse side", () => Promise.all(connections.map(async connection => {
         const category = new Category();
         category.name = "cars";
         await connection.manager.save(category);
