@@ -8,7 +8,6 @@ import {
     reloadTestingDatabases
 } from "../../../../../utils/test-utils.ts";
 import {Connection} from "../../../../../../src/connection/Connection.ts";
-import {SqliteDriver} from "../../../../../../src/driver/sqlite/SqliteDriver.ts";
 import {Tag} from "./entity/Tag.ts";
 import {Post} from "./entity/Post.ts";
 import {Category} from "./entity/Category.ts";
@@ -160,8 +159,7 @@ describe("query builder > relation-id > many-to-many > basic-functionality", fun
 
     })));
 
-    // TODO(uki00a) This test fails on CI when using SqliteDriver. More research must be needed.
-    it.skip("should load ids when loadRelationIdAndMap used on ManyToMany inverse side", () => Promise.all(connections.map(async connection => {
+    it("should load ids when loadRelationIdAndMap used on ManyToMany inverse side", () => Promise.all(connections.map(async connection => {
         const category = new Category();
         category.name = "cars";
         await connection.manager.save(category);
