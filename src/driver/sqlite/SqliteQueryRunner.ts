@@ -81,6 +81,10 @@ export class SqliteQueryRunner extends AbstractSqliteQueryRunner {
             return;
         }
 
+        if (executedQuery.slice(0, 6) === 'PRAGMA') {
+            return;
+        }
+
         // FIXME(uki00a) I'm not sure if this is correct or not.
         if (SqlUtils.isCommitQuery(executedQuery)) {
             this.connection.logger.log("info", "Saving database to file...", this);
