@@ -155,4 +155,9 @@ import "./test/functional/query-builder/relational/with-many/query-builder-relat
 import "./test/functional/query-builder/relational/with-many/query-builder-relational-add-remove-one-to-many.ts";
 import "./test/functional/query-builder/relational/with-many/query-builder-relational-load-many.ts";
 
+import "./test/functional/query-builder/relational/with-one/query-builder-relational-load-one.ts";
+import "./test/functional/query-builder/relational/with-one/query-builder-relational-set-many-to-one.ts";
+import "./test/functional/query-builder/relational/with-one/query-builder-relational-set-one-to-one-inverse.ts";
+import "./test/functional/query-builder/relational/with-one/query-builder-relational-set-one-to-one.ts";
+
 runTests();
