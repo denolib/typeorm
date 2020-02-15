@@ -1,10 +1,13 @@
-import "reflect-metadata";
-import {CockroachDriver} from "../../../../src/driver/cockroachdb/CockroachDriver";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
-import {Connection} from "../../../../src/connection/Connection";
-import {User} from "./entity/User";
-import {Post} from "./entity/Post";
-import {Category} from "./entity/Category";
+import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../../deps/mocha.ts";
+import "../../../deps/chai.ts";
+// TODO(uki00a) uncomment this when CockroachDriver is implemented.
+// import {CockroachDriver} from "../../../../src/driver/cockroachdb/CockroachDriver";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
+import {Connection} from "../../../../src/connection/Connection.ts";
+import {User} from "./entity/User.ts";
+import {Post} from "./entity/Post.ts";
+import {Category} from "./entity/Category.ts";
 
 describe("query builder > sub-query", () => {
 
@@ -13,8 +16,9 @@ describe("query builder > sub-query", () => {
     // -------------------------------------------------------------------------
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
@@ -266,7 +270,7 @@ describe("query builder > sub-query", () => {
             .getRawMany();
 
         // CockroachDB returns numeric data types as string
-        if (connection.driver instanceof CockroachDriver) {
+        if (false/* connection.driver instanceof CockroachDriver */) { // TODO(uki00a) uncomment this when CockroachDriver is implemented.
             posts.should.be.eql([
                 { id: "1", name: "Alex Messer" },
                 { id: "2", name: "Alex Messer" },
@@ -300,7 +304,7 @@ describe("query builder > sub-query", () => {
             .getRawMany();
 
         // CockroachDB returns numeric data types as string
-        if (connection.driver instanceof CockroachDriver) {
+        if (false/* connection.driver instanceof CockroachDriver */) { // TODO(uki00a) uncomment this when CockroachDriver is implemented.
             posts.should.be.eql([
                 { id: "1", name: "Alex Messer" },
                 { id: "2", name: "Alex Messer" },
@@ -393,3 +397,5 @@ describe("query builder > sub-query", () => {
     })));
 
 });
+
+runIfMain(import.meta);
