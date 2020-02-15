@@ -160,5 +160,6 @@ import "./test/functional/query-builder/relational/with-one/query-builder-relati
 import "./test/functional/query-builder/relational/with-one/query-builder-relational-set-one-to-one.ts";
 import "./test/functional/query-builder/select/query-builder-select.ts";
 import "./test/functional/query-builder/subquery/query-builder-subquery.ts";
+import "./test/functional/query-builder/update/query-builder-update.ts";
 
 runTests();
