@@ -150,5 +150,9 @@ import "./test/functional/query-builder/relation-id/one-to-one/basic-functionali
 import "./test/functional/query-builder/relation-id/one-to-one/embedded/embedded.ts";
 import "./test/functional/query-builder/relation-id/one-to-one/embedded-with-multiple-pk/embedded-with-multiple-pk.ts";
 import "./test/functional/query-builder/relation-id/one-to-one/multiple-pk/multiple-pk.ts";
+import "./test/functional/query-builder/relational/with-many/query-builder-relational-add-remove-many-to-many-inverse.ts";
+import "./test/functional/query-builder/relational/with-many/query-builder-relational-add-remove-many-to-many.ts";
+import "./test/functional/query-builder/relational/with-many/query-builder-relational-add-remove-one-to-many.ts";
+import "./test/functional/query-builder/relational/with-many/query-builder-relational-load-many.ts";
 
 runTests();
