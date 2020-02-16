@@ -1,7 +1,7 @@
-import {Entity} from "../../../../src/decorator/entity/Entity";
-import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryGeneratedColumn";
-import {Column} from "../../../../src/decorator/columns/Column";
-import {Contact} from "./Contact";
+import {Entity} from "../../../../src/decorator/entity/Entity.ts";
+import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
+import {Column} from "../../../../src/decorator/columns/Column.ts";
+import {Contact} from "./Contact.ts";
 
 @Entity()
 export class Organisation {
@@ -9,7 +9,7 @@ export class Organisation {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     name: string;
 
     @Column(type => Contact)

@@ -271,5 +271,11 @@ import "./test/github-issues/131/issue-131.ts";
 import "./test/github-issues/134/issue-134.ts";
 import "./test/github-issues/151/issue-151.ts";
 import "./test/github-issues/161/issue-161.ts";
+import "./test/github-issues/163/issue-163.ts";
+import "./test/github-issues/174/issue-174.ts";
+import "./test/github-issues/175/issue-175.ts";
+import "./test/github-issues/176/issue-176.ts";
+import "./test/github-issues/182/issue-182.ts";
+import "./test/github-issues/184/issue-184.ts";
 
 runTests();

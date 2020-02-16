@@ -1,16 +1,18 @@
-import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
-import {Post} from "./entity/Post";
-import {expect} from "chai";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+import {Post} from "./entity/Post.ts";
 
 // todo: fix this test
 
 describe("github issues > #176 @CreateDateColumn and @UpdateDateColumn does not read back in UTC", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
@@ -46,3 +48,5 @@ describe("github issues > #176 @CreateDateColumn and @UpdateDateColumn does not 
     })));
 
 });
+
+runIfMain(import.meta);

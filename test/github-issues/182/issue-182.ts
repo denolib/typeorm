@@ -1,15 +1,17 @@
-import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
-import {Post} from "./entity/Post";
-import {expect} from "chai";
-import {PostStatus} from "./model/PostStatus";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+import {Post} from "./entity/Post.ts";
+import {PostStatus} from "./model/PostStatus.ts";
 
 describe("github issues > #182 enums are not saved properly", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
         enabledDrivers: ["mysql"] // we can properly test lazy-relations only on one platform
     }));
     beforeEach(() => reloadTestingDatabases(connections));
@@ -74,3 +76,5 @@ describe("github issues > #182 enums are not saved properly", () => {
     })));
 
 });
+
+runIfMain(import.meta);

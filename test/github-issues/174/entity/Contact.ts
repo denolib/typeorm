@@ -1,11 +1,11 @@
-import {Column} from "../../../../src/decorator/columns/Column";
+import {Column} from "../../../../src/decorator/columns/Column.ts";
 
 export class Contact {
 
-    @Column()
+    @Column({ type: String })
     name: string;
 
-    @Column()
+    @Column({ type: String })
     email: string;
 
 }

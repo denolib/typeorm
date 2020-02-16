@@ -1,10 +1,10 @@
-import {Entity} from "../../../../src/decorator/entity/Entity";
-import {Index} from "../../../../src/decorator/Index";
-import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryGeneratedColumn";
-import {Column} from "../../../../src/decorator/columns/Column";
-import {ManyToMany} from "../../../../src/decorator/relations/ManyToMany";
-import {JoinTable} from "../../../../src/decorator/relations/JoinTable";
-import {Platform} from "./Platform";
+import {Entity} from "../../../../src/decorator/entity/Entity.ts";
+import {Index} from "../../../../src/decorator/Index.ts";
+import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
+import {Column} from "../../../../src/decorator/columns/Column.ts";
+import {ManyToMany} from "../../../../src/decorator/relations/ManyToMany.ts";
+import {JoinTable} from "../../../../src/decorator/relations/JoinTable.ts";
+import {Platform} from "./Platform.ts";
 
 @Entity("games")
 @Index("game_name_idx", ["name"], { unique: true })
@@ -14,17 +14,20 @@ export class Game {
     id: number;
 
     @Column({
+        type: String,
         length: 80
     })
     name: string;
 
     @Column({
+        type: String,
         name: "search_terms",
         length: 80
     })
     searchTerms: string;
 
     @Column({
+        type: Boolean,
         name: "reviewed"
     })
     isReviewed: boolean;

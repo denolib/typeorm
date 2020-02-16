@@ -1,7 +1,7 @@
-import {Entity} from "../../../../src/decorator/entity/Entity";
-import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryGeneratedColumn";
-import {Column} from "../../../../src/decorator/columns/Column";
-import {PostStatus} from "../model/PostStatus";
+import {Entity} from "../../../../src/decorator/entity/Entity.ts";
+import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
+import {Column} from "../../../../src/decorator/columns/Column.ts";
+import {PostStatus} from "../model/PostStatus.ts";
 
 @Entity()
 export class Post {
@@ -9,10 +9,10 @@ export class Post {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     title: string;
 
-    @Column({ nullable: false })
+    @Column({ nullable: false, type: Number })
     status: PostStatus;
 
 }

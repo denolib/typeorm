@@ -1,15 +1,17 @@
-import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
-import {Game} from "./entity/Game";
-import {Platform} from "./entity/Platform";
-import {expect} from "chai";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+import {Game} from "./entity/Game.ts";
+import {Platform} from "./entity/Platform.ts";
 
 describe("github issues > #163 ManyToMany relation : Cannot read property 'joinColumnName' of undefined", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
@@ -86,3 +88,5 @@ describe("github issues > #163 ManyToMany relation : Cannot read property 'joinC
     })));
 
 });
+
+runIfMain(import.meta);
