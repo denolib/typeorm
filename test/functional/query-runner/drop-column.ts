@@ -1,15 +1,19 @@
-import "reflect-metadata";
-import {expect} from "chai";
-import {Connection} from "../../../src/connection/Connection";
-import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver";
-import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+// TODO(uki00a) uncomment this when CockroachDriver is implemented.
+// import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections} from "../../utils/test-utils.ts";
+import {SqliteDriver} from "../../../src/driver/sqlite/SqliteDriver.ts";
 
 describe("query runner > drop column", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
-            entities: [__dirname + "/entity/*{.js,.ts}"],
+            entities: [joinPaths(__dirname, "/entity/*.ts")],
             schemaCreate: true,
             dropSchema: true,
         });
@@ -17,6 +21,11 @@ describe("query runner > drop column", () => {
     after(() => closeTestingConnections(connections));
 
     it("should correctly drop column and revert drop", () => Promise.all(connections.map(async connection => {
+        // TODO(uki00a) Fix this problem. See https://github.com/denolib/typeorm/issues/14.
+        if (connection.driver instanceof SqliteDriver) {
+            console.warn("This test is skipped because of the issue #14. See https://github.com/denolib/typeorm/issues/14.");
+            return;
+        }
 
         const queryRunner = connection.createQueryRunner();
 
@@ -32,7 +41,7 @@ describe("query runner > drop column", () => {
         // without all removed columns. In other drivers it's no difference between these methods, because 'dropColumns'
         // calls 'dropColumn' method for each removed column.
         // CockroachDB does not support changing pk.
-        if (connection.driver instanceof CockroachDriver) {
+        if (false/*connection.driver instanceof CockroachDriver*/) { // TODO(uki00a) uncomment this when CockroachDriver is implemented.
             await queryRunner.dropColumns(table!, [nameColumn, versionColumn]);
         } else {
             await queryRunner.dropColumns(table!, [idColumn, nameColumn, versionColumn]);
@@ -41,7 +50,7 @@ describe("query runner > drop column", () => {
         table = await queryRunner.getTable("post");
         expect(table!.findColumnByName("name")).to.be.undefined;
         expect(table!.findColumnByName("version")).to.be.undefined;
-        if (!(connection.driver instanceof CockroachDriver))
+        if (true/*!(connection.driver instanceof CockroachDriver)*/) // TODO(uki00a) uncomment this when CockroachDriver is implemented.
             expect(table!.findColumnByName("id")).to.be.undefined;
 
         await queryRunner.executeMemoryDownSql();
@@ -55,3 +64,5 @@ describe("query runner > drop column", () => {
     })));
 
 });
+
+runIfMain(import.meta);

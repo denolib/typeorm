@@ -1,16 +1,19 @@
-import "reflect-metadata";
-import {Connection} from "../../../src";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Table} from "../../../src";
-import {TableCheck} from "../../../src/schema-builder/table/TableCheck";
-import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import "../../deps/chai.ts";
+import {Connection} from "../../../src/index.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Table} from "../../../src/index.ts";
+import {TableCheck} from "../../../src/schema-builder/table/TableCheck.ts";
+import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver.ts";
 
 describe("query runner > create check constraint", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
-            entities: [__dirname + "/entity/*{.js,.ts}"],
+            entities: [joinPaths(__dirname, "/entity/*.ts")],
             schemaCreate: true,
             dropSchema: true,
         });
@@ -69,3 +72,5 @@ describe("query runner > create check constraint", () => {
     })));
 
 });
+
+runIfMain(import.meta);

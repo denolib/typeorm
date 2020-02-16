@@ -1,10 +1,10 @@
-import { PrimaryColumn } from "../../../../src/decorator/columns/PrimaryColumn";
-import { Entity } from "../../../../src/decorator/entity/Entity";
+import { PrimaryColumn } from "../../../../src/decorator/columns/PrimaryColumn.ts";
+import { Entity } from "../../../../src/decorator/entity/Entity.ts";
 
 @Entity()
 export class Book {
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: String })
     ean: string;
 
 }
@@ -12,7 +12,7 @@ export class Book {
 @Entity({ withoutRowid: true })
 export class Book2 {
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: String })
     ean: string;
 
 }

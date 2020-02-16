@@ -162,4 +162,26 @@ import "./test/functional/query-builder/select/query-builder-select.ts";
 import "./test/functional/query-builder/subquery/query-builder-subquery.ts";
 import "./test/functional/query-builder/update/query-builder-update.ts";
 
+import "./test/functional/query-runner/add-column.ts";
+import "./test/functional/query-runner/change-column.ts";
+import "./test/functional/query-runner/create-and-drop-database.ts";
+import "./test/functional/query-runner/create-and-drop-schema.ts";
+import "./test/functional/query-runner/create-check-constraint.ts";
+import "./test/functional/query-runner/create-exclusion-constraint.ts";
+import "./test/functional/query-runner/create-foreign-key.ts";
+import "./test/functional/query-runner/create-index.ts";
+import "./test/functional/query-runner/create-primary-key.ts";
+import "./test/functional/query-runner/create-table.ts";
+import "./test/functional/query-runner/create-unique-constraint.ts";
+import "./test/functional/query-runner/drop-check-constraint.ts";
+import "./test/functional/query-runner/drop-column.ts";
+import "./test/functional/query-runner/drop-exclusion-constraint.ts";
+import "./test/functional/query-runner/drop-foreign-key.ts";
+import "./test/functional/query-runner/drop-index.ts";
+import "./test/functional/query-runner/drop-primary-key.ts";
+import "./test/functional/query-runner/drop-table.ts";
+import "./test/functional/query-runner/drop-unique-constraint.ts";
+import "./test/functional/query-runner/rename-column.ts";
+import "./test/functional/query-runner/rename-table.ts";
+
 runTests();

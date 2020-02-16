@@ -1,8 +1,8 @@
-import {Entity} from "../../../../src/decorator/entity/Entity";
-import {Column} from "../../../../src/decorator/columns/Column";
-import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryGeneratedColumn";
-import {Student} from "./Student";
-import {OneToMany} from "../../../../src/decorator/relations/OneToMany";
+import {Entity} from "../../../../src/decorator/entity/Entity.ts";
+import {Column} from "../../../../src/decorator/columns/Column.ts";
+import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
+import {Student} from "./Student.ts";
+import {OneToMany} from "../../../../src/decorator/relations/OneToMany.ts";
 
 @Entity()
 export class Teacher {
@@ -10,7 +10,7 @@ export class Teacher {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     name: string;
 
     @OneToMany(type => Student, student => student.teacher)

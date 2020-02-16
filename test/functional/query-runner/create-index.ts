@@ -1,16 +1,20 @@
-import "reflect-metadata";
-import {Connection} from "../../../src/connection/Connection";
-import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Table} from "../../../src/schema-builder/table/Table";
-import {TableIndex} from "../../../src/schema-builder/table/TableIndex";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import "../../deps/chai.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+// TODO(uki00a) uncomment this when CockroachDriver is implemented.
+// import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Table} from "../../../src/schema-builder/table/Table.ts";
+import {TableIndex} from "../../../src/schema-builder/table/TableIndex.ts";
 
 describe("query runner > create index", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
-            entities: [__dirname + "/entity/*{.js,.ts}"],
+            entities: [joinPaths(__dirname, "/entity/*.ts")],
             schemaCreate: true,
             dropSchema: true,
         });
@@ -52,7 +56,7 @@ describe("query runner > create index", () => {
         let table = await queryRunner.getTable("question");
 
         // CockroachDB stores unique indices as UNIQUE constraints
-        if (connection.driver instanceof CockroachDriver) {
+        if (false/*connection.driver instanceof CockroachDriver*/) { // TODO(uki00a) uncomment this when CockroachDriver is implemented.
             table!.indices.length.should.be.equal(1);
             table!.uniques.length.should.be.equal(1);
 
@@ -70,3 +74,5 @@ describe("query runner > create index", () => {
     })));
 
 });
+
+runIfMain(import.meta);

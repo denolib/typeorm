@@ -1,15 +1,18 @@
-import "reflect-metadata";
-import {Connection} from "../../../src";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Table} from "../../../src";
-import {TableExclusion} from "../../../src/schema-builder/table/TableExclusion";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import "../../deps/chai.ts";
+import {Connection} from "../../../src/index.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Table} from "../../../src/index.ts";
+import {TableExclusion} from "../../../src/schema-builder/table/TableExclusion.ts";
 
 describe("query runner > create exclusion constraint", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
-            entities: [__dirname + "/entity/*{.js,.ts}"],
+            entities: [joinPaths(__dirname, "/entity/*.ts")],
             enabledDrivers: ["postgres"], // Only PostgreSQL supports exclusion constraints.
             schemaCreate: true,
             dropSchema: true,
@@ -64,3 +67,5 @@ describe("query runner > create exclusion constraint", () => {
     })));
 
 });
+
+runIfMain(import.meta);

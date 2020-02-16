@@ -1,25 +1,28 @@
-import "reflect-metadata";
-import {expect} from "chai";
-import {Connection} from "../../../src/connection/Connection";
-import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver";
-import {SapDriver} from "../../../src/driver/sap/SapDriver";
-import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils";
-import {Table} from "../../../src/schema-builder/table/Table";
-import {TableOptions} from "../../../src/schema-builder/options/TableOptions";
-import {Post} from "./entity/Post";
-import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver";
-import {AbstractSqliteDriver} from "../../../src/driver/sqlite-abstract/AbstractSqliteDriver";
-import {OracleDriver} from "../../../src/driver/oracle/OracleDriver";
-import {Photo} from "./entity/Photo";
-import {Book2, Book} from "./entity/Book";
-import {SqliteDriver} from "../../../src/driver/sqlite/SqliteDriver";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+// TODO(uki00a) uncomment this when CockroachDriver is implemented.
+// import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver.ts";
+import {SapDriver} from "../../../src/driver/sap/SapDriver.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections} from "../../utils/test-utils.ts";
+import {Table} from "../../../src/schema-builder/table/Table.ts";
+import {TableOptions} from "../../../src/schema-builder/options/TableOptions.ts";
+import {Post} from "./entity/Post.ts";
+import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver.ts";
+import {AbstractSqliteDriver} from "../../../src/driver/sqlite-abstract/AbstractSqliteDriver.ts";
+import {OracleDriver} from "../../../src/driver/oracle/OracleDriver.ts";
+import {Photo} from "./entity/Photo.ts";
+import {Book2, Book} from "./entity/Book.ts";
+import {SqliteDriver} from "../../../src/driver/sqlite/SqliteDriver.ts";
 
 describe("query runner > create table", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
-            entities: [__dirname + "/entity/*{.js,.ts}"],
+            entities: [joinPaths(__dirname, "/entity/*.ts")],
             dropSchema: true,
         });
     });
@@ -232,7 +235,7 @@ describe("query runner > create table", () => {
             questionTable!.uniques.length.should.be.equal(0);
             questionTable!.indices.length.should.be.equal(2);
 
-        } else if (connection.driver instanceof CockroachDriver) {
+        } else if (false/*connection.driver instanceof CockroachDriver*/) { // TODO(uki00a) uncomment this when CockroachDriver is implemented.
             // CockroachDB stores unique indices as UNIQUE constraints
             questionTable!.uniques.length.should.be.equal(2);
             questionTable!.uniques[0].columnNames.length.should.be.equal(2);
@@ -308,7 +311,7 @@ describe("query runner > create table", () => {
             tagColumn!.isUnique.should.be.true;
             textColumn!.isUnique.should.be.true;
 
-        } else if (connection.driver instanceof CockroachDriver) {
+        } else if (false/*connection.driver instanceof CockroachDriver*/) { // TODO(uki00a) uncomment this when CockroachDriver is implemented.
             // CockroachDB stores unique indices as UNIQUE constraints
             table!.uniques.length.should.be.equal(4);
             table!.indices.length.should.be.equal(0);
@@ -358,7 +361,10 @@ describe("query runner > create table", () => {
             try {
                 await connection.manager.query("SELECT rowid FROM book2");
             } catch (e) {
-                expect(e.message).equal("SQLITE_ERROR: no such column: rowid");
+                expect(e.message).to.be.oneOf([
+                    "SQLITE_ERROR: no such column: rowid", // node-sqlite3's format
+                    "SqliteError: no such column: rowid"  // deno-sqlite's format
+                ]);
             }
 
             await queryRunner.dropTable("book2");
@@ -370,3 +376,5 @@ describe("query runner > create table", () => {
     })));
 
 });
+
+runIfMain(import.meta);

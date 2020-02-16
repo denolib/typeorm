@@ -1,14 +1,17 @@
-import "reflect-metadata";
-import {Connection} from "../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import "../../deps/chai.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver.ts";
 
 describe("query runner > drop check constraint", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
-            entities: [__dirname + "/entity/*{.js,.ts}"],
+            entities: [joinPaths(__dirname, "/entity/*.ts")],
             schemaCreate: true,
             dropSchema: true,
         });
@@ -41,3 +44,5 @@ describe("query runner > drop check constraint", () => {
     })));
 
 });
+
+runIfMain(import.meta);

@@ -1,21 +1,25 @@
-import "reflect-metadata";
-import {expect} from "chai";
-import {Connection} from "../../../src";
-import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver";
-import {SapDriver} from "../../../src/driver/sap/SapDriver";
-import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils";
-import {Table} from "../../../src";
-import {SqlServerDriver} from "../../../src/driver/sqlserver/SqlServerDriver";
-import {PostgresDriver} from "../../../src/driver/postgres/PostgresDriver";
-import {AbstractSqliteDriver} from "../../../src/driver/sqlite-abstract/AbstractSqliteDriver";
-import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {Connection} from "../../../src/index.ts";
+// TODO(uki00a) uncomment this when CockroachDriver is implemented.
+// import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver.ts";
+import {SapDriver} from "../../../src/driver/sap/SapDriver.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections} from "../../utils/test-utils.ts";
+import {Table} from "../../../src/index.ts";
+import {SqlServerDriver} from "../../../src/driver/sqlserver/SqlServerDriver.ts";
+// TODO(uki00a) uncomment this when PostgresDriver is implemented.
+// import {PostgresDriver} from "../../../src/driver/postgres/PostgresDriver.ts";
+import {AbstractSqliteDriver} from "../../../src/driver/sqlite-abstract/AbstractSqliteDriver.ts";
+import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver.ts";
 
 describe("query runner > rename column", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
-            entities: [__dirname + "/entity/*{.js,.ts}"],
+            entities: [joinPaths(__dirname, "/entity/*.ts")],
             schemaCreate: true,
             dropSchema: true,
         });
@@ -25,7 +29,7 @@ describe("query runner > rename column", () => {
     it("should correctly rename column and revert rename", () => Promise.all(connections.map(async connection => {
 
         // TODO: https://github.com/cockroachdb/cockroach/issues/32555
-        if (connection.driver instanceof CockroachDriver)
+        if (false/* connection.driver instanceof CockroachDriver*/) // TOOD(uki00a) uncomment this when CockroachDriver is implemented.
             return;
 
         const queryRunner = connection.createQueryRunner();
@@ -59,7 +63,7 @@ describe("query runner > rename column", () => {
     it("should correctly rename column with all constraints and revert rename", () => Promise.all(connections.map(async connection => {
 
         // TODO: https://github.com/cockroachdb/cockroach/issues/32555
-        if (connection.driver instanceof CockroachDriver)
+        if (false/* connection.driver instanceof CockroachDriver */) // TODO(uki00a) uncomment this when CockroachDriver is implemented.
             return;
 
         const queryRunner = connection.createQueryRunner();
@@ -70,7 +74,7 @@ describe("query runner > rename column", () => {
 
         // should successfully drop pk if pk constraint was correctly renamed.
         // CockroachDB does not allow to drop PK
-        if (!(connection.driver instanceof CockroachDriver))
+        if (true/* !(connection.driver instanceof CockroachDriver) */) // TODO(uki00a) uncomment this when CockroachDriver is implemented.
             await queryRunner.dropPrimaryKey(table!);
 
         table = await queryRunner.getTable("post");
@@ -107,7 +111,7 @@ describe("query runner > rename column", () => {
     it("should correctly rename column with all constraints in custom table schema and database and revert rename", () => Promise.all(connections.map(async connection => {
 
         // TODO: https://github.com/cockroachdb/cockroach/issues/32555
-        if (connection.driver instanceof CockroachDriver)
+        if (false/* connection.driver instanceof CockroachDriver */) // TODO(uki00a) uncomment this when CockroachDriver is implemented.
             return;
 
         const queryRunner = connection.createQueryRunner();
@@ -123,7 +127,7 @@ describe("query runner > rename column", () => {
             await queryRunner.createDatabase("testDB", true);
             await queryRunner.createSchema("testDB.testSchema", true);
 
-        } else if (connection.driver instanceof PostgresDriver) {
+        } else if (false/* connection.driver instanceof PostgresDriver */) { // TODO(uki00a) uncomment this when PostgresDriver is implemented.
             questionTableName = "testSchema.question";
             categoryTableName = "testSchema.category";
             await queryRunner.createSchema("testSchema", true);
@@ -204,3 +208,5 @@ describe("query runner > rename column", () => {
     })));
 
 });
+
+runIfMain(import.meta);
