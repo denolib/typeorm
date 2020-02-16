@@ -3,7 +3,7 @@
     {
       "protocol": "https",
       "path": "deno.land/std",
-      "version": "v0.30.0",
+      "version": "v0.33.0",
       "files": [
         "/fmt/colors.ts",
         "/fs/mod.ts",
