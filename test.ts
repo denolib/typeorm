@@ -238,5 +238,13 @@ import "./test/functional/transaction/transaction-in-entity-manager/transaction-
 import "./test/functional/tree-tables/closure-table/closure-table.ts";
 import "./test/functional/tree-tables/materialized-path/materialized-path.ts";
 import "./test/functional/tree-tables/nested-set/nested-set.ts";
+import "./test/functional/uuid/cockroach/uuid-cockroach.ts";
+import "./test/functional/uuid/mssql/uuid-mssql.ts";
+import "./test/functional/uuid/mysql/uuid-mysql.ts";
+import "./test/functional/uuid/oracle/uuid-oracle.ts";
+import "./test/functional/uuid/postgres/pgcrypto.ts";
+import "./test/functional/uuid/postgres/uuid-ossp.ts";
+import "./test/functional/uuid/sap/uuid-sap.ts";
+import "./test/functional/uuid/sqlite/uuid-sqlite.ts";
 
 runTests();
