@@ -4,6 +4,6 @@
     "name": "sqlite",
     "type": "sqlite",
     "database": ":memory:",
-    "logging": true
+    "logging": false
   }
 ]
