@@ -1,20 +1,23 @@
-import "reflect-metadata";
-import {Connection} from "../../../src/connection/Connection";
-import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {PromiseUtils} from "../../../src";
-import {IndexMetadata} from "../../../src/metadata/IndexMetadata";
-import {Teacher} from "./entity/Teacher";
-import {Student} from "./entity/Student";
-import {TableIndex} from "../../../src/schema-builder/table/TableIndex";
-import {expect} from "chai";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+// TODO(uki00a) uncomment this when CockroachDriver is implemented.
+// import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {PromiseUtils} from "../../../src/index.ts";
+import {IndexMetadata} from "../../../src/metadata/IndexMetadata.ts";
+import {Teacher} from "./entity/Teacher.ts";
+import {Student} from "./entity/Student.ts";
+import {TableIndex} from "../../../src/schema-builder/table/TableIndex.ts";
 
 describe("schema builder > change index", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
-            entities: [__dirname + "/entity/*{.js,.ts}"],
+            entities: [joinPaths(__dirname, "/entity/*.ts")],
             schemaCreate: true,
             dropSchema: true,
         });
@@ -72,7 +75,7 @@ describe("schema builder > change index", () => {
         const studentTable = await queryRunner.getTable("student");
         await queryRunner.release();
         // CockroachDB also stores indices for relation columns
-        if (connection.driver instanceof CockroachDriver) {
+        if (false/*connection.driver instanceof CockroachDriver*/) { // TODO(uki00a) uncomment this when CockroachDriver is implemented.
             studentTable!.indices.length.should.be.equal(2);
         } else {
             studentTable!.indices.length.should.be.equal(0);
@@ -92,7 +95,7 @@ describe("schema builder > change index", () => {
 
         teacherTable = await queryRunner.getTable("teacher");
         // CockroachDB stores unique indices as UNIQUE constraints
-        if (connection.driver instanceof CockroachDriver) {
+        if (false/*connection.driver instanceof CockroachDriver*/) { // TODO(uki00a) uncomment this when CockroachDriver is implemented.
             teacherTable!.indices.length.should.be.equal(0);
             teacherTable!.uniques.length.should.be.equal(1);
             teacherTable!.findColumnByName("name")!.isUnique.should.be.true;
@@ -105,7 +108,7 @@ describe("schema builder > change index", () => {
 
         teacherTable = await queryRunner.getTable("teacher");
         // CockroachDB stores unique indices as UNIQUE constraints
-        if (connection.driver instanceof CockroachDriver) {
+        if (false/*connection.driver instanceof CockroachDriver*/) { // TODO(uki00a) uncomment this when CockroachDriver is implemented.
             teacherTable!.indices.length.should.be.equal(0);
             teacherTable!.uniques.length.should.be.equal(0);
             teacherTable!.findColumnByName("name")!.isUnique.should.be.false;
@@ -119,3 +122,5 @@ describe("schema builder > change index", () => {
     }));
 
 });
+
+runIfMain(import.meta);

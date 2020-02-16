@@ -1,18 +1,22 @@
-import "reflect-metadata";
-import {Connection} from "../../../src";
-import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver";
-import {PostgresDriver} from "../../../src/driver/postgres/PostgresDriver";
-import {SapDriver} from "../../../src/driver/sap/SapDriver";
-import {SqlServerDriver} from "../../../src/driver/sqlserver/SqlServerDriver";
-import {ForeignKeyMetadata} from "../../../src/metadata/ForeignKeyMetadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import "../../deps/chai.ts";
+import {Connection} from "../../../src/index.ts";
+import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver.ts";
+// TODO(uki00a) uncomment this when PostgresDriver is implemented.
+// import {PostgresDriver} from "../../../src/driver/postgres/PostgresDriver.ts";
+import {SapDriver} from "../../../src/driver/sap/SapDriver.ts";
+import {SqlServerDriver} from "../../../src/driver/sqlserver/SqlServerDriver.ts";
+import {ForeignKeyMetadata} from "../../../src/metadata/ForeignKeyMetadata.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases, getDirnameOfCurrentModule} from "../../utils/test-utils.ts";
 
 describe("schema builder > custom-db-and-schema-sync", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
-            entities: [__dirname + "/entity/*{.js,.ts}"],
+            entities: [joinPaths(__dirname, "/entity/*.ts")],
             enabledDrivers: ["mysql", "mssql", "postgres", "sap"],
             dropSchema: true,
         });
@@ -44,7 +48,7 @@ describe("schema builder > custom-db-and-schema-sync", () => {
             await queryRunner.createSchema(photoMetadata.schemaPath, true);
             await queryRunner.createSchema(albumMetadata.schemaPath, true);
 
-        } else if (connection.driver instanceof PostgresDriver || connection.driver instanceof SapDriver) {
+        } else if (/*connection.driver instanceof PostgresDriver || */connection.driver instanceof SapDriver) { // TODO(uki00a) uncomment this when PostgresDriver is implemented.
             photoMetadata.schema = "photo-schema";
             photoMetadata.tablePath = "photo-schema.photo";
             photoMetadata.schemaPath = "photo-schema";
@@ -105,3 +109,5 @@ describe("schema builder > custom-db-and-schema-sync", () => {
     })));
 
 });
+
+runIfMain(import.meta);

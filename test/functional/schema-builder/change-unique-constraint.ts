@@ -1,21 +1,24 @@
-import "reflect-metadata";
-import {PromiseUtils} from "../../../src";
-import {Connection} from "../../../src";
-import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver";
-import {SapDriver} from "../../../src/driver/sap/SapDriver";
-import {AbstractSqliteDriver} from "../../../src/driver/sqlite-abstract/AbstractSqliteDriver";
-import {IndexMetadata} from "../../../src/metadata/IndexMetadata";
-import {UniqueMetadata} from "../../../src/metadata/UniqueMetadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Post} from "./entity/Post";
-import {Teacher} from "./entity/Teacher";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import "../../deps/chai.ts";
+import {PromiseUtils} from "../../../src/index.ts";
+import {Connection} from "../../../src/index.ts";
+import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver.ts";
+import {SapDriver} from "../../../src/driver/sap/SapDriver.ts";
+import {AbstractSqliteDriver} from "../../../src/driver/sqlite-abstract/AbstractSqliteDriver.ts";
+import {IndexMetadata} from "../../../src/metadata/IndexMetadata.ts";
+import {UniqueMetadata} from "../../../src/metadata/UniqueMetadata.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases, getDirnameOfCurrentModule} from "../../utils/test-utils.ts";
+import {Post} from "./entity/Post.ts";
+import {Teacher} from "./entity/Teacher.ts";
 
 describe("schema builder > change unique constraint", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
-            entities: [__dirname + "/entity/*{.js,.ts}"],
+            entities: [joinPaths(__dirname, "/entity/*.ts")],
             schemaCreate: true,
             dropSchema: true,
         });
@@ -146,3 +149,5 @@ describe("schema builder > change unique constraint", () => {
     }));
 
 });
+
+runIfMain(import.meta);

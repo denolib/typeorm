@@ -195,7 +195,6 @@ import "./test/functional/relations/multiple-primary-keys/multiple-primary-keys-
 import "./test/functional/relations/multiple-primary-keys/multiple-primary-keys-other-cases/multiple-primary-keys-other-cases.ts";
 import "./test/functional/relations/relation-mapped-to-different-name-column/relation-mapped-to-different-name-column.ts";
 import "./test/functional/relations/relation-with-primary-key/relation-with-primary-key.ts";
-
 import "./test/functional/repository/basic-methods/repository-basic-methods.ts";
 import "./test/functional/repository/clear/repository-clear.ts";
 import "./test/functional/repository/decrement/repository-decrement.ts";
@@ -207,5 +206,17 @@ import "./test/functional/repository/find-options-operators/repository-find-oper
 import "./test/functional/repository/find-options-relations/repository-find-options-relations.ts";
 import "./test/functional/repository/increment/repository-increment.ts";
 import "./test/functional/repository/set-add-remove-relations/repository-set-add-remove-relations.ts";
+
+import "./test/functional/schema-builder/add-column.ts";
+import "./test/functional/schema-builder/change-check-constraint.ts";
+import "./test/functional/schema-builder/change-column.ts";
+import "./test/functional/schema-builder/change-exclusion-constraint.ts";
+import "./test/functional/schema-builder/change-index.ts";
+import "./test/functional/schema-builder/change-unique-constraint.ts";
+import "./test/functional/schema-builder/create-foreign-key.ts";
+import "./test/functional/schema-builder/create-table.ts";
+import "./test/functional/schema-builder/custom-db-and-schema-sync.ts";
+import "./test/functional/schema-builder/drop-column.ts";
+import "./test/functional/schema-builder/update-primary-keys.ts";
 
 runTests();

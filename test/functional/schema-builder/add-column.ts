@@ -1,17 +1,21 @@
-import "reflect-metadata";
-import {Connection} from "../../../src";
-import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver";
-import {ColumnMetadataArgs} from "../../../src/metadata-args/ColumnMetadataArgs";
-import {ColumnMetadata} from "../../../src/metadata/ColumnMetadata";
-import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils";
-import {Post} from "./entity/Post";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import "../../deps/chai.ts";
+import {Connection} from "../../../src/index.ts";
+// TODO(uki00a) uncomment this when CockroachDriver is implemented.
+// import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver.ts";
+import {ColumnMetadataArgs} from "../../../src/metadata-args/ColumnMetadataArgs.ts";
+import {ColumnMetadata} from "../../../src/metadata/ColumnMetadata.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections} from "../../utils/test-utils.ts";
+import {Post} from "./entity/Post.ts";
 
 describe("schema builder > add column", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
-            entities: [__dirname + "/entity/*{.js,.ts}"],
+            entities: [joinPaths(__dirname, "/entity/*.ts")],
             schemaCreate: true,
             dropSchema: true,
         });
@@ -32,7 +36,8 @@ describe("schema builder > add column", () => {
                 options: {
                     type: "int",
                     name: "secondId",
-                    primary: !(connection.driver instanceof CockroachDriver), // CockroachDB does not allow changing pk
+                    // TODO(uki00a) uncomment this when CockroachDriver is implemented.
+                    primary: true/*!(connection.driver instanceof CockroachDriver)*/, // CockroachDB does not allow changing pk
                     nullable: false
                 }
             }
@@ -64,7 +69,7 @@ describe("schema builder > add column", () => {
         const column1 = table!.findColumnByName("secondId")!;
         column1.should.be.exist;
         column1.isNullable.should.be.false;
-        if (!(connection.driver instanceof CockroachDriver))
+        if (true/*!(connection.driver instanceof CockroachDriver)*/) // TODO(uki00a) uncomment this when CockroachDriver is implemented.
             column1.isPrimary.should.be.true;
 
         const column2 = table!.findColumnByName("description")!;
@@ -75,3 +80,5 @@ describe("schema builder > add column", () => {
     })));
 
 });
+
+runIfMain(import.meta);

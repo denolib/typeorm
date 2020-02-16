@@ -1,21 +1,21 @@
-import {Entity} from "../../../../src/decorator/entity/Entity";
-import {Column} from "../../../../src/decorator/columns/Column";
-import {ManyToOne} from "../../../../src/decorator/relations/ManyToOne";
-import {JoinColumn} from "../../../../src";
-import {PrimaryColumn} from "../../../../src/decorator/columns/PrimaryColumn";
-import {Post} from "./Post";
+import {Entity} from "../../../../src/decorator/entity/Entity.ts";
+import {Column} from "../../../../src/decorator/columns/Column.ts";
+import {ManyToOne} from "../../../../src/decorator/relations/ManyToOne.ts";
+import {JoinColumn} from "../../../../src/index.ts";
+import {PrimaryColumn} from "../../../../src/decorator/columns/PrimaryColumn.ts";
+import {Post} from "./Post.ts";
 
 @Entity()
 export class PostVersion {
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     id: number;
 
     @ManyToOne(type => Post)
     @JoinColumn({ referencedColumnName: "version" })
     post: Post;
 
-    @Column()
+    @Column({ type: String })
     details: string;
 
 }

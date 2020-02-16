@@ -1,24 +1,28 @@
-import {expect} from "chai";
-import "reflect-metadata";
-import {Connection, PromiseUtils} from "../../../src";
-import {AuroraDataApiDriver} from "../../../src/driver/aurora-data-api/AuroraDataApiDriver";
-import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver";
-import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver";
-import {OracleDriver} from "../../../src/driver/oracle/OracleDriver";
-import {PostgresDriver} from "../../../src/driver/postgres/PostgresDriver";
-import {SapDriver} from "../../../src/driver/sap/SapDriver";
-import {AbstractSqliteDriver} from "../../../src/driver/sqlite-abstract/AbstractSqliteDriver";
-import {SqlServerDriver} from "../../../src/driver/sqlserver/SqlServerDriver";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Post} from "./entity/Post";
-import {PostVersion} from "./entity/PostVersion";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {Connection, PromiseUtils} from "../../../src/index.ts";
+import {AuroraDataApiDriver} from "../../../src/driver/aurora-data-api/AuroraDataApiDriver.ts";
+// TODO(uki00a) uncomment this when CockroachDriver is implemented.
+// import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver.ts";
+import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver.ts";
+import {OracleDriver} from "../../../src/driver/oracle/OracleDriver.ts";
+// TODO(uki00a) uncomment this when PostgresDriver is implemented.
+// import {PostgresDriver} from "../../../src/driver/postgres/PostgresDriver.ts";
+import {SapDriver} from "../../../src/driver/sap/SapDriver.ts";
+import {AbstractSqliteDriver} from "../../../src/driver/sqlite-abstract/AbstractSqliteDriver.ts";
+import {SqlServerDriver} from "../../../src/driver/sqlserver/SqlServerDriver.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases, getDirnameOfCurrentModule} from "../../utils/test-utils.ts";
+import {Post} from "./entity/Post.ts";
+import {PostVersion} from "./entity/PostVersion.ts";
 
 describe("schema builder > change column", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
-            entities: [__dirname + "/entity/*{.js,.ts}"],
+            entities: [joinPaths(__dirname, "/entity/*.ts")],
             schemaCreate: true,
             dropSchema: true,
         });
@@ -99,7 +103,7 @@ describe("schema builder > change column", () => {
 
     it("should correctly make column primary and generated", () => PromiseUtils.runInSequence(connections, async connection => {
         // CockroachDB does not allow changing PK
-        if (connection.driver instanceof CockroachDriver)
+        if (false/*connection.driver instanceof CockroachDriver*/) // TODO(uki00a) uncomment this when CockroachDriver is implemented.
             return;
 
         const postMetadata = connection.getMetadata(Post);
@@ -155,12 +159,12 @@ describe("schema builder > change column", () => {
 
     it("should correctly change non-generated column on to uuid-generated column", () => PromiseUtils.runInSequence(connections, async connection => {
         // CockroachDB does not allow changing PK
-        if (connection.driver instanceof CockroachDriver)
+        if (false/*connection.driver instanceof CockroachDriver*/) // TODO(uki00a) uncomment this when CockroachDriver is implemented.
             return;
 
         const queryRunner = connection.createQueryRunner();
 
-        if (connection.driver instanceof PostgresDriver)
+        if (false/*connection.driver instanceof PostgresDriver*/) // TODO(uki00a) uncomment this when PostgresDriver is implemented.
             await queryRunner.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`);
 
         const postMetadata = connection.getMetadata(Post);
@@ -169,7 +173,9 @@ describe("schema builder > change column", () => {
         idColumn.generationStrategy = "uuid";
 
         // depending on driver, we must change column and referenced column types
-        if (connection.driver instanceof PostgresDriver || connection.driver instanceof CockroachDriver) {
+        if (false/*connection.driver instanceof PostgresDriver || connection.driver instanceof CockroachDriver*/) {
+            // TODO(uki00a) uncomment this when PostgresDriver is implemented.
+            // TODO(uki00a) uncomment this when CockroachDriver is implemented.
             idColumn.type = "uuid";
         } else if (connection.driver instanceof SqlServerDriver) {
             idColumn.type = "uniqueidentifier";
@@ -182,7 +188,9 @@ describe("schema builder > change column", () => {
         const postTable = await queryRunner.getTable("post");
         await queryRunner.release();
 
-        if (connection.driver instanceof PostgresDriver || connection.driver instanceof SqlServerDriver || connection.driver instanceof CockroachDriver) {
+        if (/*connection.driver instanceof PostgresDriver || */connection.driver instanceof SqlServerDriver/* || connection.driver instanceof CockroachDriver*/) {
+            // TODO(uki00a) uncomment this when PostgresDriver is implemented.
+            // TODO(uki00a) uncomment this when CockroachDriver is implemented.
             postTable!.findColumnByName("id")!.isGenerated.should.be.true;
             postTable!.findColumnByName("id")!.generationStrategy!.should.be.equal("uuid");
 
@@ -203,7 +211,7 @@ describe("schema builder > change column", () => {
 
     it("should correctly change generated column generation strategy", () => PromiseUtils.runInSequence(connections, async connection => {
         // CockroachDB does not allow changing PK
-        if (connection.driver instanceof CockroachDriver)
+        if (false/*connection.driver instanceof CockroachDriver*/) // TODO(uki00a) uncomment this when CockroachDriver is implemented.
             return;
 
         const teacherMetadata = connection.getMetadata("teacher");
@@ -213,7 +221,9 @@ describe("schema builder > change column", () => {
         idColumn.generationStrategy = "uuid";
 
         // depending on driver, we must change column and referenced column types
-        if (connection.driver instanceof PostgresDriver || connection.driver instanceof CockroachDriver) {
+        if (false/*connection.driver instanceof PostgresDriver || connection.driver instanceof CockroachDriver*/) {
+            // TODO(uki00a) uncomment this when PostgresDriver is implemented.
+            // TODO(uki00a) uncomment this when CockroachDriver is implemented.
             idColumn.type = "uuid";
             teacherColumn.type = "uuid";
         } else if (connection.driver instanceof SqlServerDriver) {
@@ -230,7 +240,7 @@ describe("schema builder > change column", () => {
         const teacherTable = await queryRunner.getTable("teacher");
         await queryRunner.release();
 
-        if (connection.driver instanceof PostgresDriver || connection.driver instanceof SqlServerDriver) {
+        if (/*connection.driver instanceof PostgresDriver || */connection.driver instanceof SqlServerDriver) { // TODO(uki00a) uncomment this when PostgresDriver is implemented.
             teacherTable!.findColumnByName("id")!.isGenerated.should.be.true;
             teacherTable!.findColumnByName("id")!.generationStrategy!.should.be.equal("uuid");
 
@@ -249,3 +259,5 @@ describe("schema builder > change column", () => {
     }));
 
 });
+
+runIfMain(import.meta);
