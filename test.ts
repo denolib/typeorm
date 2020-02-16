@@ -235,5 +235,8 @@ import "./test/functional/transaction/return-data-from-transaction/return-data-f
 import "./test/functional/transaction/single-query-runner/single-query-runner.ts";
 import "./test/functional/transaction/transaction-decorator/transaction-decorator.ts";
 import "./test/functional/transaction/transaction-in-entity-manager/transaction-in-entity-manager.ts";
+import "./test/functional/tree-tables/closure-table/closure-table.ts";
+import "./test/functional/tree-tables/materialized-path/materialized-path.ts";
+import "./test/functional/tree-tables/nested-set/nested-set.ts";
 
 runTests();
