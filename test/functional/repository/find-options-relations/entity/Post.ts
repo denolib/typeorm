@@ -1,14 +1,14 @@
-import {Entity} from "../../../../../src/decorator/entity/Entity";
-import {PrimaryGeneratedColumn} from "../../../../../src/decorator/columns/PrimaryGeneratedColumn";
-import {Column} from "../../../../../src/decorator/columns/Column";
-import {ManyToMany} from "../../../../../src/decorator/relations/ManyToMany";
-import {JoinTable} from "../../../../../src/decorator/relations/JoinTable";
-import {OneToMany} from "../../../../../src/decorator/relations/OneToMany";
-import {Category} from "./Category";
-import {User} from "./User";
-import {Photo} from "./Photo";
-import {ManyToOne} from "../../../../../src/decorator/relations/ManyToOne";
-import {Counters} from "./Counters";
+import {Entity} from "../../../../../src/decorator/entity/Entity.ts";
+import {PrimaryGeneratedColumn} from "../../../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
+import {Column} from "../../../../../src/decorator/columns/Column.ts";
+import {ManyToMany} from "../../../../../src/decorator/relations/ManyToMany.ts";
+import {JoinTable} from "../../../../../src/decorator/relations/JoinTable.ts";
+import {OneToMany} from "../../../../../src/decorator/relations/OneToMany.ts";
+import {Category} from "./Category.ts";
+import {User} from "./User.ts";
+import {Photo} from "./Photo.ts";
+import {ManyToOne} from "../../../../../src/decorator/relations/ManyToOne.ts";
+import {Counters} from "./Counters.ts";
 
 @Entity()
 export class Post {
@@ -16,7 +16,7 @@ export class Post {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     title: string;
 
     @OneToMany(type => Photo, photo => photo.post)

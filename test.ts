@@ -182,7 +182,6 @@ import "./test/functional/query-runner/drop-table.ts";
 import "./test/functional/query-runner/drop-unique-constraint.ts";
 import "./test/functional/query-runner/rename-column.ts";
 import "./test/functional/query-runner/rename-table.ts";
-
 import "./test/functional/relations/custom-referenced-column-name/custom-referenced-column-name.ts";
 import "./test/functional/relations/eager-relations/basic-eager-relations/basic-eager-relations.ts";
 import "./test/functional/relations/eager-relations/circular-eager-relations/circular-eager-relations.ts";
@@ -196,5 +195,17 @@ import "./test/functional/relations/multiple-primary-keys/multiple-primary-keys-
 import "./test/functional/relations/multiple-primary-keys/multiple-primary-keys-other-cases/multiple-primary-keys-other-cases.ts";
 import "./test/functional/relations/relation-mapped-to-different-name-column/relation-mapped-to-different-name-column.ts";
 import "./test/functional/relations/relation-with-primary-key/relation-with-primary-key.ts";
+
+import "./test/functional/repository/basic-methods/repository-basic-methods.ts";
+import "./test/functional/repository/clear/repository-clear.ts";
+import "./test/functional/repository/decrement/repository-decrement.ts";
+import "./test/functional/repository/delete-by-id-and-ids/repository-remove-by-id-and-ids.ts";
+import "./test/functional/repository/find-methods/repostiory-find-methods.ts";
+import "./test/functional/repository/find-options/repository-find-options.ts";
+import "./test/functional/repository/find-options-locking/find-options-locking.ts";
+import "./test/functional/repository/find-options-operators/repository-find-operators.ts";
+import "./test/functional/repository/find-options-relations/repository-find-options-relations.ts";
+import "./test/functional/repository/increment/repository-increment.ts";
+import "./test/functional/repository/set-add-remove-relations/repository-set-add-remove-relations.ts";
 
 runTests();

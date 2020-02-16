@@ -1,71 +1,80 @@
-import "reflect-metadata";
-import {CockroachDriver} from "../../../../src/driver/cockroachdb/CockroachDriver";
-import {SapDriver} from "../../../../src/driver/sap/SapDriver";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
-import {Connection} from "../../../../src";
-import {PostWithVersion} from "./entity/PostWithVersion";
-import {expect} from "chai";
-import {PostWithoutVersionAndUpdateDate} from "./entity/PostWithoutVersionAndUpdateDate";
-import {PostWithUpdateDate} from "./entity/PostWithUpdateDate";
-import {PostWithVersionAndUpdatedDate} from "./entity/PostWithVersionAndUpdatedDate";
-import {OptimisticLockVersionMismatchError} from "../../../../src/error/OptimisticLockVersionMismatchError";
-import {OptimisticLockCanNotBeUsedError} from "../../../../src/error/OptimisticLockCanNotBeUsedError";
-import {NoVersionOrUpdateDateColumnError} from "../../../../src/error/NoVersionOrUpdateDateColumnError";
-import {PessimisticLockTransactionRequiredError} from "../../../../src/error/PessimisticLockTransactionRequiredError";
-import {MysqlDriver} from "../../../../src/driver/mysql/MysqlDriver";
-import {PostgresDriver} from "../../../../src/driver/postgres/PostgresDriver";
-import {SqlServerDriver} from "../../../../src/driver/sqlserver/SqlServerDriver";
-import {AbstractSqliteDriver} from "../../../../src/driver/sqlite-abstract/AbstractSqliteDriver";
-import {OracleDriver} from "../../../../src/driver/oracle/OracleDriver";
-import {LockNotSupportedOnGivenDriverError} from "../../../../src/error/LockNotSupportedOnGivenDriverError";
+import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../../deps/mocha.ts";
+import {expect} from "../../../deps/chai.ts";
+// TODO(uki00a) uncomment this when CockroachDriver is implemented.
+// import {CockroachDriver} from "../../../../src/driver/cockroachdb/CockroachDriver.ts";
+import {SapDriver} from "../../../../src/driver/sap/SapDriver.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases, allSettled} from "../../../utils/test-utils.ts";
+import {Connection} from "../../../../src/index.ts";
+import {PostWithVersion} from "./entity/PostWithVersion.ts";
+import {PostWithoutVersionAndUpdateDate} from "./entity/PostWithoutVersionAndUpdateDate.ts";
+import {PostWithUpdateDate} from "./entity/PostWithUpdateDate.ts";
+import {PostWithVersionAndUpdatedDate} from "./entity/PostWithVersionAndUpdatedDate.ts";
+import {OptimisticLockVersionMismatchError} from "../../../../src/error/OptimisticLockVersionMismatchError.ts";
+import {OptimisticLockCanNotBeUsedError} from "../../../../src/error/OptimisticLockCanNotBeUsedError.ts";
+import {NoVersionOrUpdateDateColumnError} from "../../../../src/error/NoVersionOrUpdateDateColumnError.ts";
+import {PessimisticLockTransactionRequiredError} from "../../../../src/error/PessimisticLockTransactionRequiredError.ts";
+import {MysqlDriver} from "../../../../src/driver/mysql/MysqlDriver.ts";
+// TODO(uki00a) uncomment this when PostgresDriver is implemented.
+// import {PostgresDriver} from "../../../../src/driver/postgres/PostgresDriver.ts";
+import {SqlServerDriver} from "../../../../src/driver/sqlserver/SqlServerDriver.ts";
+import {AbstractSqliteDriver} from "../../../../src/driver/sqlite-abstract/AbstractSqliteDriver.ts";
+import {OracleDriver} from "../../../../src/driver/oracle/OracleDriver.ts";
+import {LockNotSupportedOnGivenDriverError} from "../../../../src/error/LockNotSupportedOnGivenDriverError.ts";
 
 describe("repository > find options > locking", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        enabledDrivers: ["postgres", "mysql", "mariadb", "mssql", "oracle", "mongodb"] // TODO(uki00a) Remove `enabledDrivers` when deno-sqlite supports `datetime('now')`.
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
 
     it("should throw error if pessimistic lock used without transaction", () => Promise.all(connections.map(async connection => {
-        if (connection.driver instanceof AbstractSqliteDriver || connection.driver instanceof CockroachDriver || connection.driver instanceof SapDriver)
+        // TODO(uki00a) uncomment this when CockroachDriver is implemented.
+        if (connection.driver instanceof AbstractSqliteDriver || /*connection.driver instanceof CockroachDriver ||*/ connection.driver instanceof SapDriver)
             return;
 
-        return Promise.all([
+        const results = await allSettled([
             connection
                 .getRepository(PostWithVersion)
-                .findOne(1, { lock: { mode: "pessimistic_read" } })
-                .should.be.rejectedWith(PessimisticLockTransactionRequiredError),
+                .findOne(1, { lock: { mode: "pessimistic_read" } }),
 
             connection
                 .getRepository(PostWithVersion)
                 .findOne(1, { lock: { mode: "pessimistic_write" } })
-                .should.be.rejectedWith(PessimisticLockTransactionRequiredError),
         ]);
+
+        expect(results[0].status).to.equal('rejected');
+        expect(results[0].reason).to.be.instanceOf(PessimisticLockTransactionRequiredError);
+        expect(results[1].status).to.equal('rejected');
+        expect(results[1].status).to.equal(PessimisticLockTransactionRequiredError);
     })));
 
     it("should not throw error if pessimistic lock used with transaction", () => Promise.all(connections.map(async connection => {
-        if (connection.driver instanceof AbstractSqliteDriver || connection.driver instanceof CockroachDriver || connection.driver instanceof SapDriver)
+        // TODO(uki00a) uncomment this when CockroachDriver is implemented.
+        if (connection.driver instanceof AbstractSqliteDriver || /*connection.driver instanceof CockroachDriver ||*/ connection.driver instanceof SapDriver)
             return;
 
-        return connection.manager.transaction(entityManager => {
-            return Promise.all([
+        return connection.manager.transaction(async entityManager => {
+            await Promise.all([
                 entityManager
                     .getRepository(PostWithVersion)
-                    .findOne(1, { lock: { mode: "pessimistic_read" } })
-                    .should.not.be.rejected,
+                    .findOne(1, { lock: { mode: "pessimistic_read" } }),
 
                 entityManager
                     .getRepository(PostWithVersion)
                     .findOne(1, { lock: { mode: "pessimistic_write" } })
-                    .should.not.be.rejected
             ]);
         });
     })));
 
     it("should attach pessimistic read lock statement on query if locking enabled", () => Promise.all(connections.map(async connection => {
-        if (connection.driver instanceof AbstractSqliteDriver || connection.driver instanceof CockroachDriver || connection.driver instanceof SapDriver)
+        // TODO(uki00a) uncomment this when CockroachDriver is implemented.
+        if (connection.driver instanceof AbstractSqliteDriver || /*connection.driver instanceof CockroachDriver ||*/ connection.driver instanceof SapDriver)
             return;
 
         const executedSql: string[] = [];
@@ -85,7 +94,7 @@ describe("repository > find options > locking", () => {
         if (connection.driver instanceof MysqlDriver) {
             expect(executedSql[0].indexOf("LOCK IN SHARE MODE") !== -1).to.be.true;
 
-        } else if (connection.driver instanceof PostgresDriver) {
+        } else if (false/*connection.driver instanceof PostgresDriver*/) { // TODO(uki00a) uncomment this when PostgresDriver is implemented.
             expect(executedSql[0].indexOf("FOR SHARE") !== -1).to.be.true;
 
         } else if (connection.driver instanceof OracleDriver) {
@@ -98,7 +107,8 @@ describe("repository > find options > locking", () => {
     })));
 
     it("should attach pessimistic write lock statement on query if locking enabled", () => Promise.all(connections.map(async connection => {
-        if (connection.driver instanceof AbstractSqliteDriver || connection.driver instanceof CockroachDriver || connection.driver instanceof SapDriver)
+        // TODO(uki00a) uncomment this when CockroachDriver is implemented.
+        if (connection.driver instanceof AbstractSqliteDriver || /*connection.driver instanceof CockroachDriver ||*/ connection.driver instanceof SapDriver)
             return;
 
         const executedSql: string[] = [];
@@ -115,7 +125,7 @@ describe("repository > find options > locking", () => {
                 .findOne(1, {lock: {mode: "pessimistic_write"}});
         });
 
-        if (connection.driver instanceof MysqlDriver || connection.driver instanceof PostgresDriver || connection.driver instanceof OracleDriver) {
+        if (connection.driver instanceof MysqlDriver || false/*connection.driver instanceof PostgresDriver*/ || connection.driver instanceof OracleDriver) { // TODO(uki00a) uncomment this when PostgresDriver is implemented.
             expect(executedSql[0].indexOf("FOR UPDATE") !== -1).to.be.true;
 
         } else if (connection.driver instanceof SqlServerDriver) {
@@ -146,17 +156,21 @@ describe("repository > find options > locking", () => {
     })));
 
     it("should throw error if optimistic lock used with `find` method", () => Promise.all(connections.map(async connection => {
-       return connection
-           .getRepository(PostWithVersion)
-           .find({lock: {mode: "optimistic", version: 1}})
-           .should.be.rejectedWith(OptimisticLockCanNotBeUsedError);
+        let error;
+        try {
+            await connection
+                .getRepository(PostWithVersion)
+                .find({lock: {mode: "optimistic", version: 1}});
+        } catch (err) {
+            error = err;
+        }
+        expect(error).to.be.instanceOf(OptimisticLockCanNotBeUsedError);
     })));
 
     it("should not throw error if optimistic lock used with `findOne` method", () => Promise.all(connections.map(async connection => {
-        return connection
+        await connection
             .getRepository(PostWithVersion)
-            .findOne(1, {lock: {mode: "optimistic", version: 1}})
-            .should.not.be.rejected;
+            .findOne(1, {lock: {mode: "optimistic", version: 1}});
     })));
 
     it("should throw error if entity does not have version and update date columns", () => Promise.all(connections.map(async connection => {
@@ -165,10 +179,15 @@ describe("repository > find options > locking", () => {
         post.title = "New post";
         await connection.manager.save(post);
 
-        return connection
-            .getRepository(PostWithoutVersionAndUpdateDate)
-            .findOne(1, {lock: {mode: "optimistic", version: 1}})
-            .should.be.rejectedWith(NoVersionOrUpdateDateColumnError);
+        let error;
+        try {
+            await connection
+                .getRepository(PostWithoutVersionAndUpdateDate)
+                .findOne(1, {lock: {mode: "optimistic", version: 1}});
+        } catch (err) {
+            error = err;
+        }
+        expect(error).to.be.instanceOf(NoVersionOrUpdateDateColumnError);
     })));
 
     it("should throw error if actual version does not equal expected version", () => Promise.all(connections.map(async connection => {
@@ -177,10 +196,15 @@ describe("repository > find options > locking", () => {
         post.title = "New post";
         await connection.manager.save(post);
 
-        return connection
-            .getRepository(PostWithVersion)
-            .findOne(1, {lock: {mode: "optimistic", version: 2}})
-            .should.be.rejectedWith(OptimisticLockVersionMismatchError);
+        let error;
+        try {
+            await connection
+                .getRepository(PostWithVersion)
+                .findOne(1, {lock: {mode: "optimistic", version: 2}});
+        } catch (err) {
+            error = err;
+        }
+        expect(error).to.be.instanceOf(OptimisticLockVersionMismatchError);
     })));
 
     it("should not throw error if actual version and expected versions are equal", () => Promise.all(connections.map(async connection => {
@@ -189,10 +213,9 @@ describe("repository > find options > locking", () => {
         post.title = "New post";
         await connection.manager.save(post);
 
-        return connection
+        await connection
             .getRepository(PostWithVersion)
-            .findOne(1, {lock: {mode: "optimistic", version: 1}})
-            .should.not.be.rejected;
+            .findOne(1, {lock: {mode: "optimistic", version: 1}});
     })));
 
     it("should throw error if actual updated date does not equal expected updated date", () => Promise.all(connections.map(async connection => {
@@ -205,10 +228,15 @@ describe("repository > find options > locking", () => {
         post.title = "New post";
         await connection.manager.save(post);
 
-        return connection
-            .getRepository(PostWithUpdateDate)
-            .findOne(1, {lock: {mode: "optimistic", version: new Date(2017, 1, 1)}})
-            .should.be.rejectedWith(OptimisticLockVersionMismatchError);
+        let error;
+        try {
+            await connection
+                .getRepository(PostWithUpdateDate)
+                .findOne(1, {lock: {mode: "optimistic", version: new Date(2017, 1, 1)}});
+        } catch (err) {
+            error = err;
+        }
+        expect(error).to.be.instanceOf(OptimisticLockVersionMismatchError);
     })));
 
     it("should not throw error if actual updated date and expected updated date are equal", () => Promise.all(connections.map(async connection => {
@@ -221,10 +249,9 @@ describe("repository > find options > locking", () => {
         post.title = "New post";
         await connection.manager.save(post);
 
-        return connection
+        await connection
             .getRepository(PostWithUpdateDate)
-            .findOne(1, {lock: {mode: "optimistic", version: post.updateDate}})
-            .should.not.be.rejected;
+            .findOne(1, {lock: {mode: "optimistic", version: post.updateDate}});
     })));
 
     it("should work if both version and update date columns applied", () => Promise.all(connections.map(async connection => {
@@ -240,32 +267,34 @@ describe("repository > find options > locking", () => {
         return Promise.all([
             connection
                 .getRepository(PostWithVersionAndUpdatedDate)
-                .findOne(1, {lock: {mode: "optimistic", version: post.updateDate}})
-                .should.not.be.rejected,
+                .findOne(1, {lock: {mode: "optimistic", version: post.updateDate}}),
             connection
                 .getRepository(PostWithVersionAndUpdatedDate)
-                .findOne(1, {lock: {mode: "optimistic", version: 1}})
-                .should.not.be.rejected,
+                .findOne(1, {lock: {mode: "optimistic", version: 1}}),
         ]);
     })));
 
     it("should throw error if pessimistic locking not supported by given driver", () => Promise.all(connections.map(async connection => {
-        if (connection.driver instanceof AbstractSqliteDriver || connection.driver instanceof CockroachDriver || connection.driver instanceof SapDriver)
-            return connection.manager.transaction(entityManager => {
-                return Promise.all([
+        if (connection.driver instanceof AbstractSqliteDriver || /*connection.driver instanceof CockroachDriver ||*/ connection.driver instanceof SapDriver) // TODO(uki00a) uncomment this when PostgresDriver is implemented.
+            return connection.manager.transaction(async entityManager => {
+                const results = await allSettled([
                     entityManager
                         .getRepository(PostWithVersion)
-                        .findOne(1, { lock: { mode: "pessimistic_read" } })
-                        .should.be.rejectedWith(LockNotSupportedOnGivenDriverError),
+                        .findOne(1, { lock: { mode: "pessimistic_read" } }),
 
                     entityManager
                         .getRepository(PostWithVersion)
-                        .findOne(1, { lock: { mode: "pessimistic_write" } })
-                        .should.be.rejectedWith(LockNotSupportedOnGivenDriverError),
+                        .findOne(1, { lock: { mode: "pessimistic_write" } }),
                 ]);
+                expect(results[0].status).to.equal('rejected');
+                expect(results[0].reason).to.be.instanceOf(LockNotSupportedOnGivenDriverError);
+                expect(results[1].status).to.equal('rejected');
+                expect(results[1].reason).to.be.instanceOf(LockNotSupportedOnGivenDriverError);
             });
 
         return;
     })));
 
 });
+
+runIfMain(import.meta);

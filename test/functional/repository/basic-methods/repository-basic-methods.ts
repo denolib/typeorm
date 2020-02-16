@@ -1,27 +1,21 @@
-import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
-import {Connection} from "../../../../src/connection/Connection";
-import {Post} from "./entity/Post";
-import {QueryBuilder} from "../../../../src/query-builder/QueryBuilder";
-import {User} from "./model/User";
-import questionSchema from "./model-schema/QuestionSchema";
-import {Question} from "./model/Question";
-import {Blog} from "./entity/Blog";
-import {Category} from "./entity/Category";
-import {DeepPartial} from "../../../../src/common/DeepPartial";
-import {EntitySchema} from "../../../../src";
+import {runIfMain} from "../../../deps/mocha.ts";
+import "../../../deps/chai.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
+import {Connection} from "../../../../src/connection/Connection.ts";
+import {Post} from "./entity/Post.ts";
+import {QueryBuilder} from "../../../../src/query-builder/QueryBuilder.ts";
+import {User} from "./model/User.ts";
+import questionSchema from "./model-schema/QuestionSchema.ts";
+import {Question} from "./model/Question.ts";
+import {Blog} from "./entity/Blog.ts";
+import {Category} from "./entity/Category.ts";
+import {DeepPartial} from "../../../../src/common/DeepPartial.ts";
+import {EntitySchema} from "../../../../src/index.ts";
+import userSchema from "./schema/user.json";
 
 describe("repository > basic methods", () => {
 
-    let userSchema: any;
-    try {
-        const resourceDir = __dirname + "/../../../../../../test/functional/repository/basic-methods/";
-        userSchema = require(resourceDir + "schema/user.json");
-    } catch (err) {
-        const resourceDir = __dirname + "/";
-        userSchema = require(resourceDir + "schema/user.json");
-    }
-    const UserEntity = new EntitySchema<any>(userSchema);
+    const UserEntity = new EntitySchema<any>(userSchema as any);
     const QuestionEntity = new EntitySchema<any>(questionSchema as any);
 
     let connections: Connection[];
@@ -43,7 +37,7 @@ describe("repository > basic methods", () => {
         }));
 
     });
-    
+
     describe("hasId", function() {
 
         it("should return true if entity has an id", () => connections.forEach(connection => {
@@ -222,7 +216,7 @@ describe("repository > basic methods", () => {
             blog.text = "Blog about good people";
             blog.categories = [category];
             await blogRepository.save(blog);
-            
+
             // and preload it
             const plainBlogWithId = { id: 1 };
             const preloadedBlog = await blogRepository.preload(plainBlogWithId);
@@ -247,7 +241,7 @@ describe("repository > basic methods", () => {
             blog.text = "Blog about good people";
             blog.categories = [category];
             await blogRepository.save(blog);
-            
+
             // and preload it
             const plainBlogWithId = { id: 1, categories: [{ id: 1 }] };
             const preloadedBlog = await blogRepository.preload(plainBlogWithId);
@@ -349,7 +343,7 @@ describe("repository > basic methods", () => {
             const saved = await postRepository.save(dbPost);
 
             saved.should.be.instanceOf(Post);
-            
+
             saved.id!.should.be.equal(1);
             saved.title.should.be.equal("New title");
             saved.dateAdded.should.be.instanceof(Date);
@@ -496,3 +490,5 @@ describe("repository > basic methods", () => {
     });*/
 
 });
+
+runIfMain(import.meta);

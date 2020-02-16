@@ -1,5 +1,7 @@
-import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
+import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../../deps/mocha.ts";
+import {expect} from "../../../deps/chai.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
 import {
     Any,
     Between,
@@ -14,18 +16,19 @@ import {
     MoreThanOrEqual,
     Not,
     PromiseUtils
-} from "../../../../src";
-import {Post} from "./entity/Post";
-import {PostgresDriver} from "../../../../src/driver/postgres/PostgresDriver";
-import {Raw} from "../../../../src/find-options/operator/Raw";
-import {PersonAR} from "./entity/PersonAR";
-import {expect} from "chai";
+} from "../../../../src/index.ts";
+import {Post} from "./entity/Post.ts";
+// TODO(uki00a) uncomment this when PostgresDriver is implemented.
+// import {PostgresDriver} from "../../../../src/driver/postgres/PostgresDriver.ts";
+import {Raw} from "../../../../src/find-options/operator/Raw.ts";
+import {PersonAR} from "./entity/PersonAR.ts";
 
 describe("repository > find options > operators", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
@@ -412,7 +415,7 @@ describe("repository > find options > operators", () => {
     })));
 
     it("any", () => Promise.all(connections.map(async connection => {
-        if (!(connection.driver instanceof PostgresDriver))
+        if (true/*!(connection.driver instanceof PostgresDriver)*/) // TODO(uki00a) uncomment this when PostgresDriver is implemented.
             return;
 
         // insert some fake data
@@ -434,7 +437,7 @@ describe("repository > find options > operators", () => {
     })));
 
     it("not(any)", () => Promise.all(connections.map(async connection => {
-        if (!(connection.driver instanceof PostgresDriver))
+        if (true/*!(connection.driver instanceof PostgresDriver)*/) // TODO(uki00a) uncomment this when PostgresDriver is implemented.
             return;
 
         // insert some fake data
@@ -550,3 +553,5 @@ describe("repository > find options > operators", () => {
     }));
 
 });
+
+runIfMain(import.meta);

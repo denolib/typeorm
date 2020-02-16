@@ -1,12 +1,14 @@
-import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
-import {Connection} from "../../../../src/connection/Connection";
-import {User} from "./entity/User";
-import {Category} from "./entity/Category";
-import {Post} from "./entity/Post";
-import {Photo} from "./entity/Photo";
-import {Counters} from "./entity/Counters";
-import {FindRelationsNotFoundError} from "../../../../src/error/FindRelationsNotFoundError";
+import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../../deps/mocha.ts";
+import {expect} from "../../../deps/chai.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases, getDirnameOfCurrentModule} from "../../../utils/test-utils.ts";
+import {Connection} from "../../../../src/connection/Connection.ts";
+import {User} from "./entity/User.ts";
+import {Category} from "./entity/Category.ts";
+import {Post} from "./entity/Post.ts";
+import {Photo} from "./entity/Photo.ts";
+import {Counters} from "./entity/Counters.ts";
+import {FindRelationsNotFoundError} from "../../../../src/error/FindRelationsNotFoundError.ts";
 
 describe("repository > find options > relations", () => {
 
@@ -15,8 +17,9 @@ describe("repository > find options > relations", () => {
     // -------------------------------------------------------------------------
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
@@ -322,27 +325,65 @@ describe("repository > find options > relations", () => {
     })));
 
     it("should throw error if specified relations were not found case 1", () => Promise.all(connections.map(async connection => {
-        await connection.getRepository(Post).findOne(1, { relations: ["photos2"] }).should.eventually.be.rejectedWith(FindRelationsNotFoundError);
+        let error;
+        try {
+            await connection.getRepository(Post).findOne(1, { relations: ["photos2"] });
+        } catch (err) {
+            error = err;
+        }
+        expect(error).to.be.instanceOf(FindRelationsNotFoundError);
     })));
 
     it("should throw error if specified relations were not found case 2", () => Promise.all(connections.map(async connection => {
-        await connection.getRepository(Post).findOne(1, { relations: ["photos", "counters.author2"] }).should.eventually.be.rejectedWith(FindRelationsNotFoundError);
+        let error;
+        try {
+            await connection.getRepository(Post).findOne(1, { relations: ["photos", "counters.author2"] });
+        } catch (err) {
+            error = err;
+        }
+        expect(error).to.be.instanceOf(FindRelationsNotFoundError);
     })));
 
     it("should throw error if specified relations were not found case 3", () => Promise.all(connections.map(async connection => {
-        await connection.getRepository(Post).findOne(1, { relations: ["photos", "counters2.author"] }).should.eventually.be.rejectedWith(FindRelationsNotFoundError);
+        let error;
+        try {
+            await connection.getRepository(Post).findOne(1, { relations: ["photos", "counters2.author"] });
+        } catch (err) {
+            error = err;
+        }
+        expect(error).to.be.instanceOf(FindRelationsNotFoundError);
     })));
 
     it("should throw error if specified relations were not found case 4", () => Promise.all(connections.map(async connection => {
-        await connection.getRepository(Post).findOne(1, { relations: ["photos", "photos.user.haha"] }).should.eventually.be.rejectedWith(FindRelationsNotFoundError);
+        let error;
+        try {
+            await connection.getRepository(Post).findOne(1, { relations: ["photos", "photos.user.haha"] });
+        } catch (err) {
+            error = err;
+        }
+        expect(error).to.be.instanceOf(FindRelationsNotFoundError);
     })));
 
     it("should throw error if specified relations were not found case 5", () => Promise.all(connections.map(async connection => {
-        await connection.getRepository(Post).findOne(1, { relations: ["questions"] }).should.eventually.be.rejectedWith(FindRelationsNotFoundError);
+        let error;
+        try {
+            await connection.getRepository(Post).findOne(1, { relations: ["questions"] });
+        } catch (err) {
+            error = err;
+        }
+        expect(error).to.be.instanceOf(FindRelationsNotFoundError);
     })));
 
     it("should throw error if specified relations were not found case 6", () => Promise.all(connections.map(async connection => {
-        await connection.getRepository(Post).findOne(1, { relations: ["questions.haha"] }).should.eventually.be.rejectedWith(FindRelationsNotFoundError);
+        let error;
+        try {
+            await connection.getRepository(Post).findOne(1, { relations: ["questions.haha"] });
+        } catch (err) {
+            error = err;
+        }
+        expect(error).to.be.instanceOf(FindRelationsNotFoundError);
     })));
 
 });
+
+runIfMain(import.meta);

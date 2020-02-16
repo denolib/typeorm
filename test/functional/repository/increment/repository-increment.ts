@@ -1,10 +1,11 @@
-import "reflect-metadata";
-import { closeTestingConnections, createTestingConnections, reloadTestingDatabases } from "../../../utils/test-utils";
-import { Connection } from "../../../../src/connection/Connection";
-import { UpdateResult } from "../../../../src";
-import { Post } from "./entity/Post";
-import { PostBigInt } from "./entity/PostBigInt";
-import { UserWithEmbededEntity } from "./entity/UserWithEmbededEntity";
+import {runIfMain} from "../../../deps/mocha.ts";
+import {expect} from "../../../deps/chai.ts";
+import { closeTestingConnections, createTestingConnections, reloadTestingDatabases } from "../../../utils/test-utils.ts";
+import { Connection } from "../../../../src/connection/Connection.ts";
+import { UpdateResult } from "../../../../src/index.ts";
+import { Post } from "./entity/Post.ts";
+import { PostBigInt } from "./entity/PostBigInt.ts";
+import { UserWithEmbededEntity } from "./entity/UserWithEmbededEntity.ts";
 
 describe("repository > increment method", () => {
 
@@ -111,10 +112,15 @@ describe("repository > increment method", () => {
             await connection.manager.save([post1, post2]);
 
             // increment counter of post 1
-            await connection
-                .getRepository(Post)
-                .increment({ id: 1 }, "unknownProperty", 1)
-                .should.be.rejected;
+            let error;
+            try {
+                await connection
+                    .getRepository(Post)
+                    .increment({ id: 1 }, "unknownProperty", 1);
+            } catch (err) {
+                error = err;
+            }
+            expect(error).to.be.instanceOf(Error);
 
         })));
 
@@ -132,11 +138,15 @@ describe("repository > increment method", () => {
             await connection.manager.save([post1, post2]);
 
             // increment counter of post 1
-            await connection
-                .getRepository(Post)
-                .increment({ id: 1 }, "counter", "12abc")
-                .should.be.rejected;
-
+            let error;
+            try {
+                await connection
+                    .getRepository(Post)
+                    .increment({ id: 1 }, "counter", "12abc");
+            } catch (err) {
+                error = err;
+            }
+            expect(error).to.be.instanceOf(Error);
         })));
 
     });
@@ -214,3 +224,5 @@ describe("repository > increment method", () => {
     });
 
 });
+
+runIfMain(import.meta);
