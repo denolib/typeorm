@@ -206,7 +206,6 @@ import "./test/functional/repository/find-options-operators/repository-find-oper
 import "./test/functional/repository/find-options-relations/repository-find-options-relations.ts";
 import "./test/functional/repository/increment/repository-increment.ts";
 import "./test/functional/repository/set-add-remove-relations/repository-set-add-remove-relations.ts";
-
 import "./test/functional/schema-builder/add-column.ts";
 import "./test/functional/schema-builder/change-check-constraint.ts";
 import "./test/functional/schema-builder/change-column.ts";
@@ -223,5 +222,12 @@ import "./test/functional/sqljs/auto-save.ts";
 import "./test/functional/sqljs/load.ts";
 import "./test/functional/sqljs/save.ts";
 import "./test/functional/sqljs/startup.ts";
+
+import "./test/functional/table-inheritance/extending/extending-inheritance.ts";
+import "./test/functional/table-inheritance/single-table/basic-functionality/basic-functionality.ts";
+import "./test/functional/table-inheritance/single-table/database-option-inherited/database-option-inherited.ts";
+import "./test/functional/table-inheritance/single-table/non-virtual-discriminator-column/non-virtual-discriminator-column.ts";
+import "./test/functional/table-inheritance/single-table/relations/many-to-many/many-to-many.ts";
+import "./test/functional/table-inheritance/single-table/relations/one-to-many/one-to-many.ts";
 
 runTests();

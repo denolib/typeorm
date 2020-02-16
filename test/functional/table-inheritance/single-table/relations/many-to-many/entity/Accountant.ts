@@ -1,8 +1,8 @@
-import {ChildEntity} from "../../../../../../../src/decorator/entity/ChildEntity";
-import {ManyToMany} from "../../../../../../../src/decorator/relations/ManyToMany";
-import {JoinTable} from "../../../../../../../src/decorator/relations/JoinTable";
-import {Employee} from "./Employee";
-import {Department} from "./Department";
+import {ChildEntity} from "../../../../../../../src/decorator/entity/ChildEntity.ts";
+import {ManyToMany} from "../../../../../../../src/decorator/relations/ManyToMany.ts";
+import {JoinTable} from "../../../../../../../src/decorator/relations/JoinTable.ts";
+import {Employee} from "./Employee.ts";
+import {Department} from "./Department.ts";
 
 @ChildEntity()
 export class Accountant extends Employee {

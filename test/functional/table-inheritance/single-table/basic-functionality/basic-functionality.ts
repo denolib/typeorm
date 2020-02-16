@@ -1,18 +1,20 @@
-import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils";
-import {Connection} from "../../../../../src/connection/Connection";
-import {Student} from "./entity/Student";
-import {Teacher} from "./entity/Teacher";
-import {Accountant} from "./entity/Accountant";
-import {Employee} from "./entity/Employee";
-import {Person} from "./entity/Person";
-import {expect} from "chai";
+import {join as joinPaths} from "../../../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../../../deps/mocha.ts";
+import {expect} from "../../../../deps/chai.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils.ts";
+import {Connection} from "../../../../../src/connection/Connection.ts";
+import {Student} from "./entity/Student.ts";
+import {Teacher} from "./entity/Teacher.ts";
+import {Accountant} from "./entity/Accountant.ts";
+import {Employee} from "./entity/Employee.ts";
+import {Person} from "./entity/Person.ts";
 
 describe("table-inheritance > single-table > basic-functionality", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"]
+        entities: [joinPaths(__dirname, "/entity/*.ts")]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
@@ -341,3 +343,5 @@ describe("table-inheritance > single-table > basic-functionality", () => {
     })));
 
 });
+
+runIfMain(import.meta);

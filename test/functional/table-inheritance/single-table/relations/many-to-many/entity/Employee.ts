@@ -1,11 +1,11 @@
-import {Column} from "../../../../../../../src/decorator/columns/Column";
-import {ChildEntity} from "../../../../../../../src/decorator/entity/ChildEntity";
-import {Person} from "./Person";
+import {Column} from "../../../../../../../src/decorator/columns/Column.ts";
+import {ChildEntity} from "../../../../../../../src/decorator/entity/ChildEntity.ts";
+import {Person} from "./Person.ts";
 
 @ChildEntity()
 export class Employee extends Person {
 
-    @Column()
+    @Column({ type: Number })
     salary: number;
 
 }

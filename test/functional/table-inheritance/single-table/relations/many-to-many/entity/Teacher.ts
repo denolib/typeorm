@@ -1,8 +1,8 @@
-import {ChildEntity} from "../../../../../../../src/decorator/entity/ChildEntity";
-import {ManyToMany} from "../../../../../../../src/decorator/relations/ManyToMany";
-import {JoinTable} from "../../../../../../../src/decorator/relations/JoinTable";
-import {Employee} from "./Employee";
-import {Specialization} from "./Specialization";
+import {ChildEntity} from "../../../../../../../src/decorator/entity/ChildEntity.ts";
+import {ManyToMany} from "../../../../../../../src/decorator/relations/ManyToMany.ts";
+import {JoinTable} from "../../../../../../../src/decorator/relations/JoinTable.ts";
+import {Employee} from "./Employee.ts";
+import {Specialization} from "./Specialization.ts";
 
 @ChildEntity()
 export class Teacher extends Employee {

@@ -1,7 +1,7 @@
-import {ChildEntity} from "../../../../../../../src/decorator/entity/ChildEntity";
-import {OneToMany} from "../../../../../../../src/decorator/relations/OneToMany";
-import {Person} from "./Person";
-import {Faculty} from "./Faculty";
+import {ChildEntity} from "../../../../../../../src/decorator/entity/ChildEntity.ts";
+import {OneToMany} from "../../../../../../../src/decorator/relations/OneToMany.ts";
+import {Person} from "./Person.ts";
+import {Faculty} from "./Faculty.ts";
 
 @ChildEntity()
 export class Student extends Person {

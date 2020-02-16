@@ -1,9 +1,9 @@
-import {Column} from "../../../../../src/decorator/columns/Column";
-import {Unit} from "./Unit";
+import {Column} from "../../../../../src/decorator/columns/Column.ts";
+import {Unit} from "./Unit.ts";
 
 export class Content extends Unit {
 
-    @Column()
+    @Column({ type: String })
     name: string;
 
 }
