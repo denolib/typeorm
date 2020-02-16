@@ -161,7 +161,6 @@ import "./test/functional/query-builder/relational/with-one/query-builder-relati
 import "./test/functional/query-builder/select/query-builder-select.ts";
 import "./test/functional/query-builder/subquery/query-builder-subquery.ts";
 import "./test/functional/query-builder/update/query-builder-update.ts";
-
 import "./test/functional/query-runner/add-column.ts";
 import "./test/functional/query-runner/change-column.ts";
 import "./test/functional/query-runner/create-and-drop-database.ts";
@@ -183,5 +182,19 @@ import "./test/functional/query-runner/drop-table.ts";
 import "./test/functional/query-runner/drop-unique-constraint.ts";
 import "./test/functional/query-runner/rename-column.ts";
 import "./test/functional/query-runner/rename-table.ts";
+
+import "./test/functional/relations/custom-referenced-column-name/custom-referenced-column-name.ts";
+import "./test/functional/relations/eager-relations/basic-eager-relations/basic-eager-relations.ts";
+import "./test/functional/relations/eager-relations/circular-eager-relations/circular-eager-relations.ts";
+import "./test/functional/relations/lazy-relations/basic-lazy-relation/basic-lazy-relations.ts";
+import "./test/functional/relations/lazy-relations/named-columns/named-columns-lazy-relations.ts";
+import "./test/functional/relations/lazy-relations/named-tables/named-tables-lazy-relations.ts";
+import "./test/functional/relations/lazy-relations/named-tables-and-columns/named-tables-and-columns-lazy-relations.ts";
+import "./test/functional/relations/multiple-primary-keys/multiple-primary-keys-many-to-many/multiple-primary-keys-many-to-many.ts";
+import "./test/functional/relations/multiple-primary-keys/multiple-primary-keys-many-to-one/multiple-primary-keys-many-to-one.ts";
+import "./test/functional/relations/multiple-primary-keys/multiple-primary-keys-one-to-one/multiple-primary-keys-one-to-one.ts";
+import "./test/functional/relations/multiple-primary-keys/multiple-primary-keys-other-cases/multiple-primary-keys-other-cases.ts";
+import "./test/functional/relations/relation-mapped-to-different-name-column/relation-mapped-to-different-name-column.ts";
+import "./test/functional/relations/relation-with-primary-key/relation-with-primary-key.ts";
 
 runTests();

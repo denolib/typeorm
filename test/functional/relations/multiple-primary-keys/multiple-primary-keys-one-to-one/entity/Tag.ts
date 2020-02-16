@@ -1,20 +1,20 @@
-import {Entity} from "../../../../../../src/decorator/entity/Entity";
-import {PrimaryColumn} from "../../../../../../src/decorator/columns/PrimaryColumn";
-import {Column} from "../../../../../../src/decorator/columns/Column";
-import {OneToOne} from "../../../../../../src/decorator/relations/OneToOne";
-import {JoinColumn} from "../../../../../../src/decorator/relations/JoinColumn";
-import {Category} from "./Category";
+import {Entity} from "../../../../../../src/decorator/entity/Entity.ts";
+import {PrimaryColumn} from "../../../../../../src/decorator/columns/PrimaryColumn.ts";
+import {Column} from "../../../../../../src/decorator/columns/Column.ts";
+import {OneToOne} from "../../../../../../src/decorator/relations/OneToOne.ts";
+import {JoinColumn} from "../../../../../../src/decorator/relations/JoinColumn.ts";
+import {Category} from "./Category.ts";
 
 @Entity()
 export class Tag {
 
-    @Column()
+    @Column({type: Number})
     code: number;
 
-    @PrimaryColumn()
+    @PrimaryColumn({type: String})
     title: string;
 
-    @PrimaryColumn()
+    @PrimaryColumn({type: String})
     description: string;
 
     @OneToOne(type => Category, category => category.tag)

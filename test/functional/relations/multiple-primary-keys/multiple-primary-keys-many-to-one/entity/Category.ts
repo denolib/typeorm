@@ -1,27 +1,27 @@
-import {Entity} from "../../../../../../src/decorator/entity/Entity";
-import {PrimaryColumn} from "../../../../../../src/decorator/columns/PrimaryColumn";
-import {Column} from "../../../../../../src/decorator/columns/Column";
-import {OneToMany} from "../../../../../../src/decorator/relations/OneToMany";
-import {Post} from "./Post";
-import {Unique} from "../../../../../../src";
+import {Entity} from "../../../../../../src/decorator/entity/Entity.ts";
+import {PrimaryColumn} from "../../../../../../src/decorator/columns/PrimaryColumn.ts";
+import {Column} from "../../../../../../src/decorator/columns/Column.ts";
+import {OneToMany} from "../../../../../../src/decorator/relations/OneToMany.ts";
+import {Post} from "./Post.ts";
+import {Unique} from "../../../../../../src/index.ts";
 
 @Entity()
 @Unique(["code", "version", "description"])
 export class Category {
 
-    @PrimaryColumn()
+    @PrimaryColumn({type: String})
     name: string;
 
-    @PrimaryColumn()
+    @PrimaryColumn({type: String})
     type: string;
 
-    @Column()
+    @Column({type: Number})
     code: number;
 
-    @Column()
+    @Column({type: Number})
     version: number;
 
-    @Column({nullable: true})
+    @Column({nullable: true, type: String})
     description: string;
 
     @OneToMany(type => Post, post => post.category)

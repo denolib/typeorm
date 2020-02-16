@@ -1,9 +1,9 @@
-import {Entity} from "../../../../../../src/decorator/entity/Entity";
-import {PrimaryGeneratedColumn} from "../../../../../../src/decorator/columns/PrimaryGeneratedColumn";
-import {Column} from "../../../../../../src/decorator/columns/Column";
-import {OneToOne} from "../../../../../../src/decorator/relations/OneToOne";
-import {JoinColumn} from "../../../../../../src/decorator/relations/JoinColumn";
-import {Profile} from "./Profile";
+import {Entity} from "../../../../../../src/decorator/entity/Entity.ts";
+import {PrimaryGeneratedColumn} from "../../../../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
+import {Column} from "../../../../../../src/decorator/columns/Column.ts";
+import {OneToOne} from "../../../../../../src/decorator/relations/OneToOne.ts";
+import {JoinColumn} from "../../../../../../src/decorator/relations/JoinColumn.ts";
+import {Profile} from "./Profile.ts";
 
 @Entity()
 export class User {
@@ -11,10 +11,10 @@ export class User {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     firstName: string;
 
-    @Column()
+    @Column({ type: String })
     lastName: string;
 
     @OneToOne(type => Profile, { eager: true })

@@ -1,8 +1,8 @@
-import {Entity} from "../../../../../../src/decorator/entity/Entity";
-import {PrimaryGeneratedColumn} from "../../../../../../src/decorator/columns/PrimaryGeneratedColumn";
-import {Column} from "../../../../../../src/decorator/columns/Column";
-import {OneToOne} from "../../../../../../src/decorator/relations/OneToOne";
-import {User} from "./User";
+import {Entity} from "../../../../../../src/decorator/entity/Entity.ts";
+import {PrimaryGeneratedColumn} from "../../../../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
+import {Column} from "../../../../../../src/decorator/columns/Column.ts";
+import {OneToOne} from "../../../../../../src/decorator/relations/OneToOne.ts";
+import {User} from "./User.ts";
 
 @Entity()
 export class Profile {
@@ -10,7 +10,7 @@ export class Profile {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     about: string;
 
     @OneToOne(type => User, user => user.profile, { eager: true })

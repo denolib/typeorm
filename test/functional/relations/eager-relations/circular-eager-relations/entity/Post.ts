@@ -1,8 +1,8 @@
-import {Entity} from "../../../../../../src/decorator/entity/Entity";
-import {PrimaryGeneratedColumn} from "../../../../../../src/decorator/columns/PrimaryGeneratedColumn";
-import {Column} from "../../../../../../src/decorator/columns/Column";
-import {User} from "./User";
-import {ManyToOne} from "../../../../../../src/decorator/relations/ManyToOne";
+import {Entity} from "../../../../../../src/decorator/entity/Entity.ts";
+import {PrimaryGeneratedColumn} from "../../../../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
+import {Column} from "../../../../../../src/decorator/columns/Column.ts";
+import {User} from "./User.ts";
+import {ManyToOne} from "../../../../../../src/decorator/relations/ManyToOne.ts";
 
 @Entity()
 export class Post {
@@ -10,7 +10,7 @@ export class Post {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     title: string;
 
     @ManyToOne(type => User, { eager: true })
