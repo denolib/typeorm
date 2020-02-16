@@ -1,13 +1,15 @@
-import "reflect-metadata";
-import * as path from "path";
-import {expect} from "chai";
-import {Post} from "./entity/Post";
-import {Connection} from "../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {PlatformTools} from "../../../src/platform/PlatformTools";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import * as path from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {Post} from "./entity/Post.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {PlatformTools} from "../../../src/platform/PlatformTools.ts";
 
-describe("sqljs driver > startup", () => {
+// TODO(uki00a) Remove `.skip` when SqljsDriver is implemented.
+describe.skip("sqljs driver > startup", () => {
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     const pathToSqlite = path.resolve(__dirname, "startup.sqlite");
 
     before(async () => connections = await createTestingConnections({
@@ -38,3 +40,5 @@ describe("sqljs driver > startup", () => {
         expect(PlatformTools.fileExist(pathToSqlite)).to.be.true;
     })));
 });
+
+runIfMain(import.meta);
