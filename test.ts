@@ -1,6 +1,9 @@
 import {runTests} from "./test/deps/mocha.ts";
 
+// Integration tests
 import "./test/integration/sample1-simple-entity.ts";
+
+// Functional tests
 import "./test/functional/cascades/cascade-insert-from-both-sides/cascade-insert-from-both-sides.ts";
 import "./test/functional/columns/embedded-columns/columns-embedded-columns.ts";
 import "./test/functional/columns/getters-setters/columns-getters-setters.ts";
@@ -252,5 +255,21 @@ import "./test/functional/view-entity/mysql/view-entity-mysql.ts";
 import "./test/functional/view-entity/oracle/view-entity-oracle.ts";
 import "./test/functional/view-entity/postgres/view-entity-postgres.ts";
 import "./test/functional/view-entity/sqlite/view-entity-sqlite.ts";
+
+// Tests for github-issues
+import "./test/github-issues/47/issue-47.ts";
+import "./test/github-issues/56/issue-56.ts";
+import "./test/github-issues/57/issue-57.ts";
+import "./test/github-issues/58/issue-58.ts";
+import "./test/github-issues/70/issue-70.ts";
+import "./test/github-issues/71/issue-71.ts";
+import "./test/github-issues/80/issue-80.ts";
+import "./test/github-issues/85/issue-85.ts";
+import "./test/github-issues/108/issue-108.ts";
+import "./test/github-issues/114/issue-114.ts";
+import "./test/github-issues/131/issue-131.ts";
+import "./test/github-issues/134/issue-134.ts";
+import "./test/github-issues/151/issue-151.ts";
+import "./test/github-issues/161/issue-161.ts";
 
 runTests();

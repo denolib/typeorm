@@ -1,10 +1,10 @@
-import {PrimaryColumn} from "../../../../src/decorator/columns/PrimaryColumn";
-import {Entity} from "../../../../src/decorator/entity/Entity";
+import {PrimaryColumn} from "../../../../src/decorator/columns/PrimaryColumn.ts";
+import {Entity} from "../../../../src/decorator/entity/Entity.ts";
 
 @Entity()
 export class AccessToken {
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: String })
     access_token: string;
 
 }

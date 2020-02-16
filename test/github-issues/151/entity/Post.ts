@@ -1,10 +1,10 @@
-import {Entity} from "../../../../src/decorator/entity/Entity";
-import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryGeneratedColumn";
-import {Column} from "../../../../src/decorator/columns/Column";
-import {Category} from "./Category";
-import {JoinColumn} from "../../../../src/decorator/relations/JoinColumn";
-import {OneToOne} from "../../../../src/decorator/relations/OneToOne";
-import {PostMetadata} from "./PostMetadata";
+import {Entity} from "../../../../src/decorator/entity/Entity.ts";
+import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
+import {Column} from "../../../../src/decorator/columns/Column.ts";
+import {Category} from "./Category.ts";
+import {JoinColumn} from "../../../../src/decorator/relations/JoinColumn.ts";
+import {OneToOne} from "../../../../src/decorator/relations/OneToOne.ts";
+import {PostMetadata} from "./PostMetadata.ts";
 
 @Entity()
 export class Post {
@@ -12,7 +12,7 @@ export class Post {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     title: string;
 
     @OneToOne(type => Category, { cascade: true })

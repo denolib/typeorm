@@ -1,14 +1,17 @@
-import {Connection} from "../../../src";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Document} from "./entity/Document";
-import {expect} from "chai";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {Connection} from "../../../src/index.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Document} from "./entity/Document.ts";
 
 describe("github issues > #85 - Column option insert: false, update: false", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
 
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
         schemaCreate: true,
         dropSchema: true
     }));
@@ -45,7 +48,15 @@ describe("github issues > #85 - Column option insert: false, update: false", () 
     await queryRunner.release();
     const doc2 = new Document();
     doc2.id = 2;
-    return connection.manager.save(doc2).should.be.rejected;
+
+    let error;
+    try {
+        await connection.manager.save(doc2);
+    } catch (err) {
+        error = err;
+    }
+    expect(error).to.be.instanceOf(Error);
   })));
 });
 
+runIfMain(import.meta);

@@ -1,10 +1,10 @@
-import {Entity} from "../../../../src/decorator/entity/Entity";
-import {PrimaryColumn} from "../../../../src/decorator/columns/PrimaryColumn";
-import {Column} from "../../../../src/decorator/columns/Column";
-import {ManyToOne} from "../../../../src/decorator/relations/ManyToOne";
-import {Kollektion} from "./Kollektion";
-import {JoinColumn} from "../../../../src/decorator/relations/JoinColumn";
-import {Generated} from "../../../../src/decorator/Generated";
+import {Entity} from "../../../../src/decorator/entity/Entity.ts";
+import {PrimaryColumn} from "../../../../src/decorator/columns/PrimaryColumn.ts";
+import {Column} from "../../../../src/decorator/columns/Column.ts";
+import {ManyToOne} from "../../../../src/decorator/relations/ManyToOne.ts";
+import {Kollektion} from "./Kollektion.ts";
+import {JoinColumn} from "../../../../src/decorator/relations/JoinColumn.ts";
+import {Generated} from "../../../../src/decorator/Generated.ts";
 
 @Entity("artikel")
 export class Artikel {
@@ -13,16 +13,16 @@ export class Artikel {
     @Generated()
     id: number;
 
-    @Column({ name: "artikel_nummer" })
+    @Column({ name: "artikel_nummer", type: String })
     nummer: string;
 
-    @Column({ name: "artikel_name" })
+    @Column({ name: "artikel_name", type: String })
     name: string;
 
-    @Column({ name: "artikel_extrabarcode" })
+    @Column({ name: "artikel_extrabarcode", type: String })
     extrabarcode: string;
 
-    @Column({ name: "artikel_saison" })
+    @Column({ name: "artikel_saison", type: String })
     saison: string;
 
     @ManyToOne(type => Kollektion, { cascade: true })
