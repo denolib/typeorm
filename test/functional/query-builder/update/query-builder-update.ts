@@ -1,20 +1,22 @@
-import "reflect-metadata";
-import {expect} from "chai";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
-import {Connection} from "../../../../src/connection/Connection";
-import {User} from "./entity/User";
-import {MysqlDriver} from "../../../../src/driver/mysql/MysqlDriver";
-import {SqlServerDriver} from "../../../../src/driver/sqlserver/SqlServerDriver";
-import {LimitOnUpdateNotSupportedError} from "../../../../src/error/LimitOnUpdateNotSupportedError";
-import {Photo} from "./entity/Photo";
-import {EntityColumnNotFound} from "../../../../src/error/EntityColumnNotFound";
-import {UpdateValuesMissingError} from "../../../../src/error/UpdateValuesMissingError";
+import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../../deps/mocha.ts";
+import {expect} from "../../../deps/chai.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
+import {Connection} from "../../../../src/connection/Connection.ts";
+import {User} from "./entity/User.ts";
+import {MysqlDriver} from "../../../../src/driver/mysql/MysqlDriver.ts";
+import {SqlServerDriver} from "../../../../src/driver/sqlserver/SqlServerDriver.ts";
+import {LimitOnUpdateNotSupportedError} from "../../../../src/error/LimitOnUpdateNotSupportedError.ts";
+import {Photo} from "./entity/Photo.ts";
+import {EntityColumnNotFound} from "../../../../src/error/EntityColumnNotFound.ts";
+import {UpdateValuesMissingError} from "../../../../src/error/UpdateValuesMissingError.ts";
 
 describe("query builder > update", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
@@ -180,11 +182,16 @@ describe("query builder > update", () => {
             expect(loadedUsers).to.exist;
             loadedUsers!.length.should.be.equal(limitNum);
         } else {
-            await connection.createQueryBuilder()
-            .update(User)
-            .set({ name: nameToFind })
-            .limit(limitNum)
-            .execute().should.be.rejectedWith(LimitOnUpdateNotSupportedError);
+            try {
+                await connection.createQueryBuilder()
+                .update(User)
+                .set({ name: nameToFind })
+                .limit(limitNum)
+                .execute();
+                expect.fail("an error not to be thrown.");
+            } catch (err) {
+                expect(err).to.be.instanceOf(LimitOnUpdateNotSupportedError);
+            }
         }
     })));
 
@@ -250,3 +257,5 @@ describe("query builder > update", () => {
     })));
 
 });
+
+runIfMain(import.meta);

@@ -1,7 +1,7 @@
-import {Entity} from "../../../../../src/decorator/entity/Entity";
-import {PrimaryGeneratedColumn} from "../../../../../src/decorator/columns/PrimaryGeneratedColumn";
-import {Column} from "../../../../../src/decorator/columns/Column";
-import {Generated} from "../../../../../src/decorator/Generated";
+import {Entity} from "../../../../../src/decorator/entity/Entity.ts";
+import {PrimaryGeneratedColumn} from "../../../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
+import {Column} from "../../../../../src/decorator/columns/Column.ts";
+import {Generated} from "../../../../../src/decorator/Generated.ts";
 
 @Entity()
 export class Question {
@@ -9,11 +9,11 @@ export class Question {
     @PrimaryGeneratedColumn("uuid")
     id: string;
 
-    @Column()
+    @Column({ type: String })
     @Generated("uuid")
     uuid: string;
 
-    @Column()
+    @Column({ type: String })
     uuid2: string;
 
     @Column("varchar", { nullable: true })

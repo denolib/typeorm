@@ -1,4 +1,5 @@
-import { Column, ValueTransformer, Entity, PrimaryGeneratedColumn } from "../../../../../src";
+import { Column, ValueTransformer, Entity, PrimaryGeneratedColumn } from "../../../../../src/index.ts";
+import { PlatformTools } from "../../../../../src/platform/PlatformTools.ts";
 
 const encode: ValueTransformer = {
     to: (entityValue: string) => {
@@ -11,10 +12,10 @@ const encode: ValueTransformer = {
 
 export const encrypt: ValueTransformer = {
     to: (entityValue: string) => {
-        return Buffer.from(entityValue).toString("base64");
+        return PlatformTools.encodeToBase64(entityValue);
     },
     from: (databaseValue: string) => {
-        return Buffer.from(databaseValue, "base64").toString();
+        return PlatformTools.decodeFromBase64(databaseValue);
     },
 };
 
@@ -33,6 +34,6 @@ export class User {
     @PrimaryGeneratedColumn("uuid")
     id: string;
 
-    @Column({transformer: [lowercase, encode, encrypt]})
+    @Column({type: String, transformer: [lowercase, encode, encrypt]})
     email: string;
 }

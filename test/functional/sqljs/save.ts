@@ -1,14 +1,16 @@
-import "reflect-metadata";
-import * as fs from "fs";
-import * as path from "path";
-import {expect} from "chai";
-import {getSqljsManager} from "../../../src/index";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
-import {Post} from "./entity/Post";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import * as path from "../../../vendor/https/deno.land/std/path/mod.ts";
+import * as fs from "../../../vendor/https/deno.land/std/fs/mod.ts";
+import {getSqljsManager} from "../../../src/index.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+import {Post} from "./entity/Post.ts";
 
-describe("sqljs driver > save", () => {
+// TODO(uki00a) Remove `.skip` when SqljsDriver is implemented.
+describe.skip("sqljs driver > save", () => {
 
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     const pathToSqlite = path.resolve(__dirname, "export.sqlite");
     let connections: Connection[];
     before(async () => connections = await createTestingConnections({
@@ -22,7 +24,7 @@ describe("sqljs driver > save", () => {
 
     it("should save to file", () => Promise.all(connections.map(async connection => {
         if (fs.existsSync(pathToSqlite)) {
-            fs.unlinkSync(pathToSqlite);
+            Deno.removeSync(pathToSqlite);
         }
 
         let post = new Post();
@@ -49,3 +51,5 @@ describe("sqljs driver > save", () => {
         }
     })));
 });
+
+runIfMain(import.meta);

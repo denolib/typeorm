@@ -1,8 +1,8 @@
-import {Connection} from "../../../../../src";
-import {ViewColumn} from "../../../../../src/decorator/columns/ViewColumn";
-import {ViewEntity} from "../../../../../src/decorator/entity-view/ViewEntity";
-import {Category} from "./Category";
-import {Post} from "./Post";
+import {Connection} from "../../../../../src/index.ts";
+import {ViewColumn} from "../../../../../src/decorator/columns/ViewColumn.ts";
+import {ViewEntity} from "../../../../../src/decorator/entity-view/ViewEntity.ts";
+import {Category} from "./Category.ts";
+import {Post} from "./Post.ts";
 
 @ViewEntity({
     expression: (connection: Connection) => connection.createQueryBuilder()

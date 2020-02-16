@@ -1,8 +1,8 @@
-import {Entity} from "../../../../../../src/decorator/entity/Entity";
-import {Column} from "../../../../../../src/decorator/columns/Column";
-import {ObjectIdColumn} from "../../../../../../src/decorator/columns/ObjectIdColumn";
-import {Counters} from "./Counters";
-import {ObjectID} from "../../../../../../src/driver/mongodb/typings";
+import {Entity} from "../../../../../../src/decorator/entity/Entity.ts";
+import {Column} from "../../../../../../src/decorator/columns/Column.ts";
+import {ObjectIdColumn} from "../../../../../../src/decorator/columns/ObjectIdColumn.ts";
+import {Counters} from "./Counters.ts";
+import {ObjectID} from "../../../../../../src/driver/mongodb/typings.ts";
 
 @Entity()
 export class Post {
@@ -10,10 +10,10 @@ export class Post {
     @ObjectIdColumn()
     id: ObjectID;
 
-    @Column()
+    @Column({ type: String })
     title: string;
 
-    @Column()
+    @Column({ type: String })
     text: string;
 
     @Column(type => Counters)

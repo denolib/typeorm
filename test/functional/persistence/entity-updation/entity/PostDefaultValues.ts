@@ -1,6 +1,6 @@
-import {Entity} from "../../../../../src/decorator/entity/Entity";
-import {PrimaryGeneratedColumn} from "../../../../../src/decorator/columns/PrimaryGeneratedColumn";
-import {Column} from "../../../../../src/decorator/columns/Column";
+import {Entity} from "../../../../../src/decorator/entity/Entity.ts";
+import {PrimaryGeneratedColumn} from "../../../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
+import {Column} from "../../../../../src/decorator/columns/Column.ts";
 
 @Entity()
 export class PostDefaultValues {
@@ -8,22 +8,22 @@ export class PostDefaultValues {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     title: string;
 
-    @Column({ default: "hello post" })
+    @Column({ default: "hello post", type: String })
     text: string;
 
-    @Column({ default: true })
+    @Column({ default: true, type: Boolean })
     isActive: boolean;
 
-    @Column({ default: () => "CURRENT_TIMESTAMP" })
+    @Column({ default: () => "CURRENT_TIMESTAMP", type: Date })
     addDate: Date;
 
-    @Column({ default: 0 })
+    @Column({ default: 0, type: Number })
     views: number;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, type: String })
     description: string;
 
 }

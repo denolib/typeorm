@@ -1,16 +1,20 @@
-import "reflect-metadata";
-import {Connection} from "../../../src/connection/Connection";
-import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Table} from "../../../src/schema-builder/table/Table";
-import {TableForeignKey} from "../../../src/schema-builder/table/TableForeignKey";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import "../../deps/chai.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+// TODO(uki00a) uncomment this when CockroachDriver is implemented.
+// import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Table} from "../../../src/schema-builder/table/Table.ts";
+import {TableForeignKey} from "../../../src/schema-builder/table/TableForeignKey.ts";
 
 describe("query runner > create foreign key", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
-            entities: [__dirname + "/entity/*{.js,.ts}"],
+            entities: [joinPaths(__dirname, "/entity/*.ts")],
             schemaCreate: true,
             dropSchema: true,
         });
@@ -50,7 +54,8 @@ describe("query runner > create foreign key", () => {
                 },
                 {
                     name: "questionId",
-                    isUnique: connection.driver instanceof CockroachDriver, // CockroachDB requires UNIQUE constraints on referenced columns
+                    // TODO(uki00a) uncomment this when CockroachDriver is implemented.
+                    isUnique: false/*connection.driver instanceof CockroachDriver*/, // CockroachDB requires UNIQUE constraints on referenced columns
                     type: "int",
                 }
             ]
@@ -78,3 +83,5 @@ describe("query runner > create foreign key", () => {
     })));
 
 });
+
+runIfMain(import.meta);

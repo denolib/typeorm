@@ -1,14 +1,14 @@
-import { Entity } from "../../../../../../src/decorator/entity/Entity";
-import { PrimaryGeneratedColumn } from "../../../../../../src/decorator/columns/PrimaryGeneratedColumn";
-import { Column } from "../../../../../../src/decorator/columns/Column";
-import { ManyToMany } from "../../../../../../src/decorator/relations/ManyToMany";
-import { JoinTable } from "../../../../../../src/decorator/relations/JoinTable";
-import { ManyToOne } from "../../../../../../src/decorator/relations/ManyToOne";
-import { OneToOne } from "../../../../../../src/decorator/relations/OneToOne";
-import { JoinColumn } from "../../../../../../src/decorator/relations/JoinColumn";
+import { Entity } from "../../../../../../src/decorator/entity/Entity.ts";
+import { PrimaryGeneratedColumn } from "../../../../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
+import { Column } from "../../../../../../src/decorator/columns/Column.ts";
+import { ManyToMany } from "../../../../../../src/decorator/relations/ManyToMany.ts";
+import { JoinTable } from "../../../../../../src/decorator/relations/JoinTable.ts";
+import { ManyToOne } from "../../../../../../src/decorator/relations/ManyToOne.ts";
+import { OneToOne } from "../../../../../../src/decorator/relations/OneToOne.ts";
+import { JoinColumn } from "../../../../../../src/decorator/relations/JoinColumn.ts";
 import {
     Category,
-} from "./Category";
+} from "./Category.ts";
 
 @Entity()
 export class Post {
@@ -18,10 +18,10 @@ export class Post {
     })
     id: number;
 
-    @Column()
+    @Column({ type: String })
     title: string;
 
-    @Column()
+    @Column({ type: String })
     text: string;
 
     @ManyToMany(type => Category)
@@ -32,7 +32,7 @@ export class Post {
     @JoinTable()
     twoSideCategories: Promise<Category[]>;
 
-    @Column()
+    @Column({ type: Number })
     viewCount: number = 0;
 
     @ManyToOne(type => Category)

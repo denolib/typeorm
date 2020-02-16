@@ -1,11 +1,11 @@
-import {Column} from "../../../../../../src/decorator/columns/Column";
+import {Column} from "../../../../../../src/decorator/columns/Column.ts";
 
 export class Counters {
 
-    @Column()
+    @Column({ type: Number })
     likes: number;
 
-    @Column()
+    @Column({ type: String })
     text: string;
 
     constructor(likes: number, text: string) {

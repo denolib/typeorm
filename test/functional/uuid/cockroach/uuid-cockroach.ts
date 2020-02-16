@@ -1,17 +1,19 @@
-import "reflect-metadata";
-import {expect} from "chai";
-import {Record} from "./entity/Record";
-import {Connection} from "../../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
-import {Post} from "./entity/Post";
-import {Question} from "./entity/Question";
+import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../../deps/mocha.ts";
+import {expect} from "../../../deps/chai.ts";
+import {Record} from "./entity/Record.ts";
+import {Connection} from "../../../../src/connection/Connection.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases, getDirnameOfCurrentModule} from "../../../utils/test-utils.ts";
+import {Post} from "./entity/Post.ts";
+import {Question} from "./entity/Question.ts";
 
 describe("uuid-cockroach", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
-            entities: [__dirname + "/entity/*{.js,.ts}"],
+            entities: [joinPaths(__dirname, "/entity/*.ts")],
             enabledDrivers: ["cockroachdb"],
         });
     });
@@ -93,3 +95,5 @@ describe("uuid-cockroach", () => {
         expect(loadedQuestion2!.uuid4).to.be.null;
     })));
 });
+
+runIfMain(import.meta);

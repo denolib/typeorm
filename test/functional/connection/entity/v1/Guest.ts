@@ -1,8 +1,8 @@
-import {Entity} from "../../../../../src/decorator/entity/Entity";
-import {PrimaryGeneratedColumn} from "../../../../../src/decorator/columns/PrimaryGeneratedColumn";
-import {Column} from "../../../../../src/decorator/columns/Column";
-import {OneToMany} from "../../../../../src/decorator/relations/OneToMany";
-import {Comment} from "./Comment";
+import {Entity} from "../../../../../src/decorator/entity/Entity.ts";
+import {PrimaryGeneratedColumn} from "../../../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
+import {Column} from "../../../../../src/decorator/columns/Column.ts";
+import {OneToMany} from "../../../../../src/decorator/relations/OneToMany.ts";
+import {Comment} from "./Comment.ts";
 
 @Entity()
 export class Guest {
@@ -10,7 +10,7 @@ export class Guest {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     username: string;
 
     @OneToMany(type => Comment, comment => comment.author)

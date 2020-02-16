@@ -1,7 +1,8 @@
-import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils";
-import {Post} from "./entity/Post";
-import {Connection} from "../../../../../src/connection/Connection";
+import {join as joinPaths} from "../../../../../vendor/https/deno.land/std/path/mod.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils.ts";
+import {Post} from "./entity/Post.ts";
+import {Connection} from "../../../../../src/connection/Connection.ts";
+import {runIfMain} from "../../../../deps/mocha.ts";
 
 describe("persistence > persistence options > chunks", () => {
 
@@ -10,7 +11,8 @@ describe("persistence > persistence options > chunks", () => {
     // -------------------------------------------------------------------------
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({ __dirname, enabledDrivers: ["postgres"] }));
+    const __dirname = getDirnameOfCurrentModule(import.meta);
+    before(async () => connections = await createTestingConnections({ entities: [joinPaths(__dirname, "/entity/*.ts")], enabledDrivers: ["postgres"] }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
 
@@ -30,3 +32,5 @@ describe("persistence > persistence options > chunks", () => {
     })));
 
 });
+
+runIfMain(import.meta);

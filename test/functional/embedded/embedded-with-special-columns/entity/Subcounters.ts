@@ -1,12 +1,12 @@
-import {Column} from "../../../../../src/decorator/columns/Column";
-import {VersionColumn} from "../../../../../src/decorator/columns/VersionColumn";
+import {Column} from "../../../../../src/decorator/columns/Column.ts";
+import {VersionColumn} from "../../../../../src/decorator/columns/VersionColumn.ts";
 
 export class Subcounters {
 
-    @VersionColumn()
+    @VersionColumn({ type: Number })
     version: number;
 
-    @Column()
+    @Column({ type: Number })
     watches: number;
 
 }

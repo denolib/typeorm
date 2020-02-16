@@ -1,10 +1,10 @@
-import {Column} from "../../../../../../src/decorator/columns/Column";
-import {Information} from "./Information";
-import {BeforeInsert} from "../../../../../../src";
+import {Column} from "../../../../../../src/decorator/columns/Column.ts";
+import {Information} from "./Information.ts";
+import {BeforeInsert} from "../../../../../../src/index.ts";
 
 export class Counters {
 
-    @Column()
+    @Column({ type: Number })
     likes: number;
 
     @Column(type => Information)

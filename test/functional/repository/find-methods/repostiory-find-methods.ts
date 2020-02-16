@@ -1,11 +1,11 @@
-import "reflect-metadata";
-import {expect} from "chai";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
-import {Connection} from "../../../../src/connection/Connection";
-import {Post} from "./entity/Post";
-import {User} from "./model/User";
-import {EntityNotFoundError} from "../../../../src/error/EntityNotFoundError";
-import {UserEntity} from "./schema/UserEntity";
+import {runIfMain} from "../../../deps/mocha.ts";
+import {expect} from "../../../deps/chai.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
+import {Connection} from "../../../../src/connection/Connection.ts";
+import {Post} from "./entity/Post.ts";
+import {User} from "./model/User.ts";
+import {EntityNotFoundError} from "../../../../src/error/EntityNotFoundError.ts";
+import {UserEntity} from "./schema/UserEntity.ts";
 
 describe("repository > find methods", () => {
 
@@ -125,7 +125,7 @@ describe("repository > find methods", () => {
             });
             count.should.be.equal(5);
         })));
-        
+
     });
 
     describe("find and findAndCount", function() {
@@ -574,11 +574,18 @@ describe("repository > find methods", () => {
             loadedUser!.firstName.should.be.equal("name #0");
             loadedUser!.secondName.should.be.equal("Doe");
 
-            await userRepository.findOneOrFail(1, {
-                where: {
-                    secondName: "Dorian"
-                }
-            }).should.eventually.be.rejectedWith(EntityNotFoundError);
+            let error;
+            try {
+                await userRepository.findOneOrFail(1, {
+                    where: {
+                        secondName: "Dorian"
+                    }
+                });
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).to.be.instanceOf(EntityNotFoundError);
         })));
 
         it("should throw an error if nothing was found", () => Promise.all(connections.map(async connection => {
@@ -596,8 +603,16 @@ describe("repository > find methods", () => {
             const savedUsers = await Promise.all(promises);
             savedUsers.length.should.be.equal(100); // check if they all are saved
 
-            await userRepository.findOneOrFail(100).should.eventually.be.rejectedWith(EntityNotFoundError);
+            let error;
+            try {
+                await userRepository.findOneOrFail(100);
+            } catch (err) {
+                error = err;
+            }
+            expect(error).to.be.instanceOf(EntityNotFoundError);
         })));
     });
 
 });
+
+runIfMain(import.meta);

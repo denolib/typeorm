@@ -1,14 +1,17 @@
-import {expect} from "chai";
-import {ConnectionOptions} from "../../../src/connection/ConnectionOptions";
-import {ConnectionOptionsReader} from "../../../src/connection/ConnectionOptionsReader";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {getDirnameOfCurrentModule} from "../../utils/test-utils.ts";
+import {ConnectionOptions} from "../../../src/connection/ConnectionOptions.ts";
+import {ConnectionOptionsReader} from "../../../src/connection/ConnectionOptionsReader.ts";
 
 describe("ConnectionOptionsReader", () => {
+  const __dirname = getDirnameOfCurrentModule(import.meta);
   after(() => {
-    delete process.env.TYPEORM_CONNECTION;
-    delete process.env.TYPEORM_DATABASE;
+    delete Deno.env().TYPEORM_CONNECTION;
+    delete Deno.env().TYPEORM_DATABASE;
   });
 
-  it("properly loads config with entities specified", async () => {
+  it("properly loads config with entities specified", async function() {
     type EntititesList = Function[] | string[];
     const connectionOptionsReader = new ConnectionOptionsReader({ root: __dirname, configName: "configs/class-entities" });
     const options: ConnectionOptions = await connectionOptionsReader.get("test-conn");
@@ -42,6 +45,8 @@ describe("ConnectionOptionsReader", () => {
     const connectionOptionsReader = new ConnectionOptionsReader({ root: __dirname, configName: "configs/.env" });
     const [ fileOptions ]: ConnectionOptions[] = await connectionOptionsReader.all();
     expect(fileOptions.database).to.have.string("test-js");
-    expect(process.env.TYPEORM_DATABASE).to.equal("test-js");
+    expect(Deno.env().TYPEORM_DATABASE).to.equal("test-js");
   });
 });
+
+runIfMain(import.meta);

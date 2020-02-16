@@ -1,24 +1,24 @@
-import {Entity} from "../../../../../../../src/decorator/entity/Entity";
-import {Column} from "../../../../../../../src/decorator/columns/Column";
-import {PrimaryColumn} from "../../../../../../../src/decorator/columns/PrimaryColumn";
-import {Category} from "./Category";
-import {OneToMany} from "../../../../../../../src/decorator/relations/OneToMany";
+import {Entity} from "../../../../../../../src/decorator/entity/Entity.ts";
+import {Column} from "../../../../../../../src/decorator/columns/Column.ts";
+import {PrimaryColumn} from "../../../../../../../src/decorator/columns/PrimaryColumn.ts";
+import {Category} from "./Category.ts";
+import {OneToMany} from "../../../../../../../src/decorator/relations/OneToMany.ts";
 
 @Entity()
 export class Post {
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     id: number;
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     authorId: number;
 
-    @Column()
+    @Column({ type: String })
     title: string;
 
     @OneToMany(type => Category, category => category.post)
     categories: Category[];
-    
+
     categoryIds: number[];
 
 }

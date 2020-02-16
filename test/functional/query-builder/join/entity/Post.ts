@@ -1,15 +1,15 @@
-import {Entity} from "../../../../../src/decorator/entity/Entity";
-import {PrimaryGeneratedColumn} from "../../../../../src/decorator/columns/PrimaryGeneratedColumn";
-import {Column} from "../../../../../src/decorator/columns/Column";
-import {ManyToOne} from "../../../../../src/decorator/relations/ManyToOne";
-import {ManyToMany} from "../../../../../src/decorator/relations/ManyToMany";
-import {JoinTable} from "../../../../../src/decorator/relations/JoinTable";
-import {OneToOne} from "../../../../../src/decorator/relations/OneToOne";
-import {JoinColumn} from "../../../../../src/decorator/relations/JoinColumn";
-import {User} from "./User";
-import {Category} from "./Category";
-import {Tag} from "./Tag";
-import {Image} from "./Image";
+import {Entity} from "../../../../../src/decorator/entity/Entity.ts";
+import {PrimaryGeneratedColumn} from "../../../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
+import {Column} from "../../../../../src/decorator/columns/Column.ts";
+import {ManyToOne} from "../../../../../src/decorator/relations/ManyToOne.ts";
+import {ManyToMany} from "../../../../../src/decorator/relations/ManyToMany.ts";
+import {JoinTable} from "../../../../../src/decorator/relations/JoinTable.ts";
+import {OneToOne} from "../../../../../src/decorator/relations/OneToOne.ts";
+import {JoinColumn} from "../../../../../src/decorator/relations/JoinColumn.ts";
+import {User} from "./User.ts";
+import {Category} from "./Category.ts";
+import {Tag} from "./Tag.ts";
+import {Image} from "./Image.ts";
 
 @Entity()
 export class Post {
@@ -17,9 +17,9 @@ export class Post {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     title: string;
-    
+
     @ManyToOne(type => Tag)
     tag: Tag;
 

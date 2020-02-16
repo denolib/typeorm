@@ -1,20 +1,20 @@
-import {Entity} from "../../../../../../src/decorator/entity/Entity";
-import {ManyToMany} from "../../../../../../src/decorator/relations/ManyToMany";
-import {JoinTable} from "../../../../../../src/decorator/relations/JoinTable";
-import {PrimaryColumn} from "../../../../../../src/decorator/columns/PrimaryColumn";
-import {Category} from "./Category";
-import {Column} from "../../../../../../src/decorator/columns/Column";
+import {Entity} from "../../../../../../src/decorator/entity/Entity.ts";
+import {ManyToMany} from "../../../../../../src/decorator/relations/ManyToMany.ts";
+import {JoinTable} from "../../../../../../src/decorator/relations/JoinTable.ts";
+import {PrimaryColumn} from "../../../../../../src/decorator/columns/PrimaryColumn.ts";
+import {Category} from "./Category.ts";
+import {Column} from "../../../../../../src/decorator/columns/Column.ts";
 
 @Entity()
 export class Tag {
 
-    @Column()
+    @Column({type: Number})
     code: number;
 
-    @PrimaryColumn()
+    @PrimaryColumn({type: String})
     title: string;
 
-    @PrimaryColumn()
+    @PrimaryColumn({type: String})
     description: string;
 
     @ManyToMany(type => Category, category => category.tags)

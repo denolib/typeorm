@@ -1,12 +1,14 @@
-import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
-import {Connection} from "../../../../src/connection/Connection";
-import {Post} from "./entity/Post";
+import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../../deps/mocha.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
+import {Connection} from "../../../../src/connection/Connection.ts";
+import {Post} from "./entity/Post.ts";
 
 describe("query builder > enabling transaction", () => {
-    
+
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({ __dirname }));
+    const __dirname = getDirnameOfCurrentModule(import.meta);
+    before(async () => connections = await createTestingConnections({ entities: [joinPaths(__dirname, "/entity/*.ts")] }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
 
@@ -29,3 +31,5 @@ describe("query builder > enabling transaction", () => {
     // todo: add tests for update and remove queries as well
 
 });
+
+runIfMain(import.meta);

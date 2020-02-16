@@ -1,7 +1,7 @@
-import {Entity} from "../../../../../src/decorator/entity/Entity";
-import {Column} from "../../../../../src/decorator/columns/Column";
-import {ValueTransformer} from "../../../../../src/decorator/options/ValueTransformer";
-import {PrimaryGeneratedColumn} from "../../../../../src/decorator/columns/PrimaryGeneratedColumn";
+import {Entity} from "../../../../../src/decorator/entity/Entity.ts";
+import {Column} from "../../../../../src/decorator/columns/Column.ts";
+import {ValueTransformer} from "../../../../../src/decorator/options/ValueTransformer.ts";
+import {PrimaryGeneratedColumn} from "../../../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
 
 class TagTransformer implements ValueTransformer {
 
@@ -21,7 +21,7 @@ export class Post {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     title: string;
 
     @Column({ type: String, transformer: new TagTransformer() })

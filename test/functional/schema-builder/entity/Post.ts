@@ -1,9 +1,9 @@
-import {Entity} from "../../../../src/decorator/entity/Entity";
-import {Column} from "../../../../src/decorator/columns/Column";
-import {Unique} from "../../../../src/decorator/Unique";
-import {PrimaryColumn} from "../../../../src/decorator/columns/PrimaryColumn";
-import {Check} from "../../../../src/decorator/Check";
-import {Exclusion} from "../../../../src/decorator/Exclusion";
+import {Entity} from "../../../../src/decorator/entity/Entity.ts";
+import {Column} from "../../../../src/decorator/columns/Column.ts";
+import {Unique} from "../../../../src/decorator/Unique.ts";
+import {PrimaryColumn} from "../../../../src/decorator/columns/PrimaryColumn.ts";
+import {Check} from "../../../../src/decorator/Check.ts";
+import {Exclusion} from "../../../../src/decorator/Exclusion.ts";
 
 @Entity()
 @Unique(["text", "tag"])
@@ -11,22 +11,22 @@ import {Exclusion} from "../../../../src/decorator/Exclusion";
 @Check(`"likesCount" < 1000`)
 export class Post {
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     id: number;
 
-    @Column({ unique: true })
+    @Column({ unique: true, type: String })
     version: string;
 
-    @Column({ default: "My post" })
+    @Column({ default: "My post", type: String })
     name: string;
 
-    @Column()
+    @Column({ type: String })
     text: string;
 
-    @Column()
+    @Column({ type: String })
     tag: string;
 
-    @Column()
+    @Column({ type: Number })
     likesCount: number;
 
 }

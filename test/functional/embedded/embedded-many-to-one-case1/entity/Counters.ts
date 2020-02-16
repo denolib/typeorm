@@ -1,21 +1,21 @@
-import {Column} from "../../../../../src/decorator/columns/Column";
-import {JoinColumn} from "../../../../../src/decorator/relations/JoinColumn";
-import {ManyToOne} from "../../../../../src/decorator/relations/ManyToOne";
-import {User} from "./User";
-import {Subcounters} from "./Subcounters";
+import {Column} from "../../../../../src/decorator/columns/Column.ts";
+import {JoinColumn} from "../../../../../src/decorator/relations/JoinColumn.ts";
+import {ManyToOne} from "../../../../../src/decorator/relations/ManyToOne.ts";
+import {User} from "./User.ts";
+import {Subcounters} from "./Subcounters.ts";
 
 export class Counters {
 
-    @Column()
+    @Column({ type: Number })
     code: number;
 
-    @Column()
+    @Column({ type: Number })
     likes: number;
 
-    @Column()
+    @Column({ type: Number })
     comments: number;
 
-    @Column()
+    @Column({ type: Number })
     favorites: number;
 
     @Column(() => Subcounters, { prefix: "subcnt" })

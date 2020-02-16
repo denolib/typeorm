@@ -1,17 +1,20 @@
-import {expect} from "chai";
-import "reflect-metadata";
-import {Connection} from "../../../src/connection/Connection";
-import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver";
-import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver";
-import {SapDriver} from "../../../src/driver/sap/SapDriver";
-import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+// TODO(uki00a) uncomment this when CockroachDriver is implemented.
+// import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver.ts";
+import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver.ts";
+import {SapDriver} from "../../../src/driver/sap/SapDriver.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections} from "../../utils/test-utils.ts";
 
 describe("schema builder > create table", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
-            entities: [__dirname + "/entity/*{.js,.ts}"],
+            entities: [joinPaths(__dirname, "/entity/*.ts")],
             dropSchema: true,
         });
     });
@@ -55,7 +58,7 @@ describe("schema builder > create table", () => {
         studentTable!.should.exist;
         studentTable!.foreignKeys.length.should.be.equal(2);
         // CockroachDB also stores indices for relation columns
-        if (connection.driver instanceof CockroachDriver) {
+        if (false/*connection.driver instanceof CockroachDriver*/) { // TODO(uki00a) uncomment this when CockroachDriver is implemented.
             studentTable!.indices.length.should.be.equal(3);
         } else {
             studentTable!.indices.length.should.be.equal(1);
@@ -68,3 +71,5 @@ describe("schema builder > create table", () => {
     })));
 
 });
+
+runIfMain(import.meta);

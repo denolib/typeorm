@@ -1,12 +1,13 @@
-import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils";
-import {Connection} from "../../../../../src/connection/Connection";
+import {runIfMain} from "../../../../deps/mocha.ts";
+import {expect} from "../../../../deps/chai.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils.ts";
+import {Connection} from "../../../../../src/connection/Connection.ts";
 import {
     Post,
-} from "./entity/Post";
+} from "./entity/Post.ts";
 import {
     Category,
-} from "./entity/Category";
+} from "./entity/Category.ts";
 
 /**
  * Because lazy relations are overriding prototype is impossible to run these tests on multiple connections.
@@ -49,7 +50,7 @@ describe("named-tables-lazy-relations", () => {
 
         await postRepository.save(savedPost);
 
-        await savedPost.categories.should.eventually.be.eql([savedCategory1, savedCategory2, savedCategory3]);
+        expect(await savedPost.categories).to.be.eql([savedCategory1, savedCategory2, savedCategory3]);
 
         const post = (await postRepository.findOne(1))!;
         post.title.should.be.equal("Hello post");
@@ -87,7 +88,7 @@ describe("named-tables-lazy-relations", () => {
 
         await postRepository.save(savedPost);
 
-        await savedPost.twoSideCategories.should.eventually.be.eql([savedCategory1, savedCategory2, savedCategory3]);
+        expect(await savedPost.twoSideCategories).to.eql([savedCategory1, savedCategory2, savedCategory3]);
 
         const post = (await postRepository.findOne(1))!;
         post.title.should.be.equal("Hello post");
@@ -293,3 +294,5 @@ describe("named-tables-lazy-relations", () => {
     })));
 
 });
+
+runIfMain(import.meta);

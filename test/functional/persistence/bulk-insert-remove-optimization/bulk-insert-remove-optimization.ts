@@ -1,8 +1,10 @@
-import "reflect-metadata";
-import {Connection} from "../../../../src/connection/Connection";
-import {Post} from "./entity/Post";
-import {Category} from "./entity/Category";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
+import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
+import {Connection} from "../../../../src/connection/Connection.ts";
+import {Post} from "./entity/Post.ts";
+import {Category} from "./entity/Category.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
+import {runIfMain} from "../../../deps/mocha.ts";
+
 // import {expect} from "chai";
 
 describe("persistence > bulk-insert-remove-optimization", function() {
@@ -12,7 +14,8 @@ describe("persistence > bulk-insert-remove-optimization", function() {
     // -------------------------------------------------------------------------
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({ __dirname }));
+    const __dirname = getDirnameOfCurrentModule(import.meta);
+    before(async () => connections = await createTestingConnections({ entities: [joinPaths(__dirname, "/entity/*.ts")] }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
 
@@ -40,3 +43,5 @@ describe("persistence > bulk-insert-remove-optimization", function() {
     })));
 
 });
+
+runIfMain(import.meta);

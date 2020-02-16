@@ -1,16 +1,20 @@
-import "reflect-metadata";
-import {Connection} from "../../../../../src";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils";
-import {Post} from "./entity/Post";
-import {PostWithOptions} from "./entity/PostWithOptions";
-import {PostWithoutTypes} from "./entity/PostWithoutTypes";
+import {join as joinPaths} from "../../../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../../../deps/mocha.ts"
+import "../../../../deps/chai.ts"
+import {Connection} from "../../../../../src/index.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils.ts";
+import {Post} from "./entity/Post.ts";
+import {PostWithOptions} from "./entity/PostWithOptions.ts";
+import {PostWithoutTypes} from "./entity/PostWithoutTypes.ts";
 
 describe("database schema > column types > cockroachdb", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
+    const encoder = new TextEncoder();
     before(async () => {
         connections = await createTestingConnections({
-            entities: [__dirname + "/entity/*{.js,.ts}"],
+            entities: [joinPaths(__dirname, "/entity/*.ts")],
             enabledDrivers: ["cockroachdb"],
         });
     });
@@ -49,9 +53,10 @@ describe("database schema > column types > cockroachdb", () => {
         post.characterVarying = "This is character varying";
         post.text = "This is text";
         post.string = "This is string";
-        post.bytes = Buffer.alloc(13, "This is bytes");
-        post.bytea = Buffer.alloc(13, "This is bytea");
-        post.blob = Buffer.alloc(12, "This is blob");
+        // TODO(uki00a) not fully tested yet.
+        post.bytes = encoder.encode("This is bytes");/* Buffer.alloc(13, "This is bytes"); */
+        post.bytea = encoder.encode("This is bytea");/* Buffer.alloc(13, "This is bytea"); */
+        post.blob = encoder.encode("This is blob");/* Buffer.alloc(12, "This is blob"); */
         post.date = "2017-06-21";
         post.interval = "1 year 2 months 3 days 4 hours 5 minutes 6 seconds";
         post.time = "05:40:00.000001";
@@ -261,3 +266,5 @@ describe("database schema > column types > cockroachdb", () => {
     })));
 
 });
+
+runIfMain(import.meta);

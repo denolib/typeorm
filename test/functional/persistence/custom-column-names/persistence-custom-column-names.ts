@@ -1,14 +1,16 @@
-import {expect} from "chai";
-import "reflect-metadata";
-import {getConnectionManager} from "../../../../src";
-import {Connection} from "../../../../src/connection/Connection";
-import {Repository} from "../../../../src/repository/Repository";
-import {setupSingleTestingConnection} from "../../../utils/test-utils";
-import {Category} from "./entity/Category";
-import {CategoryMetadata} from "./entity/CategoryMetadata";
-import {Post} from "./entity/Post";
+import {expect} from "../../../deps/chai.ts";
+import {runIfMain} from "../../../deps/mocha.ts";
+import {getConnectionManager} from "../../../../src/index.ts";
+import {Connection} from "../../../../src/connection/Connection.ts";
+import {Repository} from "../../../../src/repository/Repository.ts";
+import {setupSingleTestingConnection} from "../../../utils/test-utils.ts";
+import {Category} from "./entity/Category.ts";
+import {CategoryMetadata} from "./entity/CategoryMetadata.ts";
+import {Post} from "./entity/Post.ts";
 
-describe("persistence > custom-column-names", function() {
+// TODO(uki00a) The tests in this file do not appear to run...
+// TODO(uki00a) Remove `.skip` when MysqlDriver is implemented.
+describe.skip("persistence > custom-column-names", function() {
 
     // -------------------------------------------------------------------------
     // Configuration
@@ -20,6 +22,7 @@ describe("persistence > custom-column-names", function() {
         const options = setupSingleTestingConnection("mysql", {
             entities: [Post, Category, CategoryMetadata]
         });
+        console.log(options)
         if (!options)
             return;
 
@@ -53,7 +56,7 @@ describe("persistence > custom-column-names", function() {
     // -------------------------------------------------------------------------
     // Specifications
     // -------------------------------------------------------------------------
-    
+
     describe("attach exist entity to exist entity with many-to-one relation", function() {
         if (!connection)
             return;
@@ -265,3 +268,5 @@ describe("persistence > custom-column-names", function() {
     });
 
 });
+
+runIfMain(import.meta);

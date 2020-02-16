@@ -1,14 +1,14 @@
-import {PrimaryColumn} from "../../../../../src/decorator/columns/PrimaryColumn";
-import {Entity} from "../../../../../src/decorator/entity/Entity";
-import {Column} from "../../../../../src/decorator/columns/Column";
+import {PrimaryColumn} from "../../../../../src/decorator/columns/PrimaryColumn.ts";
+import {Entity} from "../../../../../src/decorator/entity/Entity.ts";
+import {Column} from "../../../../../src/decorator/columns/Column.ts";
 
 @Entity()
 export class User {
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     id: number;
 
-    @Column()
+    @Column({ type: String })
     name: string;
 
     constructor(id: number, name: string) {

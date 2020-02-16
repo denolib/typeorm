@@ -1,17 +1,21 @@
-import "reflect-metadata";
-import {Post} from "./entity/Post";
-import {Connection} from "../../../../../src";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils";
-import {PostWithOptions} from "./entity/PostWithOptions";
-import {PostWithoutTypes} from "./entity/PostWithoutTypes";
-import {DateUtils} from "../../../../../src/util/DateUtils";
+import {join as joinPaths} from "../../../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../../../deps/mocha.ts";
+import "../../../../deps/chai.ts";
+import {Post} from "./entity/Post.ts";
+import {Connection} from "../../../../../src/index.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils.ts";
+import {PostWithOptions} from "./entity/PostWithOptions.ts";
+import {PostWithoutTypes} from "./entity/PostWithoutTypes.ts";
+import {DateUtils} from "../../../../../src/util/DateUtils.ts";
 
 describe("database schema > column types > sap", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
+    const encoder = new TextEncoder();
     before(async () => {
         connections = await createTestingConnections({
-            entities: [__dirname + "/entity/*{.js,.ts}"],
+            entities: [joinPaths(__dirname, "/entity/*.ts")],
             enabledDrivers: ["sap"],
         });
     });
@@ -54,12 +58,14 @@ describe("database schema > column types > sap", () => {
         post.timestamp.setMilliseconds(0);
         post.seconddate = new Date();
         post.seconddate.setMilliseconds(0);
-        post.blob = new Buffer("This is blob");
+        // TODO(uki00a) not fully tested yet.
+        post.blob = encoder.encode("This is blob");/* new Buffer("This is blob"); */
         post.clob = "This is clob";
         post.nclob = "This is nclob";
         post.boolean = true;
         // post.array = ["A", "B", "C"]; // TODO
-        post.varbinary = new Buffer("This is varbinary");
+        // TODO(uki00a) not fully tested yet.
+        post.varbinary = encoder.encode("This is varbinary");/* new Buffer("This is varbinary"); */
         post.simpleArray = ["A", "B", "C"];
         await postRepository.save(post);
 
@@ -187,7 +193,8 @@ describe("database schema > column types > sap", () => {
         post.id = 1;
         post.name = "Post";
         post.boolean = true;
-        post.blob = new Buffer("This is blob");
+        // TODO(uki00a) not fully tested yet.
+        post.blob = encoder.encode("This is blob");/* new Buffer("This is blob"); */
         post.timestamp = new Date();
         await postRepository.save(post);
 
@@ -207,3 +214,5 @@ describe("database schema > column types > sap", () => {
     })));
 
 });
+
+runIfMain(import.meta);

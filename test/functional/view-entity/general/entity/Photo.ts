@@ -1,9 +1,9 @@
-import {Entity} from "../../../../../src";
-import {Column} from "../../../../../src";
-import {PrimaryGeneratedColumn} from "../../../../../src";
-import {ManyToOne} from "../../../../../src";
-import {JoinColumn} from "../../../../../src";
-import {Album} from "./Album";
+import {Entity} from "../../../../../src/index.ts";
+import {Column} from "../../../../../src/index.ts";
+import {PrimaryGeneratedColumn} from "../../../../../src/index.ts";
+import {ManyToOne} from "../../../../../src/index.ts";
+import {JoinColumn} from "../../../../../src/index.ts";
+import {Album} from "./Album.ts";
 
 @Entity()
 export class Photo {
@@ -11,10 +11,10 @@ export class Photo {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     name: string;
 
-    @Column()
+    @Column({ type: String })
     albumId: number;
 
     @ManyToOne(() => Album)

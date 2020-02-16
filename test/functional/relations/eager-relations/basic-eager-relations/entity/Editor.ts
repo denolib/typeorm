@@ -1,9 +1,9 @@
-import {Entity} from "../../../../../../src/decorator/entity/Entity";
-import {OneToOne} from "../../../../../../src/decorator/relations/OneToOne";
-import {JoinColumn} from "../../../../../../src/decorator/relations/JoinColumn";
-import {User} from "./User";
-import {ManyToOne} from "../../../../../../src/decorator/relations/ManyToOne";
-import {Post} from "./Post";
+import {Entity} from "../../../../../../src/decorator/entity/Entity.ts";
+import {OneToOne} from "../../../../../../src/decorator/relations/OneToOne.ts";
+import {JoinColumn} from "../../../../../../src/decorator/relations/JoinColumn.ts";
+import {User} from "./User.ts";
+import {ManyToOne} from "../../../../../../src/decorator/relations/ManyToOne.ts";
+import {Post} from "./Post.ts";
 
 @Entity()
 export class Editor {

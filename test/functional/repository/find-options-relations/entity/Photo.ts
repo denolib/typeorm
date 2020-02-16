@@ -1,10 +1,10 @@
-import {Entity} from "../../../../../src/decorator/entity/Entity";
-import {PrimaryGeneratedColumn} from "../../../../../src/index";
-import {Column} from "../../../../../src/decorator/columns/Column";
-import {ManyToOne} from "../../../../../src/decorator/relations/ManyToOne";
-import {Post} from "./Post";
-import {Counters} from "./Counters";
-import {User} from "./User";
+import {Entity} from "../../../../../src/decorator/entity/Entity.ts";
+import {PrimaryGeneratedColumn} from "../../../../../src/index.ts";
+import {Column} from "../../../../../src/decorator/columns/Column.ts";
+import {ManyToOne} from "../../../../../src/decorator/relations/ManyToOne.ts";
+import {Post} from "./Post.ts";
+import {Counters} from "./Counters.ts";
+import {User} from "./User.ts";
 
 @Entity()
 export class Photo {
@@ -12,7 +12,7 @@ export class Photo {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     filename: string;
 
     @ManyToOne(type => User)

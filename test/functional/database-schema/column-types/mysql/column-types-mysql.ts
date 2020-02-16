@@ -1,17 +1,21 @@
-import "reflect-metadata";
-import {Post} from "./entity/Post";
-import {Connection} from "../../../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils";
-import {PostWithOptions} from "./entity/PostWithOptions";
-import {PostWithoutTypes} from "./entity/PostWithoutTypes";
-import {FruitEnum} from "./enum/FruitEnum";
+import {join as joinPaths} from "../../../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../../../deps/mocha.ts";
+import "../../../../deps/chai.ts";
+import {Post} from "./entity/Post.ts";
+import {Connection} from "../../../../../src/connection/Connection.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils.ts";
+import {PostWithOptions} from "./entity/PostWithOptions.ts";
+import {PostWithoutTypes} from "./entity/PostWithoutTypes.ts";
+import {FruitEnum} from "./enum/FruitEnum.ts";
 
 describe("database schema > column types > mysql", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
+    const encoder = new TextEncoder();
     before(async () => {
         connections = await createTestingConnections({
-            entities: [__dirname + "/entity/*{.js,.ts}"],
+            entities: [joinPaths(__dirname, "/entity/*.ts")],
             enabledDrivers: ["mysql"],
         });
     });
@@ -27,7 +31,8 @@ describe("database schema > column types > mysql", () => {
 
         const post = new Post();
         post.id = 1;
-        post.bit = Buffer.from([0]);
+        // TODO(uki00a) not fully tested yet.
+        post.bit = new Uint8Array([0]);/* Buffer.from([0]); */
         post.int = 2147483647;
         post.integer = 2147483647;
         post.tinyint = 127;
@@ -61,12 +66,13 @@ describe("database schema > column types > mysql", () => {
         post.timestamp.setMilliseconds(0); // set milliseconds to zero, because if datetime type specified without precision, milliseconds won't save in database
         post.time = "15:30:00";
         post.year = 2017;
-        post.binary = new Buffer("A");
-        post.varbinary = new Buffer("B");
-        post.blob = new Buffer("This is blob");
-        post.tinyblob = new Buffer("This is tinyblob");
-        post.mediumblob = new Buffer("This is mediumblob");
-        post.longblob = new Buffer("This is longblob");
+        // TODO(uki00a) not fully tested yet.
+        post.binary = encoder.encode("A");/* new Buffer("A"); */
+        post.varbinary = encoder.encode("B");/* new Buffer("B"); */
+        post.blob = encoder.encode("This is blob");/* new Buffer("This is blob"); */
+        post.tinyblob = encoder.encode("This is tinyblob");/* new Buffer("This is tinyblob"); */
+        post.mediumblob = encoder.encode("This is mediumblob");/* new Buffer("This is mediumblob"); */
+        post.longblob = encoder.encode("This is longblob");/* new Buffer("This is longblob"); */
         post.geometry = "POINT(1 1)";
         post.point = "POINT(1 1)";
         post.linestring = "LINESTRING(0 0,1 1,2 2)";
@@ -278,7 +284,8 @@ describe("database schema > column types > mysql", () => {
         post.id = 1;
         post.name = "Post";
         post.boolean = true;
-        post.blob = new Buffer("A");
+        // TODO(uki00a) not fully tested yet.
+        post.blob = encoder.encode("A");/* new Buffer("A"); */
         post.datetime = new Date();
         post.datetime.setMilliseconds(0); // set milliseconds to zero, because if datetime type specified without precision, milliseconds won't save in database
         await postRepository.save(post);
@@ -299,3 +306,5 @@ describe("database schema > column types > mysql", () => {
     })));
 
 });
+
+runIfMain(import.meta);

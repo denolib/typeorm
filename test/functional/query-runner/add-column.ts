@@ -1,18 +1,20 @@
-import {expect} from "chai";
-import "reflect-metadata";
-import {Connection} from "../../../src/connection/Connection";
-import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver";
-import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver";
-import {AbstractSqliteDriver} from "../../../src/driver/sqlite-abstract/AbstractSqliteDriver";
-import {TableColumn} from "../../../src/schema-builder/table/TableColumn";
-import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+// TODO(uki00a) uncomment this when CockroachDriver is implemented.
+// import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver.ts";
+import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver.ts";
+import {AbstractSqliteDriver} from "../../../src/driver/sqlite-abstract/AbstractSqliteDriver.ts";
+import {TableColumn} from "../../../src/schema-builder/table/TableColumn.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections} from "../../utils/test-utils.ts";
 
-describe("query runner > add column", () => {
-
+describe("query runner > add column", function() {
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
-            entities: [__dirname + "/entity/*{.js,.ts}"],
+            entities: [joinPaths(__dirname, "/entity/*.ts")],
             schemaCreate: true,
             dropSchema: true,
         });
@@ -32,11 +34,11 @@ describe("query runner > add column", () => {
         });
 
         // CockroachDB does not support altering primary key constraint
-        if (!(connection.driver instanceof CockroachDriver))
+        if (true/* !(connection.driver instanceof CockroachDriver) */) // TODO(uki00a) uncomment this when CockroachDriver is implemented.
             column1.isPrimary = true;
 
         // MySql and Sqlite does not supports autoincrement composite primary keys.
-        if (!(connection.driver instanceof MysqlDriver) && !(connection.driver instanceof AbstractSqliteDriver) && !(connection.driver instanceof CockroachDriver)) {
+        if (!(connection.driver instanceof MysqlDriver) && !(connection.driver instanceof AbstractSqliteDriver) && true/*!(connection.driver instanceof CockroachDriver)*/) { // TODO(uki00a) uncomment this when CockroachDriver is implemented.
             column1.isGenerated = true;
             column1.generationStrategy = "increment";
         }
@@ -58,11 +60,11 @@ describe("query runner > add column", () => {
         column1!.isNullable.should.be.false;
 
         // CockroachDB does not support altering primary key constraint
-        if (!(connection.driver instanceof CockroachDriver))
+        if (true/*!(connection.driver instanceof CockroachDriver)*/) // TODO(uki00a) uncomment this when CockroachDriver is implemented.
             column1!.isPrimary.should.be.true;
 
         // MySql and Sqlite does not supports autoincrement composite primary keys.
-        if (!(connection.driver instanceof MysqlDriver) && !(connection.driver instanceof AbstractSqliteDriver) && !(connection.driver instanceof CockroachDriver)) {
+        if (!(connection.driver instanceof MysqlDriver) && !(connection.driver instanceof AbstractSqliteDriver) && true/*!(connection.driver instanceof CockroachDriver)*/) { // TODO(uki00a) uncomment this when CockroachDriver is impelemented.
             column1!.isGenerated.should.be.true;
             column1!.generationStrategy!.should.be.equal("increment");
         }
@@ -82,3 +84,5 @@ describe("query runner > add column", () => {
     })));
 
 });
+
+runIfMain(import.meta);

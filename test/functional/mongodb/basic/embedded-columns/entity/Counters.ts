@@ -1,16 +1,16 @@
-import {Column} from "../../../../../../src/decorator/columns/Column";
-import {Information} from "./Information";
-import {ExtraInformation} from "./ExtraInformation";
+import {Column} from "../../../../../../src/decorator/columns/Column.ts";
+import {Information} from "./Information.ts";
+import {ExtraInformation} from "./ExtraInformation.ts";
 
 export class Counters {
 
-    @Column()
+    @Column({ type: Number })
     likes: number;
 
-    @Column()
+    @Column({ type: Number })
     comments: number;
 
-    @Column()
+    @Column({ type: Number })
     favorites: number;
 
     @Column(type => Information)

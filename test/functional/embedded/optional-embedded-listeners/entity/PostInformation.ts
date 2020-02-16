@@ -1,10 +1,10 @@
-import {Column} from "../../../../../src/decorator/columns/Column";
-import {BeforeInsert, BeforeUpdate} from "../../../../../src";
-import {PostCounter} from "./PostCounter";
+import {Column} from "../../../../../src/decorator/columns/Column.ts";
+import {BeforeInsert, BeforeUpdate} from "../../../../../src/index.ts";
+import {PostCounter} from "./PostCounter.ts";
 
 export class PostInformation {
 
-    @Column({nullable: true})
+    @Column({nullable: true, type: String})
     description?: string;
 
     @Column(type => PostCounter, {prefix: "counters"})

@@ -1,7 +1,7 @@
-import {Entity, JoinColumn, ManyToOne} from "../../../../../src";
-import {Column} from "../../../../../src";
-import {PrimaryGeneratedColumn} from "../../../../../src";
-import {Category} from "./Category";
+import {Entity, JoinColumn, ManyToOne} from "../../../../../src/index.ts";
+import {Column} from "../../../../../src/index.ts";
+import {PrimaryGeneratedColumn} from "../../../../../src/index.ts";
+import {Category} from "./Category.ts";
 
 @Entity()
 export class Album {
@@ -9,10 +9,10 @@ export class Album {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     name: string;
 
-    @Column()
+    @Column({ type: Number })
     categoryId: number;
 
     @ManyToOne(() => Category)

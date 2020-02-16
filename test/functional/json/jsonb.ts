@@ -1,8 +1,8 @@
-import "reflect-metadata";
-import {expect} from "chai";
-import {Record} from "./entity/Record";
-import {Connection} from "../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils";
+import {expect} from "../../deps/chai.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {Record} from "./entity/Record.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils.ts";
 
 describe("jsonb type", () => {
 
@@ -56,3 +56,5 @@ describe("jsonb type", () => {
         expect(foundRecord!.data).to.deep.include.members([1, "2", { a: 3 }]);
     })));
 });
+
+runIfMain(import.meta);

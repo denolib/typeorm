@@ -1,14 +1,14 @@
-import {Entity} from "../../../../../../src/decorator/entity/Entity";
-import {PrimaryColumn} from "../../../../../../src/decorator/columns/PrimaryColumn";
-import {Column} from "../../../../../../src/decorator/columns/Column";
+import {Entity} from "../../../../../../src/decorator/entity/Entity.ts";
+import {PrimaryColumn} from "../../../../../../src/decorator/columns/PrimaryColumn.ts";
+import {Column} from "../../../../../../src/decorator/columns/Column.ts";
 
 @Entity()
 export class Post {
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     id: number;
 
-    @Column()
+    @Column({ type: String })
     name: string;
 
     // -------------------------------------------------------------------------
@@ -65,7 +65,7 @@ export class Post {
     long: string;
 
     @Column("raw")
-    raw: Buffer;
+    raw: Uint8Array; /* Buffer; */
 
     // -------------------------------------------------------------------------
     // Date Types
@@ -91,7 +91,7 @@ export class Post {
     // -------------------------------------------------------------------------
 
     @Column("blob")
-    blob: Buffer;
+    blob: Uint8Array; /* Buffer; */
 
     @Column("clob")
     clob: string;

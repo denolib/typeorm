@@ -1,16 +1,18 @@
-import {expect} from "chai";
-import "reflect-metadata";
-import {Connection} from "../../../../src";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
-import {Post} from "./entity/Post";
-import {Question} from "./entity/Question";
+import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../../deps/mocha.ts";
+import {expect} from "../../../deps/chai.ts";
+import {Connection} from "../../../../src/index.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
+import {Post} from "./entity/Post.ts";
+import {Question} from "./entity/Question.ts";
 
 describe("uuid-mysql", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
-            entities: [__dirname + "/entity/*{.js,.ts}"],
+            entities: [joinPaths(__dirname, "/entity/*.ts")],
             enabledDrivers: ["sap"],
         });
     });
@@ -77,3 +79,5 @@ describe("uuid-mysql", () => {
     })));
 
 });
+
+runIfMain(import.meta);

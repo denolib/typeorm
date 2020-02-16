@@ -1,16 +1,20 @@
-import "reflect-metadata";
-import {PostWithOptions} from "./entity/PostWithOptions";
-import {Connection} from "../../../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils";
-import {PostWithoutTypes} from "./entity/PostWithoutTypes";
-import {Post} from "./entity/Post";
+import {join as joinPaths} from "../../../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../../../deps/mocha.ts";
+import "../../../../deps/chai.ts";
+import {PostWithOptions} from "./entity/PostWithOptions.ts";
+import {Connection} from "../../../../../src/connection/Connection.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils.ts";
+import {PostWithoutTypes} from "./entity/PostWithoutTypes.ts";
+import {Post} from "./entity/Post.ts";
 
 describe("database schema > column types > postgres", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
+    const encoder = new TextEncoder();
     before(async () => {
         connections = await createTestingConnections({
-            entities: [__dirname + "/entity/*{.js,.ts}"],
+            entities: [joinPaths(__dirname, "/entity/*.ts")],
             enabledDrivers: ["postgres"],
         });
     });
@@ -48,7 +52,8 @@ describe("database schema > column types > postgres", () => {
         post.text = "This is text";
         post.citext = "This is text";
         post.hstore = "name => Alice, surname => A, age => 30";
-        post.bytea = new Buffer("This is bytea");
+        // TODO(uki00a) not fully tested yet.
+        post.bytea = encoder.encode("This is bytea");/* new Buffer("This is bytea"); */
         post.date = "2017-06-21";
         post.interval = "1 year 2 months 3 days 4 hours 5 minutes 6 seconds";
         post.time = "15:30:00";
@@ -323,3 +328,5 @@ describe("database schema > column types > postgres", () => {
     })));
 
 });
+
+runIfMain(import.meta);

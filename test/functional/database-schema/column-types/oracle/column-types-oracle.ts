@@ -1,17 +1,21 @@
-import "reflect-metadata";
-import {Post} from "./entity/Post";
-import {Connection} from "../../../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils";
-import {PostWithOptions} from "./entity/PostWithOptions";
-import {PostWithoutTypes} from "./entity/PostWithoutTypes";
-import {DateUtils} from "../../../../../src/util/DateUtils";
+import {join as joinPaths} from "../../../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../../../deps/mocha.ts";
+import "../../../../deps/chai.ts";
+import {Post} from "./entity/Post.ts";
+import {Connection} from "../../../../../src/connection/Connection.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils.ts";
+import {PostWithOptions} from "./entity/PostWithOptions.ts";
+import {PostWithoutTypes} from "./entity/PostWithoutTypes.ts";
+import {DateUtils} from "../../../../../src/util/DateUtils.ts";
 
 describe("database schema > column types > oracle", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
+    const encoder = new TextEncoder();
     before(async () => {
         connections = await createTestingConnections({
-            entities: [__dirname + "/entity/*{.js,.ts}"],
+            entities: [joinPaths(__dirname, "/entity/*.ts")],
             enabledDrivers: ["oracle"],
         });
     });
@@ -43,7 +47,8 @@ describe("database schema > column types > oracle", () => {
         post.varchar2 = "This is varchar2";
         post.nvarchar2 = "This is nvarchar2";
         post.long = "This is long";
-        post.raw = new Buffer("This is raw");
+        // TODO(uki00a) not fully tested yet.
+        post.raw = encoder.encode("This is raw");/* new Buffer("This is raw"); */
         post.dateObj = new Date();
         post.date = "2017-06-21";
         post.timestamp = new Date();
@@ -52,7 +57,8 @@ describe("database schema > column types > oracle", () => {
         post.timestampWithTimeZone.setMilliseconds(0);
         post.timestampWithLocalTimeZone = new Date();
         post.timestampWithLocalTimeZone.setMilliseconds(0);
-        post.blob = new Buffer("This is blob");
+        // TODO(uki00a) not fully tested yet.
+        post.blob = encoder.encode("This is blob");/* new Buffer("This is blob"); */
         post.clob = "This is clob";
         post.nclob = "This is nclob";
         post.simpleArray = ["A", "B", "C"];
@@ -137,7 +143,7 @@ describe("database schema > column types > oracle", () => {
         post.nchar = "AAA";
         post.varchar2 = "This is varchar";
         post.nvarchar2 = "This is nvarchar";
-        post.raw = new Buffer("This is raw");
+        post.raw = encoder.encode("This is raw");/* new Buffer("This is raw"); */
         post.timestamp = new Date();
         post.timestampWithTimeZone = new Date();
         post.timestampWithLocalTimeZone = new Date();
@@ -204,7 +210,7 @@ describe("database schema > column types > oracle", () => {
         post.id = 1;
         post.name = "Post";
         post.boolean = true;
-        post.blob = new Buffer("This is blob");
+        post.blob = encoder.encode("This is blob");/* new Buffer("This is blob"); */
         post.datetime = new Date();
         await postRepository.save(post);
 
@@ -224,3 +230,5 @@ describe("database schema > column types > oracle", () => {
     })));
 
 });
+
+runIfMain(import.meta);

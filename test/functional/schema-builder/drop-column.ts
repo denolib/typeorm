@@ -1,15 +1,18 @@
-import "reflect-metadata";
-import {Connection} from "../../../src/connection/Connection";
-import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver";
-import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils";
-import {expect} from "chai";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+// TODO(uki00a) uncomment this when CockroachDriver is implemented.
+// import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections} from "../../utils/test-utils.ts";
 
 describe("schema builder > drop column", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
-            entities: [__dirname + "/entity/*{.js,.ts}"],
+            entities: [joinPaths(__dirname, "/entity/*.ts")],
             schemaCreate: true,
             dropSchema: true,
         });
@@ -44,7 +47,7 @@ describe("schema builder > drop column", () => {
         expect(studentTable!.findColumnByName("faculty")).to.be.undefined;
 
         // CockroachDB creates indices for foreign keys
-        if (connection.driver instanceof CockroachDriver) {
+        if (false/*connection.driver instanceof CockroachDriver*/) { // TODO(uki00a) uncomment this when CockroachDriver is implemented.
             studentTable!.indices.length.should.be.equal(1);
         } else {
             studentTable!.indices.length.should.be.equal(0);
@@ -53,3 +56,5 @@ describe("schema builder > drop column", () => {
 
     })));
 });
+
+runIfMain(import.meta);

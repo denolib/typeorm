@@ -1,11 +1,11 @@
-import {Column} from "../../../../../../src/decorator/columns/Column";
-import {ChildEntity} from "../../../../../../src/decorator/entity/ChildEntity";
-import {Employee} from "./Employee";
+import {Column} from "../../../../../../src/decorator/columns/Column.ts";
+import {ChildEntity} from "../../../../../../src/decorator/entity/ChildEntity.ts";
+import {Employee} from "./Employee.ts";
 
 @ChildEntity()
 export class Teacher extends Employee {
 
-    @Column()
+    @Column({ type: String })
     specialization: string;
 
 }

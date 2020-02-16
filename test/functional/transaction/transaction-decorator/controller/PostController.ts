@@ -1,12 +1,12 @@
-import {Repository} from "../../../../../src/repository/Repository";
-import {Transaction} from "../../../../../src/decorator/transaction/Transaction";
-import {TransactionManager} from "../../../../../src/decorator/transaction/TransactionManager";
-import {TransactionRepository} from "../../../../../src/decorator/transaction/TransactionRepository";
-import {EntityManager} from "../../../../../src/entity-manager/EntityManager";
+import {Repository} from "../../../../../src/repository/Repository.ts";
+import {Transaction} from "../../../../../src/decorator/transaction/Transaction.ts";
+import {TransactionManager} from "../../../../../src/decorator/transaction/TransactionManager.ts";
+// import {TransactionRepository} from "../../../../../src/decorator/transaction/TransactionRepository.ts";
+import {EntityManager} from "../../../../../src/entity-manager/EntityManager.ts";
 
-import {Post} from "../entity/Post";
-import {Category} from "../entity/Category";
-import {CategoryRepository} from "../repository/CategoryRepository";
+import {Post} from "../entity/Post.ts";
+import {Category} from "../entity/Category.ts";
+import {CategoryRepository} from "../repository/CategoryRepository.ts";
 
 export class PostController {
 
@@ -22,12 +22,13 @@ export class PostController {
         await entityManager.save(category);
     }
 
+    // TODO(uki00a) `@TransactionRepository` is not supported.
     @Transaction("mysql") // "mysql" is a connection name. you can not pass it if you are using default connection.
     async saveWithRepository(
         post: Post,
         category: Category,
-        @TransactionRepository(Post) postRepository: Repository<Post>,
-        @TransactionRepository() categoryRepository: CategoryRepository,
+        /*@TransactionRepository(Post)*/postRepository: Repository<Post>,
+        /*@TransactionRepository()*/categoryRepository: CategoryRepository,
     ) {
         await postRepository.save(post);
         await categoryRepository.save(category);

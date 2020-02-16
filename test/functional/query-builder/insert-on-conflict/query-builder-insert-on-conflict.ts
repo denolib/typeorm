@@ -1,13 +1,16 @@
-import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
-import {Connection} from "../../../../src/connection/Connection";
-import {Post} from "./entity/Post";
+import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../../deps/mocha.ts";
+import {expect} from "../../../deps/chai.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
+import {Connection} from "../../../../src/connection/Connection.ts";
+import {Post} from "./entity/Post.ts";
 
 describe("query builder > insertion > on conflict", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
         enabledDrivers: ["postgres", "sqlite"] // since on conflict statement is only supported in postgres and sqlite >= 3.24.0
     }));
     beforeEach(() => reloadTestingDatabases(connections));
@@ -36,7 +39,7 @@ describe("query builder > insertion > on conflict", () => {
             .onConflict(`("id") DO NOTHING`)
             .execute();
 
-        await connection.manager.findOne(Post, "post#1").should.eventually.be.eql({
+        expect(await connection.manager.findOne(Post, "post#1")).to.eql({
             id: "post#1",
             title: "About post"
         });
@@ -49,10 +52,12 @@ describe("query builder > insertion > on conflict", () => {
             .setParameter("title", post2.title)
             .execute();
 
-        await connection.manager.findOne(Post, "post#1").should.eventually.be.eql({
+        expect(await connection.manager.findOne(Post, "post#1")).to.eql({
             id: "post#1",
             title: "Again post"
         });
     })));
 
 });
+
+runIfMain(import.meta);

@@ -1,16 +1,20 @@
-import "reflect-metadata";
-import {Connection} from "../../../src/connection/Connection";
-import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver";
-import {UniqueMetadata} from "../../../src/metadata/UniqueMetadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {ForeignKeyMetadata} from "../../../src/metadata/ForeignKeyMetadata";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import "../../deps/chai.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+// TODO(uki00a) uncomment this when CockroachDriver is implemented.
+// import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver.ts";
+import {UniqueMetadata} from "../../../src/metadata/UniqueMetadata.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {ForeignKeyMetadata} from "../../../src/metadata/ForeignKeyMetadata.ts";
 
 describe("schema builder > create foreign key", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
-            entities: [__dirname + "/entity/*{.js,.ts}"],
+            entities: [joinPaths(__dirname, "/entity/*.ts")],
             schemaCreate: true,
             dropSchema: true,
         });
@@ -34,7 +38,7 @@ describe("schema builder > create foreign key", () => {
         categoryMetadata.foreignKeys.push(fkMetadata);
 
         // CockroachDB requires unique constraint for foreign key referenced columns
-        if (connection.driver instanceof CockroachDriver) {
+        if (false/*connection.driver instanceof CockroachDriver*/) { // TODO(uki00a) uncomment this when CockroachDriver is implemented.
             const uniqueConstraint = new UniqueMetadata({
                 entityMetadata: categoryMetadata,
                 columns: fkMetadata.columns,
@@ -58,3 +62,5 @@ describe("schema builder > create foreign key", () => {
     })));
 
 });
+
+runIfMain(import.meta);

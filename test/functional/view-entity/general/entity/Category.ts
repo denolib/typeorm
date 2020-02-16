@@ -1,6 +1,6 @@
-import {Entity} from "../../../../../src";
-import {Column} from "../../../../../src";
-import {PrimaryGeneratedColumn} from "../../../../../src";
+import {Entity} from "../../../../../src/index.ts";
+import {Column} from "../../../../../src/index.ts";
+import {PrimaryGeneratedColumn} from "../../../../../src/index.ts";
 
 @Entity()
 export class Category {
@@ -8,7 +8,7 @@ export class Category {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     name: string;
 
 }

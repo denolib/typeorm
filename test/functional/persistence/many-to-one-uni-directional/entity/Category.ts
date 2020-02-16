@@ -1,16 +1,16 @@
-import {PrimaryColumn} from "../../../../../src/decorator/columns/PrimaryColumn";
-import {Entity} from "../../../../../src/decorator/entity/Entity";
-import {Column} from "../../../../../src/decorator/columns/Column";
-import {ManyToOne} from "../../../../../src/decorator/relations/ManyToOne";
-import {Post} from "./Post";
+import {PrimaryColumn} from "../../../../../src/decorator/columns/PrimaryColumn.ts";
+import {Entity} from "../../../../../src/decorator/entity/Entity.ts";
+import {Column} from "../../../../../src/decorator/columns/Column.ts";
+import {ManyToOne} from "../../../../../src/decorator/relations/ManyToOne.ts";
+import {Post} from "./Post.ts";
 
 @Entity()
 export class Category {
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     id: number;
 
-    @Column()
+    @Column({ type: String })
     name: string;
 
     @ManyToOne(type => Post, {

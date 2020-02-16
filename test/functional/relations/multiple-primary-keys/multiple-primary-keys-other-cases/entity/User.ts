@@ -1,8 +1,8 @@
-import {Entity} from "../../../../../../src/decorator/entity/Entity";
-import {PrimaryGeneratedColumn} from "../../../../../../src/decorator/columns/PrimaryGeneratedColumn";
-import {OneToMany} from "../../../../../../src/decorator/relations/OneToMany";
-import {Column} from "../../../../../../src/decorator/columns/Column";
-import {EventMember} from "./EventMember";
+import {Entity} from "../../../../../../src/decorator/entity/Entity.ts";
+import {PrimaryGeneratedColumn} from "../../../../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
+import {OneToMany} from "../../../../../../src/decorator/relations/OneToMany.ts";
+import {Column} from "../../../../../../src/decorator/columns/Column.ts";
+import {EventMember} from "./EventMember.ts";
 
 @Entity()
 export class User {
@@ -10,7 +10,7 @@ export class User {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     name: string;
 
     @OneToMany(type => EventMember, member => member.user)

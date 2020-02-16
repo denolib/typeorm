@@ -1,16 +1,16 @@
-import {Entity} from "../../../../src/decorator/entity/Entity";
-import {Column} from "../../../../src/decorator/columns/Column";
-import {ManyToOne} from "../../../../src/decorator/relations/ManyToOne";
-import {PrimaryColumn} from "../../../../src/decorator/columns/PrimaryColumn";
-import {Company} from "./Company";
+import {Entity} from "../../../../src/decorator/entity/Entity.ts";
+import {Column} from "../../../../src/decorator/columns/Column.ts";
+import {ManyToOne} from "../../../../src/decorator/relations/ManyToOne.ts";
+import {PrimaryColumn} from "../../../../src/decorator/columns/PrimaryColumn.ts";
+import {Company} from "./Company.ts";
 
 @Entity()
 export class User {
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     id: number;
 
-    @Column()
+    @Column({ type: String })
     name: string;
 
     @ManyToOne(type => Company, company => company.id, {

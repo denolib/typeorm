@@ -1,14 +1,14 @@
-import {Entity} from "../../../../../src/decorator/entity/Entity";
-import {Column} from "../../../../../src/decorator/columns/Column";
-import {ContentModule} from "./ContentModule";
+import {Entity} from "../../../../../src/decorator/entity/Entity.ts";
+import {Column} from "../../../../../src/decorator/columns/Column.ts";
+import {ContentModule} from "./ContentModule.ts";
 
 @Entity()
 export class Post extends ContentModule {
 
-    @Column()
+    @Column({ type: String })
     title: string;
 
-    @Column()
+    @Column({ type: String })
     text: string;
 
 }

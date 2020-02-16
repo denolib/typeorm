@@ -1,10 +1,11 @@
-import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
-import {Connection} from "../../../../src/connection/Connection";
-import {Post} from "./entity/Post";
-import {Category} from "./entity/Category";
-import {expect} from "chai";
-import {Counters} from "./entity/Counters";
+import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
+import {Connection} from "../../../../src/connection/Connection.ts";
+import {Post} from "./entity/Post.ts";
+import {Category} from "./entity/Category.ts";
+import {expect} from "../../../deps/chai.ts";
+import {runIfMain} from "../../../deps/mocha.ts";
+import {Counters} from "./entity/Counters.ts";
 
 describe("persistence > partial persist", () => {
 
@@ -13,8 +14,9 @@ describe("persistence > partial persist", () => {
     // -------------------------------------------------------------------------
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
@@ -139,3 +141,5 @@ describe("persistence > partial persist", () => {
     })));
 
 });
+
+runIfMain(import.meta);

@@ -1,12 +1,15 @@
-import "reflect-metadata";
-import {createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
-import {Connection} from "../../../../src/connection/Connection";
+import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
+import {getDirnameOfCurrentModule, createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
+import {Connection} from "../../../../src/connection/Connection.ts";
+import "../../../deps/chai.ts";
+import {runIfMain} from "../../../deps/mocha.ts";
 
-describe("migrations > show command", () => {
+describe("migrations > show command", function() {
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        migrations: [__dirname + "/migration/*.js"],
-        enabledDrivers: ["postgres"],
+        migrations: [joinPaths(__dirname, "/migration/*.ts")],
+        enabledDrivers: ["sqlite", "postgres"],
         schemaCreate: true,
         dropSchema: true,
     }));
@@ -23,4 +26,6 @@ describe("migrations > show command", () => {
         const migrations = await connection.showMigrations();
         migrations.should.be.equal(false);
     })));
- });
+});
+
+runIfMain(import.meta);

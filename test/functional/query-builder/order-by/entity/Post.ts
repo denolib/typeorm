@@ -1,6 +1,6 @@
-import {Entity} from "../../../../../src/decorator/entity/Entity";
-import {PrimaryGeneratedColumn} from "../../../../../src/decorator/columns/PrimaryGeneratedColumn";
-import {Column} from "../../../../../src/decorator/columns/Column";
+import {Entity} from "../../../../../src/decorator/entity/Entity.ts";
+import {PrimaryGeneratedColumn} from "../../../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
+import {Column} from "../../../../../src/decorator/columns/Column.ts";
 
 @Entity({
     orderBy: {
@@ -12,13 +12,13 @@ export class Post {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: Number })
     myOrder: number;
 
-    @Column()
+    @Column({ type: Number })
     num1: number = 1;
 
-    @Column()
+    @Column({ type: Number })
     num2: number = 1;
 
 }

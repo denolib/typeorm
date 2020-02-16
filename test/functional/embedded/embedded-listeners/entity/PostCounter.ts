@@ -1,18 +1,18 @@
-import {Column} from "../../../../../src/decorator/columns/Column";
-import {BeforeInsert} from "../../../../../src/decorator/listeners/BeforeInsert";
-import {BeforeUpdate} from "../../../../../src/decorator/listeners/BeforeUpdate";
-import {Index} from "../../../../../src/decorator/Index";
+import {Column} from "../../../../../src/decorator/columns/Column.ts";
+import {BeforeInsert} from "../../../../../src/decorator/listeners/BeforeInsert.ts";
+import {BeforeUpdate} from "../../../../../src/decorator/listeners/BeforeUpdate.ts";
+import {Index} from "../../../../../src/decorator/Index.ts";
 
 @Index(["likes", "favorites"])
 export class PostCounter {
 
-    @Column()
+    @Column({ type: Number })
     likes: number;
 
-    @Column()
+    @Column({ type: Number })
     favorites: number;
 
-    @Column()
+    @Column({ type: Number })
     comments: number;
 
     @BeforeInsert()

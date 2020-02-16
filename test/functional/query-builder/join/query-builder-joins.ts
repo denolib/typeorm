@@ -1,19 +1,22 @@
-import "reflect-metadata";
-import {expect} from "chai";
-import {CockroachDriver} from "../../../../src/driver/cockroachdb/CockroachDriver";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
-import {Connection} from "../../../../src/connection/Connection";
-import {Tag} from "./entity/Tag";
-import {Post} from "./entity/Post";
-import {Category} from "./entity/Category";
-import {Image} from "./entity/Image";
-import {User} from "./entity/User";
+import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../../deps/mocha.ts";
+import {expect} from "../../../deps/chai.ts";
+// TODO(uki00a) uncomment this when CockroachDriver is implemented.
+// import {CockroachDriver} from "../../../../src/driver/cockroachdb/CockroachDriver.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
+import {Connection} from "../../../../src/connection/Connection.ts";
+import {Tag} from "./entity/Tag.ts";
+import {Post} from "./entity/Post.ts";
+import {Category} from "./entity/Category.ts";
+import {Image} from "./entity/Image.ts";
+import {User} from "./entity/User.ts";
 
 describe("query builder > joins", () => {
-    
+
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
@@ -178,7 +181,7 @@ describe("query builder > joins", () => {
                 .where("post.id = :id", { id: post.id })
                 .getRawOne();
 
-            if (connection.driver instanceof CockroachDriver) {
+            if (false/* connection.driver instanceof CockroachDriver */) { // TODO(uki00a) uncomment this when CockroachDriver is implemented.
                 expect(loadedRawPost!["categories_id"]).to.be.equal("1");
 
             } else {
@@ -830,3 +833,5 @@ describe("query builder > joins", () => {
     });
 
 });
+
+runIfMain(import.meta);

@@ -1,7 +1,7 @@
-import {Entity} from "../../../../../../src/decorator/entity/Entity";
-import {PrimaryColumn} from "../../../../../../src/decorator/columns/PrimaryColumn";
-import {Column} from "../../../../../../src/decorator/columns/Column";
-import {FruitEnum} from "../enum/FruitEnum";
+import {Entity} from "../../../../../../src/decorator/entity/Entity.ts";
+import {PrimaryColumn} from "../../../../../../src/decorator/columns/PrimaryColumn.ts";
+import {Column} from "../../../../../../src/decorator/columns/Column.ts";
+import {FruitEnum} from "../enum/FruitEnum.ts";
 
 @Entity()
 export class Post {
@@ -10,11 +10,11 @@ export class Post {
     // Numeric Types
     // -------------------------------------------------------------------------
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     id: number;
 
     @Column("bit")
-    bit: Buffer;
+    bit: Uint8Array; /* Buffer; */
 
     @Column("int")
     int: number;
@@ -106,26 +106,26 @@ export class Post {
     // Binary Types
     // -------------------------------------------------------------------------
     @Column("binary")
-    binary: Buffer;
+    binary: Uint8Array; /* Buffer; */
 
     @Column("varbinary")
-    varbinary: Buffer;
+    varbinary: Uint8Array; /* Buffer; */
 
     // -------------------------------------------------------------------------
     // LOB Types
     // -------------------------------------------------------------------------
 
     @Column("blob")
-    blob: Buffer;
+    blob: Uint8Array; /* Buffer; */
 
     @Column("tinyblob")
-    tinyblob: Buffer;
+    tinyblob: Uint8Array; /* Buffer; */
 
     @Column("mediumblob")
-    mediumblob: Buffer;
+    mediumblob: Uint8Array; /* Buffer; */
 
     @Column("longblob")
-    longblob: Buffer;
+    longblob: Uint8Array; /* Buffer; */
 
     // -------------------------------------------------------------------------
     // Date Types

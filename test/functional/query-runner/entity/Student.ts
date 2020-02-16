@@ -1,10 +1,10 @@
-import {Entity} from "../../../../src/decorator/entity/Entity";
-import {Column} from "../../../../src/decorator/columns/Column";
-import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryGeneratedColumn";
-import {Faculty} from "./Faculty";
-import {ManyToOne} from "../../../../src/decorator/relations/ManyToOne";
-import {Teacher} from "./Teacher";
-import {Index} from "../../../../src/decorator/Index";
+import {Entity} from "../../../../src/decorator/entity/Entity.ts";
+import {Column} from "../../../../src/decorator/columns/Column.ts";
+import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
+import {Faculty} from "./Faculty.ts";
+import {ManyToOne} from "../../../../src/decorator/relations/ManyToOne.ts";
+import {Teacher} from "./Teacher.ts";
+import {Index} from "../../../../src/decorator/Index.ts";
 
 @Entity()
 @Index("student_name_index", ["name"])
@@ -13,7 +13,7 @@ export class Student {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     name: string;
 
     @ManyToOne(type => Faculty)

@@ -1,13 +1,16 @@
-import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils";
-import {Connection} from "../../../../../src/connection/Connection";
+import {runIfMain} from "../../../../deps/mocha.ts";
+import {expect} from "../../../../deps/chai.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils.ts";
+import {Connection} from "../../../../../src/connection/Connection.ts";
 import {
     Post,
-} from "./entity/Post";
+} from "./entity/Post.ts";
 import {
     Category,
-} from "./entity/Category";
-import {EntitySchema} from "../../../../../src";
+} from "./entity/Category.ts";
+import {EntitySchema} from "../../../../../src/index.ts";
+import UserSchemaJSON from "./schema/user.json";
+import ProfileSchemaJSON from "./schema/profile.json";
 
 /**
  * Because lazy relations are overriding prototype is impossible to run these tests on multiple connections.
@@ -16,10 +19,8 @@ import {EntitySchema} from "../../../../../src";
 describe("basic-lazy-relations", () => {
 
     let UserSchema: any, ProfileSchema: any;
-    const appRoot = require("app-root-path");
-    const resourceDir = appRoot + "/test/functional/relations/lazy-relations/basic-lazy-relation/";
-    UserSchema = new EntitySchema<any>(require(resourceDir + "schema/user.json"));
-    ProfileSchema = new EntitySchema<any>(require(resourceDir + "schema/profile.json"));
+    UserSchema = new EntitySchema<any>(UserSchemaJSON as any);
+    ProfileSchema = new EntitySchema<any>(ProfileSchemaJSON as any);
 
     let connections: Connection[];
     before(async () => connections = await createTestingConnections({
@@ -58,7 +59,7 @@ describe("basic-lazy-relations", () => {
 
         await postRepository.save(savedPost);
 
-        await savedPost.categories.should.eventually.be.eql([savedCategory1, savedCategory2, savedCategory3]);
+        expect(await savedPost.categories).to.eql([savedCategory1, savedCategory2, savedCategory3]);
 
         const post = (await postRepository.findOne(1))!;
         post.title.should.be.equal("Hello post");
@@ -96,7 +97,7 @@ describe("basic-lazy-relations", () => {
 
         await postRepository.save(savedPost);
 
-        await savedPost.twoSideCategories.should.eventually.be.eql([savedCategory1, savedCategory2, savedCategory3]);
+        expect(await savedPost.twoSideCategories).to.eql([savedCategory1, savedCategory2, savedCategory3]);
 
         const post = (await postRepository.findOne(1))!;
         post.title.should.be.equal("Hello post");
@@ -331,7 +332,7 @@ describe("basic-lazy-relations", () => {
             const category = new Category();
             category.name = "category of great post";
             await manager.save(category);
-    
+
             const post = new Post();
             post.title = "post with great category";
             post.text = "post with great category and great text";
@@ -349,7 +350,7 @@ describe("basic-lazy-relations", () => {
             const category = new Category();
             category.name = "category of great post";
             await manager.save(category);
-    
+
             const post = new Post();
             post.title = "post with great category";
             post.text = "post with great category and great text";
@@ -362,3 +363,5 @@ describe("basic-lazy-relations", () => {
         loadedPost.title.should.be.equal("post with great category");
     })));
 });
+
+runIfMain(import.meta);

@@ -1,15 +1,15 @@
-import {Entity} from "../../../../../../src/decorator/entity/Entity";
-import {PrimaryColumn} from "../../../../../../src/decorator/columns/PrimaryColumn";
-import {Column} from "../../../../../../src/decorator/columns/Column";
-import {FruitEnum} from "../enum/FruitEnum";
+import {Entity} from "../../../../../../src/decorator/entity/Entity.ts";
+import {PrimaryColumn} from "../../../../../../src/decorator/columns/PrimaryColumn.ts";
+import {Column} from "../../../../../../src/decorator/columns/Column.ts";
+import {FruitEnum} from "../enum/FruitEnum.ts";
 
 @Entity()
 export class Post {
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     id: number;
 
-    @Column()
+    @Column({ type: String })
     name: string;
 
     // -------------------------------------------------------------------------
@@ -78,16 +78,16 @@ export class Post {
     ntext: string;
 
     @Column("binary")
-    binary: Buffer;
+    binary: Uint8Array;/* Buffer; */
 
     @Column("varbinary")
-    varbinary: Buffer;
+    varbinary: Uint8Array; /* Buffer; */
 
     @Column("image")
-    image: Buffer;
+    image: Uint8Array; /* Buffer; */
 
     @Column("rowversion")
-    rowversion: Buffer;
+    rowversion: Uint8Array; /* Buffer; */
 
     // -------------------------------------------------------------------------
     // Date Types

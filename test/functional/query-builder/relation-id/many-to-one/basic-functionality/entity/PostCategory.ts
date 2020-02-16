@@ -1,8 +1,8 @@
-import {Entity} from "../../../../../../../src/decorator/entity/Entity";
-import {ManyToOne} from "../../../../../../../src/decorator/relations/ManyToOne";
-import {Post} from "./Post";
-import {Category} from "./Category";
-import {Image} from "./Image";
+import {Entity} from "../../../../../../../src/decorator/entity/Entity.ts";
+import {ManyToOne} from "../../../../../../../src/decorator/relations/ManyToOne.ts";
+import {Post} from "./Post.ts";
+import {Category} from "./Category.ts";
+import {Image} from "./Image.ts";
 
 @Entity()
 export class PostCategory {

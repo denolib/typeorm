@@ -1,7 +1,7 @@
-import { Column, ValueTransformer, Entity, PrimaryGeneratedColumn } from "../../../../../src";
-import { lowercase, encrypt } from "./User";
+import { Column, ValueTransformer, Entity, PrimaryGeneratedColumn } from "../../../../../src/index.ts";
+import { lowercase, encrypt } from "./User.ts";
 
-const trim: ValueTransformer = {    
+const trim: ValueTransformer = {
     to: (entityValue: string) => {
         return entityValue.trim();
     },
@@ -15,6 +15,6 @@ export class Category {
     @PrimaryGeneratedColumn("uuid")
     id: string;
 
-    @Column({transformer: [lowercase, trim, encrypt]})
+    @Column({type: String, transformer: [lowercase, trim, encrypt]})
     description: string;
 }

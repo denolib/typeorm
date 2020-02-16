@@ -1,18 +1,22 @@
-import "reflect-metadata";
-import {Post} from "./entity/Post";
-import {Connection} from "../../../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils";
-import {PostWithOptions} from "./entity/PostWithOptions";
-import {PostWithoutTypes} from "./entity/PostWithoutTypes";
-import {DateUtils} from "../../../../../src/util/DateUtils";
-import {FruitEnum} from "./enum/FruitEnum";
+import {join as joinPaths} from "../../../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../../../deps/mocha.ts";
+import "../../../../deps/chai.ts";
+import {Post} from "./entity/Post.ts";
+import {Connection} from "../../../../../src/connection/Connection.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils.ts";
+import {PostWithOptions} from "./entity/PostWithOptions.ts";
+import {PostWithoutTypes} from "./entity/PostWithoutTypes.ts";
+import {DateUtils} from "../../../../../src/util/DateUtils.ts";
+import {FruitEnum} from "./enum/FruitEnum.ts";
 
 describe("database schema > column types > mssql", () => { // https://github.com/tediousjs/tedious/issues/722
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
+    const encoder = new TextEncoder();
     before(async () => {
         connections = await createTestingConnections({
-            entities: [__dirname + "/entity/*{.js,.ts}"],
+            entities: [joinPaths(__dirname, "/entity/*.ts")],
             enabledDrivers: ["mssql"],
         });
     });
@@ -48,9 +52,10 @@ describe("database schema > column types > mssql", () => { // https://github.com
         post.nchar = "A";
         post.nvarchar = "This is nvarchar";
         post.ntext = "This is ntext";
-        post.binary = new Buffer("A");
-        post.varbinary = new Buffer("B");
-        post.image = new Buffer("This is image");
+        // TODO(uki00a) not fully tested yet.
+        post.binary = encoder.encode("A");/* new Buffer("A"); */
+        post.varbinary = encoder.encode("B");/* new Buffer("B"); */
+        post.image = encoder.encode("This is image");/* new Buffer("This is image"); */
         post.dateObj = new Date();
         post.date = "2017-06-21";
         post.datetime = new Date();
@@ -182,8 +187,9 @@ describe("database schema > column types > mssql", () => { // https://github.com
         post.varchar = "This is varchar";
         post.nchar = "AAA";
         post.nvarchar = "This is nvarchar";
-        post.binary = new Buffer("AAAAA");
-        post.varbinary = new Buffer("BBBBB");
+        // TODO(uki00a) not fully tested yet.
+        post.binary = encoder.encode("AAAAA");/*new Buffer("AAAAA");*/
+        post.varbinary = encoder.encode("BBBBB");/*new Buffer("BBBBB");*/
         post.datetime2 = new Date();
         post.time = new Date();
         post.datetimeoffset = new Date();
@@ -252,7 +258,7 @@ describe("database schema > column types > mssql", () => { // https://github.com
         post.id = 1;
         post.name = "Post";
         post.bit = true;
-        post.binary = new Buffer("A");
+        post.binary = encoder.encode("A");/* new Buffer("A"); */
         post.datetime = new Date();
         post.datetime.setMilliseconds(0); // set milliseconds to zero because the SQL Server datetime type only has a 1/300 ms (~3.33̅ ms) resolution
         await postRepository.save(post);
@@ -273,3 +279,5 @@ describe("database schema > column types > mssql", () => { // https://github.com
     })));
 
 });
+
+runIfMain(import.meta);

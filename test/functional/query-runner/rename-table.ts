@@ -1,20 +1,25 @@
-import "reflect-metadata";
-import {Connection} from "../../../src/connection/Connection";
-import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver";
-import {SapDriver} from "../../../src/driver/sap/SapDriver";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {SqlServerDriver} from "../../../src/driver/sqlserver/SqlServerDriver";
-import {Table} from "../../../src/schema-builder/table/Table";
-import {AbstractSqliteDriver} from "../../../src/driver/sqlite-abstract/AbstractSqliteDriver";
-import {PostgresDriver} from "../../../src/driver/postgres/PostgresDriver";
-import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import "../../deps/chai.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+// TODO(uki00a) uncomment this when CockroachDriver is implemented.
+// import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver.ts";
+import {SapDriver} from "../../../src/driver/sap/SapDriver.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {SqlServerDriver} from "../../../src/driver/sqlserver/SqlServerDriver.ts";
+import {Table} from "../../../src/schema-builder/table/Table.ts";
+import {AbstractSqliteDriver} from "../../../src/driver/sqlite-abstract/AbstractSqliteDriver.ts";
+// TODO(uki00a) uncomment this when PostgresDriver is implemented.
+// import {PostgresDriver} from "../../../src/driver/postgres/PostgresDriver.ts";
+import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver.ts";
 
 describe("query runner > rename table", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
-            entities: [__dirname + "/entity/*{.js,.ts}"],
+            entities: [joinPaths(__dirname, "/entity/*.ts")],
             schemaCreate: true,
             dropSchema: true,
         });
@@ -25,7 +30,7 @@ describe("query runner > rename table", () => {
     it("should correctly rename table and revert rename", () => Promise.all(connections.map(async connection => {
 
         // CockroachDB does not support renaming constraints and removing PK.
-        if (connection.driver instanceof CockroachDriver)
+        if (false/* connection.driver instanceof CockroachDriver */) // TODO(uki00a) uncomment this when CockroachDriver is implemented.
             return;
 
         const queryRunner = connection.createQueryRunner();
@@ -51,7 +56,7 @@ describe("query runner > rename table", () => {
     it("should correctly rename table with all constraints depend to that table and revert rename", () => Promise.all(connections.map(async connection => {
 
         // CockroachDB does not support renaming constraints and removing PK.
-        if (connection.driver instanceof CockroachDriver)
+        if (false/* connection.driver instanceof CockroachDriver */) // TODO(uki00a) uncomment this when CockroachDriver is implemented.
             return;
 
         const queryRunner = connection.createQueryRunner();
@@ -85,7 +90,7 @@ describe("query runner > rename table", () => {
     it("should correctly rename table with custom schema and database and all its dependencies and revert rename", () => Promise.all(connections.map(async connection => {
 
         // CockroachDB does not support renaming constraints and removing PK.
-        if (connection.driver instanceof CockroachDriver)
+        if (false/* connection.driver instanceof CockroachDriver */) // TODO(uki00a) uncomment this when CockroachDriver is implemented.
             return;
 
         const queryRunner = connection.createQueryRunner();
@@ -105,7 +110,7 @@ describe("query runner > rename table", () => {
             await queryRunner.createDatabase("testDB", true);
             await queryRunner.createSchema("testDB.testSchema", true);
 
-        } else if (connection.driver instanceof PostgresDriver || connection.driver instanceof SapDriver) {
+        } else if (false/* connection.driver instanceof PostgresDriver*/ || connection.driver instanceof SapDriver) { // TODO(uki00a) uncomment this when PostgresDriver is implemented.
             questionTableName = "testSchema.question";
             renamedQuestionTableName = "testSchema.renamedQuestion";
             categoryTableName = "testSchema.category";
@@ -188,3 +193,5 @@ describe("query runner > rename table", () => {
     })));
 
 });
+
+runIfMain(import.meta);

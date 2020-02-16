@@ -1,8 +1,9 @@
-import "reflect-metadata";
-import {Post} from "./entity/Post";
-import {ContentModule} from "./entity/ContentModule";
-import {Unit} from "./entity/Unit";
-import {MetadataUtils} from "../../../../src/metadata-builder/MetadataUtils";
+import {Post} from "./entity/Post.ts";
+import {ContentModule} from "./entity/ContentModule.ts";
+import {Unit} from "./entity/Unit.ts";
+import {MetadataUtils} from "../../../../src/metadata-builder/MetadataUtils.ts";
+import "../../../deps/chai.ts";
+import {runIfMain} from "../../../deps/mocha.ts";
 
 describe("metadata builder > MetadataArgsUtils", () => {
 
@@ -83,3 +84,5 @@ describe("metadata builder > MetadataArgsUtils", () => {
     });
 
 });
+
+runIfMain(import.meta);

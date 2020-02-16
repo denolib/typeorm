@@ -1,14 +1,15 @@
-import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
-import {Connection} from "../../../../src/connection/Connection";
-import {PersonSchema} from "./entity/Person";
-import {MysqlDriver} from "../../../../src/driver/mysql/MysqlDriver";
+import {runIfMain} from "../../../deps/mocha.ts";
+import "../../../deps/chai.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
+import {Connection} from "../../../../src/connection/Connection.ts";
+import {PersonSchema} from "./entity/Person.ts";
+import {MysqlDriver} from "../../../../src/driver/mysql/MysqlDriver.ts";
 
 describe("entity-schema > checks", () => {
 
     let connections: Connection[];
     before(async () => connections = await createTestingConnections({
-        entities: [<any>PersonSchema],
+        entities: [PersonSchema as any],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
@@ -27,3 +28,5 @@ describe("entity-schema > checks", () => {
     })));
 
 });
+
+runIfMain(import.meta);

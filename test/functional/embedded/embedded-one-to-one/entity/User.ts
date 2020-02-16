@@ -1,16 +1,16 @@
-import {Column} from "../../../../../src/decorator/columns/Column";
-import {PrimaryColumn} from "../../../../../src/decorator/columns/PrimaryColumn";
-import {Entity} from "../../../../../src/decorator/entity/Entity";
-import {Post} from "./Post";
-import {OneToOne} from "../../../../../src/decorator/relations/OneToOne";
+import {Column} from "../../../../../src/decorator/columns/Column.ts";
+import {PrimaryColumn} from "../../../../../src/decorator/columns/PrimaryColumn.ts";
+import {Entity} from "../../../../../src/decorator/entity/Entity.ts";
+import {Post} from "./Post.ts";
+import {OneToOne} from "../../../../../src/decorator/relations/OneToOne.ts";
 
 @Entity()
 export class User {
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     id: number;
 
-    @Column()
+    @Column({ type: String })
     name: string;
 
     @OneToOne(() => Post, post => post.counters.likedUser)

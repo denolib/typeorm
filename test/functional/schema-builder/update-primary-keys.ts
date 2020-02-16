@@ -1,17 +1,21 @@
-import "reflect-metadata";
-import {Connection} from "../../../src/connection/Connection";
-import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver";
-import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils";
-import {Category} from "./entity/Category";
-import {Question} from "./entity/Question";
-import {AbstractSqliteDriver} from "../../../src/driver/sqlite-abstract/AbstractSqliteDriver";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import "../../deps/chai.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+// TODO(uki00a) uncomment this when CockroachDriver is implemented.
+// import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections} from "../../utils/test-utils.ts";
+import {Category} from "./entity/Category.ts";
+import {Question} from "./entity/Question.ts";
+import {AbstractSqliteDriver} from "../../../src/driver/sqlite-abstract/AbstractSqliteDriver.ts";
 
 describe("schema builder > update primary keys", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
-            entities: [__dirname + "/entity/*{.js,.ts}"],
+            entities: [joinPaths(__dirname, "/entity/*.ts")],
             schemaCreate: true,
             dropSchema: true,
         });
@@ -21,7 +25,7 @@ describe("schema builder > update primary keys", () => {
     it("should correctly update composite primary keys", () => Promise.all(connections.map(async connection => {
 
         // CockroachDB does not support changing primary key constraint
-        if (connection.driver instanceof CockroachDriver)
+        if (false/*connection.driver instanceof CockroachDriver*/) // TODO(uki00a) uncomment this when CockroachDriver is implemented.
             return;
 
         const metadata = connection.getMetadata(Category);
@@ -44,7 +48,7 @@ describe("schema builder > update primary keys", () => {
             return;
 
         // CockroachDB does not support changing primary key constraint
-        if (connection.driver instanceof CockroachDriver)
+        if (false/*connection.driver instanceof CockroachDriver*/) // TODO(uki00a) uncomment this when CockroachDriver is implemented.
             return;
 
         const metadata = connection.getMetadata(Question);
@@ -62,3 +66,5 @@ describe("schema builder > update primary keys", () => {
     })));
 
 });
+
+runIfMain(import.meta);

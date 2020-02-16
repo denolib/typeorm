@@ -1,9 +1,9 @@
-import {Entity} from "../../../../../src/decorator/entity/Entity";
-import {PrimaryGeneratedColumn} from "../../../../../src/decorator/columns/PrimaryGeneratedColumn";
-import {Column} from "../../../../../src/decorator/columns/Column";
-import {CreateDateColumn} from "../../../../../src/decorator/columns/CreateDateColumn";
-import {UpdateDateColumn} from "../../../../../src/decorator/columns/UpdateDateColumn";
-import {VersionColumn} from "../../../../../src/decorator/columns/VersionColumn";
+import {Entity} from "../../../../../src/decorator/entity/Entity.ts";
+import {PrimaryGeneratedColumn} from "../../../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
+import {Column} from "../../../../../src/decorator/columns/Column.ts";
+import {CreateDateColumn} from "../../../../../src/decorator/columns/CreateDateColumn.ts";
+import {UpdateDateColumn} from "../../../../../src/decorator/columns/UpdateDateColumn.ts";
+import {VersionColumn} from "../../../../../src/decorator/columns/VersionColumn.ts";
 
 @Entity()
 export class Post {
@@ -11,16 +11,16 @@ export class Post {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     title: string;
 
-    @CreateDateColumn()
+    @CreateDateColumn({ type: String })
     createDate: string;
 
-    @UpdateDateColumn()
+    @UpdateDateColumn({ type: String })
     updateDate: string;
 
-    @Column({ default: 100 })
+    @Column({ default: 100, type: Number })
     order: number;
 
     @VersionColumn()

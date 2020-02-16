@@ -1,13 +1,13 @@
-import {Column} from "../../../../../src/decorator/columns/Column";
-import {ManyToOne} from "../../../../../src/decorator/relations/ManyToOne";
-import {User} from "./User";
+import {Column} from "../../../../../src/decorator/columns/Column.ts";
+import {ManyToOne} from "../../../../../src/decorator/relations/ManyToOne.ts";
+import {User} from "./User.ts";
 
 export class Counters {
 
-    @Column()
+    @Column({ type: Number })
     stars: number;
 
-    @Column()
+    @Column({ type: Number })
     commentCount: number;
 
     @ManyToOne(type => User)

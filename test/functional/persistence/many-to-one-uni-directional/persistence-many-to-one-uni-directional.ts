@@ -1,16 +1,18 @@
-import "reflect-metadata";
-import {Connection} from "../../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
-import {Post} from "./entity/Post";
-import {Category} from "./entity/Category";
-import {expect} from "chai";
+import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
+import {Connection} from "../../../../src/connection/Connection.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
+import {Post} from "./entity/Post.ts";
+import {Category} from "./entity/Category.ts";
+import {expect} from "../../../deps/chai.ts";
+import {runIfMain} from "../../../deps/mocha.ts";
 
 describe("persistence > many-to-one uni-directional relation", function() {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
-            entities: [__dirname + "/entity/*{.js,.ts}"],
+            entities: [joinPaths(__dirname, "/entity/*.ts")],
         });
     });
     beforeEach(() => reloadTestingDatabases(connections));
@@ -167,3 +169,5 @@ describe("persistence > many-to-one uni-directional relation", function() {
     })));
 
 });
+
+runIfMain(import.meta);

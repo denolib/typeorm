@@ -1,18 +1,21 @@
-import "reflect-metadata";
-import { expect } from "chai";
-import { Connection } from "../../../../src/connection/Connection";
+import { join as joinPaths } from "../../../../vendor/https/deno.land/std/path/mod.ts";
+import { runIfMain } from "../../../deps/mocha.ts";
+import { expect } from "../../../deps/chai.ts";
+import { Connection } from "../../../../src/connection/Connection.ts";
 import {
+    getDirnameOfCurrentModule,
     closeTestingConnections,
     createTestingConnections,
     reloadTestingDatabases
-} from "../../../utils/test-utils";
-import { Post } from "./entity/Post";
+} from "../../../utils/test-utils.ts";
+import { Post } from "./entity/Post.ts";
 
 describe("cube-postgres", () => {
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     let connections: Connection[];
     before(async () => {
         connections = await createTestingConnections({
-            entities: [__dirname + "/entity/*{.js,.ts}"],
+            entities: [joinPaths(__dirname, "/entity/*.ts")],
             enabledDrivers: ["postgres"]
         });
     });
@@ -161,3 +164,5 @@ describe("cube-postgres", () => {
             })
         ));
 });
+
+runIfMain(import.meta);

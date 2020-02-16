@@ -1,7 +1,7 @@
-import {AbstractRepository} from "../../../../../src/repository/AbstractRepository";
-import {Post} from "../entity/Post";
-import {EntityManager} from "../../../../../src/entity-manager/EntityManager";
-import {EntityRepository} from "../../../../../src/decorator/EntityRepository";
+import {AbstractRepository} from "../../../../../src/repository/AbstractRepository.ts";
+import {Post} from "../entity/Post.ts";
+import {EntityManager} from "../../../../../src/entity-manager/EntityManager.ts";
+import {EntityRepository} from "../../../../../src/decorator/EntityRepository.ts";
 
 @EntityRepository()
 export class PostRepository extends AbstractRepository<Post> {

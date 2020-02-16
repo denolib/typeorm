@@ -1,22 +1,22 @@
-import {Column} from "../../../../../../../src/decorator/columns/Column";
-import {PrimaryColumn} from "../../../../../../../src/decorator/columns/PrimaryColumn";
-import {OneToOne} from "../../../../../../../src/decorator/relations/OneToOne";
-import {JoinColumn} from "../../../../../../../src/decorator/relations/JoinColumn";
-import {Category} from "./Category";
-import {Subcounters} from "./Subcounters";
+import {Column} from "../../../../../../../src/decorator/columns/Column.ts";
+import {PrimaryColumn} from "../../../../../../../src/decorator/columns/PrimaryColumn.ts";
+import {OneToOne} from "../../../../../../../src/decorator/relations/OneToOne.ts";
+import {JoinColumn} from "../../../../../../../src/decorator/relations/JoinColumn.ts";
+import {Category} from "./Category.ts";
+import {Subcounters} from "./Subcounters.ts";
 
 export class Counters {
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     code: number;
 
-    @Column()
+    @Column({ type: Number })
     likes: number;
 
-    @Column()
+    @Column({ type: Number })
     comments: number;
 
-    @Column()
+    @Column({ type: Number })
     favorites: number;
 
     @OneToOne(type => Category)

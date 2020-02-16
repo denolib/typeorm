@@ -1,14 +1,14 @@
-import {Entity} from "../../../../../../src";
-import {PrimaryColumn} from "../../../../../../src";
-import {Column} from "../../../../../../src";
+import {Entity} from "../../../../../../src/index.ts";
+import {PrimaryColumn} from "../../../../../../src/index.ts";
+import {Column} from "../../../../../../src/index.ts";
 
 @Entity()
 export class Post {
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     id: number;
 
-    @Column()
+    @Column({ type: String })
     name: string;
 
     // -------------------------------------------------------------------------
@@ -90,13 +90,13 @@ export class Post {
     // -------------------------------------------------------------------------
 
     @Column("bytes")
-    bytes: Buffer;
+    bytes: Uint8Array;/* Buffer; */
 
     @Column("bytea")
-    bytea: Buffer;
+    bytea: Uint8Array;/* Buffer; */
 
     @Column("blob")
-    blob: Buffer;
+    blob: Uint8Array;/* Buffer; */
 
     // -------------------------------------------------------------------------
     // Date/Time Types

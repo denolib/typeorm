@@ -1,8 +1,8 @@
-import {Entity} from "../../../../../src/decorator/entity/Entity";
-import {PrimaryGeneratedColumn} from "../../../../../src/decorator/columns/PrimaryGeneratedColumn";
-import {Column} from "../../../../../src/decorator/columns/Column";
-import {PostInformation} from "./PostInformation";
-import {Index} from "../../../../../src/decorator/Index";
+import {Entity} from "../../../../../src/decorator/entity/Entity.ts";
+import {PrimaryGeneratedColumn} from "../../../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
+import {Column} from "../../../../../src/decorator/columns/Column.ts";
+import {PostInformation} from "./PostInformation.ts";
+import {Index} from "../../../../../src/decorator/Index.ts";
 
 @Entity()
 export class Post {
@@ -10,11 +10,11 @@ export class Post {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     @Index()
     title: string;
 
-    @Column()
+    @Column({ type: String })
     text: string;
 
     @Column(type => PostInformation, { prefix: "info" })

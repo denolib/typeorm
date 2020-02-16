@@ -1,9 +1,9 @@
-import {Entity} from "../../../../../../src/decorator/entity/Entity";
-import {PrimaryGeneratedColumn} from "../../../../../../src/decorator/columns/PrimaryGeneratedColumn";
-import {ManyToOne} from "../../../../../../src/decorator/relations/ManyToOne";
-import {Photo} from "./Photo";
-import {User} from "./User";
-import {Question} from "./Question";
+import {Entity} from "../../../../../../src/decorator/entity/Entity.ts";
+import {PrimaryGeneratedColumn} from "../../../../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
+import {ManyToOne} from "../../../../../../src/decorator/relations/ManyToOne.ts";
+import {Photo} from "./Photo.ts";
+import {User} from "./User.ts";
+import {Question} from "./Question.ts";
 
 @Entity()
 export class Answer {

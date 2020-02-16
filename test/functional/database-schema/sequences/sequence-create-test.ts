@@ -1,9 +1,9 @@
-import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
-import {Connection} from "../../../../src/connection/Connection";
-import {expect} from "chai";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
+import {Connection} from "../../../../src/connection/Connection.ts";
+import {expect} from "../../../deps/chai.ts";
+import {runIfMain} from "../../../deps/mocha.ts";
 
-import {Person} from "./entity/Person";
+import {Person} from "./entity/Person.ts";
 
 describe("sequences > creating a sequence and marking the column as generated", () => {
 
@@ -26,7 +26,9 @@ describe("sequences > creating a sequence and marking the column as generated", 
             expect(table!.findColumnByName("Id")!.isGenerated).to.be.true;
 
         })));
-            
+
     });
 
 });
+
+runIfMain(import.meta);

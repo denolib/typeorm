@@ -1,21 +1,23 @@
-import "reflect-metadata";
-import {expect} from "chai";
+import {join as joinPaths} from "../../../../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../../../../deps/mocha.ts";
+import {expect} from "../../../../../deps/chai.ts";
 import {
+    getDirnameOfCurrentModule,
     closeTestingConnections,
     createTestingConnections,
     reloadTestingDatabases
-} from "../../../../../utils/test-utils";
-import {Connection} from "../../../../../../src/connection/Connection";
-import {Tag} from "./entity/Tag";
-import {Post} from "./entity/Post";
-import {Category} from "./entity/Category";
-import {Image} from "./entity/Image";
+} from "../../../../../utils/test-utils.ts";
+import {Connection} from "../../../../../../src/connection/Connection.ts";
+import {Tag} from "./entity/Tag.ts";
+import {Post} from "./entity/Post.ts";
+import {Category} from "./entity/Category.ts";
+import {Image} from "./entity/Image.ts";
 
-describe("query builder > relation-id > many-to-many > basic-functionality", () => {
-
+describe("query builder > relation-id > many-to-many > basic-functionality", function() {
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
@@ -156,7 +158,6 @@ describe("query builder > relation-id > many-to-many > basic-functionality", () 
     })));
 
     it("should load ids when loadRelationIdAndMap used on ManyToMany inverse side", () => Promise.all(connections.map(async connection => {
-
         const category = new Category();
         category.name = "cars";
         await connection.manager.save(category);
@@ -406,3 +407,5 @@ describe("query builder > relation-id > many-to-many > basic-functionality", () 
     })));
 
 });
+
+runIfMain(import.meta);

@@ -1,23 +1,23 @@
-import "reflect-metadata";
-import {expect} from "chai";
-import {Post} from "./entity/Post";
-import {Guest as GuestV1} from "./entity/v1/Guest";
-import {Comment as CommentV1} from "./entity/v1/Comment";
-import {Guest as GuestV2} from "./entity/v2/Guest";
-import {Comment as CommentV2} from "./entity/v2/Comment";
-import {View} from "./entity/View";
-import {Category} from "./entity/Category";
-import {closeTestingConnections, createTestingConnections, setupSingleTestingConnection} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
-import {Repository} from "../../../src/repository/Repository";
-import {TreeRepository} from "../../../src/repository/TreeRepository";
-import {getConnectionManager} from "../../../src/index";
-import {NoConnectionForRepositoryError} from "../../../src/error/NoConnectionForRepositoryError";
-import {EntityManager} from "../../../src/entity-manager/EntityManager";
-import {CannotGetEntityManagerNotConnectedError} from "../../../src/error/CannotGetEntityManagerNotConnectedError";
-import {ConnectionOptions} from "../../../src/connection/ConnectionOptions";
-import {PostgresConnectionOptions} from "../../../src/driver/postgres/PostgresConnectionOptions";
-import {PromiseUtils} from "../../../src/util/PromiseUtils";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {Post} from "./entity/Post.ts";
+import {Guest as GuestV1} from "./entity/v1/Guest.ts";
+import {Comment as CommentV1} from "./entity/v1/Comment.ts";
+import {Guest as GuestV2} from "./entity/v2/Guest.ts";
+import {Comment as CommentV2} from "./entity/v2/Comment.ts";
+import {View} from "./entity/View.ts";
+import {Category} from "./entity/Category.ts";
+import {closeTestingConnections, createTestingConnections, setupSingleTestingConnection} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+import {Repository} from "../../../src/repository/Repository.ts";
+import {TreeRepository} from "../../../src/repository/TreeRepository.ts";
+import {getConnectionManager} from "../../../src/index.ts";
+import {NoConnectionForRepositoryError} from "../../../src/error/NoConnectionForRepositoryError.ts";
+import {EntityManager} from "../../../src/entity-manager/EntityManager.ts";
+import {CannotGetEntityManagerNotConnectedError} from "../../../src/error/CannotGetEntityManagerNotConnectedError.ts";
+import {ConnectionOptions} from "../../../src/connection/ConnectionOptions.ts";
+// import {PostgresConnectionOptions} from "../../../src/driver/postgres/PostgresConnectionOptions.ts";
+import {PromiseUtils} from "../../../src/util/PromiseUtils.ts";
 
 describe("Connection", () => {
     // const resourceDir = __dirname + "/../../../../../test/functional/connection/";
@@ -68,16 +68,26 @@ describe("Connection", () => {
          ]);
          });*/
 
-        it("should not be able to close", () => {
+        it("should not be able to close", async () => {
             if (!connection)
                 return;
-            return connection.close().should.be.rejected; // CannotCloseNotConnectedError
+            try {
+                await connection.close(); // CannotCloseNotConnectedError
+                expect.fail("an error to be thrown");
+            } catch (err) {
+                expect(err.message).not.to.be.equal("an error to be thrown");
+            }
         });
 
-        it("should not be able to sync a schema", () => {
+        it("should not be able to sync a schema", async () => {
             if (!connection)
                 return;
-            return connection.synchronize().should.be.rejected; // CannotCloseNotConnectedError
+            try {
+                await connection.synchronize(); // CannotCloseNotConnectedError
+                expect.fail("an error to be thrown");
+            } catch (err) {
+                expect(err.message).not.to.equal("an error to be thrown");
+            }
         });
 
         it.skip("should not be able to use repositories", () => {
@@ -90,10 +100,10 @@ describe("Connection", () => {
             // expect(() => connection.getReactiveTreeRepository(Category)).to.throw(NoConnectionForRepositoryError);
         });
 
-        it("should be able to connect", () => {
+        it("should be able to connect", async () => {
             if (!connection)
                 return;
-            return connection.connect().should.be.fulfilled;
+            await connection.connect();
         });
 
     });
@@ -130,8 +140,13 @@ describe("Connection", () => {
             // expect(connection.reactiveEntityManager).to.be.instanceOf(ReactiveEntityManager);
         }));
 
-        it("should not be able to connect again", () => connections.forEach(connection => {
-            return connection.connect().should.be.rejected; // CannotConnectAlreadyConnectedError
+        it("should not be able to connect again", () => connections.forEach(async connection => {
+            try {
+                await connection.connect(); // CannotConnectAlreadyConnectedError
+                expect.fail("an error to be thrown");
+            } catch (err) {
+                expect(err.message).not.to.equal("an error to be thrown");
+            }
         }));
 
         it("should be able to close a connection", async () => Promise.all(connections.map(connection => {
@@ -226,8 +241,13 @@ describe("Connection", () => {
             return Promise.all(connections.map(connection => connection.close()));
         }));
 
-        it("should not be able to close already closed connection", () => connections.forEach(connection => {
-            return connection.close().should.be.rejected; // CannotCloseNotConnectedError
+        it("should not be able to close already closed connection", () => connections.forEach(async connection => {
+            try {
+                await connection.close(); // CannotCloseNotConnectedError
+                expect.fail("an error to be thrown");
+            } catch (err) {
+                expect(err.message).not.to.equal("an error to be thrown");
+            }
         }));
 
         it("connection.isConnected should be false", () => connections.forEach(connection => {
@@ -320,7 +340,8 @@ describe("Connection", () => {
         it("schema name can be set", () => {
             return Promise.all(connections.map(async connection => {
                 await connection.synchronize(true);
-                const schemaName = (connection.options as PostgresConnectionOptions).schema;
+                // TODO(uki00a) remove `any` when `PostgresDriver` is implemented.
+                const schemaName = (connection.options as /*PostgresConnectionOptions*/any).schema;
                 const comment = new CommentV1();
                 comment.title = "Change SchemaName";
                 comment.context = `To ${schemaName}`;
@@ -339,3 +360,5 @@ describe("Connection", () => {
     });
 
 });
+
+runIfMain(import.meta);

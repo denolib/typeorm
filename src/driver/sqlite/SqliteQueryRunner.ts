@@ -70,7 +70,6 @@ export class SqliteQueryRunner extends AbstractSqliteQueryRunner {
             await this.saveDatabaseToFileIfNeeded(databaseConnection, query);
             return result;
         } catch (err) {
-            console.error(err)
             connection.logger.logQueryError(err, query, parameters, this);
             throw new QueryFailedError(query, parameters, err);
         }

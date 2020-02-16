@@ -1,12 +1,12 @@
-import {Column} from "../../../../../../src/decorator/columns/Column";
-import {AfterLoad, BeforeInsert} from "../../../../../../src";
+import {Column} from "../../../../../../src/decorator/columns/Column.ts";
+import {AfterLoad, BeforeInsert} from "../../../../../../src/index.ts";
 
 export class Information {
 
-    @Column()
+    @Column({ type: String })
     description?: string;
 
-    @Column()
+    @Column({ type: Number })
     comments?: number;
 
     @BeforeInsert()

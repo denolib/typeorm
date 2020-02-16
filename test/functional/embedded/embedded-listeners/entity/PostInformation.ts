@@ -1,11 +1,11 @@
-import {Column} from "../../../../../src/decorator/columns/Column";
-import {PostCounter} from "./PostCounter";
-import {BeforeInsert} from "../../../../../src/decorator/listeners/BeforeInsert";
-import {Index} from "../../../../../src/decorator/Index";
+import {Column} from "../../../../../src/decorator/columns/Column.ts";
+import {PostCounter} from "./PostCounter.ts";
+import {BeforeInsert} from "../../../../../src/decorator/listeners/BeforeInsert.ts";
+import {Index} from "../../../../../src/decorator/Index.ts";
 
 export class PostInformation {
 
-    @Column()
+    @Column({ type: String })
     @Index()
     description: string;
 

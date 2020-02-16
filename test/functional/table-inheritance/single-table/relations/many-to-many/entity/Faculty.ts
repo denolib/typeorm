@@ -1,8 +1,8 @@
-import {Column} from "../../../../../../../src/decorator/columns/Column";
-import {Entity} from "../../../../../../../src/decorator/entity/Entity";
-import {PrimaryGeneratedColumn} from "../../../../../../../src/decorator/columns/PrimaryGeneratedColumn";
-import {ManyToMany} from "../../../../../../../src/decorator/relations/ManyToMany";
-import {Student} from "./Student";
+import {Column} from "../../../../../../../src/decorator/columns/Column.ts";
+import {Entity} from "../../../../../../../src/decorator/entity/Entity.ts";
+import {PrimaryGeneratedColumn} from "../../../../../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
+import {ManyToMany} from "../../../../../../../src/decorator/relations/ManyToMany.ts";
+import {Student} from "./Student.ts";
 
 @Entity()
 export class Faculty {
@@ -10,7 +10,7 @@ export class Faculty {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     name: string;
 
     @ManyToMany(type => Student, student => student.faculties)

@@ -1,7 +1,7 @@
-import {Entity} from "../../../../../../src/decorator/entity/Entity";
-import {ManyToOne} from "../../../../../../src/decorator/relations/ManyToOne";
-import {Event} from "./Event";
-import {User} from "./User";
+import {Entity} from "../../../../../../src/decorator/entity/Entity.ts";
+import {ManyToOne} from "../../../../../../src/decorator/relations/ManyToOne.ts";
+import {Event} from "./Event.ts";
+import {User} from "./User.ts";
 
 @Entity()
 export class EventMember {

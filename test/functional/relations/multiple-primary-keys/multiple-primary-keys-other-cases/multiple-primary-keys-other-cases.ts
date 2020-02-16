@@ -1,17 +1,19 @@
-import "reflect-metadata";
-import {expect} from "chai";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils";
-import {Connection} from "../../../../../src/connection/Connection";
-import {User} from "./entity/User";
-import {EventMember} from "./entity/EventMember";
-import {Event} from "./entity/Event";
-import {Person} from "./entity/Person";
+import {join as joinPaths} from "../../../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../../../deps/mocha.ts";
+import {expect} from "../../../../deps/chai.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils.ts";
+import {Connection} from "../../../../../src/connection/Connection.ts";
+import {User} from "./entity/User.ts";
+import {EventMember} from "./entity/EventMember.ts";
+import {Event} from "./entity/Event.ts";
+import {Person} from "./entity/Person.ts";
 
 describe("relations > multiple-primary-keys > other-cases", () => {
-    
+
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
@@ -120,3 +122,5 @@ describe("relations > multiple-primary-keys > other-cases", () => {
     })));
 
 });
+
+runIfMain(import.meta);

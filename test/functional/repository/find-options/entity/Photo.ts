@@ -1,11 +1,11 @@
-import {Entity} from "../../../../../src/decorator/entity/Entity";
+import {Entity} from "../../../../../src/decorator/entity/Entity.ts";
 import {
     PrimaryGeneratedColumn,
     ManyToMany,
     JoinTable
-} from "../../../../../src/index";
-import {Column} from "../../../../../src/decorator/columns/Column";
-import {Category} from "./Category";
+} from "../../../../../src/index.ts";
+import {Column} from "../../../../../src/decorator/columns/Column.ts";
+import {Category} from "./Category.ts";
 
 @Entity()
 export class Photo {
@@ -14,20 +14,21 @@ export class Photo {
     id: number;
 
     @Column({
+        type: String,
         length: 500
     })
     name: string;
 
-    @Column()
+    @Column({ type: String })
     description: string;
 
-    @Column()
+    @Column({ type: String })
     filename: string;
 
-    @Column()
+    @Column({ type: Number })
     views: number;
 
-    @Column()
+    @Column({ type: Boolean })
     isPublished: boolean;
 
     @ManyToMany(type => Category)

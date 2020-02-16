@@ -1,24 +1,24 @@
-import {Entity} from "../../../../../../../src/decorator/entity/Entity";
-import {Column} from "../../../../../../../src/decorator/columns/Column";
-import {ManyToMany} from "../../../../../../../src/decorator/relations/ManyToMany";
-import {PrimaryColumn} from "../../../../../../../src/decorator/columns/PrimaryColumn";
-import {JoinTable} from "../../../../../../../src/decorator/relations/JoinTable";
-import {Post} from "./Post";
-import {Image} from "./Image";
+import {Entity} from "../../../../../../../src/decorator/entity/Entity.ts";
+import {Column} from "../../../../../../../src/decorator/columns/Column.ts";
+import {ManyToMany} from "../../../../../../../src/decorator/relations/ManyToMany.ts";
+import {PrimaryColumn} from "../../../../../../../src/decorator/columns/PrimaryColumn.ts";
+import {JoinTable} from "../../../../../../../src/decorator/relations/JoinTable.ts";
+import {Post} from "./Post.ts";
+import {Image} from "./Image.ts";
 
 @Entity()
 export class Category {
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     id: number;
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     code: number;
 
-    @Column()
+    @Column({ type: String })
     name: string;
 
-    @Column()
+    @Column({ type: Boolean })
     isRemoved: boolean = false;
 
     @ManyToMany(type => Post, post => post.categories)

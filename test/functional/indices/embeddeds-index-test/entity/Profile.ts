@@ -1,12 +1,12 @@
-import {Column} from "../../../../../src/decorator/columns/Column";
-import {Index} from "../../../../../src/decorator/Index";
+import {Column} from "../../../../../src/decorator/columns/Column.ts";
+import {Index} from "../../../../../src/decorator/Index.ts";
 
 export class Profile {
 
-    @Column()
+    @Column({ type: String })
     job: string;
 
-    @Column()
+    @Column({ type: String })
     @Index("customer_profile_address")
     address: string;
 }

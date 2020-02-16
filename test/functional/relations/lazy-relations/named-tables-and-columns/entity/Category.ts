@@ -1,12 +1,12 @@
-import { Entity } from "../../../../../../src/decorator/entity/Entity";
-import { PrimaryGeneratedColumn } from "../../../../../../src/decorator/columns/PrimaryGeneratedColumn";
-import { Column } from "../../../../../../src/decorator/columns/Column";
-import { ManyToMany } from "../../../../../../src/decorator/relations/ManyToMany";
-import { OneToMany } from "../../../../../../src/decorator/relations/OneToMany";
-import { OneToOne } from "../../../../../../src/decorator/relations/OneToOne";
+import { Entity } from "../../../../../../src/decorator/entity/Entity.ts";
+import { PrimaryGeneratedColumn } from "../../../../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
+import { Column } from "../../../../../../src/decorator/columns/Column.ts";
+import { ManyToMany } from "../../../../../../src/decorator/relations/ManyToMany.ts";
+import { OneToMany } from "../../../../../../src/decorator/relations/OneToMany.ts";
+import { OneToOne } from "../../../../../../src/decorator/relations/OneToOne.ts";
 import {
     Post,
-} from "./Post";
+} from "./Post.ts";
 
 @Entity("s_category_named_all", {
     orderBy: {
@@ -20,7 +20,7 @@ export class Category {
     })
     id: number;
 
-    @Column()
+    @Column({ type: String })
     name: string;
 
     @OneToOne(type => Post, post => post.oneCategory)

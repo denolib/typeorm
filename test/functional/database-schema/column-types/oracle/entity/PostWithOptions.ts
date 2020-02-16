@@ -1,11 +1,11 @@
-import {Entity} from "../../../../../../src/decorator/entity/Entity";
-import {PrimaryColumn} from "../../../../../../src/decorator/columns/PrimaryColumn";
-import {Column} from "../../../../../../src/decorator/columns/Column";
+import {Entity} from "../../../../../../src/decorator/entity/Entity.ts";
+import {PrimaryColumn} from "../../../../../../src/decorator/columns/PrimaryColumn.ts";
+import {Column} from "../../../../../../src/decorator/columns/Column.ts";
 
 @Entity()
 export class PostWithOptions {
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     id: number;
 
     // -------------------------------------------------------------------------
@@ -44,7 +44,7 @@ export class PostWithOptions {
     nvarchar2: string;
 
     @Column("raw", { length: 500 })
-    raw: Buffer;
+    raw: Uint8Array; /* Buffer; */
 
     // -------------------------------------------------------------------------
     // Date Types

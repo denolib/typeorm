@@ -1,11 +1,11 @@
-import {Column} from "../../../../../src/decorator/columns/Column";
+import {Column} from "../../../../../src/decorator/columns/Column.ts";
 
 export class Subcounters {
 
-    @Column()
+    @Column({ type: Number })
     version: number;
 
-    @Column()
+    @Column({ type: Number })
     watches: number;
 
 }

@@ -1,8 +1,9 @@
-import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
-import {Connection} from "../../../../src";
-import {PostEntity} from "./entity/PostEntity";
-import {CategoryEntity} from "./entity/CategoryEntity";
+import "../../../deps/chai.ts";
+import {runIfMain} from "../../../deps/mocha.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
+import {Connection} from "../../../../src/index.ts";
+import {PostEntity} from "./entity/PostEntity.ts";
+import {CategoryEntity} from "./entity/CategoryEntity.ts";
 
 describe("entity schemas > basic functionality", () => {
 
@@ -32,3 +33,5 @@ describe("entity schemas > basic functionality", () => {
     })));
 
 });
+
+runIfMain(import.meta);

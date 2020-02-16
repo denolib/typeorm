@@ -1,7 +1,7 @@
-import {Entity} from "../../../../../../src/decorator/entity/Entity";
-import {PrimaryGeneratedColumn} from "../../../../../../src/decorator/columns/PrimaryGeneratedColumn";
-import {Question} from "./Question";
-import {ManyToOne} from "../../../../../../src/decorator/relations/ManyToOne";
+import {Entity} from "../../../../../../src/decorator/entity/Entity.ts";
+import {PrimaryGeneratedColumn} from "../../../../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
+import {Question} from "./Question.ts";
+import {ManyToOne} from "../../../../../../src/decorator/relations/ManyToOne.ts";
 
 @Entity()
 export class User {

@@ -1,12 +1,12 @@
-import "reflect-metadata";
-import * as fs from "fs";
-import {expect} from "chai";
-import {getSqljsManager} from "../../../src/index";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
-import {Post} from "./entity/Post";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {getSqljsManager} from "../../../src/index.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+import {Post} from "./entity/Post.ts";
 
-describe("sqljs driver > load", () => {
+// TODO(uki00a) Remove `.skip` when SqljsDriver is implemented.
+describe.skip("sqljs driver > load", () => {
 
     let connections: Connection[];
     before(async () => connections = await createTestingConnections({
@@ -32,7 +32,7 @@ describe("sqljs driver > load", () => {
 
         const exportedDatabase = manager.exportDatabase();
         expect(exportedDatabase).not.to.be.undefined;
-        const originalFileContent = fs.readFileSync("test/functional/sqljs/sqlite/test.sqlite");
+        const originalFileContent = Deno.readFileSync("test/functional/sqljs/sqlite/test.sqlite");
         expect(exportedDatabase.length).to.equal(originalFileContent.length);
     })));
 
@@ -46,3 +46,5 @@ describe("sqljs driver > load", () => {
         }
     })));
 });
+
+runIfMain(import.meta);

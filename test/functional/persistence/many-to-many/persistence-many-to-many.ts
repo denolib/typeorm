@@ -1,10 +1,11 @@
-import "reflect-metadata";
-import {expect} from "chai";
-import {Connection} from "../../../../src/connection/Connection";
-import {Post} from "./entity/Post";
-import {Category} from "./entity/Category";
-import {User} from "./entity/User";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
+import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
+import {expect} from "../../../deps/chai.ts";
+import {runIfMain} from "../../../deps/mocha.ts";
+import {Connection} from "../../../../src/connection/Connection.ts";
+import {Post} from "./entity/Post.ts";
+import {Category} from "./entity/Category.ts";
+import {User} from "./entity/User.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
 
 describe("persistence > many-to-many", function() {
 
@@ -13,14 +14,15 @@ describe("persistence > many-to-many", function() {
     // -------------------------------------------------------------------------
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({ __dirname }));
+    const __dirname = getDirnameOfCurrentModule(import.meta);
+    before(async () => connections = await createTestingConnections({ entities: [joinPaths(__dirname, "/entity/*.ts")] }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
 
     // -------------------------------------------------------------------------
     // Specifications
     // -------------------------------------------------------------------------
-    
+
     it("add exist element to exist object with empty many-to-many relation and save it and it should contain a new category", () => Promise.all(connections.map(async connection => {
 
         const postRepository = connection.getRepository(Post);
@@ -276,3 +278,5 @@ describe("persistence > many-to-many", function() {
     })));
 
 });
+
+runIfMain(import.meta);

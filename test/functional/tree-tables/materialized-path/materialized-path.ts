@@ -1,7 +1,8 @@
-import "reflect-metadata";
-import {Category} from "./entity/Category";
-import {Connection} from "../../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
+import {runIfMain} from "../../../deps/mocha.ts";
+import "../../../deps/chai.ts";
+import {Category} from "./entity/Category.ts";
+import {Connection} from "../../../../src/connection/Connection.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
 
 describe("tree tables > materialized-path", () => {
 
@@ -165,3 +166,5 @@ describe("tree tables > materialized-path", () => {
     })));
 
 });
+
+runIfMain(import.meta);

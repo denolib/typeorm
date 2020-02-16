@@ -1,21 +1,28 @@
-import "reflect-metadata";
-import {expect} from "chai";
-import {Post} from "./entity/Post";
-import {Counters} from "./entity/Counters";
-import {Connection} from "../../../../src/connection/Connection";
+import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
+import {expect} from "../../../deps/chai.ts";
+import {runIfMain} from "../../../deps/mocha.ts";
+import {Post} from "./entity/Post.ts";
+import {Counters} from "./entity/Counters.ts";
+import {Connection} from "../../../../src/connection/Connection.ts";
 import {
+    getDirnameOfCurrentModule,
     closeTestingConnections,
     createTestingConnections,
     reloadTestingDatabases,
     sleep
-} from "../../../utils/test-utils";
-import {Subcounters} from "../embedded-many-to-one-case2/entity/Subcounters";
+} from "../../../utils/test-utils.ts";
+import {Subcounters} from "../embedded-many-to-one-case2/entity/Subcounters.ts";
 
 describe("embedded > embedded-with-special-columns", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        // TODO(uki00a) Remove `enableDrivers` option when deno-sqlite supports `datetime('now')`.
+        // deno-sqlite currently does not support `datetime('now')`. This is due to lack of support for getting current time in WASI.
+        // @see https://github.com/dyedgreen/deno-sqlite/blob/a68be951b8a09e5df3eb76a1659d93e18ba048c5/build/src/vfs.c#L235
+        enabledDrivers: ["postgres", "mysql", "mssql", "oracle"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
@@ -84,3 +91,5 @@ describe("embedded > embedded-with-special-columns", () => {
     })));
 
 });
+
+runIfMain(import.meta);

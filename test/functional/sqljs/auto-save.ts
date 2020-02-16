@@ -1,10 +1,11 @@
-import "reflect-metadata";
-import {expect} from "chai";
-import {Post} from "./entity/Post";
-import {Connection} from "../../../src/connection/Connection";
-import {createTestingConnections} from "../../utils/test-utils";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {Post} from "./entity/Post.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+import {createTestingConnections} from "../../utils/test-utils.ts";
 
-describe("sqljs driver > autosave", () => {
+// TODO(uki00a) Remove `.skip` when SqlijsDriver is implemented.
+describe.skip("sqljs driver > autosave", () => {
     let connections: Connection[];
     let saves = 0;
     const callback = (database: Uint8Array) => {
@@ -34,7 +35,7 @@ describe("sqljs driver > autosave", () => {
         await connection.createQueryBuilder().insert().into(Post).values(posts).execute();
         await connection.createQueryBuilder().update(Post).set({title: "Many posts"}).execute();
         await connection.createQueryBuilder().delete().from(Post).where("title = ?", {title: "third post"}).execute();
-        
+
         const repository = connection.getRepository(Post);
         let post = new Post();
         post.title = "A post";
@@ -94,3 +95,5 @@ describe("sqljs driver > autosave off", () => {
         expect(saves).to.be.equal(0);
     })));
 });
+
+runIfMain(import.meta);

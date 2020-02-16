@@ -1,11 +1,11 @@
-import "reflect-metadata";
-import {expect} from "chai";
-import {setupSingleTestingConnection} from "../../utils/test-utils";
-import {ConnectionManager} from "../../../src/connection/ConnectionManager";
-import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver";
-import {PrimaryGeneratedColumn} from "../../../src/decorator/columns/PrimaryGeneratedColumn";
-import {Column} from "../../../src/decorator/columns/Column";
-import {Entity} from "../../../src/decorator/entity/Entity";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {setupSingleTestingConnection} from "../../utils/test-utils.ts";
+import {ConnectionManager} from "../../../src/connection/ConnectionManager.ts";
+import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver.ts";
+import {PrimaryGeneratedColumn} from "../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
+import {Column} from "../../../src/decorator/columns/Column.ts";
+import {Entity} from "../../../src/decorator/entity/Entity.ts";
 
 describe("ConnectionManager", () => {
 
@@ -15,7 +15,7 @@ describe("ConnectionManager", () => {
         @PrimaryGeneratedColumn()
         id: number;
 
-        @Column()
+        @Column({ type: String })
         title: string;
 
         constructor(id: number, title: string) {
@@ -215,3 +215,5 @@ describe("ConnectionManager", () => {
     });
 
 });
+
+runIfMain(import.meta);

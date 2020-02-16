@@ -1,14 +1,14 @@
-import {Column} from "../../../../src/decorator/columns/Column";
-import {ManyToMany} from "../../../../src/decorator/relations/ManyToMany";
-import {JoinTable} from "../../../../src/decorator/relations/JoinTable";
-import {User} from "./User";
+import {Column} from "../../../../src/decorator/columns/Column.ts";
+import {ManyToMany} from "../../../../src/decorator/relations/ManyToMany.ts";
+import {JoinTable} from "../../../../src/decorator/relations/JoinTable.ts";
+import {User} from "./User.ts";
 
 export class Subcounters {
 
-    @Column()
+    @Column({ type: Number })
     version: number;
 
-    @Column()
+    @Column({ type: Number })
     watches: number;
 
     @ManyToMany(type => User)

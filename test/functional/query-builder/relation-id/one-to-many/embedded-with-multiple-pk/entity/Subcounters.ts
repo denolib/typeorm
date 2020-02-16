@@ -1,14 +1,14 @@
-import {Column} from "../../../../../../../src/decorator/columns/Column";
-import {PrimaryColumn} from "../../../../../../../src/decorator/columns/PrimaryColumn";
-import {OneToMany} from "../../../../../../../src/decorator/relations/OneToMany";
-import {User} from "./User";
+import {Column} from "../../../../../../../src/decorator/columns/Column.ts";
+import {PrimaryColumn} from "../../../../../../../src/decorator/columns/PrimaryColumn.ts";
+import {OneToMany} from "../../../../../../../src/decorator/relations/OneToMany.ts";
+import {User} from "./User.ts";
 
 export class Subcounters {
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     version: number;
 
-    @Column()
+    @Column({ type: Number })
     watches: number;
 
     @OneToMany(type => User, user => user.post)
