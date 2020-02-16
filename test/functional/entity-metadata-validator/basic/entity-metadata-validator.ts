@@ -9,7 +9,6 @@ import {runIfMain} from "../../../deps/mocha.ts";
 describe("entity-metadata-validator", () => {
 
     it("should throw error if relation count decorator used with ManyToOne or OneToOne relations", async function() {
-        this.timeout(20000); // This is because it takes some time to compile TypeScript.
         const __dirname = getDirnameOfCurrentModule(import.meta);
         const connection = new Connection({ // dummy connection options, connection won't be established anyway
             // TODO(uki00a) uncomment this when MysqlDriver is implemented.

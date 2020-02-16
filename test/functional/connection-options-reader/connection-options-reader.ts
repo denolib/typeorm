@@ -12,7 +12,6 @@ describe("ConnectionOptionsReader", () => {
   });
 
   it("properly loads config with entities specified", async function() {
-    this.timeout(10000); // This is because it takes some time to compile TypeScript.
     type EntititesList = Function[] | string[];
     const connectionOptionsReader = new ConnectionOptionsReader({ root: __dirname, configName: "configs/class-entities" });
     const options: ConnectionOptions = await connectionOptionsReader.get("test-conn");
