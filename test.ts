@@ -246,5 +246,11 @@ import "./test/functional/uuid/postgres/pgcrypto.ts";
 import "./test/functional/uuid/postgres/uuid-ossp.ts";
 import "./test/functional/uuid/sap/uuid-sap.ts";
 import "./test/functional/uuid/sqlite/uuid-sqlite.ts";
+import "./test/functional/view-entity/general/view-entity-general.ts";
+import "./test/functional/view-entity/mssql/view-entity-mssql.ts";
+import "./test/functional/view-entity/mysql/view-entity-mysql.ts";
+import "./test/functional/view-entity/oracle/view-entity-oracle.ts";
+import "./test/functional/view-entity/postgres/view-entity-postgres.ts";
+import "./test/functional/view-entity/sqlite/view-entity-sqlite.ts";
 
 runTests();

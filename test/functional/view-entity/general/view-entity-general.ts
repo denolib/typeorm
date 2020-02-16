@@ -1,20 +1,23 @@
-import {expect} from "chai";
-import "reflect-metadata";
-import {CockroachDriver} from "../../../../src/driver/cockroachdb/CockroachDriver";
-import {Album} from "./entity/Album";
-import {Category} from "./entity/Category";
-import {Connection} from "../../../../src";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
-import {Photo} from "./entity/Photo";
-import {PhotoAlbumCategory} from "./entity/PhotoAlbumCategory";
-import {Post} from "./entity/Post";
-import {PostCategory} from "./entity/PostCategory";
+import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../../deps/mocha.ts";
+import {expect} from "../../../deps/chai.ts";
+// TODO(uki00a) uncomment this when CockroachDriver is implemented.
+//import {CockroachDriver} from "../../../../src/driver/cockroachdb/CockroachDriver.ts";
+import {Album} from "./entity/Album.ts";
+import {Category} from "./entity/Category.ts";
+import {Connection} from "../../../../src/index.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
+import {Photo} from "./entity/Photo.ts";
+import {PhotoAlbumCategory} from "./entity/PhotoAlbumCategory.ts";
+import {Post} from "./entity/Post.ts";
+import {PostCategory} from "./entity/PostCategory.ts";
 
 describe("view entity > general", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"]
+        entities: [joinPaths(__dirname, "/entity/*.ts")]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
@@ -79,12 +82,12 @@ describe("view entity > general", () => {
         const postCategories = await connection.manager.find(PostCategory);
         postCategories.length.should.be.equal(2);
 
-        const postId1 = connection.driver instanceof CockroachDriver ? "1" : 1;
+        const postId1 = false/*connection.driver instanceof CockroachDriver*/ ? "1" : 1; // TODO(uki00a) uncomment this when CockroachDriver is implemented.
         postCategories[0].id.should.be.equal(postId1);
         postCategories[0].name.should.be.equal("About BMW");
         postCategories[0].categoryName.should.be.equal("Cars");
 
-        const postId2 = connection.driver instanceof CockroachDriver ? "2" : 2;
+        const postId2 = false/*connection.driver instanceof CockroachDriver*/ ? "2" : 2; // TODO(uki00a) uncomment this when CockroachDriver is implemented.
         postCategories[1].id.should.be.equal(postId2);
         postCategories[1].name.should.be.equal("About Boeing");
         postCategories[1].categoryName.should.be.equal("Airplanes");
@@ -92,13 +95,13 @@ describe("view entity > general", () => {
         const photoAlbumCategories = await connection.manager.find(PhotoAlbumCategory);
         photoAlbumCategories.length.should.be.equal(2);
 
-        const photoId1 = connection.driver instanceof CockroachDriver ? "1" : 1;
+        const photoId1 = false/*connection.driver instanceof CockroachDriver*/ ? "1" : 1; // TODO(uki00a) uncomment this when CockroachDriver is implemented.
         photoAlbumCategories[0].id.should.be.equal(photoId1);
         photoAlbumCategories[0].name.should.be.equal("BMW E39");
         photoAlbumCategories[0].albumName.should.be.equal("BMW photos");
         photoAlbumCategories[0].categoryName.should.be.equal("Cars");
 
-        const photoId2 = connection.driver instanceof CockroachDriver ? "2" : 2;
+        const photoId2 = false/*connection.driver instanceof CockroachDriver*/ ? "2" : 2; // TODO(uki00a) uncomment this when CockroachDriver is implemented.
         photoAlbumCategories[1].id.should.be.equal(photoId2);
         photoAlbumCategories[1].name.should.be.equal("BMW E60");
         photoAlbumCategories[1].albumName.should.be.equal("BMW photos");
@@ -112,3 +115,5 @@ describe("view entity > general", () => {
 
     })));
 });
+
+runIfMain(import.meta);
