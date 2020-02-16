@@ -218,5 +218,6 @@ import "./test/functional/schema-builder/create-table.ts";
 import "./test/functional/schema-builder/custom-db-and-schema-sync.ts";
 import "./test/functional/schema-builder/drop-column.ts";
 import "./test/functional/schema-builder/update-primary-keys.ts";
+import "./test/functional/spatial/postgres/spatial-postgres.ts";
 
 runTests();
