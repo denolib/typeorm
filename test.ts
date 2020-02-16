@@ -222,12 +222,18 @@ import "./test/functional/sqljs/auto-save.ts";
 import "./test/functional/sqljs/load.ts";
 import "./test/functional/sqljs/save.ts";
 import "./test/functional/sqljs/startup.ts";
-
 import "./test/functional/table-inheritance/extending/extending-inheritance.ts";
 import "./test/functional/table-inheritance/single-table/basic-functionality/basic-functionality.ts";
 import "./test/functional/table-inheritance/single-table/database-option-inherited/database-option-inherited.ts";
 import "./test/functional/table-inheritance/single-table/non-virtual-discriminator-column/non-virtual-discriminator-column.ts";
 import "./test/functional/table-inheritance/single-table/relations/many-to-many/many-to-many.ts";
 import "./test/functional/table-inheritance/single-table/relations/one-to-many/one-to-many.ts";
+import "./test/functional/transaction/database-specific-isolation/full-isolation-support.ts";
+import "./test/functional/transaction/database-specific-isolation/oracle-isolation.ts";
+import "./test/functional/transaction/database-specific-isolation/sqlite-isolation.ts";
+import "./test/functional/transaction/return-data-from-transaction/return-data-from-transaction.ts";
+import "./test/functional/transaction/single-query-runner/single-query-runner.ts";
+import "./test/functional/transaction/transaction-decorator/transaction-decorator.ts";
+import "./test/functional/transaction/transaction-in-entity-manager/transaction-in-entity-manager.ts";
 
 runTests();

@@ -1,16 +1,18 @@
-import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
-import {Connection} from "../../../../src/connection/Connection";
-import {Post} from "./entity/Post";
-import {expect} from "chai";
-import {PostController} from "./controller/PostController";
-import {Category} from "./entity/Category";
+import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../../deps/mocha.ts";
+import {expect} from "../../../deps/chai.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
+import {Connection} from "../../../../src/connection/Connection.ts";
+import {Post} from "./entity/Post.ts";
+import {PostController} from "./controller/PostController.ts";
+import {Category} from "./entity/Category.ts";
 
 describe("transaction > method wrapped into transaction decorator", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*{.js,.ts}")],
         enabledDrivers: ["mysql"] // since @Transaction accepts a specific connection name we can use only one connection and its name
     }));
     beforeEach(() => reloadTestingDatabases(connections));
@@ -116,7 +118,8 @@ describe("transaction > method wrapped into transaction decorator", () => {
 
     })));
 
-    it("should inject repository and custom repository into method decorated with @Transaction", () => Promise.all(connections.map(async connection => {
+    // TODO(uki00a) Remove `.skip` when `@TransactionRepository` is supported.
+    it.skip("should inject repository and custom repository into method decorated with @Transaction", () => Promise.all(connections.map(async connection => {
         const post = new Post();
         post.title = "successfully saved post";
 
@@ -125,7 +128,7 @@ describe("transaction > method wrapped into transaction decorator", () => {
 
         // call controller method
         const savedCategory = await controller.saveWithRepository.apply(controller, [post, category]);
-        
+
         // controller should successfully call custom repository method and return the found entity
         expect(savedCategory).not.to.be.undefined;
         savedCategory!.should.be.eql(category);
@@ -163,3 +166,5 @@ describe("transaction > method wrapped into transaction decorator", () => {
     })));
 
 });
+
+runIfMain(import.meta);

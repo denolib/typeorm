@@ -1,16 +1,18 @@
-import "reflect-metadata";
-import {SapDriver} from "../../../../src/driver/sap/SapDriver";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils";
-import {Connection} from "../../../../src/connection/Connection";
-import {Post} from "./entity/Post";
-import {Category} from "./entity/Category";
-import {expect} from "chai";
+import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../../deps/mocha.ts";
+import {expect} from "../../../deps/chai.ts";
+import {SapDriver} from "../../../../src/driver/sap/SapDriver.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
+import {Connection} from "../../../../src/connection/Connection.ts";
+import {Post} from "./entity/Post.ts";
+import {Category} from "./entity/Category.ts";
 
 describe("transaction > transaction with full isolation support", () => {
 
   let connections: Connection[];
+  const __dirname = getDirnameOfCurrentModule(import.meta);
   before(async () => connections = await createTestingConnections({
-      entities: [__dirname + "/entity/*{.js,.ts}"],
+      entities: [joinPaths(__dirname, "/entity/*.ts")],
       enabledDrivers: ["mysql", "mssql", "postgres", "sap"] // todo: for some reasons mariadb tests are not passing here
   }));
   beforeEach(() => reloadTestingDatabases(connections));
@@ -159,3 +161,5 @@ describe("transaction > transaction with full isolation support", () => {
 
   })));
 });
+
+runIfMain(import.meta);
