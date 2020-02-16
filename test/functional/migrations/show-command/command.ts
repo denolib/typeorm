@@ -5,8 +5,6 @@ import "../../../deps/chai.ts";
 import {runIfMain} from "../../../deps/mocha.ts";
 
 describe("migrations > show command", function() {
-    this.timeout(20000); // This is because it takes some time to compile TypeScript.
-
     let connections: Connection[];
     const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({

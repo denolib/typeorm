@@ -11,8 +11,6 @@ import {AbstractSqliteDriver} from "../../../../src/driver/sqlite-abstract/Abstr
 import {OracleDriver} from "../../../../src/driver/oracle/OracleDriver.ts";
 
 describe("query builder > insert", function() {
-    this.timeout(20000); // This suite takes a while to compile TypeScript sources.
-
     let connections: Connection[];
     const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({

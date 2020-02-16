@@ -14,8 +14,6 @@ import {Category} from "./entity/Category.ts";
 import {Image} from "./entity/Image.ts";
 
 describe("query builder > relation-id > many-to-many > basic-functionality", function() {
-    this.timeout(20000); // TODO(uki00a) This suite fails on CI.
-
     let connections: Connection[];
     const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({

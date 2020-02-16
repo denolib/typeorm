@@ -10,8 +10,6 @@ import {TableColumn} from "../../../src/schema-builder/table/TableColumn.ts";
 import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections} from "../../utils/test-utils.ts";
 
 describe("query runner > add column", function() {
-    this.timeout(20000); // This suite takes sometime to complete
-
     let connections: Connection[];
     const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {

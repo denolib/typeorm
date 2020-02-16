@@ -12,8 +12,6 @@ import {Connection} from "../../../../src/connection/Connection.ts";
 import {User} from "./entity/User.ts";
 
 describe("query builder > cache", function() {
-    this.timeout(20000); // This suite takes a while to complete.
-
     let connections: Connection[];
     const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({

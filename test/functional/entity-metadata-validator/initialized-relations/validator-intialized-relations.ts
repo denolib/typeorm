@@ -11,8 +11,6 @@ import {ImageInfo} from "./entity/ImageInfo.ts";
 import {Question} from "./entity/Question.ts";
 
 describe("entity-metadata-validator > initialized relations", function() {
-    this.timeout(20000); // This is because it takes some time to compile TypeScript.
-
     it("should throw error if relation with initialized array was found on many-to-many relation", async () => {
         const connection = new Connection({ // dummy connection options, connection won't be established anyway
             // TODO(uki00a) uncomment this when MysqlDriver is implemented.

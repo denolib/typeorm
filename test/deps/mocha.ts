@@ -12,6 +12,8 @@ export function runIfMain(meta: ImportMeta): void {
     }
 }
 
+mocha.timeout(60000);
+
 function onCompleted(failures: number): void {
     if (failures > 0) {
         Deno.exit(1);
