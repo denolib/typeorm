@@ -1,16 +1,16 @@
-import {Entity} from "../../../../src/decorator/entity/Entity";
-import {PrimaryColumn} from "../../../../src/decorator/columns/PrimaryColumn";
-import {Column} from "../../../../src/decorator/columns/Column";
-import {Index} from "../../../../src/decorator/Index";
+import {Entity} from "../../../../src/decorator/entity/Entity.ts";
+import {PrimaryColumn} from "../../../../src/decorator/columns/PrimaryColumn.ts";
+import {Column} from "../../../../src/decorator/columns/Column.ts";
+import {Index} from "../../../../src/decorator/Index.ts";
 
 @Index("Groups name", ["name"], { unique: true })
 @Entity("groups")
 export class Group {
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     id: number;
 
-    @Column()
+    @Column({ type: String })
     name: string;
 
 }

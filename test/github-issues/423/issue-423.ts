@@ -1,13 +1,16 @@
-import "reflect-metadata";
-import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver";
-import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+// import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
 
 describe("github issues > #423 Cannot use Group as Table name && cannot autoSchemeSync when use alias Entity", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
         schemaCreate: false,
         dropSchema: true
     }));
@@ -21,9 +24,9 @@ describe("github issues > #423 Cannot use Group as Table name && cannot autoSche
         await queryRunner.release();
 
         table!.should.exist;
-        
+
         // CockroachDB stores unique indices as UNIQUE constraints
-        if (connection.driver instanceof CockroachDriver) {
+        if (false/*connection.driver instanceof CockroachDriver*/) { // TODO(uki00a) uncomment this when CockroachDriver is implemented.
             table!.uniques.length.should.be.equal(1);
             table!.uniques[0].name!.should.be.equal("Groups name");
             table!.uniques[0].columnNames[0].should.be.equal("name");
@@ -37,3 +40,5 @@ describe("github issues > #423 Cannot use Group as Table name && cannot autoSche
     })));
 
 });
+
+runIfMain(import.meta);

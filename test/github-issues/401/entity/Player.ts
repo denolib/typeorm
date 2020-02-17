@@ -1,12 +1,12 @@
-import {Entity} from "../../../../src/decorator/entity/Entity";
-import {PrimaryColumn} from "../../../../src/decorator/columns/PrimaryColumn";
-import {ManyToOne} from "../../../../src/decorator/relations/ManyToOne";
-import {Group} from "./Group";
+import {Entity} from "../../../../src/decorator/entity/Entity.ts";
+import {PrimaryColumn} from "../../../../src/decorator/columns/PrimaryColumn.ts";
+import {ManyToOne} from "../../../../src/decorator/relations/ManyToOne.ts";
+import {Group} from "./Group.ts";
 
 @Entity()
 export class Player {
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: String })
     email: string;
 
     @ManyToOne(type => Group)

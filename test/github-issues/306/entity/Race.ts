@@ -1,7 +1,7 @@
-import {Entity} from "../../../../src/decorator/entity/Entity";
-import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryGeneratedColumn";
-import {Column} from "../../../../src/decorator/columns/Column";
-import {Duration} from "./Duration";
+import {Entity} from "../../../../src/decorator/entity/Entity.ts";
+import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
+import {Column} from "../../../../src/decorator/columns/Column.ts";
+import {Duration} from "./Duration.ts";
 
 @Entity()
 export class Race {
@@ -9,7 +9,7 @@ export class Race {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: Number })
     name: string;
 
     @Column(type => Duration)

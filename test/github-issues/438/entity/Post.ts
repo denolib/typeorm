@@ -1,12 +1,12 @@
-import {Column, Entity, PrimaryColumn} from "../../../../src";
+import {Column, Entity, PrimaryColumn} from "../../../../src/index.ts";
 
 @Entity()
 export class Post {
 
-    @PrimaryColumn({ unsigned: true })
+    @PrimaryColumn({ type: Number, unsigned: true })
     id: number;
 
-    @Column({ zerofill: true })
+    @Column({ type: Number, zerofill: true })
     num: number;
 
 }

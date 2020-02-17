@@ -1,9 +1,9 @@
-import "reflect-metadata";
-import {expect} from "chai";
-import {Record} from "./entity/Record";
-import {Connection} from "../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {RecordData} from "./entity/RecordData";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {Record} from "./entity/Record.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {RecordData} from "./entity/RecordData.ts";
 
 describe("github issues > #204 jsonb array is not persisted correctly", () => {
 
@@ -44,3 +44,5 @@ describe("github issues > #204 jsonb array is not persisted correctly", () => {
     })));
 
 });
+
+runIfMain(import.meta);
