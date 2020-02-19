@@ -1,17 +1,17 @@
-import {Entity} from "../../../../src/decorator/entity/Entity";
-import {PrimaryColumn} from "../../../../src/decorator/columns/PrimaryColumn";
-import {Column} from "../../../../src/decorator/columns/Column";
+import {Entity} from "../../../../src/decorator/entity/Entity.ts";
+import {PrimaryColumn} from "../../../../src/decorator/columns/PrimaryColumn.ts";
+import {Column} from "../../../../src/decorator/columns/Column.ts";
 
 @Entity("participants")
 export class Participant {
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     order_id: number;
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: String })
     distance: string;
 
-    @Column()
+    @Column({ type: String })
     price?: string;
 
 }
