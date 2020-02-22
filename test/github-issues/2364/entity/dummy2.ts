@@ -1,5 +1,5 @@
-import {Entity} from "../../../../src/decorator/entity/Entity";
-import {Column, PrimaryColumn} from "../../../../src";
+import {Entity} from "../../../../src/decorator/entity/Entity.ts";
+import {Column, PrimaryColumn} from "../../../../src/index.ts";
 
 @Entity()
 export class Dummy2 {
@@ -10,7 +10,7 @@ export class Dummy2 {
     })
     id: number;
 
-    @Column({ default: "name" })
+    @Column({ type: String, default: "name" })
     name: string;
 }
 

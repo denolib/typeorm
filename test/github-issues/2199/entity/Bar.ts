@@ -1,5 +1,5 @@
-import { Column, PrimaryGeneratedColumn } from "../../../../src";
-import { Entity } from "../../../../src/decorator/entity/Entity";
+import { Column, PrimaryGeneratedColumn } from "../../../../src/index.ts";
+import { Entity } from "../../../../src/decorator/entity/Entity.ts";
 
 @Entity("bar")
 export class Bar {
@@ -7,6 +7,6 @@ export class Bar {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     description: string;
 }

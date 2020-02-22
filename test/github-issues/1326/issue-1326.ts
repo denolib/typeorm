@@ -1,15 +1,17 @@
-import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {User} from "./entity/User";
-import {SpecificUser} from "./entity/SpecificUser";
-import {Connection} from "../../../src/connection/Connection";
-import {expect} from "chai";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {User} from "./entity/User.ts";
+import {SpecificUser} from "./entity/SpecificUser.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
 
 describe("github issue > #1326 Wrong behavior w/ the same table names in different databases", () => {
 
     let connections: Connection[] = [];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
         enabledDrivers: ["mysql"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
@@ -43,3 +45,5 @@ describe("github issue > #1326 Wrong behavior w/ the same table names in differe
     })));
 
 });
+
+runIfMain(import.meta);

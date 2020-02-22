@@ -1,14 +1,14 @@
-import {Column} from "../../../../src/decorator/columns/Column";
-import {Person, PersonType} from "./Person";
-import {ChildEntity} from "../../../../src/decorator/entity/ChildEntity";
+import {Column} from "../../../../src/decorator/columns/Column.ts";
+import {Person, PersonType} from "./Person.ts";
+import {ChildEntity} from "../../../../src/decorator/entity/ChildEntity.ts";
 
 @ChildEntity(PersonType.Employee)
 export class Employee extends Person {
 
-    @Column()
+    @Column({ type: Number })
     salary: number;
 
-    @Column()
+    @Column({ type: String })
     shared: string;
 
     constructor() {

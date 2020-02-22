@@ -1,5 +1,5 @@
-import {Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn} from "../../../../src";
-import { TipoCliente } from "./tipo-cliente";
+import {Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn} from "../../../../src/index.ts";
+import { TipoCliente } from "./tipo-cliente.ts";
 
 @Entity()
 export class Cliente {
@@ -7,7 +7,7 @@ export class Cliente {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     nome: string;
 
     @ManyToOne(() => TipoCliente, tc => tc.clientes)

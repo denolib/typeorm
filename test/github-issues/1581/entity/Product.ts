@@ -1,12 +1,12 @@
-import {Column, Entity} from "../../../../src";
+import {Column, Entity} from "../../../../src/index.ts";
 
 @Entity()
 export class Product {
 
-    @Column({ primary: true })
+    @Column({ type: Number, primary: true })
     id: number;
 
-    @Column()
+    @Column({ type: String })
     name: string;
 
 }

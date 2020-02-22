@@ -1,10 +1,10 @@
-import {Index} from "../../../../src/decorator/Index";
-import {Entity} from "../../../../src/decorator/entity/Entity";
-import {ManyToOne} from "../../../../src/decorator/relations/ManyToOne";
-import {JoinColumn} from "../../../../src/decorator/relations/JoinColumn";
-import {Column} from "../../../../src/decorator/columns/Column";
-import {Message} from "./Message";
-import {Locale} from "./Locale";
+import {Index} from "../../../../src/decorator/Index.ts";
+import {Entity} from "../../../../src/decorator/entity/Entity.ts";
+import {ManyToOne} from "../../../../src/decorator/relations/ManyToOne.ts";
+import {JoinColumn} from "../../../../src/decorator/relations/JoinColumn.ts";
+import {Column} from "../../../../src/decorator/columns/Column.ts";
+import {Message} from "./Message.ts";
+import {Locale} from "./Locale.ts";
 
 @Entity()
 @Index(["locale", "message"], { unique: true })

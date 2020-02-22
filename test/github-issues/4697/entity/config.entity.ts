@@ -1,4 +1,4 @@
-import {Entity, ObjectIdColumn, ObjectID, Column} from "../../../../src";
+import {Entity, ObjectIdColumn, /*ObjectID,*/ Column} from "../../../../src/index.ts";
 
 /**
  * @deprecated use item config instead
@@ -6,9 +6,9 @@ import {Entity, ObjectIdColumn, ObjectID, Column} from "../../../../src";
 @Entity()
 export class Config {
   @ObjectIdColumn()
-  _id: ObjectID;
+  _id: any;/*ObjectID;*/ // TODO(uki00a) uncomment this when MongoDriver is implemented.
 
-  @Column()
+  @Column({ type: String })
   itemId: string;
 
   @Column({ type: "json" })

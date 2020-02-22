@@ -1,9 +1,9 @@
-import "reflect-metadata";
-import {expect} from "chai";
-import {Connection} from "../../../src";
-import {User} from "./entity/User";
-import {Role} from "./entity/Role";
-import {createTestingConnections, reloadTestingDatabases, closeTestingConnections} from "../../utils/test-utils";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {Connection} from "../../../src/index.ts";
+import {User} from "./entity/User.ts";
+import {Role} from "./entity/Role.ts";
+import {createTestingConnections, reloadTestingDatabases, closeTestingConnections} from "../../utils/test-utils.ts";
 
 describe("github issues > #5174 `selectQueryBuilder.take` messes up the query when using the `ids` parameter", () => {
 
@@ -50,3 +50,5 @@ describe("github issues > #5174 `selectQueryBuilder.take` messes up the query wh
     })));
 
 });
+
+runIfMain(import.meta);

@@ -1,8 +1,10 @@
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
-import {EntitySchema, In} from "../../../src";
-import {Author, AuthorSchema} from "./entity/Author";
-import {Post, PostSchema} from "./entity/Post";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+import {EntitySchema, In} from "../../../src/index.ts";
+import {Author, AuthorSchema} from "./entity/Author.ts";
+import {Post, PostSchema} from "./entity/Post.ts";
 
 describe("github issues > #4156 QueryExpressionMap doesn't clone all values correctly", () => {
   let connections: Connection[];
@@ -81,3 +83,5 @@ describe("github issues > #4156 QueryExpressionMap doesn't clone all values corr
       })
     ));
 });
+
+runIfMain(import.meta);

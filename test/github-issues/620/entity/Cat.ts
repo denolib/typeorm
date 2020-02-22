@@ -1,7 +1,7 @@
-import {Entity} from "../../../../src/index";
-import {ManyToOne} from "../../../../src/decorator/relations/ManyToOne";
-import {Dog} from "./Dog";
-import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryGeneratedColumn";
+import {Entity} from "../../../../src/index.ts";
+import {ManyToOne} from "../../../../src/decorator/relations/ManyToOne.ts";
+import {Dog} from "./Dog.ts";
+import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
 
 @Entity()
 export class Cat {

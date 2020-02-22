@@ -1,5 +1,5 @@
-import {Column, Entity, OneToMany, PrimaryGeneratedColumn} from "../../../../src";
-import {Photo} from "./Photo";
+import {Column, Entity, OneToMany, PrimaryGeneratedColumn} from "../../../../src/index.ts";
+import {Photo} from "./Photo.ts";
 
 @Entity()
 export class User {
@@ -7,13 +7,13 @@ export class User {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     firstName: string;
 
-    @Column()
+    @Column({ type: String })
     lastName: string;
 
-    @Column()
+    @Column({ type: Number })
     age: number;
 
     @OneToMany(type => Photo, photo => photo.user)

@@ -1,8 +1,8 @@
-import {Entity} from "../../../../src/decorator/entity/Entity";
-import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryGeneratedColumn";
-import {Column} from "../../../../src/decorator/columns/Column";
-import {Post} from "./Post";
-import {OneToOne} from "../../../../src/decorator/relations/OneToOne";
+import {Entity} from "../../../../src/decorator/entity/Entity.ts";
+import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
+import {Column} from "../../../../src/decorator/columns/Column.ts";
+import {Post} from "./Post.ts";
+import {OneToOne} from "../../../../src/decorator/relations/OneToOne.ts";
 
 @Entity()
 export class Category {
@@ -10,7 +10,7 @@ export class Category {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ unique: true })
+    @Column({ type: String, unique: true })
     name: string;
 
     @OneToOne(type => Post, post => post.category)

@@ -1,6 +1,6 @@
-import {Entity, PrimaryGeneratedColumn} from "../../../../src";
-import {Column} from "../../../../src/decorator/columns/Column";
-import {Index} from "../../../../src/decorator/Index";
+import {Entity, PrimaryGeneratedColumn} from "../../../../src/index.ts";
+import {Column} from "../../../../src/decorator/columns/Column.ts";
+import {Index} from "../../../../src/decorator/Index.ts";
 
 @Entity()
 @Index(["name"], { fulltext: true })
@@ -10,7 +10,7 @@ export class Post {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     name: string;
 
     @Column("point")

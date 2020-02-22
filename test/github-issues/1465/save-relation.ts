@@ -1,15 +1,17 @@
-import "reflect-metadata";
-import {assert} from "chai";
-import {Connection} from "../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Account} from "./entity/Account";
-import {AccountActivationToken} from "./entity/AccountActivationToken";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Account} from "./entity/Account.ts";
+import {AccountActivationToken} from "./entity/AccountActivationToken.ts";
 
 describe("save child and parent entity", () => {
 
     let connections: Connection[] = [];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
         enabledDrivers: ["mysql", "mariadb", "sqlite", "sqljs"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
@@ -24,8 +26,10 @@ describe("save child and parent entity", () => {
         account.accountActivationToken = new AccountActivationToken("XXXXXXXXXXXXXXXXXX", new Date());
 
         const savedAccount = await connection.manager.save(account);
-        assert.isNotNull(savedAccount.accountActivationToken.account);
+        expect(savedAccount.accountActivationToken.account).not.to.be.null;
 
     })));
 
 });
+
+runIfMain(import.meta);

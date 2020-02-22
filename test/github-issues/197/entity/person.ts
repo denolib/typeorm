@@ -1,7 +1,7 @@
-import { Entity } from "../../../../src/decorator/entity/Entity";
-import { Index } from "../../../../src/decorator/Index";
-import { PrimaryGeneratedColumn } from "../../../../src/decorator/columns/PrimaryGeneratedColumn";
-import { Column } from "../../../../src/decorator/columns/Column";
+import { Entity } from "../../../../src/decorator/entity/Entity.ts";
+import { Index } from "../../../../src/decorator/Index.ts";
+import { PrimaryGeneratedColumn } from "../../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
+import { Column } from "../../../../src/decorator/columns/Column.ts";
 
 @Entity()
 export class Person {
@@ -12,9 +12,9 @@ export class Person {
     @Index({
         unique: true
     })
-    @Column()
+    @Column({ type: String })
     firstname: string;
 
-    @Column()
+    @Column({ type: String })
     lastname: string;
 }

@@ -1,8 +1,9 @@
-import "reflect-metadata";
-import { createTestingConnections, closeTestingConnections, reloadTestingDatabases } from "../../utils/test-utils";
-import { Connection } from "../../../src/connection/Connection";
-import { expect } from "chai";
-import { User } from "./entity/User";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import { createTestingConnections, closeTestingConnections, reloadTestingDatabases } from "../../utils/test-utils.ts";
+import { Connection } from "../../../src/connection/Connection.ts";
+import { User } from "./entity/User.ts";
+
 describe("github issues > #3112 default:null should inserts nulls to database", () => {
     let connections: Connection[];
 
@@ -32,3 +33,5 @@ describe("github issues > #3112 default:null should inserts nulls to database", 
 
 
 });
+
+runIfMain(import.meta);

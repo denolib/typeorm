@@ -1,4 +1,4 @@
-import {Column, Entity, PrimaryGeneratedColumn} from "../../../../src";
+import {Column, Entity, PrimaryGeneratedColumn} from "../../../../src/index.ts";
 
 @Entity()
 export class Post {
@@ -6,16 +6,16 @@ export class Post {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     firstName: string;
 
-    @Column()
+    @Column({ type: String })
     lastName: string;
 
-    @Column({ asExpression: "concat(`firstName`,' ',`lastName`)" })
+    @Column({ type: String, asExpression: "concat(`firstName`,' ',`lastName`)" })
     virtualFullName: string;
 
-    @Column({ asExpression: "concat(`firstName`,' ',`lastName`)", generatedType: "STORED" })
+    @Column({ type: String, asExpression: "concat(`firstName`,' ',`lastName`)", generatedType: "STORED" })
     storedFullName: string;
 
 }

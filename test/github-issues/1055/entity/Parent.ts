@@ -1,15 +1,15 @@
-import {Entity} from "../../../../src/decorator/entity/Entity";
-import {Column} from "../../../../src/decorator/columns/Column";
-import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryGeneratedColumn";
-import {Child} from "./Child";
-import {OneToMany} from "../../../../src/decorator/relations/OneToMany";
+import {Entity} from "../../../../src/decorator/entity/Entity.ts";
+import {Column} from "../../../../src/decorator/columns/Column.ts";
+import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
+import {Child} from "./Child.ts";
+import {OneToMany} from "../../../../src/decorator/relations/OneToMany.ts";
 
 @Entity()
 export class Parent {
     @PrimaryGeneratedColumn()
     public id: number;
 
-    @Column()
+    @Column({ type: String })
     public name: string;
 
     @OneToMany(target => Child, child => child.parent, { lazy: true })

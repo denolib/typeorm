@@ -1,17 +1,20 @@
-import "reflect-metadata";
-import {AuroraDataApiDriver} from "../../../src/driver/aurora-data-api/AuroraDataApiDriver";
-import {SapDriver} from "../../../src/driver/sap/SapDriver";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
-import {Animal} from "./entity/Animal";
-import {OffsetWithoutLimitNotSupportedError} from "../../../src/error/OffsetWithoutLimitNotSupportedError";
-import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {AuroraDataApiDriver} from "../../../src/driver/aurora-data-api/AuroraDataApiDriver.ts";
+import {SapDriver} from "../../../src/driver/sap/SapDriver.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases, getDirnameOfCurrentModule} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+import {Animal} from "./entity/Animal.ts";
+import {OffsetWithoutLimitNotSupportedError} from "../../../src/error/OffsetWithoutLimitNotSupportedError.ts";
+import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver.ts";
 
 describe("github issues > #1099 BUG - QueryBuilder MySQL skip sql is wrong", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
@@ -29,10 +32,18 @@ describe("github issues > #1099 BUG - QueryBuilder MySQL skip sql is wrong", () 
             .skip(1);
 
         if (connection.driver instanceof MysqlDriver || connection.driver instanceof AuroraDataApiDriver  || connection.driver instanceof SapDriver ) {
-            await qb.getManyAndCount().should.be.rejectedWith(OffsetWithoutLimitNotSupportedError);
+            let error;
+            try {
+                await qb.getManyAndCount();
+            } catch (err) {
+                error = err;
+            }
+            expect(error).to.be.instanceOf(OffsetWithoutLimitNotSupportedError);
         } else {
-            await qb.getManyAndCount().should.eventually.be.eql([[{ id: 2, name: "dog", categories: [] }, { id: 3, name: "bear", categories: [] }, { id: 4, name: "snake", categories: [] }, ], 4]);
+            expect(await qb.getManyAndCount()).to.eql([[{ id: 2, name: "dog", categories: [] }, { id: 3, name: "bear", categories: [] }, { id: 4, name: "snake", categories: [] }, ], 4]);
         }
     })));
 
 });
+
+runIfMain(import.meta);

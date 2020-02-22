@@ -1,4 +1,4 @@
-import {Entity, PrimaryGeneratedColumn, Column} from "../../../../src";
+import {Entity, PrimaryGeneratedColumn, Column} from "../../../../src/index.ts";
 
 @Entity()
 export class Category {
@@ -6,7 +6,7 @@ export class Category {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     name: string;
 
 }

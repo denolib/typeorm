@@ -1,8 +1,8 @@
-import {Entity, PrimaryGeneratedColumn} from "../../../../src";
-import {Tree} from "../../../../src/decorator/tree/Tree";
-import {TreeParent} from "../../../../src/decorator/tree/TreeParent";
-import {TreeChildren} from "../../../../src/decorator/tree/TreeChildren";
-import {Column} from "../../../../src/decorator/columns/Column";
+import {Entity, PrimaryGeneratedColumn} from "../../../../src/index.ts";
+import {Tree} from "../../../../src/decorator/tree/Tree.ts";
+import {TreeParent} from "../../../../src/decorator/tree/TreeParent.ts";
+import {TreeChildren} from "../../../../src/decorator/tree/TreeChildren.ts";
+import {Column} from "../../../../src/decorator/columns/Column.ts";
 
 @Entity()
 @Tree("closure-table")
@@ -11,7 +11,7 @@ export class Category {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     name: string;
 
     @TreeParent()

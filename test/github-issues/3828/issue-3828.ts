@@ -1,7 +1,8 @@
-import "reflect-metadata";
-import { createTestingConnections, closeTestingConnections, reloadTestingDatabases } from "../../utils/test-utils";
-import { Connection } from "../../../src/connection/Connection";
-import { MyEntity } from "./entity/Entity";
+import {runIfMain} from "../../deps/mocha.ts";
+import "../../deps/chai.ts";
+import { createTestingConnections, closeTestingConnections, reloadTestingDatabases } from "../../utils/test-utils.ts";
+import { Connection } from "../../../src/connection/Connection.ts";
+import { MyEntity } from "./entity/Entity.ts";
 
 describe("github issues > #3828 Conflicting PR to fix postgres schema:log with uppercase table names and enums", () => {
 
@@ -28,3 +29,5 @@ describe("github issues > #3828 Conflicting PR to fix postgres schema:log with u
         await connection.synchronize();
     })));
 });
+
+runIfMain(import.meta);

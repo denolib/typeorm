@@ -1,9 +1,9 @@
-import { BaseEntity, Column, PrimaryGeneratedColumn } from "../../../../src";
+import { BaseEntity, Column, PrimaryGeneratedColumn } from "../../../../src/index.ts";
 
-import { Entity } from "../../../../src/decorator/entity/Entity";
+import { Entity } from "../../../../src/decorator/entity/Entity.ts";
 
-import {DocumentEnum} from "../documentEnum";
-import {getEnumValues} from "../enumTools";
+import {DocumentEnum} from "../documentEnum.ts";
+import {getEnumValues} from "../enumTools.ts";
 
 @Entity()
 export class Bar extends BaseEntity {

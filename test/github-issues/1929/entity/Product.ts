@@ -1,4 +1,4 @@
-import {Column, Entity, ObjectID, ObjectIdColumn} from "../../../../src";
+import {Column, Entity, /*ObjectID,*/ ObjectIdColumn} from "../../../../src/index.ts";
 
 @Entity()
 export class Product {
@@ -11,15 +11,15 @@ export class Product {
     }
 
     @ObjectIdColumn()
-    id: ObjectID;
+    id: any/*ObjectID*/; // TODO(uki00a) uncomment this when MongdbDriver is implemented.
 
-    @Column()
+    @Column({ type: String })
     name: string;
 
-    @Column()
+    @Column({ type: String })
     label: string;
 
-    @Column()
+    @Column({ type: Number })
     price: number;
 
 }

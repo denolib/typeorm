@@ -1,17 +1,18 @@
-import "reflect-metadata";
-import { expect } from "chai";
-
-import { Connection } from "../../../src/connection/Connection";
-import { closeTestingConnections, createTestingConnections, reloadTestingDatabases } from "../../utils/test-utils";
-import { Plan } from "./entity/Plan";
-import { Item } from "./entity/Item";
-import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import { Connection } from "../../../src/connection/Connection.ts";
+import { getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases } from "../../utils/test-utils.ts";
+import { Plan } from "./entity/Plan.ts";
+import { Item } from "./entity/Item.ts";
+import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver.ts";
 
 describe("github issues > #1476 subqueries", () => {
 
     let connections: Connection[] = [];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
         enabledDrivers: ["mysql", "mariadb", "sqlite", "sqljs"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
@@ -20,7 +21,7 @@ describe("github issues > #1476 subqueries", () => {
     it("should", () => Promise.all(connections.map(async connection => {
         const planRepo = connection.getRepository(Plan);
         const itemRepo = connection.getRepository(Item);
-        
+
         const plan1 = new Plan();
         plan1.planId = 1;
         plan1.planName = "Test";
@@ -64,3 +65,5 @@ describe("github issues > #1476 subqueries", () => {
 
     })));
 });
+
+runIfMain(import.meta);

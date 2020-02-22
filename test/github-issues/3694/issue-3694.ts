@@ -1,15 +1,17 @@
-import {expect} from "chai";
-import "reflect-metadata";
-import {Connection, ObjectLiteral} from "../../../src";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Post} from "./entity/Post";
-import {FruitEnum} from "./enum/FruitEnum";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {Connection, ObjectLiteral} from "../../../src/index.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Post} from "./entity/Post.ts";
+import {FruitEnum} from "./enum/FruitEnum.ts";
 
 describe("github issues > #3694 Sync enums on schema sync", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
         enabledDrivers: ["mysql", "postgres"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
@@ -33,3 +35,5 @@ describe("github issues > #3694 Sync enums on schema sync", () => {
     })));
 
 });
+
+runIfMain(import.meta);

@@ -1,9 +1,9 @@
-import {Entity} from "../../../../src/decorator/entity/Entity";
-import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryGeneratedColumn";
-import {Author} from "./Author";
-import {Abbreviation} from "./Abbreviation";
-import {OneToOne} from "../../../../src/decorator/relations/OneToOne";
-import {JoinColumn} from "../../../../src/decorator/relations/JoinColumn";
+import {Entity} from "../../../../src/decorator/entity/Entity.ts";
+import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
+import {Author} from "./Author.ts";
+import {Abbreviation} from "./Abbreviation.ts";
+import {OneToOne} from "../../../../src/decorator/relations/OneToOne.ts";
+import {JoinColumn} from "../../../../src/decorator/relations/JoinColumn.ts";
 
 @Entity()
 export class Post {

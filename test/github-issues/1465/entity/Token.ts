@@ -1,14 +1,14 @@
-import { Column } from "../../../../src/decorator/columns/Column";
-import { PrimaryGeneratedColumn } from "../../../../src/decorator/columns/PrimaryGeneratedColumn";
-import { Entity } from "../../../../src/decorator/entity/Entity";
-import { TableInheritance } from "../../../../src/decorator/entity/TableInheritance";
+import { Column } from "../../../../src/decorator/columns/Column.ts";
+import { PrimaryGeneratedColumn } from "../../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
+import { Entity } from "../../../../src/decorator/entity/Entity.ts";
+import { TableInheritance } from "../../../../src/decorator/entity/TableInheritance.ts";
 
 @Entity()
 @TableInheritance({column: {type: "varchar", name: "type"}})
 export class Token {
   @PrimaryGeneratedColumn() id: number;
 
-  @Column() tokenSecret: string;
+  @Column({ type: String }) tokenSecret: string;
 
-  @Column() expiresOn: Date;
+  @Column({ type: Date }) expiresOn: Date;
 }

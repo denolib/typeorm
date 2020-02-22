@@ -1,7 +1,8 @@
-import "reflect-metadata";
-import {Post} from "./entity/Post";
-import {Connection} from "../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
+import {runIfMain} from "../../deps/mocha.ts";
+import "../../deps/chai.ts";
+import {Post} from "./entity/Post.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
 
 describe("github issues > #970 Mongo Bad Sort Specification", () => {
 
@@ -53,3 +54,5 @@ describe("github issues > #970 Mongo Bad Sort Specification", () => {
     })));
 
 });
+
+runIfMain(import.meta);

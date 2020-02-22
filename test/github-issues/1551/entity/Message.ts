@@ -1,10 +1,10 @@
-import {Chat} from "./Chat";
-import {User} from "./User";
-import {Recipient} from "./Recipient";
+import {Chat} from "./Chat.ts";
+import {User} from "./User.ts";
+import {Recipient} from "./Recipient.ts";
 import {
     Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany,
     PrimaryGeneratedColumn
-} from "../../../../src/index";
+} from "../../../../src/index.ts";
 
 export enum MessageType {
   TEXT,
@@ -52,13 +52,13 @@ export class Message {
   @ManyToOne(type => User, user => user.senderMessages, {eager: true})
   sender: User;
 
-  @Column()
+  @Column({ type: String })
   content: string;
 
   @CreateDateColumn()
   createdAt: number;
 
-  @Column({nullable: true})
+  @Column({type: Number, nullable: true})
   type: MessageType;
 
   @OneToMany(type => Recipient, recipient => recipient.message, {cascade: true, eager: true})

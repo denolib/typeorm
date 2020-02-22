@@ -1,6 +1,6 @@
-import {Entity, PrimaryGeneratedColumn, ManyToMany, JoinTable} from "../../../../src";
-import {Column} from "../../../../src/decorator/columns/Column";
-import {Category} from "./Category";
+import {Entity, PrimaryGeneratedColumn, ManyToMany, JoinTable} from "../../../../src/index.ts";
+import {Column} from "../../../../src/decorator/columns/Column.ts";
+import {Category} from "./Category.ts";
 
 @Entity()
 export class Question {
@@ -8,7 +8,7 @@ export class Question {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     name: string;
 
     @ManyToMany("Category")

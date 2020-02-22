@@ -1,17 +1,19 @@
-import "reflect-metadata";
-import {SapDriver} from "../../../src/driver/sap/SapDriver";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
-import {Post} from "./entity/Post";
-import {expect} from "chai";
-import { Category } from "./entity/Category";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {SapDriver} from "../../../src/driver/sap/SapDriver.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+import {Post} from "./entity/Post.ts";
+import { Category } from "./entity/Category.ts";
 
 describe("github issues > #3363 Isolation Level in transaction() from Connection", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
-        subscribers: [__dirname + "/subscriber/*{.js,.ts}"]
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        subscribers: [joinPaths(__dirname, "/subscriber/*.ts")]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
@@ -90,3 +92,5 @@ describe("github issues > #3363 Isolation Level in transaction() from Connection
     })));
 
 });
+
+runIfMain(import.meta);

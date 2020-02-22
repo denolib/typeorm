@@ -1,5 +1,5 @@
-import {Entity, PrimaryGeneratedColumn} from "../../../../src";
-import {Column} from "../../../../src/decorator/columns/Column";
+import {Entity, PrimaryGeneratedColumn} from "../../../../src/index.ts";
+import {Column} from "../../../../src/decorator/columns/Column.ts";
 
 @Entity("Error")
 export class Error {
@@ -10,13 +10,13 @@ export class Error {
     @Column("uniqueidentifier", { nullable: false })
     executionGuid: string;
 
-    @Column()
+    @Column({ type: Number })
     errorNumber: number;
 
-    @Column()
+    @Column({ type: String })
     errorDescription: string;
 
-    @Column()
+    @Column({ type: Date })
     errorDate: Date;
-    
+
 }

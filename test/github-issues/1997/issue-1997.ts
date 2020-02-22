@@ -1,14 +1,16 @@
-import "reflect-metadata";
-import {expect} from "chai";
-import {createTestingConnections, closeTestingConnections} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
-import {Post} from "./entity/Post";
-import {Table, TableColumn} from "../../../src";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {getDirnameOfCurrentModule, createTestingConnections, closeTestingConnections} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+import {Post} from "./entity/Post.ts";
+import {Table, TableColumn} from "../../../src/index.ts";
 
 describe("github issues > #1997 enum type not working in postgres when defined in a custom schema", () => {
     let connections: Connection[];
+    const __dirname= getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
         enabledDrivers: ["postgres"],
     }));
     beforeEach(() => {
@@ -269,3 +271,5 @@ describe("github issues > #1997 enum type not working in postgres when defined i
     })));
 
 });
+
+runIfMain(import.meta);

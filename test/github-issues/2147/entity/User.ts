@@ -1,5 +1,5 @@
 
-import {Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Unique} from "../../../../src";
+import {Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Unique} from "../../../../src/index.ts";
 
 @Entity()
 @Unique(["clientId", "key"])
@@ -8,16 +8,16 @@ export class User {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: Number })
     public key: number;
 
-    @Column({name: "client_id"})
+    @Column({type: Number, name: "client_id"})
     public clientId: number;
 
-    @Column()
+    @Column({type: Number})
     public name: string;
 
-    @Column({ name: "updated_by"})
+    @Column({ type: Number, name: "updated_by"})
     public updatedById: number;
 
     @ManyToOne(type => User)

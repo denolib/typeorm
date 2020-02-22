@@ -1,6 +1,6 @@
-import {Column, Entity, PrimaryGeneratedColumn, OneToOne, ManyToOne, JoinColumn} from "../../../../src/index";
-import {PhotoMetadata} from "./PhotoMetadata";
-import {Author} from "./Author";
+import {Column, Entity, PrimaryGeneratedColumn, OneToOne, ManyToOne, JoinColumn} from "../../../../src/index.ts";
+import {PhotoMetadata} from "./PhotoMetadata.ts";
+import {Author} from "./Author.ts";
 
 @Entity()
 export class Photo {
@@ -8,6 +8,7 @@ export class Photo {
     id: number;
 
     @Column({
+        type: String,
         length: 500,
     })
     name: string;
@@ -15,10 +16,10 @@ export class Photo {
     @Column("text")
     description: string;
 
-    @Column()
+    @Column({ type: String })
     filename: string;
 
-    @Column()
+    @Column({ type: Boolean })
     isPublished: boolean;
 
     @ManyToOne(type => Author, author => author.photos)

@@ -1,4 +1,4 @@
-import {Entity, PrimaryGeneratedColumn, TableInheritance} from "../../../../src";
+import {Entity, PrimaryGeneratedColumn, TableInheritance} from "../../../../src/index.ts";
 
 export abstract class Engine {}
 

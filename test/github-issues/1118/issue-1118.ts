@@ -1,13 +1,16 @@
-import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
-import {Post} from "./entity/Post";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+import {Post} from "./entity/Post.ts";
 
 describe("github issues > #1118 findByIds must return empty results if no criteria were passed in an array", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
@@ -17,12 +20,14 @@ describe("github issues > #1118 findByIds must return empty results if no criter
         post.name = "post #1";
         await connection.manager.save(post);
 
-        await connection.manager.findByIds(Post, [1]).should.eventually.eql([{
+        expect(await connection.manager.findByIds(Post, [1])).to.eql([{
             id: 1,
             name: "post #1"
         }]);
 
-        await connection.manager.findByIds(Post, []).should.eventually.eql([]);
+        expect(await connection.manager.findByIds(Post, [])).to.eql([]);
     })));
 
 });
+
+runIfMain(import.meta);

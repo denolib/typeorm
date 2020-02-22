@@ -1,13 +1,13 @@
-import { BaseEntity, Column, ManyToMany, PrimaryGeneratedColumn } from "../../../../src";
+import { BaseEntity, Column, ManyToMany, PrimaryGeneratedColumn } from "../../../../src/index.ts";
 
-import { Entity } from "../../../../src/decorator/entity/Entity";
-import { Foo } from "./Foo";
+import { Entity } from "../../../../src/decorator/entity/Entity.ts";
+import { Foo } from "./Foo.ts";
 
 @Entity()
 export class Bar extends BaseEntity {
   @PrimaryGeneratedColumn() id: number;
 
-  @Column() description: string;
+  @Column({ type: String }) description: string;
 
   @ManyToMany(type => Foo, foo => foo.bars)
   foos?: Foo[];

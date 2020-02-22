@@ -419,7 +419,7 @@ export class InsertQueryBuilder<Entity> extends QueryBuilder<Entity> {
                         // if (value instanceof Array)
                         //     value = new ArrayParameter(value);
 
-                        this.expressionMap.nativeParameters[paramName] = value; 
+                        this.expressionMap.nativeParameters[paramName] = value;
                         expression += this.connection.driver.createParameter(paramName, parametersCount);
                         parametersCount++;
                     }

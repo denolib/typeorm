@@ -1,19 +1,21 @@
-import "reflect-metadata";
-import {expect} from "chai";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
-import {Animal} from "./entity/Animal";
-import {NamingStrategyUnderTest} from "./naming/NamingStrategyUnderTest";
-import {ColumnMetadata} from "../../../src/metadata/ColumnMetadata";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+import {Animal} from "./entity/Animal.ts";
+import {NamingStrategyUnderTest} from "./naming/NamingStrategyUnderTest.ts";
+import {ColumnMetadata} from "../../../src/metadata/ColumnMetadata.ts";
 
 
 describe("github issue > #1282 FEATURE REQUEST - Naming strategy joinTableColumnName if it is called from the owning or owned (inverse) context ", () => {
 
     let connections: Connection[];
     let namingStrategy = new NamingStrategyUnderTest();
+    const __dirname = getDirnameOfCurrentModule(import.meta);
 
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
         namingStrategy
     }));
     beforeEach(() => {
@@ -44,3 +46,5 @@ describe("github issue > #1282 FEATURE REQUEST - Naming strategy joinTableColumn
     })));
 
 });
+
+runIfMain(import.meta);

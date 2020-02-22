@@ -1,12 +1,12 @@
-import { Entity, Column, OneToMany, PrimaryGeneratedColumn } from "../../../../src/";
-import { Note } from "./note";
+import { Entity, Column, OneToMany, PrimaryGeneratedColumn } from "../../../../src/index.ts";
+import { Note } from "./note.ts";
 
 @Entity()
 export class Person {
     @PrimaryGeneratedColumn()
     public id: number;
 
-    @Column()
+    @Column({ type: String })
     public name: string;
 
     @OneToMany(type => Note, note => note.owner, { lazy: true })

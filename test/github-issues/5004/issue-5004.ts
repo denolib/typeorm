@@ -1,7 +1,7 @@
-import "reflect-metadata";
-import {expect} from "chai";
-import {getMetadataArgsStorage} from "../../../src";
-import {Foo} from "./entity/Foo";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {getMetadataArgsStorage} from "../../../src/index.ts";
+import {Foo} from "./entity/Foo.ts";
 
 describe("github issues > #5004 expireAfterSeconds 0 can't be passed to Index decorator", () => {
 
@@ -16,3 +16,5 @@ describe("github issues > #5004 expireAfterSeconds 0 can't be passed to Index de
     });
 
 });
+
+runIfMain(import.meta);

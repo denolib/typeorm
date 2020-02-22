@@ -1,7 +1,7 @@
-import {Column} from "../../../../src";
+import {Column} from "../../../../src/index.ts";
 
 export class Contact {
 
-    @Column({ unique: true })
+    @Column({ type: String, unique: true })
     email: string;
 }

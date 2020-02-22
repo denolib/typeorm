@@ -1,4 +1,4 @@
-import {Column, Entity, PrimaryGeneratedColumn} from "../../../../src";
+import {Column, Entity, PrimaryGeneratedColumn} from "../../../../src/index.ts";
 
 @Entity()
 export class User {
@@ -6,13 +6,13 @@ export class User {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     firstName: string;
 
-    @Column()
+    @Column({ type: String })
     lastName: string;
 
-    @Column()
+    @Column({ type: Number })
     age: number;
 
 }

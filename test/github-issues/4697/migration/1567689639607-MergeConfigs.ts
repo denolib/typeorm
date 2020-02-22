@@ -1,6 +1,6 @@
-import {MigrationInterface, QueryRunner} from "../../../../src";
-import {Item} from "../entity/item.entity";
-import {Config} from "../entity/config.entity";
+import {MigrationInterface, QueryRunner} from "../../../../src/index.ts";
+import {Item} from "../entity/item.entity.ts";
+import {Config} from "../entity/config.entity.ts";
 
 export class MergeConfigs1567689639607 implements MigrationInterface {
 

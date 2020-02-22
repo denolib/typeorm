@@ -1,10 +1,10 @@
-import {PrimaryColumn, Entity, OneToMany} from "../../../../src";
-import {Month} from "./month";
+import {PrimaryColumn, Entity, OneToMany} from "../../../../src/index.ts";
+import {Month} from "./month.ts";
 
 @Entity()
 export class Year {
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     public yearNo: number;
 
     @OneToMany(type => Month, month => month.yearNo)

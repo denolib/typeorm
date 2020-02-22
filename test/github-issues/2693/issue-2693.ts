@@ -1,13 +1,16 @@
-import "reflect-metadata";
-import {createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
-import {Migration} from "../../../src/migration/Migration";
-import {QueryFailedError} from "../../../src/error/QueryFailedError";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {getDirnameOfCurrentModule, createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+import {Migration} from "../../../src/migration/Migration.ts";
+import {QueryFailedError} from "../../../src/error/QueryFailedError.ts";
 
 describe("github issues > #2875 Option to run migrations in 1-transaction-per-migration mode", () => {
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        __dirname,
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
         schemaCreate: false,
         dropSchema: true,
         enabledDrivers: ["postgres"]
@@ -16,7 +19,14 @@ describe("github issues > #2875 Option to run migrations in 1-transaction-per-mi
     after(() => closeTestingConnections(connections));
 
     it("should fail to run all necessary migrations when transaction is all", () => Promise.all(connections.map(async connection => {
-        return connection.runMigrations({ transaction: "all" }).should.be.rejectedWith(QueryFailedError, "relation \"users\" does not exist");
+        let error;
+        try {
+            await connection.runMigrations({ transaction: "all" });
+        } catch (err) {
+            error = err;
+        }
+        expect(error).to.be.instanceOf(QueryFailedError);
+        expect(error.message).to.equal("relation \"users\" does not exist");
     })));
 
     it("should be able to run all necessary migrations when transaction is each", () => Promise.all(connections.map(async connection => {
@@ -28,3 +38,5 @@ describe("github issues > #2875 Option to run migrations in 1-transaction-per-mi
         mymigr[2].name.should.be.equal("InsertUser0000000000003");
     })));
  });
+
+runIfMain(import.meta);

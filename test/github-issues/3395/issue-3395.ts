@@ -1,7 +1,8 @@
-import "reflect-metadata";
-import { closeTestingConnections, createTestingConnections, reloadTestingDatabases } from "../../utils/test-utils";
-import { Connection } from "../../../src/connection/Connection";
-import { Post } from "./entity/Post";
+import {runIfMain} from "../../deps/mocha.ts";
+import "../../deps/chai.ts";
+import { closeTestingConnections, createTestingConnections, reloadTestingDatabases } from "../../utils/test-utils.ts";
+import { Connection } from "../../../src/connection/Connection.ts";
+import { Post } from "./entity/Post.ts";
 
 describe("github issues > #3395 Transform.from does nothing when column is NULL", () => {
 
@@ -24,3 +25,5 @@ describe("github issues > #3395 Transform.from does nothing when column is NULL"
     })));
 
 });
+
+runIfMain(import.meta);

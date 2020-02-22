@@ -1,16 +1,18 @@
-import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src";
-import {Provider} from "./entity/Provider";
-import {Personalization} from "./entity/Personalization";
-import {expect} from "chai";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/index.ts";
+import {Provider} from "./entity/Provider.ts";
+import {Personalization} from "./entity/Personalization.ts";
 
 describe("github issues > #1788 One to One does not load relationships.", () => {
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(
         async () =>
             (connections = await createTestingConnections({
-                entities: [__dirname + "/entity/*{.js,.ts}"],
+                entities: [joinPaths(__dirname, "/entity/*.ts")],
                 enabledDrivers: ["mysql"]
             }))
     );
@@ -43,3 +45,5 @@ describe("github issues > #1788 One to One does not load relationships.", () => 
         })
     ));
 });
+
+runIfMain(import.meta);

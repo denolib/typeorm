@@ -1,14 +1,14 @@
-import {PrimaryColumn, Entity, ManyToOne, OneToMany, JoinColumn} from "../../../../src";
-import {Year} from "./year";
-import {UserMonth} from "./user-month";
+import {PrimaryColumn, Entity, ManyToOne, OneToMany, JoinColumn} from "../../../../src/index.ts";
+import {Year} from "./year.ts";
+import {UserMonth} from "./user-month.ts";
 
 @Entity()
 export class Month {
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     public yearNo: number;
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     public monthNo: number;
 
     @ManyToOne(type => Year, year => year.month)

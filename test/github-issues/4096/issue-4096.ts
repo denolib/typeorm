@@ -1,10 +1,11 @@
-import "reflect-metadata";
-import {createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
-import {expect} from "chai";
-import {User} from "./entity/User";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+import {User} from "./entity/User.ts";
 
-describe("github issues > #4096 SQLite support for orUpdate", () => {
+// TODO(uki00a) See: https://github.com/denolib/typeorm/issues/17
+describe.skip("github issues > #4096 SQLite support for orUpdate", () => {
     let connections: Connection[];
 
     before(async () => connections = await createTestingConnections({
@@ -55,3 +56,5 @@ describe("github issues > #4096 SQLite support for orUpdate", () => {
       expect(users[0]).to.includes({ bio: "Updated bio" });
     })));
  });
+
+runIfMain(import.meta);

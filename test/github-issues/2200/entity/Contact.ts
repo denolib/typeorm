@@ -1,5 +1,5 @@
-import {Entity, PrimaryGeneratedColumn, OneToMany} from "../../../../src/index";
-import { Booking } from "./Booking";
+import {Entity, PrimaryGeneratedColumn, OneToMany} from "../../../../src/index.ts";
+import { Booking } from "./Booking.ts";
 
 @Entity()
 export class Contact {

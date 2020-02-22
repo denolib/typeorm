@@ -1,15 +1,17 @@
-import "reflect-metadata";
-import { closeTestingConnections, createTestingConnections, reloadTestingDatabases } from "../../utils/test-utils";
-import { Connection } from "../../../src/connection/Connection";
-import { expect } from "chai";
-import { Post } from "./entity/Post";
-import { PostgresDriver } from "../../../src/driver/postgres/PostgresDriver";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import { getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases } from "../../utils/test-utils.ts";
+import { Connection } from "../../../src/connection/Connection.ts";
+import { Post } from "./entity/Post.ts";
+//import { PostgresDriver } from "../../../src/driver/postgres/PostgresDriver.ts";
 
 describe("github issues > #2128 skip preparePersistentValue for value functions", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
         enabledDrivers: ["postgres", "mysql"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
@@ -38,7 +40,7 @@ describe("github issues > #2128 skip preparePersistentValue for value functions"
         await connection.createQueryBuilder()
             .update(Post)
             .set({
-                meta: () => connection.driver instanceof PostgresDriver
+                meta: () => false/*connection.driver instanceof PostgresDriver*/ // TODO(uki00a) uncomment this when PostgresDriver is implemented.
                     ? `'${metaAddition}'::JSONB || meta::JSONB`
                     : `JSON_MERGE('${metaAddition}', meta)`
             })
@@ -60,3 +62,5 @@ describe("github issues > #2128 skip preparePersistentValue for value functions"
     })));
 
 });
+
+runIfMain(import.meta);

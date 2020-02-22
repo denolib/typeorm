@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "../../../../src";
+import { Entity, PrimaryGeneratedColumn, Column } from "../../../../src/index.ts";
 
 export enum EquipmentModelType {
     Thing1 = 1,

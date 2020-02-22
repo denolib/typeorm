@@ -1,4 +1,4 @@
-import {AfterLoad, Column, Entity, PrimaryGeneratedColumn} from "../../../../src";
+import {AfterLoad, Column, Entity, PrimaryGeneratedColumn} from "../../../../src/index.ts";
 
 @Entity()
 export class Category {
@@ -6,7 +6,7 @@ export class Category {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     name: string;
 
     loaded: boolean = false;

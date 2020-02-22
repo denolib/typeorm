@@ -1,5 +1,5 @@
-import {Entity, PrimaryGeneratedColumn, Column, ManyToOne} from "../../../../src";
-import {User} from "./User";
+import {Entity, PrimaryGeneratedColumn, Column, ManyToOne} from "../../../../src/index.ts";
+import {User} from "./User.ts";
 
 @Entity()
 export class Photo {
@@ -7,7 +7,7 @@ export class Photo {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     url: string;
 
     @ManyToOne("User", "photos")

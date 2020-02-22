@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn } from "../../../../src/index";
+import { Entity, Column, PrimaryGeneratedColumn } from "../../../../src/index.ts";
 
 export class EmbeddedItem {
     @Column({ type: "integer", array: true })
@@ -10,7 +10,7 @@ export class Item {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     someText: string;
 
     @Column(type => EmbeddedItem)

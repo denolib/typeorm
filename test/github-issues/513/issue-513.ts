@@ -1,16 +1,18 @@
-import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
-import {ObjectLiteral} from "../../../src/common/ObjectLiteral";
-import {expect} from "chai";
-import {Post} from "./entity/Post";
-import {DateUtils} from "../../../src/util/DateUtils";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+import {ObjectLiteral} from "../../../src/common/ObjectLiteral.ts";
+import {Post} from "./entity/Post.ts";
+import {DateUtils} from "../../../src/util/DateUtils.ts";
 
 describe("github issues > #513 Incorrect time/datetime types for SQLite", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
         enabledDrivers: ["sqlite"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
@@ -25,20 +27,20 @@ describe("github issues > #513 Incorrect time/datetime types for SQLite", () => 
       dbColumns.map((dbColumn) => {
         if (dbColumn["name"] === "dateTimeColumn") {
           columnType = dbColumn["type"];
-        }        
+        }
       });
 
       // Expect "datetime" type to translate to SQLite affinity type "DATETIME"
       columnType.should.equal("datetime");
     })));
-    
+
     it("should persist correct type in datetime column in sqlite", () => Promise.all(connections.map(async connection => {
       const now: Date = new Date();
 
       const post: Post = new Post();
       post.id = 1;
       post.dateTimeColumn = now;
-      
+
       await connection.manager.save(post);
 
       const storedPost = await connection.manager.findOne(Post, post.id);
@@ -55,7 +57,7 @@ describe("github issues > #513 Incorrect time/datetime types for SQLite", () => 
       dbColumns.map((dbColumn) => {
         if (dbColumn["name"] === "timeColumn") {
           columnType = dbColumn["type"];
-        }        
+        }
       });
 
       // Expect "time" type to translate to SQLite type "TEXT"
@@ -68,7 +70,7 @@ describe("github issues > #513 Incorrect time/datetime types for SQLite", () => 
       const post: Post = new Post();
       post.id = 2;
       post.timeColumn = now; // Should maybe use Date type?
-      
+
       await connection.manager.save(post);
 
       const storedPost = await connection.manager.findOne(Post, post.id);
@@ -79,3 +81,5 @@ describe("github issues > #513 Incorrect time/datetime types for SQLite", () => 
     })));
 
 });
+
+runIfMain(import.meta);

@@ -1,19 +1,18 @@
-import "reflect-metadata";
-import * as assert from "assert";
-import {createConnection} from "../../../src/index";
-import * as rimraf from "rimraf";
-import {dirname} from "path";
-import {Connection} from "../../../src/connection/Connection";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {dirname} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {emptyDir} from "../../../vendor/https/deno.land/std/fs/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {getDirnameOfCurrentModule} from "../../utils/test-utils.ts";
+import {createConnection} from "../../../src/index.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
 
 describe("github issues > #799 sqlite: 'database' path should be created", () => {
     let connection: Connection;
 
-    const path = `${__dirname}/tmp/sqlitedb.db`;
-    const cleanup = (done: () => void) => {
-        rimraf(dirname(path), () => {
-            return done();
-        });
-    };
+    const __dirname = getDirnameOfCurrentModule(import.meta);
+    const path = joinPaths(__dirname, '/tmp/sqlitedb.db');
+    const cleanup = () => emptyDir(dirname(path));
 
     before(cleanup);
     after(cleanup);
@@ -31,7 +30,9 @@ describe("github issues > #799 sqlite: 'database' path should be created", () =>
             "database": path
         });
 
-        assert.strictEqual(connection.isConnected, true);
+        expect(connection.isConnected).to.be.true;
     });
 
 });
+
+runIfMain(import.meta);

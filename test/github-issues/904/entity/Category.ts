@@ -1,9 +1,9 @@
-import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryGeneratedColumn";
-import {Column} from "../../../../src/decorator/columns/Column";
-import {TreeParent} from "../../../../src/decorator/tree/TreeParent";
-import {TreeChildren} from "../../../../src/decorator/tree/TreeChildren";
-import {Entity} from "../../../../src/decorator/entity/Entity";
-import {Tree} from "../../../../src/decorator/tree/Tree";
+import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
+import {Column} from "../../../../src/decorator/columns/Column.ts";
+import {TreeParent} from "../../../../src/decorator/tree/TreeParent.ts";
+import {TreeChildren} from "../../../../src/decorator/tree/TreeChildren.ts";
+import {Entity} from "../../../../src/decorator/entity/Entity.ts";
+import {Tree} from "../../../../src/decorator/tree/Tree.ts";
 
 @Entity("sample22_category")
 @Tree("closure-table")
@@ -12,9 +12,9 @@ export class Category {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     name: string;
-    
+
     @TreeParent()
     parentCategory: Category;
 

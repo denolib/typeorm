@@ -1,15 +1,18 @@
-import "reflect-metadata";
-import { Connection } from "../../../src/connection/Connection";
-import { createTestingConnections, reloadTestingDatabases, closeTestingConnections } from "../../utils/test-utils";
-import { ValidationModel } from "./entity/ValidationModel";
-import { MainModel } from "./entity/MainModel";
-import { DataModel } from "./entity/DataModel";
+import { join as joinPaths } from "../../../vendor/https/deno.land/std/path/mod.ts";
+import { runIfMain } from "../../deps/mocha.ts";
+import "../../deps/chai.ts";
+import { Connection } from "../../../src/connection/Connection.ts";
+import { getDirnameOfCurrentModule, createTestingConnections, reloadTestingDatabases, closeTestingConnections } from "../../utils/test-utils.ts";
+import { ValidationModel } from "./entity/ValidationModel.ts";
+import { MainModel } from "./entity/MainModel.ts";
+import { DataModel } from "./entity/DataModel.ts";
 
 describe("github issues > #1545 Typeorm runs insert query instead of update query on save of existing entity for ManyToOne relationships", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
         enabledDrivers: ["postgres"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
@@ -23,10 +26,10 @@ describe("github issues > #1545 Typeorm runs insert query instead of update quer
         validation2.validation = 456;
         await Promise.all([await connection.manager.save(validation1), await connection.manager.save(validation2)]);
 
-        const data1_1 = new DataModel(); 
+        const data1_1 = new DataModel();
         data1_1.active = true;
         data1_1.validations = validation1;
-        
+
         const main1 = new MainModel();
         main1.dataModel = [data1_1];
 
@@ -37,9 +40,11 @@ describe("github issues > #1545 Typeorm runs insert query instead of update quer
         main1.dataModel[0].active = false;
         await connection.manager.save(main1);
         // console.dir(main1, { colors: true, depth: null });
-        
+
         return true;
 
     })));
 
 });
+
+runIfMain(import.meta);

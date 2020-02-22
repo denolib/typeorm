@@ -1,11 +1,11 @@
-import {Entity} from "../../../../src/decorator/entity/Entity";
-import {PrimaryColumn, OneToMany} from "../../../../src";
-import {User} from "./User";
+import {Entity} from "../../../../src/decorator/entity/Entity.ts";
+import {PrimaryColumn, OneToMany} from "../../../../src/index.ts";
+import {User} from "./User.ts";
 
 @Entity()
 export class Role {
 
-  @PrimaryColumn()
+  @PrimaryColumn({ type: String })
   id: string;
 
   @OneToMany(_ => User, user => user.role, { cascade: true })

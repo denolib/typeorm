@@ -1,7 +1,7 @@
-import {ObjectID} from "../../../../src/driver/mongodb/typings";
-import {Entity} from "../../../../src/decorator/entity/Entity";
-import {ObjectIdColumn} from "../../../../src/decorator/columns/ObjectIdColumn";
-import {Column} from "../../../../src/decorator/columns/Column";
+import {ObjectID} from "../../../../src/driver/mongodb/typings.ts";
+import {Entity} from "../../../../src/decorator/entity/Entity.ts";
+import {ObjectIdColumn} from "../../../../src/decorator/columns/ObjectIdColumn.ts";
+import {Column} from "../../../../src/decorator/columns/Column.ts";
 
 @Entity()
 export class Event {
@@ -9,10 +9,10 @@ export class Event {
     @ObjectIdColumn()
     id: ObjectID;
 
-    @Column()
+    @Column({ type: String })
     name: string;
 
-    @Column({ name: "at_date", default: Date.now })
+    @Column({ type: Date, name: "at_date", default: Date.now })
     date: Date;
 
     // @Column( type => User)

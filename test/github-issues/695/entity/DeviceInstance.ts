@@ -1,9 +1,9 @@
-import {Entity} from "../../../../src/decorator/entity/Entity";
-import {PrimaryColumn} from "../../../../src/decorator/columns/PrimaryColumn";
-import {ManyToOne} from "../../../../src/decorator/relations/ManyToOne";
-import {JoinColumn} from "../../../../src/decorator/relations/JoinColumn";
-import {Column} from "../../../../src/decorator/columns/Column";
-import {Device} from "./Device";
+import {Entity} from "../../../../src/decorator/entity/Entity.ts";
+import {PrimaryColumn} from "../../../../src/decorator/columns/PrimaryColumn.ts";
+import {ManyToOne} from "../../../../src/decorator/relations/ManyToOne.ts";
+import {JoinColumn} from "../../../../src/decorator/relations/JoinColumn.ts";
+import {Column} from "../../../../src/decorator/columns/Column.ts";
+import {Device} from "./Device.ts";
 
 @Entity("device_instances")
 export class DeviceInstance {

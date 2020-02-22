@@ -1,8 +1,8 @@
-import "reflect-metadata";
-import { closeTestingConnections, createTestingConnections, reloadTestingDatabases } from "../../utils/test-utils";
-import { Connection } from "../../../src/connection/Connection";
-import { EquipmentModel } from "./entity/EquipmentModel";
-import { expect } from "chai";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import { closeTestingConnections, createTestingConnections, reloadTestingDatabases } from "../../utils/test-utils.ts";
+import { Connection } from "../../../src/connection/Connection.ts";
+import { EquipmentModel } from "./entity/EquipmentModel.ts";
 
 
 describe("github issues > #3587 do not generate change queries for number based enum types every time", () => {
@@ -26,3 +26,5 @@ describe("github issues > #3587 do not generate change queries for number based 
     })));
 
 });
+
+runIfMain(import.meta);

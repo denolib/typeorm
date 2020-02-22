@@ -1,6 +1,6 @@
-import {Column} from "../../../../src/decorator/columns/Column";
-import {Entity} from "../../../../src/decorator/entity/Entity";
-import {Index} from "../../../../src/decorator/Index";
+import {Column} from "../../../../src/decorator/columns/Column.ts";
+import {Entity} from "../../../../src/decorator/entity/Entity.ts";
+import {Index} from "../../../../src/decorator/Index.ts";
 
 @Entity()
 export class Foo {

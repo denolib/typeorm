@@ -1,13 +1,14 @@
-import { PrimaryColumn, Entity, Column } from "../../../../src";
+import { PrimaryColumn, Entity, Column } from "../../../../src/index.ts";
 
 
 @Entity()
 export class Post {
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     id: number;
 
     @Column({
+        type: String,
         nullable: true,
         transformer: {
             from(val: string | undefined | null) {

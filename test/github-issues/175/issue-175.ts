@@ -1,15 +1,17 @@
-import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
-import {Post} from "./entity/Post";
-import {Category} from "./entity/Category";
-import {expect} from "chai";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+import {Post} from "./entity/Post.ts";
+import {Category} from "./entity/Category.ts";
 
 describe("github issues > #175 ManyToMany relation doesn't put an empty array when the relation is empty", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
@@ -48,7 +50,7 @@ describe("github issues > #175 ManyToMany relation doesn't put an empty array wh
             }]
         });
     })));
-    
+
     it("should return post with categories even if post with empty categories was saved", () => Promise.all(connections.map(async connection => {
 
         const category1 = new Category();
@@ -80,7 +82,7 @@ describe("github issues > #175 ManyToMany relation doesn't put an empty array wh
             categories: []
         });
     })));
-    
+
     it("should return post with categories even if post was saved without categories set", () => Promise.all(connections.map(async connection => {
 
         const category1 = new Category();
@@ -110,3 +112,5 @@ describe("github issues > #175 ManyToMany relation doesn't put an empty array wh
     })));
 
 });
+
+runIfMain(import.meta);

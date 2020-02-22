@@ -1,7 +1,7 @@
-import {Column} from "../../../../src/decorator/columns/Column";
-import {TableInheritance} from "../../../../src/decorator/entity/TableInheritance";
-import {Entity} from "../../../../src/decorator/entity/Entity";
-import {PrimaryColumn} from "../../../../src/decorator/columns/PrimaryColumn";
+import {Column} from "../../../../src/decorator/columns/Column.ts";
+import {TableInheritance} from "../../../../src/decorator/entity/TableInheritance.ts";
+import {Entity} from "../../../../src/decorator/entity/Entity.ts";
+import {PrimaryColumn} from "../../../../src/decorator/columns/PrimaryColumn.ts";
 
 export enum PersonType {
     Employee = 1,
@@ -13,13 +13,13 @@ export enum PersonType {
 @TableInheritance({ column: { name: "type", type: "int"} })
 export abstract class Person  {
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: String })
     id: string;
 
-    @Column()
+    @Column({ type: String })
     firstName: string;
 
-    @Column()
+    @Column({ type: String })
     lastName: string;
 
     type: PersonType;

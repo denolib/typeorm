@@ -1,7 +1,7 @@
-import {Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn} from "../../../../src/index";
-import {Chat} from "./Chat";
-import {Message} from "./Message";
-import {Recipient} from "./Recipient";
+import {Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn} from "../../../../src/index.ts";
+import {Chat} from "./Chat.ts";
+import {Message} from "./Message.ts";
+import {Recipient} from "./Recipient.ts";
 
 export interface UserConstructor {
   username?: string;
@@ -34,19 +34,19 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ type: String })
   username: string;
 
-  @Column()
+  @Column({ type: String })
   password: string;
 
-  @Column()
+  @Column({ type: String })
   name: string;
 
-  @Column({nullable: true})
+  @Column({type: String, nullable: true})
   picture?: string;
 
-  @Column({nullable: true})
+  @Column({type: String, nullable: true})
   phone?: string;
 
   @ManyToMany(type => Chat, chat => chat.allTimeMembers)

@@ -1,6 +1,6 @@
-import {Column, Entity, ManyToOne} from "../../../../src";
-import {Order} from "./Order";
-import {Product} from "./Product";
+import {Column, Entity, ManyToOne} from "../../../../src/index.ts";
+import {Order} from "./Order.ts";
+import {Product} from "./Product.ts";
 
 @Entity()
 export class OrderItem {
@@ -11,7 +11,7 @@ export class OrderItem {
     @ManyToOne(type => Product, { primary: true })
     product: Product;
 
-    @Column()
+    @Column({ type: Number })
     amount: number;
 
 }

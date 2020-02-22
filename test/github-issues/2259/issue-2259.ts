@@ -1,15 +1,18 @@
-import "reflect-metadata";
-import {createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
-import { TableColumn } from "../../../src/schema-builder/table/TableColumn";
-import { Table } from "../../../src/schema-builder/table/Table";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import "../../deps/chai.ts";
+import {getDirnameOfCurrentModule, createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+import { TableColumn } from "../../../src/schema-builder/table/TableColumn.ts";
+import { Table } from "../../../src/schema-builder/table/Table.ts";
 
 describe("github issues > #2259 Missing type for generated columns", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
         enabledDrivers: ["postgres"],
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
         schemaCreate: true,
         dropSchema: true,
     }));
@@ -32,3 +35,5 @@ describe("github issues > #2259 Missing type for generated columns", () => {
     })));
 
 });
+
+runIfMain(import.meta);

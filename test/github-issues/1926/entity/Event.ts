@@ -1,5 +1,5 @@
-import {Column, Entity, OneToMany, PrimaryGeneratedColumn} from "../../../../src/index";
-import {EventRole} from "./EventRole";
+import {Column, Entity, OneToMany, PrimaryGeneratedColumn} from "../../../../src/index.ts";
+import {EventRole} from "./EventRole.ts";
 
 @Entity()
 export class Event {
@@ -7,7 +7,7 @@ export class Event {
     @PrimaryGeneratedColumn("uuid")
     id: string;
 
-    @Column()
+    @Column({ type: String })
     title: string;
 
     @OneToMany(type => EventRole, role => role.event, {

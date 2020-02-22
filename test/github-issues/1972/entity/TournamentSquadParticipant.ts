@@ -1,7 +1,7 @@
-import { ChildEntity, OneToOne, JoinColumn, ManyToMany, JoinTable } from "../../../../src/index";
+import { ChildEntity, OneToOne, JoinColumn, ManyToMany, JoinTable } from "../../../../src/index.ts";
 
-import { TournamentParticipant } from "./TournamentParticipant";
-import { User } from "./User";
+import { TournamentParticipant } from "./TournamentParticipant.ts";
+import { User } from "./User.ts";
 
 @ChildEntity()
 export class TournamentSquadParticipant extends TournamentParticipant {

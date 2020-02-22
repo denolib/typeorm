@@ -1,16 +1,18 @@
-import "reflect-metadata";
-import {createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
-import {PostgresDriver} from "../../../src/driver/postgres/PostgresDriver";
-import {User} from "./entity/User";
-import {expect} from "chai";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {getDirnameOfCurrentModule, createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+//import {PostgresDriver} from "../../../src/driver/postgres/PostgresDriver.ts";
+import {User} from "./entity/User.ts";
 
 describe("github issues > #2067 Unhandled promise rejection warning on postgres connection issues", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
         enabledDrivers: ["postgres"],
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
         schemaCreate: true,
         dropSchema: true,
     }));
@@ -20,13 +22,23 @@ describe("github issues > #2067 Unhandled promise rejection warning on postgres 
     it("should return a catchable error on connection errors in queries", () => Promise.all(connections.map(async connection => {
         const connectionFailureMessage = "Test error to simulate a connection error";
 
-        if (connection.driver instanceof PostgresDriver) {
+        if (false/*connection.driver instanceof PostgresDriver*/) { // TODO(uki00a) uncomment this when PostgresDriver is implemented.
           connection.driver.obtainMasterConnection = () => Promise.reject<any>(new Error(connectionFailureMessage));
           connection.driver.obtainSlaveConnection = () => Promise.reject<any>(new Error(connectionFailureMessage));
         }
 
         const repository = connection.getRepository(User);
-        return expect(repository.find()).to.be.rejectedWith(Error, connectionFailureMessage);
+
+        let error;
+        try {
+            await repository.find();
+        } catch (err) {
+            error = err;
+        }
+        expect(error).to.be.instanceOf(Error);
+        expect(error.message).to.equal(connectionFailureMessage);
     })));
 
 });
+
+runIfMain(import.meta);

@@ -1,4 +1,4 @@
-import {CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, VersionColumn} from "../../../../src";
+import {CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, VersionColumn} from "../../../../src/index.ts";
 
 @Entity()
 export class Post {
@@ -6,7 +6,7 @@ export class Post {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @VersionColumn()
+    @VersionColumn({ type: Number })
     version: number;
 
     @CreateDateColumn({type: "timestamp"})

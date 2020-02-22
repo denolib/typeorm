@@ -1,8 +1,8 @@
-import {Entity} from "../../../../src/decorator/entity/Entity";
-import {Column} from "../../../../src/decorator/columns/Column";
-import {Post} from "./Post";
-import {ManyToOne} from "../../../../src/decorator/relations/ManyToOne";
-import {Category} from "./Category";
+import {Entity} from "../../../../src/decorator/entity/Entity.ts";
+import {Column} from "../../../../src/decorator/columns/Column.ts";
+import {Post} from "./Post.ts";
+import {ManyToOne} from "../../../../src/decorator/relations/ManyToOne.ts";
+import {Category} from "./Category.ts";
 
 @Entity()
 export class PostCategory {
@@ -19,10 +19,10 @@ export class PostCategory {
     })
     category: Category;
 
-    @Column()
+    @Column({ type: Boolean })
     addedByAdmin: boolean;
 
-    @Column()
+    @Column({ type: Boolean })
     addedByUser: boolean;
 
 }

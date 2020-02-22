@@ -1,13 +1,18 @@
-import {Connection} from "../../../src";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {User} from "./entity/User";
-import {Photo} from "./entity/Photo";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import "../../deps/chai.ts";
+import {Connection} from "../../../src/index.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {User} from "./entity/User.ts";
+import {Photo} from "./entity/Photo.ts";
 
-describe("github issues > #2044 Should not double get embedded column value", () => {
+// TODO(uki00a) This suite is skipped because it depends on `string_decoder` module.
+describe.skip("github issues > #2044 Should not double get embedded column value", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
         enabledDrivers: ["mysql"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
@@ -40,3 +45,5 @@ describe("github issues > #2044 Should not double get embedded column value", ()
     })));
 
 });
+
+runIfMain(import.meta);

@@ -1,15 +1,17 @@
-import "reflect-metadata";
-import {createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
-import {expect} from "chai";
-import {User} from "./entity/User";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {getDirnameOfCurrentModule, createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+import {User} from "./entity/User.ts";
 
 // TODO: wrong test
 describe.skip("github issues > #2147 Lazy load JoinColumn with multiple columns name property is ignored for second reference column", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-         entities: [__dirname + "/entity/*{.js,.ts}"],
+         entities: [joinPaths(__dirname, "/entity/*.ts")],
          schemaCreate: true,
          dropSchema: true,
     }));
@@ -36,3 +38,5 @@ describe.skip("github issues > #2147 Lazy load JoinColumn with multiple columns 
         }));
     });
 });
+
+runIfMain(import.meta);

@@ -1,12 +1,12 @@
-import { PrimaryColumn, OneToMany } from "../../../../../src/index";
-import { Entity } from "../../../../../src/decorator/entity/Entity";
-import { BaseEntity } from "../../../../../src/repository/BaseEntity";
+import { PrimaryColumn, OneToMany } from "../../../../../src/index.ts";
+import { Entity } from "../../../../../src/decorator/entity/Entity.ts";
+import { BaseEntity } from "../../../../../src/repository/BaseEntity.ts";
 
-import { RecordContext } from "./context";
+import { RecordContext } from "./context.ts";
 
 @Entity({ name: "records" })
 export class Record extends BaseEntity {
-    @PrimaryColumn()
+    @PrimaryColumn({ type: String })
     public id: string;
 
     @OneToMany(type => RecordContext, context => context.record)

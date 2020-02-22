@@ -1,7 +1,7 @@
-import {Entity} from "../../../../src/decorator/entity/Entity";
-import {PrimaryColumn} from "../../../../src/decorator/columns/PrimaryColumn";
-import {Column} from "../../../../src/decorator/columns/Column";
-import {Generated} from "../../../../src/decorator/Generated";
+import {Entity} from "../../../../src/decorator/entity/Entity.ts";
+import {PrimaryColumn} from "../../../../src/decorator/columns/PrimaryColumn.ts";
+import {Column} from "../../../../src/decorator/columns/Column.ts";
+import {Generated} from "../../../../src/decorator/Generated.ts";
 
 @Entity("kollektion")
 export class Kollektion {
@@ -10,7 +10,7 @@ export class Kollektion {
     @Generated()
     id: number;
 
-    @Column({ name: "kollektion_name" })
+    @Column({ name: "kollektion_name", type: String })
     name: string;
 
 }

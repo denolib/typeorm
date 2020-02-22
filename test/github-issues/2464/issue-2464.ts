@@ -1,17 +1,17 @@
-import "reflect-metadata";
-
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-
-import {Connection} from "../../../src/connection/Connection";
-import { Foo } from "./entity/Foo";
-import { QueryFailedError } from "../../../src";
-import {expect} from "chai";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+import { Foo } from "./entity/Foo.ts";
+import { QueryFailedError } from "../../../src/index.ts";
 
 describe("github issues > #2464 - ManyToMany onDelete option not working", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"]
+        entities: [joinPaths(__dirname, "/entity/*.ts")]
     }));
 
     beforeEach(() => reloadTestingDatabases(connections));
@@ -25,11 +25,11 @@ describe("github issues > #2464 - ManyToMany onDelete option not working", () =>
 
         try {
           await repo.delete(1);
-          expect.fail(); 
+          expect.fail();
         } catch (e) {
           e.should.be.instanceOf(QueryFailedError);
         }
-        
+
       })
     ));
 
@@ -42,8 +42,10 @@ describe("github issues > #2464 - ManyToMany onDelete option not working", () =>
 
         const foo = await repo.findOne(1);
         expect(foo).to.be.undefined;
-        
+
       })
     ));
 
 });
+
+runIfMain(import.meta);

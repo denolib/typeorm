@@ -1,8 +1,8 @@
-import {Entity} from "../../../../src/decorator/entity/Entity";
-import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryGeneratedColumn";
-import {OneToOne} from "../../../../src/decorator/relations/OneToOne";
-import {Ticket} from "./Ticket";
-import {Column} from "../../../../src/decorator/columns/Column";
+import {Entity} from "../../../../src/decorator/entity/Entity.ts";
+import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
+import {OneToOne} from "../../../../src/decorator/relations/OneToOne.ts";
+import {Ticket} from "./Ticket.ts";
+import {Column} from "../../../../src/decorator/columns/Column.ts";
 
 @Entity()
 export class Request {
@@ -10,13 +10,13 @@ export class Request {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     owner: string;
 
-    @Column()
+    @Column({ type: String })
     type: string;
 
-    @Column()
+    @Column({ type: Boolean })
     success: boolean;
 
     @OneToOne(type => Ticket, ticket => ticket.request)

@@ -1,8 +1,11 @@
-import { closeTestingConnections, createTestingConnections, reloadTestingDatabases } from "../../utils/test-utils";
-import { Connection } from "../../../src/connection/Connection";
-import { EntitySchema } from "../../../src";
-import { Author, AuthorSchema } from "./entity/Author";
-import { Post, PostSchema } from "./entity/Post";
+import { join as joinPaths } from "../../../vendor/https/deno.land/std/path/mod.ts";
+import { runIfMain } from "../../deps/mocha.ts";
+import "../../deps/chai.ts";
+import { closeTestingConnections, createTestingConnections, reloadTestingDatabases } from "../../utils/test-utils.ts";
+import { Connection } from "../../../src/connection/Connection.ts";
+import { EntitySchema } from "../../../src/index.ts";
+import { Author, AuthorSchema } from "./entity/Author.ts";
+import { Post, PostSchema } from "./entity/Post.ts";
 
 describe("github issues > #1308 Raw Postgresql Update query result is always an empty array", () => {
   let connections: Connection[];
@@ -47,3 +50,5 @@ describe("github issues > #1308 Raw Postgresql Update query result is always an 
       })
     ));
 });
+
+runIfMain(import.meta);

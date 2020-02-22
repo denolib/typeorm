@@ -1,14 +1,17 @@
-import {Connection} from "../../../src";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {SubUser} from "./entity/User";
-import {expect} from "chai";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {Connection} from "../../../src/index.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {SubUser} from "./entity/User.ts";
 
 describe("github issues > #2253 - inserting multiple child entities fails", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
 
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
         schemaCreate: true,
         dropSchema: true
     }));
@@ -26,3 +29,4 @@ describe("github issues > #2253 - inserting multiple child entities fails", () =
   })));
 });
 
+runIfMain(import.meta);

@@ -1,9 +1,9 @@
-import {Column} from "../../../../src/decorator/columns/Column";
-import {FooChildMetadata} from "./FooChildMetadata";
+import {Column} from "../../../../src/decorator/columns/Column.ts";
+import {FooChildMetadata} from "./FooChildMetadata.ts";
 
 export class FooMetadata {
 
-    @Column({ nullable: true })
+    @Column({ type: Number, nullable: true })
     bar: number;
 
     @Column(type => FooChildMetadata)

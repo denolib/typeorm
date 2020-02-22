@@ -1,13 +1,16 @@
-import "reflect-metadata";
-import { createTestingConnections, closeTestingConnections, reloadTestingDatabases } from "../../utils/test-utils";
-import { Connection } from "../../../src/connection/Connection";
-import { User } from "./entity/User";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import { getDirnameOfCurrentModule, createTestingConnections, closeTestingConnections, reloadTestingDatabases } from "../../utils/test-utils.ts";
+import { Connection } from "../../../src/connection/Connection.ts";
+import { User } from "./entity/User.ts";
 
 describe("github issues > #4513 CockroachDB support for onConflict", () => {
 
   let connections: Connection[];
+  const __dirname = getDirnameOfCurrentModule(import.meta);
   before(async () => connections = await createTestingConnections({
-    entities: [__dirname + "/entity/*{.js,.ts}"],
+    entities: [joinPaths(__dirname, "/entity/*.ts")],
     schemaCreate: true,
     dropSchema: true,
     enabledDrivers: ["cockroachdb"]
@@ -39,7 +42,7 @@ describe("github issues > #4513 CockroachDB support for onConflict", () => {
       .onConflict(`("name", "email") DO NOTHING`)
       .execute();
 
-    await connection.manager.find(User).should.eventually.have.lengthOf(2);
+    expect(await connection.manager.find(User)).to.have.lengthOf(2);
   })));
 
   it("should update on conflict with do update", () => Promise.all(connections.map(async connection => {
@@ -66,7 +69,7 @@ describe("github issues > #4513 CockroachDB support for onConflict", () => {
       .onConflict(`("name", "email") DO UPDATE SET age = EXCLUDED.age`)
       .execute();
 
-    await connection.manager.findOne(User, { name: "example", email: "example@example.com" }).should.eventually.be.eql({
+    expect(await connection.manager.findOne(User, { name: "example", email: "example@example.com" })).to.eql({
       name: "example",
       email: "example@example.com",
       age: 42,
@@ -97,7 +100,7 @@ describe("github issues > #4513 CockroachDB support for onConflict", () => {
       .onConflict(`("name", "email") DO NOTHING`)
       .execute();
 
-    await connection.manager.findOne(User, { name: "example", email: "example@example.com" }).should.eventually.be.eql({
+    expect(await connection.manager.findOne(User, { name: "example", email: "example@example.com" })).to.eql({
       name: "example",
       email: "example@example.com",
       age: 30,
@@ -131,10 +134,12 @@ describe("github issues > #4513 CockroachDB support for onConflict", () => {
       })
       .execute();
 
-    await connection.manager.findOne(User, { name: "example", email: "example@example.com" }).should.eventually.be.eql({
+    expect(await connection.manager.findOne(User, { name: "example", email: "example@example.com" })).to.eql({
       name: "example",
       email: "example@example.com",
       age: 42,
     });
   })));
 });
+
+runIfMain(import.meta);

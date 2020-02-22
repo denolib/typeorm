@@ -1,14 +1,16 @@
-import { expect } from "chai";
-import "reflect-metadata";
-import { Connection } from "../../../src/connection/Connection";
-import { closeTestingConnections, createTestingConnections, reloadTestingDatabases } from "../../utils/test-utils";
-import { Bar } from "./entity/Bar";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import { Connection } from "../../../src/connection/Connection.ts";
+import { getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases } from "../../utils/test-utils.ts";
+import { Bar } from "./entity/Bar.ts";
 
 describe("github issues > #2199 - Inserting value for @PrimaryGeneratedColumn() for mysql and sqlite", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
         enabledDrivers: ["mysql", "mariadb", "sqlite"],
         schemaCreate: true,
         dropSchema: true
@@ -45,3 +47,5 @@ describe("github issues > #2199 - Inserting value for @PrimaryGeneratedColumn() 
         expect(thirdBar.id).to.eql(5);
     })));
 });
+
+runIfMain(import.meta);

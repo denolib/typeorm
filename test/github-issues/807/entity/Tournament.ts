@@ -1,6 +1,6 @@
-import {Entity} from "../../../../src/decorator/entity/Entity";
-import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryGeneratedColumn";
-import {Column} from "../../../../src/decorator/columns/Column";
+import {Entity} from "../../../../src/decorator/entity/Entity.ts";
+import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
+import {Column} from "../../../../src/decorator/columns/Column.ts";
 
 @Entity()
 export class Tournament {
@@ -8,12 +8,12 @@ export class Tournament {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ unique: true, length: 200 })
+    @Column({ type: String, unique: true, length: 200 })
     name: string;
 
-    @Column()
+    @Column({ type: Date })
     startDate: Date;
 
-    @Column()
+    @Column({ type: Date })
     endDate: Date;
 }

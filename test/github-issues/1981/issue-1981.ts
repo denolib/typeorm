@@ -1,12 +1,16 @@
-import {Connection} from "../../../src";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Product} from "./entity/Product";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import "../../deps/chai.ts";
+import {Connection} from "../../../src/index.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Product} from "./entity/Product.ts";
 
 describe("github issues > #1981 Boolean values not casted properly when used in .find() condition", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
         enabledDrivers: ["sqlite"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
@@ -22,3 +26,5 @@ describe("github issues > #1981 Boolean values not casted properly when used in 
     })));
 
 });
+
+runIfMain(import.meta);

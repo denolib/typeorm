@@ -1,7 +1,8 @@
-import "reflect-metadata";
-import {Product} from "./entity/Product";
-import {Connection} from "../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
+import {runIfMain} from "../../deps/mocha.ts";
+import "../../deps/chai.ts";
+import {Product} from "./entity/Product.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
 
 
 describe("github issues > #1929 Select attributes in Find method - mongodb", () => {
@@ -62,3 +63,5 @@ describe("github issues > #1929 Select attributes in Find method - mongodb", () 
         })));
 
 });
+
+runIfMain(import.meta);

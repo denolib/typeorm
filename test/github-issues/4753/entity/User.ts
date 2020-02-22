@@ -1,10 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn } from "../../../../src";
+import { Entity, Column, PrimaryGeneratedColumn } from "../../../../src/index.ts";
 
 @Entity()
 export class User {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     name: string;
 }

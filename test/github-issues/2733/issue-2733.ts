@@ -1,15 +1,17 @@
-import "reflect-metadata";
-import { createTestingConnections, closeTestingConnections, reloadTestingDatabases } from "../../utils/test-utils";
-import { Connection } from "../../../src/connection/Connection";
-import { expect } from "chai";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import { getDirnameOfCurrentModule, createTestingConnections, closeTestingConnections, reloadTestingDatabases } from "../../utils/test-utils.ts";
+import { Connection } from "../../../src/connection/Connection.ts";
 
 describe("github issues > #2733 should correctly handle function calls with upercase letters as default values", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
 
     it("MSSQL, Sqljs, Sqlite", async () => {
         connections = await createTestingConnections({
-            entities: [__dirname + "/entity/MSSQLDummy{.js,.ts}"],
+            entities: [joinPaths(__dirname, "/entity/MSSQLDummy.ts")],
             schemaCreate: true,
             dropSchema: true,
             enabledDrivers: ["mssql", "sqljs", "sqlite"],
@@ -25,7 +27,7 @@ describe("github issues > #2733 should correctly handle function calls with uper
     });
     it("Postgres", async () => {
         connections = await createTestingConnections({
-            entities: [__dirname + "/entity/PostgresDummy{.js,.ts}"],
+            entities: [joinPaths(__dirname, "/entity/PostgresDummy.ts")],
             schemaCreate: true,
             dropSchema: true,
             enabledDrivers: ["postgres"],
@@ -40,3 +42,5 @@ describe("github issues > #2733 should correctly handle function calls with uper
         await closeTestingConnections(connections);
     });
 });
+
+runIfMain(import.meta);

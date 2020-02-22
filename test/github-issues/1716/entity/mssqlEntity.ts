@@ -1,9 +1,9 @@
-import { PrimaryColumn, Entity, Column } from "../../../../src";
+import { PrimaryColumn, Entity, Column } from "../../../../src/index.ts";
 
 @Entity()
 export class MssqlEntity {
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     id: number;
 
     @Column("time")

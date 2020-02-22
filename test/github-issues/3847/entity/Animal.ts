@@ -1,6 +1,6 @@
-import {Column, Entity, PrimaryGeneratedColumn} from "../../../../src/index";
-import {Category} from "./Category";
-import {ManyToOne} from "../../../../src/decorator/relations/ManyToOne";
+import {Column, Entity, PrimaryGeneratedColumn} from "../../../../src/index.ts";
+import {Category} from "./Category.ts";
+import {ManyToOne} from "../../../../src/decorator/relations/ManyToOne.ts";
 
 @Entity()
 export class Animal {
@@ -8,7 +8,7 @@ export class Animal {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     name: string;
 
     @ManyToOne(() => Category)

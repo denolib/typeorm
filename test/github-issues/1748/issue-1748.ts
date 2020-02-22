@@ -1,9 +1,9 @@
-import "reflect-metadata";
-import {expect} from "chai";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src";
-import {Post, Uuid} from "./entity/Post";
-import {SqlServerDriver} from "../../../src/driver/sqlserver/SqlServerDriver";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/index.ts";
+import {Post, Uuid} from "./entity/Post.ts";
+import {SqlServerDriver} from "../../../src/driver/sqlserver/SqlServerDriver.ts";
 
 describe("github issues > #1748 PrimaryColumn combined with transformer leads to error on save", () => {
 
@@ -38,3 +38,5 @@ describe("github issues > #1748 PrimaryColumn combined with transformer leads to
     })));
 
 });
+
+runIfMain(import.meta);

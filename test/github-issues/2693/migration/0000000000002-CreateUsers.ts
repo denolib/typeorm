@@ -1,6 +1,6 @@
-import { MigrationInterface } from "../../../../src/migration/MigrationInterface";
-import { QueryRunner } from "../../../../src/query-runner/QueryRunner";
-import { Table } from "../../../../src/schema-builder/table/Table";
+import { MigrationInterface } from "../../../../src/migration/MigrationInterface.ts";
+import { QueryRunner } from "../../../../src/query-runner/QueryRunner.ts";
+import { Table } from "../../../../src/schema-builder/table/Table.ts";
 
 export class CreateUsers0000000000002 implements MigrationInterface {
     public up(queryRunner: QueryRunner): Promise<any> {

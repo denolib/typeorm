@@ -1,17 +1,20 @@
-import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src";
-import {User} from "./entity/User";
-import {Product} from "./entity/Product";
-import {DeliverySlot} from "./entity/DeliverySlot";
-import {Order} from "./entity/Order";
-import {OrderItem} from "./entity/OrderItem";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import "../../deps/chai.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/index.ts";
+import {User} from "./entity/User.ts";
+import {Product} from "./entity/Product.ts";
+import {DeliverySlot} from "./entity/DeliverySlot.ts";
+import {Order} from "./entity/Order.ts";
+import {OrderItem} from "./entity/OrderItem.ts";
 
 describe.skip("github issues > #1581 Composite key breaks OneToMany relation", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
         enabledDrivers: ["mysql"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
@@ -65,3 +68,5 @@ describe.skip("github issues > #1581 Composite key breaks OneToMany relation", (
     })));
 
 });
+
+runIfMain(import.meta);

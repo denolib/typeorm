@@ -1,12 +1,12 @@
-import { Entity, Column, ManyToOne, PrimaryGeneratedColumn } from "../../../../src/";
-import { Person } from "./person";
+import { Entity, Column, ManyToOne, PrimaryGeneratedColumn } from "../../../../src/index.ts";
+import { Person } from "./person.ts";
 
 @Entity()
 export class Note {
     @PrimaryGeneratedColumn()
     public id: number;
 
-    @Column()
+    @Column({ type: String })
     public label: string;
 
     @ManyToOne(type => Person, { lazy: true })
