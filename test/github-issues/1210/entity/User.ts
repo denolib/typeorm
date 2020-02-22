@@ -1,8 +1,8 @@
-import {Entity} from "../../../../src/decorator/entity/Entity";
-import {ObjectIdColumn} from "../../../../src/decorator/columns/ObjectIdColumn";
-import {Column} from "../../../../src/decorator/columns/Column";
-import {ObjectID} from "../../../../src/driver/mongodb/typings";
-import {Event} from "./Event";
+import {Entity} from "../../../../src/decorator/entity/Entity.ts";
+import {ObjectIdColumn} from "../../../../src/decorator/columns/ObjectIdColumn.ts";
+import {Column} from "../../../../src/decorator/columns/Column.ts";
+import {ObjectID} from "../../../../src/driver/mongodb/typings.ts";
+import {Event} from "./Event.ts";
 
 @Entity()
 export class User {
@@ -10,13 +10,13 @@ export class User {
     @ObjectIdColumn()
     id: ObjectID;
 
-    @Column()
+    @Column({ type: String })
     firstName: string;
 
-    @Column()
+    @Column({ type: String })
     lastName: string;
 
-    @Column()
+    @Column({ type: Number })
     age: number;
 
     @Column(type => Event)

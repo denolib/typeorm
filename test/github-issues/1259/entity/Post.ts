@@ -1,7 +1,7 @@
-import {Column, Entity, PrimaryGeneratedColumn} from "../../../../src/index";
-import {Category} from "./Category";
-import {ManyToMany} from "../../../../src/decorator/relations/ManyToMany";
-import {JoinTable} from "../../../../src/decorator/relations/JoinTable";
+import {Column, Entity, PrimaryGeneratedColumn} from "../../../../src/index.ts";
+import {Category} from "./Category.ts";
+import {ManyToMany} from "../../../../src/decorator/relations/ManyToMany.ts";
+import {JoinTable} from "../../../../src/decorator/relations/JoinTable.ts";
 
 @Entity()
 export class Post {
@@ -9,10 +9,10 @@ export class Post {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     name: string;
 
-    @Column()
+    @Column({ type: Number })
     count: number;
 
     @ManyToMany(type => Category)

@@ -1,6 +1,6 @@
-import {Entity} from "../../../../src/decorator/entity/Entity";
-import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryGeneratedColumn";
-import {BaseEntity} from "../../../../src/repository/BaseEntity";
+import {Entity} from "../../../../src/decorator/entity/Entity.ts";
+import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
+import {BaseEntity} from "../../../../src/repository/BaseEntity.ts";
 
 @Entity()
 export class Foo extends BaseEntity {
