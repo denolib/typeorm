@@ -1,13 +1,17 @@
-import {Connection, Equal} from "../../../src";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {User} from "./entity/User";
-import {Photo} from "./entity/Photo";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import "../../deps/chai.ts";
+import {Connection, Equal} from "../../../src/index.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {User} from "./entity/User.ts";
+import {Photo} from "./entity/Photo.ts";
 
 describe("github issues > #2031 Advanced find options with FKs", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
         enabledDrivers: ["mysql"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
@@ -38,3 +42,5 @@ describe("github issues > #2031 Advanced find options with FKs", () => {
     })));
 
 });
+
+runIfMain(import.meta);

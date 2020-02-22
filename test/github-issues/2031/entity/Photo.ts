@@ -1,19 +1,19 @@
-import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "../../../../src";
-import {User} from "./User";
+import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "../../../../src/index.ts";
+import {User} from "./User.ts";
 
 @Entity()
 export class Photo {
 
   @PrimaryGeneratedColumn()
   id: number;
-  
-  @Column()
+
+  @Column({ type: String })
   description: string;
-  
-  @Column()
+
+  @Column({ type: String })
   uri: string;
 
-  @Column()
+  @Column({ type: Number })
   userId: number;
 
   @ManyToOne(type => User, user => user.photos)
