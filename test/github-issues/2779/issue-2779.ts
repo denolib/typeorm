@@ -1,16 +1,18 @@
-import "reflect-metadata";
-import { Connection } from "../../../src/connection/Connection";
-import { closeTestingConnections, createTestingConnections } from "../../utils/test-utils";
-import { Post } from "./entity/Post";
-import { expect } from "chai";
-import { Role } from "./set";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import { Connection } from "../../../src/connection/Connection.ts";
+import { getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections } from "../../utils/test-utils.ts";
+import { Post } from "./entity/Post.ts";
+import { Role } from "./set.ts";
 
 describe("github issues > #2779 Could we add support for the MySQL/MariaDB SET data type?", () => {
 
   let connections: Connection[];
+  const __dirname = getDirnameOfCurrentModule(import.meta);
   before(async () => {
     connections = await createTestingConnections({
-      entities: [__dirname + "/entity/*{.js,.ts}"],
+      entities: [joinPaths(__dirname, "/entity/*.ts")],
       enabledDrivers: ["mariadb", "mysql"],
       schemaCreate: true,
       dropSchema: true,
@@ -42,3 +44,5 @@ describe("github issues > #2779 Could we add support for the MySQL/MariaDB SET d
   })));
 
 });
+
+runIfMain(import.meta);

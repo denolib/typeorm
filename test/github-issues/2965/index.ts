@@ -1,15 +1,16 @@
-import "reflect-metadata";
-
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src";
-
-import {Person} from "./entity/person";
-import {Note} from "./entity/note";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import "../../deps/chai.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/index.ts";
+import {Person} from "./entity/person.ts";
+import {Note} from "./entity/note.ts";
 
 describe("github issues > #2965 Reuse preloaded lazy relations", () => {
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [ __dirname + "/entity/*{.js,.ts}" ],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
         // use for manual validation
         // logging: true,
     }));
@@ -56,3 +57,5 @@ describe("github issues > #2965 Reuse preloaded lazy relations", () => {
     })));
 
 });
+
+runIfMain(import.meta);

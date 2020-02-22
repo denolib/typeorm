@@ -1,5 +1,5 @@
-import { MigrationInterface } from "../../../../src/migration/MigrationInterface";
-import { QueryRunner } from "../../../../src/query-runner/QueryRunner";
+import { MigrationInterface } from "../../../../src/migration/MigrationInterface.ts";
+import { QueryRunner } from "../../../../src/query-runner/QueryRunner.ts";
 
 export class InitUsers1530542855524 implements MigrationInterface {
      public async up(queryRunner: QueryRunner): Promise<any> {

@@ -1,12 +1,12 @@
-import {Engine, Vehicle} from "./Vehicle";
-import {ChildEntity, Column} from "../../../../src";
+import {Engine, Vehicle} from "./Vehicle.ts";
+import {ChildEntity, Column} from "../../../../src/index.ts";
 
 export class PlaneEngine extends Engine {
 
-    @Column()
+    @Column({ type: Number })
     public beep: number;
 
-    @Column()
+    @Column({ type: Number })
     public boop: number;
 
 }

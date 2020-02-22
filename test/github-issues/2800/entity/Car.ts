@@ -1,12 +1,12 @@
-import {Engine, Vehicle} from "./Vehicle";
-import {ChildEntity, Column} from "../../../../src";
+import {Engine, Vehicle} from "./Vehicle.ts";
+import {ChildEntity, Column} from "../../../../src/index.ts";
 
 export class CarEngine extends Engine {
 
-    @Column()
+    @Column({ type: Number })
     public horsePower: number;
 
-    @Column()
+    @Column({ type: Number })
     public torque: number;
 
 }

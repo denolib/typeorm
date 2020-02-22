@@ -1,16 +1,18 @@
-import "reflect-metadata";
-import {createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
-import {expect} from "chai";
-import {File} from "./entity/file.entity";
-import {TreeRepository} from "../../../src";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {getDirnameOfCurrentModule, createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+import {File} from "./entity/file.entity.ts";
+import {TreeRepository} from "../../../src/index.ts";
 
 describe("github issues > #2518 TreeRepository.findDescendantsTree does not load descendants when relationship id property exist", () => {
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(
         async () =>
         (connections = await createTestingConnections({
-            entities: [__dirname + "/entity/*{.js,.ts}"]
+            entities: [joinPaths(__dirname, "/entity/*.ts")]
         }))
     );
 
@@ -47,3 +49,5 @@ describe("github issues > #2518 TreeRepository.findDescendantsTree does not load
         )
     );
 });
+
+runIfMain(import.meta);

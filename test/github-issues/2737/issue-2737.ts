@@ -1,14 +1,16 @@
-import {expect} from "chai";
-import "reflect-metadata";
-import {Connection} from "../../../src/connection/Connection";
-import {createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+import {getDirnameOfCurrentModule, createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
 
 describe("github issues > #2737 MySQLDriver findChangedColumns (fields: width, precision)", () => {
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
 
     before(async () => connections = await createTestingConnections({
         dropSchema: false,
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
         enabledDrivers: ["mysql", "aurora-data-api"],
         schemaCreate: false,
         cache: false,
@@ -21,8 +23,8 @@ describe("github issues > #2737 MySQLDriver findChangedColumns (fields: width, p
 
     after(() => closeTestingConnections(connections));
 
-    it("should not create migrations for an existing unique index when bigNumberStrings is false", () => (
-        Promise.all(connections.map(async connection => {
+    it("should not create migrations for an existing unique index when bigNumberStrings is false", async () => (
+        await Promise.all(connections.map(async connection => {
             const entityMetadata = connection.entityMetadatas.find(x => x.name === "TestEntity");
             const indexMetadata = entityMetadata!.indices.find(index => (
                 index.columns.some(column =>  column.propertyName === "unique_column")));
@@ -41,3 +43,5 @@ describe("github issues > #2737 MySQLDriver findChangedColumns (fields: width, p
         })
     )));
 });
+
+runIfMain(import.meta);

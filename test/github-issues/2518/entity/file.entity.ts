@@ -1,5 +1,5 @@
-import {Column, PrimaryGeneratedColumn, Tree, TreeParent, TreeChildren, UpdateDateColumn, CreateDateColumn} from "../../../../src";
-import {Entity} from "../../../../src/decorator/entity/Entity";
+import {Column, PrimaryGeneratedColumn, Tree, TreeParent, TreeChildren, UpdateDateColumn, CreateDateColumn} from "../../../../src/index.ts";
+import {Entity} from "../../../../src/decorator/entity/Entity.ts";
 
 @Entity()
 @Tree("closure-table")
@@ -21,11 +21,11 @@ export class File {
 
     @TreeChildren() children: File[];
 
-    @Column("timestamp with time zone")
-    @CreateDateColumn()
-    created: Date;
+    //@Column("timestamp with time zone")
+    //@CreateDateColumn()
+    //created: Date;
 
-    @Column("timestamp with time zone")
-    @UpdateDateColumn()
-    modified: Date;
+    //@Column("timestamp with time zone")
+    //@UpdateDateColumn()
+    //modified: Date;
 }

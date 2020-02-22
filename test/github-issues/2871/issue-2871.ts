@@ -1,20 +1,21 @@
-import "reflect-metadata";
-import {expect} from "chai";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, reloadTestingDatabases, setupSingleTestingConnection} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+import {createConnection, Repository} from "../../../src/index.ts";
 
-import {closeTestingConnections, reloadTestingDatabases, setupSingleTestingConnection} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
-import {createConnection, Repository} from "../../../src";
-
-import {Bar} from "./entity/Bar";
-import {DocumentEnum} from "./documentEnum";
+import {Bar} from "./entity/Bar.ts";
+import {DocumentEnum} from "./documentEnum.ts";
 
 describe("github issues > #2871 Empty enum array is returned as array with single empty string", () => {
   let connection: Connection;
   let repository: Repository<Bar>;
+  const __dirname = getDirnameOfCurrentModule(import.meta);
 
   before(async () => {
       const options = setupSingleTestingConnection("postgres", {
-          entities: [__dirname + "/entity/*{.js,.ts}"],
+          entities: [joinPaths(__dirname, "/entity/*.ts")],
           schemaCreate: true,
           dropSchema: true,
       });
@@ -66,3 +67,5 @@ describe("github issues > #2871 Empty enum array is returned as array with singl
     expect(barFromDb.documents).to.eql(documents);
   });
 });
+
+runIfMain(import.meta);

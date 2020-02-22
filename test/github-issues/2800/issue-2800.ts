@@ -1,14 +1,18 @@
-import {Connection} from "../../../src";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Car} from "./entity/Car";
-import {Plane} from "./entity/Plane";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import "../../deps/chai.ts";
+import {Connection} from "../../../src/index.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Car} from "./entity/Car.ts";
+import {Plane} from "./entity/Plane.ts";
 
 describe("github issues > #2800 - Can't override embedded entities in STI implementation", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
 
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
         schemaCreate: true,
         dropSchema: true
     }));
@@ -33,3 +37,5 @@ describe("github issues > #2800 - Can't override embedded entities in STI implem
     })));
 
 });
+
+runIfMain(import.meta);
