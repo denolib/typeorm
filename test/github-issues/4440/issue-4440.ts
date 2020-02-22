@@ -1,7 +1,8 @@
-import "reflect-metadata";
-import { Connection } from "../../../src/connection/Connection";
-import { closeTestingConnections, createTestingConnections, reloadTestingDatabases } from "../../utils/test-utils";
-import { Post } from "./entity/Post";
+import {runIfMain} from "../../deps/mocha.ts";
+import "../../deps/chai.ts";
+import { Connection } from "../../../src/connection/Connection.ts";
+import { closeTestingConnections, createTestingConnections, reloadTestingDatabases } from "../../utils/test-utils.ts";
+import { Post } from "./entity/Post.ts";
 
 describe("github issues > #4440 simple-json column type throws error for string with no value", () => {
 
@@ -29,7 +30,7 @@ describe("github issues > #4440 simple-json column type throws error for string 
     })));
 
     it("should correctly add retrieve simple-json field with some value", () =>
-    Promise.all(connections.map(async (connection) => {   
+    Promise.all(connections.map(async (connection) => {
         const repo = connection.getRepository(Post);
         const post = new Post();
         post.id = 1;
@@ -41,3 +42,5 @@ describe("github issues > #4440 simple-json column type throws error for string 
     })));
 
 });
+
+runIfMain(import.meta);

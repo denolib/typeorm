@@ -1,5 +1,5 @@
-import {MigrationInterface, QueryRunner} from "../../../../src";
-import {Item} from "../entity/item.entity";
+import {MigrationInterface, QueryRunner} from "../../../../src/index.ts";
+import {Item} from "../entity/item.entity.ts";
 
 export class UpdateContacts1566560354098 implements MigrationInterface {
 

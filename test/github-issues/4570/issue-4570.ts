@@ -1,7 +1,6 @@
-import "reflect-metadata";
-
-import {expect} from "chai";
-import {ColumnOptions, PrimaryColumn} from "../../../src";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {ColumnOptions, PrimaryColumn} from "../../../src/index.ts";
 
 describe("github issues > #4570 Fix PrimaryColumn decorator modifies passed option", () => {
     it("should not modify passed options to PrimaryColumn", () => {
@@ -17,3 +16,5 @@ describe("github issues > #4570 Fix PrimaryColumn decorator modifies passed opti
         expect(clone).to.be.eql(options);
     });
 });
+
+runIfMain(import.meta);

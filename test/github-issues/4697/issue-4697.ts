@@ -1,13 +1,16 @@
-import "reflect-metadata";
-import {createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import "../../deps/chai.ts";
+import {getDirnameOfCurrentModule, createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
 
 describe("github issues > #4697 Revert migrations running in reverse order.", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
-        migrations: [__dirname + "/migration/*.js"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        migrations: [joinPaths(__dirname, "/migration/*.ts")],
         enabledDrivers: ["mongodb"],
         schemaCreate: true,
         dropSchema: true,
@@ -26,3 +29,5 @@ describe("github issues > #4697 Revert migrations running in reverse order.", ()
         lastMigration.should.have.property("name", "MergeConfigs1567689639607");
     })));
 });
+
+runIfMain(import.meta);
