@@ -1,17 +1,17 @@
-import {JoinColumn} from "../../../../../src/decorator/relations/JoinColumn";
-import { Column, PrimaryColumn, ManyToOne } from "../../../../../src/index";
-import { Entity } from "../../../../../src/decorator/entity/Entity";
-import { BaseEntity } from "../../../../../src/repository/BaseEntity";
+import {JoinColumn} from "../../../../../src/decorator/relations/JoinColumn.ts";
+import { Column, PrimaryColumn, ManyToOne } from "../../../../../src/index.ts";
+import { Entity } from "../../../../../src/decorator/entity/Entity.ts";
+import { BaseEntity } from "../../../../../src/repository/BaseEntity.ts";
 
-import { User } from "./user";
-import { Record } from "./record";
+import { User } from "./user.ts";
+import { Record } from "./record.ts";
 
 @Entity({ name: "record_contexts" })
 export class RecordContext extends BaseEntity {
-    @PrimaryColumn({ name: "record_id"})
+    @PrimaryColumn({ type: String, name: "record_id"})
     recordId: string;
 
-    @PrimaryColumn({ name: "user_id"})
+    @PrimaryColumn({ type: String, name: "user_id"})
     userId: string;
 
     @ManyToOne(type => Record, record => record.contexts)

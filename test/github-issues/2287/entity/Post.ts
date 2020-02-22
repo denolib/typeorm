@@ -1,5 +1,5 @@
-import {Entity, PrimaryGeneratedColumn} from "../../../../src";
-import {Column} from "../../../../src/decorator/columns/Column";
+import {Entity, PrimaryGeneratedColumn} from "../../../../src/index.ts";
+import {Column} from "../../../../src/decorator/columns/Column.ts";
 
 @Entity()
 export class Post {

@@ -421,5 +421,10 @@ import "./test/github-issues/2128/issue-2128.ts";
 import "./test/github-issues/2147/issue-2147.ts";
 import "./test/github-issues/2199/issue-2199.ts";
 import "./test/github-issues/2200/issue-2200.ts";
+import "./test/github-issues/2201/issue-2201.ts";
+import "./test/github-issues/2251/issue-2251.ts";
+import "./test/github-issues/2253/issue-2253.ts";
+import "./test/github-issues/2259/issue-2259.ts";
+import "./test/github-issues/2287/issue-2287.ts";
 
 runTests();

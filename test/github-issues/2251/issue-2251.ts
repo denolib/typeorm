@@ -1,22 +1,24 @@
-import "reflect-metadata";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
 
-import { expect } from "chai";
-
-import { Connection } from "../../../src/connection/Connection";
+import { Connection } from "../../../src/connection/Connection.ts";
 import {
+  getDirnameOfCurrentModule,
   closeTestingConnections,
   createTestingConnections,
   reloadTestingDatabases
-} from "../../utils/test-utils";
-import { Bar } from "./entity/Bar";
-import { Foo } from "./entity/Foo";
+} from "../../utils/test-utils.ts";
+import { Bar } from "./entity/Bar.ts";
+import { Foo } from "./entity/Foo.ts";
 
 describe("github issues > #2251 - Unexpected behavior when passing duplicate entities to repository.save()", () => {
   let connections: Connection[];
+  const __dirname = getDirnameOfCurrentModule(import.meta);
   before(
     async () =>
       (connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
         schemaCreate: true,
         dropSchema: true
       }))
@@ -70,7 +72,7 @@ describe("github issues > #2251 - Unexpected behavior when passing duplicate ent
         // We saved two bars originally. The above save should update the description of one,
         // remove the reference of another and insert a 3rd.
         expect(bars.length).to.equal(3);
-        
+
         const bar = await barRepo.findOne(1);
 
         expect(bar).not.to.be.undefined;
@@ -81,3 +83,5 @@ describe("github issues > #2251 - Unexpected behavior when passing duplicate ent
       })
     ));
 });
+
+runIfMain(import.meta);
