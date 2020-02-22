@@ -1,16 +1,16 @@
-import { Entity } from "../../../../src/decorator/entity/Entity";
-import { Column } from "../../../../src/decorator/columns/Column";
-import { PrimaryColumn } from "../../../../src/decorator/columns/PrimaryColumn";
+import { Entity } from "../../../../src/decorator/entity/Entity.ts";
+import { Column } from "../../../../src/decorator/columns/Column.ts";
+import { PrimaryColumn } from "../../../../src/decorator/columns/PrimaryColumn.ts";
 
-import { Gender } from "./GenderEnum";
+import { Gender } from "./GenderEnum.ts";
 
 @Entity()
 export class Human {
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     id: number;
 
-    @Column()
+    @Column({ type: String })
     name: string;
 
     @Column({

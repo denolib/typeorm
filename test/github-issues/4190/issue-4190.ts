@@ -1,18 +1,21 @@
-import "reflect-metadata";
-import {createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import "../../deps/chai.ts";
+import {getDirnameOfCurrentModule, createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
 
-import {Photo} from "./entity/Photo";
-import {User} from "./entity/User";
-import {Profile} from "./entity/Profile";
-import {Category} from "./entity/Category";
-import {Question} from "./entity/Question";
+import {Photo} from "./entity/Photo.ts";
+import {User} from "./entity/User.ts";
+import {Profile} from "./entity/Profile.ts";
+import {Category} from "./entity/Category.ts";
+import {Question} from "./entity/Question.ts";
 
 describe("github issues > #4190 Relation decorators: allow to pass string instead of typeFunction", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
         schemaCreate: true,
         dropSchema: true,
     }));
@@ -128,3 +131,5 @@ describe("github issues > #4190 Relation decorators: allow to pass string instea
     })));
 
 });
+
+runIfMain(import.meta);

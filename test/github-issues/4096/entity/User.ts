@@ -1,13 +1,13 @@
-import { Entity, PrimaryColumn, Column } from "../../../../src";
+import { Entity, PrimaryColumn, Column } from "../../../../src/index.ts";
 
 @Entity()
 export class User {
-  @PrimaryColumn()
+  @PrimaryColumn({ type: String })
   email: string;
 
-  @PrimaryColumn()
+  @PrimaryColumn({ type: String })
   username: string;
 
-  @Column()
+  @Column({ type: String })
   bio: string;
 }

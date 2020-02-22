@@ -473,5 +473,11 @@ import "./test/github-issues/3847/issue-3847.ts";
 import "./test/github-issues/3857/issue-3857.ts";
 import "./test/github-issues/3946/issue-3946.ts";
 import "./test/github-issues/3949/issue-3949.ts";
+import "./test/github-issues/4096/issue-4096.ts";
+import "./test/github-issues/4106/issue-4106.ts";
+import "./test/github-issues/4156/issue-4156.ts";
+import "./test/github-issues/4185/issue-4185.ts";
+import "./test/github-issues/4190/issue-4190.ts";
+import "./test/github-issues/4219/issue-4219.ts";
 
 runTests();

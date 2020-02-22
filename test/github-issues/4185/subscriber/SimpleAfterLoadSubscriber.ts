@@ -1,5 +1,5 @@
-import {Post} from "../entity/Post";
-import {EntitySubscriberInterface, EventSubscriber} from "../../../../src";
+import {Post} from "../entity/Post.ts";
+import {EntitySubscriberInterface, EventSubscriber} from "../../../../src/index.ts";
 
 // "Old" subscribers which only take one parameter should still compile and work
 

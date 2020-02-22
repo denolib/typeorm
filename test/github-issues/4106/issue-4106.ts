@@ -1,10 +1,11 @@
-import { closeTestingConnections, createTestingConnections, reloadTestingDatabases } from "../../utils/test-utils";
-import { Connection } from "../../../src/connection/Connection";
-import { Human } from "./entity/Human";
-import { Animal } from "./entity/Animal";
-import { Gender } from "./entity/GenderEnum";
-import { EntityManager } from "../../../src/entity-manager/EntityManager";
-import { expect } from "chai";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import { closeTestingConnections, createTestingConnections, reloadTestingDatabases } from "../../utils/test-utils.ts";
+import { Connection } from "../../../src/connection/Connection.ts";
+import { Human } from "./entity/Human.ts";
+import { Animal } from "./entity/Animal.ts";
+import { Gender } from "./entity/GenderEnum.ts";
+import { EntityManager } from "../../../src/entity-manager/EntityManager.ts";
 
 describe("github issues > #4106 Specify enum type name in postgres", () => {
     let connections: Connection[];
@@ -88,3 +89,5 @@ describe("github issues > #4106 Specify enum type name in postgres", () => {
 
 
 });
+
+runIfMain(import.meta);

@@ -1,6 +1,6 @@
-import {Post} from "../entity/Post";
-import {EntitySubscriberInterface, EventSubscriber} from "../../../../src";
-import {LoadEvent} from "../../../../src/subscriber/event/LoadEvent";
+import {Post} from "../entity/Post.ts";
+import {EntitySubscriberInterface, EventSubscriber} from "../../../../src/index.ts";
+import {LoadEvent} from "../../../../src/subscriber/event/LoadEvent.ts";
 
 @EventSubscriber()
 export class ExtendedAfterLoadSubscriber
