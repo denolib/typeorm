@@ -1,13 +1,13 @@
-import {Entity} from "../../../../src";
-import {PrimaryGeneratedColumn} from "../../../../src";
-import {Column, VersionColumn} from "../../../../src";
+import {Entity} from "../../../../src/index.ts";
+import {PrimaryGeneratedColumn} from "../../../../src/index.ts";
+import {Column, VersionColumn} from "../../../../src/index.ts";
 
 @Entity()
 export class Post {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @VersionColumn()
+    @VersionColumn({ type: Number })
     version: number;
 
     @Column({ type: "jsonb" })

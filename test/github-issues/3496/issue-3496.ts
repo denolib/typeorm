@@ -1,15 +1,18 @@
-import "reflect-metadata";
-import {Connection} from "../../../src";
-import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils";
-import {Post} from "./entity/Post";
-import {PromiseUtils} from "../../../src";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import "../../deps/chai.ts";
+import {Connection} from "../../../src/index.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections} from "../../utils/test-utils.ts";
+import {Post} from "./entity/Post.ts";
+import {PromiseUtils} from "../../../src/index.ts";
 
 describe("github issues > #3496 jsonb comparison doesn't work", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
-            entities: [__dirname + "/entity/*{.js,.ts}"],
+            entities: [joinPaths(__dirname, "/entity/*.ts")],
             enabledDrivers: ["postgres"],
             dropSchema: true,
         });
@@ -36,3 +39,5 @@ describe("github issues > #3496 jsonb comparison doesn't work", () => {
         savedPost1!.version.should.be.equal(savedPost2!.version);
     }));
 });
+
+runIfMain(import.meta);

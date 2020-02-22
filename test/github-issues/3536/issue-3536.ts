@@ -1,8 +1,9 @@
-import "reflect-metadata";
-import { Connection } from "../../../src/connection/Connection";
-import { closeTestingConnections, createTestingConnections } from "../../utils/test-utils";
-import { PromiseUtils } from "../../../src";
-import { Roles } from "./entity/Roles";
+import {runIfMain} from "../../deps/mocha.ts";
+import "../../deps/chai.ts";
+import { Connection } from "../../../src/connection/Connection.ts";
+import { closeTestingConnections, createTestingConnections } from "../../utils/test-utils.ts";
+import { PromiseUtils } from "../../../src/index.ts";
+import { Roles } from "./entity/Roles.ts";
 
 describe("github issues > #3536 Sync only works once for enums on entities with capital letters in entity name", () => {
 
@@ -23,3 +24,5 @@ describe("github issues > #3536 Sync only works once for enums on entities with 
         await connection.synchronize();
     }));
 });
+
+runIfMain(import.meta);

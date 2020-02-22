@@ -1,15 +1,18 @@
-import "reflect-metadata";
-import {Connection} from "../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils";
-import {PromiseUtils} from "../../../src";
-import { Book } from "./entity/Book";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import "../../deps/chai.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections} from "../../utils/test-utils.ts";
+import {PromiseUtils} from "../../../src/index.ts";
+import { Book } from "./entity/Book.ts";
 
 describe("github issues > #3551 array of embedded documents through multiple levels are not handled", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
-            entities: [__dirname + "/entity/*{.js,.ts}"],
+            entities: [joinPaths(__dirname, "/entity/*.ts")],
             enabledDrivers: ["mongodb"],
             dropSchema: true,
         });
@@ -61,3 +64,5 @@ describe("github issues > #3551 array of embedded documents through multiple lev
         book!.chapters[1].pages[1].number.should.be.equal(bookInput.chapters[1].pages[1].number);
     }));
 });
+
+runIfMain(import.meta);

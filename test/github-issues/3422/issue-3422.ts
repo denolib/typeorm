@@ -1,15 +1,18 @@
-import "reflect-metadata";
-import {Connection} from "../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils";
-import {User} from "./entity/User";
-import {PromiseUtils} from "../../../src";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import "../../deps/chai.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections} from "../../utils/test-utils.ts";
+import {User} from "./entity/User.ts";
+import {PromiseUtils} from "../../../src/index.ts";
 
 describe("github issues > #3422 cannot save to nested-tree table if schema is used in postgres", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
-            entities: [__dirname + "/entity/*{.js,.ts}"],
+            entities: [joinPaths(__dirname, "/entity/*.ts")],
             enabledDrivers: ["postgres"],
             dropSchema: true,
         });
@@ -30,3 +33,5 @@ describe("github issues > #3422 cannot save to nested-tree table if schema is us
         user!.manager.id.should.be.equal(parent.id);
     }));
 });
+
+runIfMain(import.meta);

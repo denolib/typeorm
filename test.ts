@@ -454,5 +454,10 @@ import "./test/github-issues/3352/issue-3352.ts";
 import "./test/github-issues/3363/issue-3363.ts";
 import "./test/github-issues/3374/issue-3374.ts";
 import "./test/github-issues/3379/issue-3379.ts";
+import "./test/github-issues/3395/issue-3395.ts";
+import "./test/github-issues/3422/issue-3422.ts";
+import "./test/github-issues/3496/issue-3496.ts";
+import "./test/github-issues/3536/issue-3536.ts";
+import "./test/github-issues/3551/issue-3551.ts";
 
 runTests();

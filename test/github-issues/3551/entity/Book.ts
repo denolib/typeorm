@@ -1,12 +1,12 @@
-import { Entity, ObjectIdColumn, Column, ObjectID } from "../../../../src";
+import { Entity, ObjectIdColumn, Column/*, ObjectID*/ } from "../../../../src/index.ts";
 
 export class Page {
-    @Column()
+    @Column({ type: Number })
     number: number;
 }
 
 export class Chapter {
-    @Column()
+    @Column({ type: String })
     title: string;
 
     @Column(type => Page)
@@ -16,9 +16,9 @@ export class Chapter {
 @Entity()
 export class Book {
     @ObjectIdColumn()
-    id: ObjectID;
+    id: /*ObjectID*/any; // TODO(uki00a) uncomment this when MongoDriver is implemented.
 
-    @Column()
+    @Column({ type: String })
     title: string;
 
     @Column(type => Chapter)
