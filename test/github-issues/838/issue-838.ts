@@ -1,24 +1,26 @@
-import "reflect-metadata";
-import {Connection} from "../../../src/connection/Connection";
-import {createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Flight} from "./entity/Flight";
-import {PostgresDriver} from "../../../src/driver/postgres/PostgresDriver";
-import {expect} from "chai";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+import {getDirnameOfCurrentModule, createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Flight} from "./entity/Flight.ts";
+// import {PostgresDriver} from "../../../src/driver/postgres/PostgresDriver.ts";
 
 describe.skip("github issues > #838 Time zones for timestamp columns are incorrectly fetched and persisted in PostgreSQL", () => {
 
     let connections: Connection[];
     let postgresConnection: Connection;
     const testDateString = "1989-08-16T10:00:00+03:00";
+    const __dirname = getDirnameOfCurrentModule(import.meta);
 
     before(async () => {
         connections = await createTestingConnections({
-            entities: [__dirname + "/entity/*{.js,.ts}"],
+            entities: [joinPaths(__dirname, "/entity/*{.js,.ts}")],
             enabledDrivers: [
                 "postgres"
             ]
         });
-        postgresConnection = connections.find(connection => connection.driver instanceof PostgresDriver)!;
+        postgresConnection = connections[0]; //connections.find(connection => connection.driver instanceof PostgresDriver)!;
     });
 
     beforeEach(() => reloadTestingDatabases(connections));
@@ -45,3 +47,5 @@ describe.skip("github issues > #838 Time zones for timestamp columns are incorre
     });
 
 });
+
+runIfMain(import.meta);

@@ -1,9 +1,10 @@
-import "reflect-metadata";
-import { closeTestingConnections, createTestingConnections, reloadTestingDatabases } from "../../utils/test-utils";
-import { Connection } from "../../../src/connection/Connection";
+import { runIfMain } from "../../deps/mocha.ts";
+import "../../deps/chai.ts";
+import { closeTestingConnections, createTestingConnections, reloadTestingDatabases } from "../../utils/test-utils.ts";
+import { Connection } from "../../../src/connection/Connection.ts";
 
-import { Master } from "./entities/master";
-import { Detail } from "./entities/detail";
+import { Master } from "./entities/master.ts";
+import { Detail } from "./entities/detail.ts";
 
 describe("indices > create schema", () => {
 
@@ -25,3 +26,5 @@ describe("indices > create schema", () => {
     });
 
 });
+
+runIfMain(import.meta);

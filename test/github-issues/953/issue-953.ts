@@ -1,15 +1,17 @@
-import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
-import {expect} from "chai";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
 export type Role = "sa" | "user" | "admin" | "server";
-import {User} from "./entity/user";
+import {User} from "./entity/user.ts";
 
 describe("github issues > #953 MySQL 5.7 JSON column parse", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
         enabledDrivers: ["mysql"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
@@ -30,3 +32,5 @@ describe("github issues > #953 MySQL 5.7 JSON column parse", () => {
     })));
 
 });
+
+runIfMain(import.meta);

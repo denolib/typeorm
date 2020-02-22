@@ -1,6 +1,6 @@
-import { Entity } from "../../../../src/decorator/entity/Entity";
-import { Column } from "../../../../src/decorator/columns/Column";
-import { PrimaryGeneratedColumn } from "../../../../src/decorator/columns/PrimaryGeneratedColumn";
+import { Entity } from "../../../../src/decorator/entity/Entity.ts";
+import { Column } from "../../../../src/decorator/columns/Column.ts";
+import { PrimaryGeneratedColumn } from "../../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
 
 
 export type Role = "sa" | "user" | "admin" | "server";
@@ -12,17 +12,20 @@ export class User {
     id: number;
 
     @Column({
+        type: String,
         length: 32,
         unique: true
     })
     username: string;
 
     @Column({
+        type: String,
         nullable: true
     })
     password: string;
 
     @Column({
+        type: String,
         nullable: true
     })
     phone: string;
@@ -30,7 +33,7 @@ export class User {
     @Column("json")
     roles: Role[];
 
-    @Column()
+    @Column({ type: Date })
     lastLoginAt: Date;
 
 }

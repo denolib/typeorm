@@ -1,18 +1,19 @@
-import "reflect-metadata";
-import * as assert from "assert";
-import {createConnection, getConnectionOptions} from "../../../src/index";
-import {Connection} from "../../../src/connection/Connection";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {createConnection, getConnectionOptions} from "../../../src/index.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
 
-describe("github issues > #798 sqlite: 'database' path in ormconfig.json is not relative", () => {
+// TODO(uki00a) This suite fails because it loads the `app-root-path` npm module.
+describe.skip("github issues > #798 sqlite: 'database' path in ormconfig.json is not relative", () => {
     let connection: Connection;
-    const oldCwd = process.cwd();
+    const oldCwd = Deno.cwd();
 
     before(function () {
-        process.chdir("..");
+        Deno.chdir("..");
     });
 
     after(function () {
-        process.chdir(oldCwd);
+        Deno.chdir(oldCwd);
     });
 
     afterEach(() => {
@@ -25,7 +26,9 @@ describe("github issues > #798 sqlite: 'database' path in ormconfig.json is not 
         const options = await getConnectionOptions("sqlite");
         connection = await createConnection(options);
 
-        assert.strictEqual(connection.isConnected, true);
+        expect(connection.isConnected).to.be.true;
     });
 
 });
+
+runIfMain(import.meta);

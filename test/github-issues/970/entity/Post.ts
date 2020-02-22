@@ -1,7 +1,7 @@
-import {Entity} from "../../../../src/decorator/entity/Entity";
-import {ObjectIdColumn} from "../../../../src/decorator/columns/ObjectIdColumn";
-import {ObjectID} from "../../../../src/driver/mongodb/typings";
-import {Column} from "../../../../src/decorator/columns/Column";
+import {Entity} from "../../../../src/decorator/entity/Entity.ts";
+import {ObjectIdColumn} from "../../../../src/decorator/columns/ObjectIdColumn.ts";
+import {ObjectID} from "../../../../src/driver/mongodb/typings.ts";
+import {Column} from "../../../../src/decorator/columns/Column.ts";
 
 @Entity()
 export class Post {
@@ -9,10 +9,10 @@ export class Post {
     @ObjectIdColumn()
     id: ObjectID;
 
-    @Column()
+    @Column({ type: String })
     title: string;
 
-    @Column()
+    @Column({ type: String })
     text: string;
 
 }
