@@ -1,15 +1,17 @@
-import "reflect-metadata";
-import {Connection} from "../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils";
-import {User} from "./entity/User";
-import {expect} from "chai";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections} from "../../utils/test-utils.ts";
+import {User} from "./entity/User.ts";
 
 describe("github issues > #1680 Delete & Update applies to all entities in table if criteria is undefined or empty", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
-            entities: [__dirname + "/entity/*{.js,.ts}"],
+            entities: [joinPaths(__dirname, "/entity/*.ts")],
             schemaCreate: true,
             dropSchema: true,
         });
@@ -48,15 +50,15 @@ describe("github issues > #1680 Delete & Update applies to all entities in table
 
             expect(error).to.be.instanceof(Error);
         }
-        
+
         // Ensure normal deleting works
         await connection.manager.delete(User, 3);
-        
+
         // Ensure normal updating works
         await connection.manager.update(User, 2, { name: "User B Updated" } );
-        
+
         // All users should still exist except for User C
-        await connection.manager.find(User).should.eventually.eql([{
+        expect(await connection.manager.find(User)).to.eql([{
             id: 1,
             name: "User A"
         }, {
@@ -67,3 +69,5 @@ describe("github issues > #1680 Delete & Update applies to all entities in table
     })));
 
 });
+
+runIfMain(import.meta);

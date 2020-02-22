@@ -1,15 +1,18 @@
-import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src";
-import {UserEntity} from "./entity/UserEntity";
-import {UserToOrganizationEntity} from "./entity/UserToOrganizationEntity";
-import {OrganizationEntity} from "./entity/OrganizationEntity";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import "../../deps/chai.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/index.ts";
+import {UserEntity} from "./entity/UserEntity.ts";
+import {UserToOrganizationEntity} from "./entity/UserToOrganizationEntity.ts";
+import {OrganizationEntity} from "./entity/OrganizationEntity.ts";
 
 describe("github issues > #1703 Many to Many with association table returns odd values.", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
         enabledDrivers: ["mysql"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
@@ -58,3 +61,5 @@ describe("github issues > #1703 Many to Many with association table returns odd 
     })));
 
 });
+
+runIfMain(import.meta);

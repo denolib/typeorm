@@ -1,5 +1,5 @@
-import {Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn} from "../../../../src";
-import {Photo} from "./Photo";
+import {Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn} from "../../../../src/index.ts";
+import {Photo} from "./Photo.ts";
 
 @Entity()
 export class User {
@@ -7,7 +7,7 @@ export class User {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     name: string;
 
     @ManyToMany(type => Photo)

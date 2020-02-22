@@ -1,7 +1,7 @@
-import {DeliverySlot} from "./DeliverySlot";
-import {User} from "./User";
-import {OrderItem} from "./OrderItem";
-import {Column, Entity, ManyToOne, OneToMany} from "../../../../src";
+import {DeliverySlot} from "./DeliverySlot.ts";
+import {User} from "./User.ts";
+import {OrderItem} from "./OrderItem.ts";
+import {Column, Entity, ManyToOne, OneToMany} from "../../../../src/index.ts";
 
 @Entity()
 export class Order {
@@ -12,7 +12,7 @@ export class Order {
     @ManyToOne(type => User, user => user.recurringOrders, { primary: true })
     user: User;
 
-    @Column()
+    @Column({ type: Boolean })
     enabled: boolean;
 
     @OneToMany(type => OrderItem, item => item.order)

@@ -1,16 +1,19 @@
-import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src";
-import {Year} from "./entity/year";
-import {Month} from "./entity/month";
-import {User} from "./entity/user";
-import {UserMonth} from "./entity/user-month";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import "../../deps/chai.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/index.ts";
+import {Year} from "./entity/year.ts";
+import {Month} from "./entity/month.ts";
+import {User} from "./entity/user.ts";
+import {UserMonth} from "./entity/user-month.ts";
 
 describe.skip("github issues > #1685 JoinColumn from JoinColum is not considered when inserting new value", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
         schemaCreate: true,
         dropSchema: true,
         enabledDrivers: ["mysql"]
@@ -47,3 +50,5 @@ describe.skip("github issues > #1685 JoinColumn from JoinColum is not considered
     })));
 
 });
+
+runIfMain(import.meta);

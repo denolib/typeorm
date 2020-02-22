@@ -1,6 +1,6 @@
-import {CreateDateColumn, Entity, ManyToOne} from "../../../../src/index";
-import {Message} from "./Message";
-import {User} from "./User";
+import {CreateDateColumn, Entity, ManyToOne} from "../../../../src/index.ts";
+import {Message} from "./Message.ts";
+import {User} from "./User.ts";
 
 export interface RecipientConstructor {
   user?: User;

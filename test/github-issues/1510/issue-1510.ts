@@ -1,8 +1,9 @@
-import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
-import {expect} from "chai";
-import {EntitySchema, InsertResult} from "../../../src";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+import {EntitySchema, InsertResult} from "../../../src/index.ts";
 
 describe("github issues > #1510 entity schema does not support mode=objectId", () => {
 
@@ -36,11 +37,12 @@ describe("github issues > #1510 entity schema does not support mode=objectId", (
             }
         }
     });
+    const __dirname = getDirnameOfCurrentModule(import.meta);
 
     let connections: Connection[];
     before(async () => {
         return connections = await createTestingConnections({
-            entities: [__dirname + "/entity/*{.js,.ts}", UserEntity, UserWithoutObjectIDEntity],
+            entities: [joinPaths(__dirname, "/entity/*.ts"), UserEntity, UserWithoutObjectIDEntity],
             enabledDrivers: ["mongodb"]
         });
     });
@@ -74,3 +76,5 @@ describe("github issues > #1510 entity schema does not support mode=objectId", (
     })));
 
 });
+
+runIfMain(import.meta);

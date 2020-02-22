@@ -1,6 +1,6 @@
-import { Entity, ManyToOne, JoinColumn, Column } from "../../../../src/index";
-import { MainModel } from "./MainModel";
-import { ValidationModel } from "./ValidationModel";
+import { Entity, ManyToOne, JoinColumn, Column } from "../../../../src/index.ts";
+import { MainModel } from "./MainModel.ts";
+import { ValidationModel } from "./ValidationModel.ts";
 
 @Entity()
 export class DataModel {
@@ -12,7 +12,7 @@ export class DataModel {
     })
     validations: ValidationModel;
 
-    
+
     @ManyToOne(type => MainModel, {
         primary: true
     })
@@ -21,7 +21,7 @@ export class DataModel {
         referencedColumnName: "id"
     })
     main: MainModel;
-    
+
     @Column({
         type: "boolean",
         default: false

@@ -1,6 +1,6 @@
-import {Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn} from "../../../../src";
-import {TestEntity1} from "./TestEntity1";
-import {TestEntity3} from "./TestEntity3";
+import {Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn} from "../../../../src/index.ts";
+import {TestEntity1} from "./TestEntity1.ts";
+import {TestEntity3} from "./TestEntity3.ts";
 
 @Entity()
 export class TestEntity2 {
@@ -8,7 +8,7 @@ export class TestEntity2 {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     name: string;
 
     @OneToOne(t => TestEntity1, a => a.Entity2)

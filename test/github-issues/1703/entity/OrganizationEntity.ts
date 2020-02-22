@@ -1,5 +1,5 @@
-import {Entity, OneToMany, PrimaryGeneratedColumn} from "../../../../src";
-import {UserToOrganizationEntity} from "./UserToOrganizationEntity";
+import {Entity, OneToMany, PrimaryGeneratedColumn} from "../../../../src/index.ts";
+import {UserToOrganizationEntity} from "./UserToOrganizationEntity.ts";
 
 @Entity("organizations")
 export class OrganizationEntity {

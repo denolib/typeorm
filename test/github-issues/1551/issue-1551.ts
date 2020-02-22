@@ -1,15 +1,18 @@
-import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
-import {Message, MessageType} from "./entity/Message";
-import {Recipient} from "./entity/Recipient";
-import {User} from "./entity/User";
-import {Chat} from "./entity/Chat";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import "../../deps/chai.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+import {Message, MessageType} from "./entity/Message.ts";
+import {Recipient} from "./entity/Recipient.ts";
+import {User} from "./entity/User.ts";
+import {Chat} from "./entity/Chat.ts";
 
 describe("github issues > #1551 complex example of cascades + multiple primary keys = persistence order", () => {
 
     let connections: Connection[];
-    before(async () => connections = await createTestingConnections({ __dirname, enabledDrivers: ["mysql"] }));
+    const __dirname = getDirnameOfCurrentModule(import.meta);
+    before(async () => connections = await createTestingConnections({ entities: [joinPaths(__dirname, "/entity/*.ts")], enabledDrivers: ["mysql"] }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
 
@@ -263,3 +266,5 @@ describe("github issues > #1551 complex example of cascades + multiple primary k
     })));
 
 });
+
+runIfMain(import.meta);
