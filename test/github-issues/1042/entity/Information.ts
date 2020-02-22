@@ -1,14 +1,14 @@
-import {Column} from "../../../../src/decorator/columns/Column";
+import {Column} from "../../../../src/decorator/columns/Column.ts";
 
 export class Information {
 
-    @Column()
+    @Column({ type: String })
     maritalStatus: string;
 
-    @Column()
+    @Column({ type: String })
     gender: string;
 
-    @Column()
+    @Column({ type: String })
     address: string;
 
 }

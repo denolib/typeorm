@@ -1,16 +1,18 @@
-import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
-import {Parent} from "./entity/Parent";
-import {Child} from "./entity/Child";
-import {expect} from "chai";
-import {PromiseUtils} from "../../../src/util/PromiseUtils";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+import {Parent} from "./entity/Parent.ts";
+import {Child} from "./entity/Child.ts";
+import {PromiseUtils} from "../../../src/util/PromiseUtils.ts";
 
 describe("github issues > #1055 ind with relations not working, correct syntax causes type error", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
         enabledDrivers: ["mysql"] // only one driver is enabled because this example uses lazy relations
     }));
     beforeEach(() => reloadTestingDatabases(connections));
@@ -81,3 +83,5 @@ describe("github issues > #1055 ind with relations not working, correct syntax c
         expect(foundChild).not.to.be.undefined;
     })));
 });
+
+runIfMain(import.meta);

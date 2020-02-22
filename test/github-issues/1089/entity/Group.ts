@@ -1,4 +1,4 @@
-import {BaseEntity, Column, Entity, PrimaryGeneratedColumn, Tree, TreeChildren, TreeParent} from "../../../../src";
+import {BaseEntity, Column, Entity, PrimaryGeneratedColumn, Tree, TreeChildren, TreeParent} from "../../../../src/index.ts";
 
 @Entity()
 @Tree("closure-table")
@@ -7,7 +7,7 @@ export class Group extends BaseEntity {
     @PrimaryGeneratedColumn("uuid")
     id: string;
 
-    @Column({ nullable: false })
+    @Column({ type: String, nullable: false })
     name: string;
 
     @TreeChildren()

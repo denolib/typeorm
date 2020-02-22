@@ -1,7 +1,7 @@
-import {Entity} from "../../../../src/decorator/entity/Entity";
-import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryGeneratedColumn";
-import {ManyToMany} from "../../../../src/decorator/relations/ManyToMany";
-import { Circle } from "./Circle";
+import {Entity} from "../../../../src/decorator/entity/Entity.ts";
+import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
+import {ManyToMany} from "../../../../src/decorator/relations/ManyToMany.ts";
+import { Circle } from "./Circle.ts";
 
 @Entity()
 export class User {
