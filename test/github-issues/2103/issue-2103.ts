@@ -1,14 +1,17 @@
-import "reflect-metadata";
-import {createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src";
-import {Simple} from "./entity/Simple";
-import {Complex} from "./entity/Complex";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import "../../deps/chai.ts";
+import {createTestingConnections, closeTestingConnections, reloadTestingDatabases, getDirnameOfCurrentModule} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/index.ts";
+import {Simple} from "./entity/Simple.ts";
+import {Complex} from "./entity/Complex.ts";
 
 describe("github issues > #2103 query builder regression", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
         schemaCreate: true,
         dropSchema: true,
     }));
@@ -71,3 +74,5 @@ describe("github issues > #2103 query builder regression", () => {
     })));
 
 });
+
+runIfMain(import.meta);

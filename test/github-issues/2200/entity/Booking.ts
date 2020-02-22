@@ -1,5 +1,5 @@
-import {Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn} from "../../../../src/index";
-import { Contact } from "./Contact";
+import {Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn} from "../../../../src/index.ts";
+import { Contact } from "./Contact.ts";
 
 @Entity()
 export class Booking {

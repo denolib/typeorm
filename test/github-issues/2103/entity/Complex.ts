@@ -1,15 +1,15 @@
-import {Entity, Column, PrimaryColumn} from "../../../../src";
+import {Entity, Column, PrimaryColumn} from "../../../../src/index.ts";
 
 @Entity()
 export class Complex {
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     id: number;
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     code: number;
 
-    @Column()
+    @Column({ type: Number })
     x: number;
 
 }

@@ -1,17 +1,20 @@
-import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
-import {Booking} from "./entity/Booking";
-import {NamingStrategyUnderTest} from "./naming/NamingStrategyUnderTest";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import "../../deps/chai.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+import {Booking} from "./entity/Booking.ts";
+import {NamingStrategyUnderTest} from "./naming/NamingStrategyUnderTest.ts";
 
 
 describe("github issue > #2200 Bug - Issue with snake_case naming strategy", () => {
 
     let connections: Connection[];
     let namingStrategy = new NamingStrategyUnderTest();
+    const __dirname = getDirnameOfCurrentModule(import.meta);
 
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
         namingStrategy
     }));
     beforeEach(() => {
@@ -25,3 +28,5 @@ describe("github issue > #2200 Bug - Issue with snake_case naming strategy", () 
     })));
 
 });
+
+runIfMain(import.meta);

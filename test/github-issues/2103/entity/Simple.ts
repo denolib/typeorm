@@ -1,4 +1,4 @@
-import {Entity, Column, PrimaryGeneratedColumn} from "../../../../src";
+import {Entity, Column, PrimaryGeneratedColumn} from "../../../../src/index.ts";
 
 @Entity()
 export class Simple {
@@ -6,7 +6,7 @@ export class Simple {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: Number })
     x: number;
 
 }
