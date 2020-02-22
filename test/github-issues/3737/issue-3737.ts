@@ -1,5 +1,6 @@
-import { DriverUtils } from "../../../src/driver/DriverUtils";
-import { expect } from "chai";
+import { DriverUtils } from "../../../src/driver/DriverUtils.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
 
 describe("github issues > #3737 Should URL-decode the user info of a data source URI", () => {
 
@@ -32,3 +33,5 @@ describe("github issues > #3737 Should URL-decode the user info of a data source
     });
 
 });
+
+runIfMain(import.meta);

@@ -1,8 +1,8 @@
-import {PrimaryGeneratedColumn} from "../../../../src";
-import {Entity} from "../../../../src";
-import {JoinColumn} from "../../../../src";
-import {ManyToOne} from "../../../../src";
-import {Author} from "./Author";
+import {PrimaryGeneratedColumn} from "../../../../src/index.ts";
+import {Entity} from "../../../../src/index.ts";
+import {JoinColumn} from "../../../../src/index.ts";
+import {ManyToOne} from "../../../../src/index.ts";
+import {Author} from "./Author.ts";
 
 @Entity()
 export class Post {

@@ -1,16 +1,18 @@
-import "reflect-metadata";
-import {expect} from "chai";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src";
-import {Category} from "./entity/Category";
-import {Post} from "./entity/Post";
-import {Image} from "./entity/Image";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/index.ts";
+import {Category} from "./entity/Category.ts";
+import {Post} from "./entity/Post.ts";
+import {Image} from "./entity/Image.ts";
 
 describe("github issues > #3946 loadRelationCountAndMap fails cause made a wrong IN calculation, when primary key is string", () => {
-    
+
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
@@ -470,3 +472,5 @@ describe("github issues > #3946 loadRelationCountAndMap fails cause made a wrong
     })));
 
 });
+
+runIfMain(import.meta);

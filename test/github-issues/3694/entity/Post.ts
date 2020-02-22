@@ -1,6 +1,6 @@
-import {Entity, PrimaryGeneratedColumn} from "../../../../src";
-import {FruitEnum} from "../enum/FruitEnum";
-import {Column} from "../../../../src/decorator/columns/Column";
+import {Entity, PrimaryGeneratedColumn} from "../../../../src/index.ts";
+import {FruitEnum} from "../enum/FruitEnum.ts";
+import {Column} from "../../../../src/decorator/columns/Column.ts";
 
 @Entity()
 export class Post {

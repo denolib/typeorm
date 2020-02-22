@@ -1,16 +1,19 @@
-import "reflect-metadata";
-import {createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
-import {Person} from "./entity/Person";
-import {Men} from "./entity/Men";
-import {Women} from "./entity/Women";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import "../../deps/chai.ts";
+import {getDirnameOfCurrentModule, createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+import {Person} from "./entity/Person.ts";
+import {Men} from "./entity/Men.ts";
+import {Women} from "./entity/Women.ts";
 
 describe("github issues > #3857 Schema inheritance when STI pattern is used", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
         enabledDrivers: ["postgres", "mariadb", "mysql"],
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
         schema: "custom",
         schemaCreate: true
     }));
@@ -30,3 +33,5 @@ describe("github issues > #3857 Schema inheritance when STI pattern is used", ()
     })));
 
 });
+
+runIfMain(import.meta);

@@ -1,10 +1,11 @@
-import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver";
-import {SapDriver} from "../../../src/driver/sap/SapDriver";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src";
-import {EntitySchema} from "../../../src";
-import {Post, PostSchema} from "./entity/Post";
-import {expect} from "chai";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver.ts";
+import {SapDriver} from "../../../src/driver/sap/SapDriver.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/index.ts";
+import {EntitySchema} from "../../../src/index.ts";
+import {Post, PostSchema} from "./entity/Post.ts";
 
 describe("github issues > #3803 column option unique sqlite error", () => {
     let connections: Connection[];
@@ -31,3 +32,5 @@ describe("github issues > #3803 column option unique sqlite error", () => {
         }
     })));
 });
+
+runIfMain(import.meta);
