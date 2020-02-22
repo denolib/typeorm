@@ -1,10 +1,11 @@
-import "reflect-metadata";
-import {createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
-import {expect} from "chai";
-import {User} from "./entity/User";
-import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver";
-import {PostgresDriver} from "../../../src/driver/postgres/PostgresDriver";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+import {User} from "./entity/User.ts";
+import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver.ts";
+// import {PostgresDriver} from "../../../src/driver/postgres/PostgresDriver.ts";
+
 describe("github issues > #3047 Mysqsl on duplicate key update use current values", () => {
     let connections: Connection[];
 
@@ -60,7 +61,7 @@ describe("github issues > #3047 Mysqsl on duplicate key update use current value
 
     it("should overwrite using current value in PostgreSQL", () => Promise.all(connections.map(async connection => {
       try {
-        if (connection.driver instanceof PostgresDriver) {
+        if (false/*connection.driver instanceof PostgresDriver*/) { // TODO(uki00a) uncomment this when PostgresDriver is implemeted.
 
           const UserRepository = connection.manager.getRepository(User);
 
@@ -92,3 +93,5 @@ describe("github issues > #3047 Mysqsl on duplicate key update use current value
       }
     })));
  });
+
+runIfMain(import.meta);

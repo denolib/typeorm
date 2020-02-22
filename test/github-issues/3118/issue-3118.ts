@@ -1,11 +1,12 @@
-import "reflect-metadata";
-import {expect} from "chai";
-import {Connection} from "../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {GroupWithVeryLongName} from "./entity/GroupWithVeryLongName";
-import {AuthorWithVeryLongName} from "./entity/AuthorWithVeryLongName";
-import {PostWithVeryLongName} from "./entity/PostWithVeryLongName";
-import {CategoryWithVeryLongName} from "./entity/CategoryWithVeryLongName";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {GroupWithVeryLongName} from "./entity/GroupWithVeryLongName.ts";
+import {AuthorWithVeryLongName} from "./entity/AuthorWithVeryLongName.ts";
+import {PostWithVeryLongName} from "./entity/PostWithVeryLongName.ts";
+import {CategoryWithVeryLongName} from "./entity/CategoryWithVeryLongName.ts";
 
 /**
  * @see https://www.postgresql.org/docs/current/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS
@@ -16,8 +17,9 @@ import {CategoryWithVeryLongName} from "./entity/CategoryWithVeryLongName";
  */
 describe("github issues > #3118 shorten alias names (for RDBMS with a limit) when they are longer than 63 characters", () => {
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
@@ -91,3 +93,5 @@ describe("github issues > #3118 shorten alias names (for RDBMS with a limit) whe
         expect(connection.entityMetadatas.some(em => em.tableName === expectedTableName)).to.be.true;
     })));
 });
+
+runIfMain(import.meta);

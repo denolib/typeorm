@@ -1,14 +1,14 @@
-import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryGeneratedColumn";
-import {Column, Entity, ManyToOne, OneToMany} from "../../../../src";
-import {GroupWithVeryLongName} from "./GroupWithVeryLongName";
-import {PostWithVeryLongName} from "./PostWithVeryLongName";
+import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
+import {Column, Entity, ManyToOne, OneToMany} from "../../../../src/index.ts";
+import {GroupWithVeryLongName} from "./GroupWithVeryLongName.ts";
+import {PostWithVeryLongName} from "./PostWithVeryLongName.ts";
 
 @Entity()
 export class AuthorWithVeryLongName {
     @PrimaryGeneratedColumn()
     authorId: number;
 
-    @Column()
+    @Column({ type: String })
     firstName: string;
 
     @ManyToOne(() => GroupWithVeryLongName, group => group.authorsWithVeryLongName)

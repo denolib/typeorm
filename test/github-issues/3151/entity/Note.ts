@@ -1,9 +1,9 @@
-import {Column} from "../../../../src";
-import {PrimaryGeneratedColumn} from "../../../../src";
-import {Entity} from "../../../../src";
-import {JoinTable} from "../../../../src";
-import {ManyToMany} from "../../../../src";
-import { Category } from "./Category";
+import {Column} from "../../../../src/index.ts";
+import {PrimaryGeneratedColumn} from "../../../../src/index.ts";
+import {Entity} from "../../../../src/index.ts";
+import {JoinTable} from "../../../../src/index.ts";
+import {ManyToMany} from "../../../../src/index.ts";
+import { Category } from "./Category.ts";
 
 @Entity()
 export class Note {
@@ -11,7 +11,7 @@ export class Note {
     @PrimaryGeneratedColumn("uuid")
     id: string;
 
-    @Column()
+    @Column({ type: String })
     content: string;
 
     @ManyToMany((type) => Category, (category) => category.notes)
