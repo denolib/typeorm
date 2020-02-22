@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "../../../../src";
+import { Column, Entity, PrimaryGeneratedColumn } from "../../../../src/index.ts";
 
 @Entity({schema: "schema"})
 export class Post {
@@ -9,6 +9,6 @@ export class Post {
     @Column("enum", { enum: ["A", "B", "C"] })
     enum: string;
 
-    @Column()
+    @Column({ type: String })
     name: string;
 }

@@ -1,18 +1,18 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "../../../../src";
+import { Column, Entity, PrimaryGeneratedColumn } from "../../../../src/index.ts";
 
 export class EmbeddedInThing {
-  @Column()
+  @Column({ type: Number })
   public someSeriouslyLongFieldNameFirst: number;
-  
-  @Column()
+
+  @Column({ type: Number })
   public someSeriouslyLongFieldNameSecond: number;
 }
 
 @Entity()
 export class Thing {
-  @PrimaryGeneratedColumn() 
+  @PrimaryGeneratedColumn()
   public id: number;
 
-  @Column(type => EmbeddedInThing) 
+  @Column(type => EmbeddedInThing)
   public embeddedThing: EmbeddedInThing;
 }

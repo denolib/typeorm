@@ -1,5 +1,5 @@
-import {Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn} from "../../../../src";
-import {Category} from "./Category";
+import {Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn} from "../../../../src/index.ts";
+import {Category} from "./Category.ts";
 
 @Entity()
 export class Post {
@@ -7,7 +7,7 @@ export class Post {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     title: string;
 
     @ManyToMany(() => Category)

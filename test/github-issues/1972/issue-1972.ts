@@ -1,15 +1,18 @@
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src";
-import {assert} from "chai";
-import {User} from "./entity/User";
-import {TournamentUserParticipant} from "./entity/TournamentUserParticipant";
-import {TournamentSquadParticipant} from "./entity/TournamentSquadParticipant";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/index.ts";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {User} from "./entity/User.ts";
+import {TournamentUserParticipant} from "./entity/TournamentUserParticipant.ts";
+import {TournamentSquadParticipant} from "./entity/TournamentSquadParticipant.ts";
 
 describe("github issues > #1972 STI problem - empty columns", () => {
     let connections: Connection[];
 
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
     }));
 
     beforeEach(() => reloadTestingDatabases(connections));
@@ -33,7 +36,7 @@ describe("github issues > #1972 STI problem - empty columns", () => {
         const result = await connection.manager.findOne(TournamentUserParticipant);
 
         if (result) {
-            assert(result.user instanceof User);
+            expect(result.user).to.be.instanceof(User);
         }
     })));
 
@@ -55,7 +58,9 @@ describe("github issues > #1972 STI problem - empty columns", () => {
         const result = await connection.manager.findOne(TournamentSquadParticipant);
 
         if (result) {
-            assert(result.owner instanceof User);
+            expect(result.owner).to.be.instanceof(User);
         }
     })));
 });
+
+runIfMain(import.meta);

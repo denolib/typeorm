@@ -1,4 +1,4 @@
-import {Column, Entity, PrimaryGeneratedColumn} from "../../../../src";
+import {Column, Entity, PrimaryGeneratedColumn} from "../../../../src/index.ts";
 
 @Entity()
 export class Product {
@@ -6,7 +6,7 @@ export class Product {
     @PrimaryGeneratedColumn("uuid")
     id: string;
 
-    @Column()
+    @Column({ type: Boolean })
     liked: boolean;
 
 }

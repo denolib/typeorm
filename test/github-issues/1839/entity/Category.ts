@@ -1,11 +1,11 @@
-import {Entity, PrimaryColumn} from "../../../../src";
-import {ManyToMany} from "../../../../src/decorator/relations/ManyToMany";
-import {Post} from "./Post";
+import {Entity, PrimaryColumn} from "../../../../src/index.ts";
+import {ManyToMany} from "../../../../src/decorator/relations/ManyToMany.ts";
+import {Post} from "./Post.ts";
 
 @Entity()
 export class Category {
 
-    @PrimaryColumn({ collation: "ascii_general_ci", charset: "ascii" })
+    @PrimaryColumn({ type: String, collation: "ascii_general_ci", charset: "ascii" })
     id: string;
 
     @ManyToMany(type => Post, post => post.categories)

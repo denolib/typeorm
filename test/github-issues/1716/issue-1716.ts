@@ -1,13 +1,14 @@
-import "reflect-metadata";
-import { Connection } from "../../../src/connection/Connection";
-import { ConnectionOptions } from "../../../src/connection/ConnectionOptions";
-import { createTestingConnections, closeTestingConnections, reloadTestingDatabases, getTypeOrmConfig } from "../../utils/test-utils";
-import { expect } from "chai";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import { Connection } from "../../../src/connection/Connection.ts";
+import { ConnectionOptions } from "../../../src/connection/ConnectionOptions.ts";
+import { createTestingConnections, closeTestingConnections, reloadTestingDatabases, getTypeOrmConfig } from "../../utils/test-utils.ts";
 
-import { PgEntity } from "./entity/pgEntity";
-import { MysqlEntity } from "./entity/mysqlEntity";
-import { MariadbEntity } from "./entity/mariadbEntity";
-import { MssqlEntity } from "./entity/mssqlEntity";
+import { PgEntity } from "./entity/pgEntity.ts";
+import { MysqlEntity } from "./entity/mysqlEntity.ts";
+import { MariadbEntity } from "./entity/mariadbEntity.ts";
+import { MssqlEntity } from "./entity/mssqlEntity.ts";
 
 
 
@@ -326,3 +327,5 @@ describe("github issues > #1716 send timestamp to database without converting it
     });
 
 });
+
+runIfMain(import.meta);

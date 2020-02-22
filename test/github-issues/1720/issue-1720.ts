@@ -1,14 +1,17 @@
-import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src";
-import {Post} from "./entity/Post";
-import {Category} from "./entity/Category";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import "../../deps/chai.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/index.ts";
+import {Post} from "./entity/Post.ts";
+import {Category} from "./entity/Category.ts";
 
 describe("github issues > #1720 Listener not invoked when relation loaded through getter", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
         enabledDrivers: ["mysql"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
@@ -34,3 +37,5 @@ describe("github issues > #1720 Listener not invoked when relation loaded throug
     })));
 
 });
+
+runIfMain(import.meta);

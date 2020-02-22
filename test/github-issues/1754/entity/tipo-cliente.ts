@@ -1,5 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "../../../../src";
-import { Cliente } from "./cliente";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "../../../../src/index.ts";
+import { Cliente } from "./cliente.ts";
 
 @Entity()
 export class TipoCliente {
@@ -7,7 +7,7 @@ export class TipoCliente {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({name: "tipo"})
+    @Column({type: String, name: "tipo"})
     descricao: string;
 
     @OneToMany(() => Cliente, c => c.tipo)

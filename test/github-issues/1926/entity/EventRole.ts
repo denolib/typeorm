@@ -1,20 +1,20 @@
-import {Column, Entity, ManyToOne, PrimaryColumn} from "../../../../src";
-import {Event} from "./Event";
-import {Role} from "./Role";
+import {Column, Entity, ManyToOne, PrimaryColumn} from "../../../../src/index.ts";
+import {Event} from "./Event.ts";
+import {Role} from "./Role.ts";
 
 @Entity()
 export class EventRole {
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: String })
     eventId: string;
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: String })
     roleId: string;
 
-    @Column()
+    @Column({ type: String })
     description: string;
 
-    @Column()
+    @Column({ type: String })
     compensation: string;
 
     @ManyToOne(type => Role, role => role.roles, {

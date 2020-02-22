@@ -1,7 +1,7 @@
-import {Entity} from "../../../../src/decorator/entity/Entity";
-import {ValueTransformer} from "../../../../src/decorator/options/ValueTransformer";
-import {PrimaryColumn} from "../../../../src/decorator/columns/PrimaryColumn";
-import {Column} from "../../../../src/decorator/columns/Column";
+import {Entity} from "../../../../src/decorator/entity/Entity.ts";
+import {ValueTransformer} from "../../../../src/decorator/options/ValueTransformer.ts";
+import {PrimaryColumn} from "../../../../src/decorator/columns/PrimaryColumn.ts";
+import {Column} from "../../../../src/decorator/columns/Column.ts";
 
 export class Uuid {
 
@@ -38,7 +38,7 @@ export class Post {
     @PrimaryColumn({ type: "uuid", transformer: new UuidTransformer() })
     id: Uuid;
 
-    @Column()
+    @Column({ type: String })
     title: string;
 
     constructor(id: Uuid) {

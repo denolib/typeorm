@@ -4,16 +4,16 @@ import {
   JoinColumn,
   OneToOne,
   PrimaryGeneratedColumn
-} from "../../../../src";
-import { Personalization } from "./Personalization";
+} from "../../../../src/index.ts";
+import { Personalization } from "./Personalization.ts";
 
 @Entity()
 export class Provider {
   @PrimaryGeneratedColumn("uuid") public id: string;
 
-  @Column() public name: string;
+  @Column({ type: String }) public name: string;
 
-  @Column() public description: string;
+  @Column({ type: String }) public description: string;
 
   @OneToOne(_ => Personalization)
   @JoinColumn()

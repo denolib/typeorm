@@ -1,5 +1,6 @@
-import { DriverUtils } from "../../../src/driver/DriverUtils";
-import { expect } from "chai";
+import { DriverUtils } from "../../../src/driver/DriverUtils.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
 
 describe("github issues > #1493 Error parsing pg connection string", () => {
     it("should parse url with empty password", () => {
@@ -32,3 +33,5 @@ describe("github issues > #1493 Error parsing pg connection string", () => {
         expect(options.password).to.eql(obj.password);
     });
 });
+
+runIfMain(import.meta);

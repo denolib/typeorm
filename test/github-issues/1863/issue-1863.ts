@@ -1,7 +1,8 @@
-import "reflect-metadata";
-import {Connection} from "../../../src/connection/Connection";
-import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils";
-import {Table} from "../../../src";
+import {runIfMain} from "../../deps/mocha.ts";
+import "../../deps/chai.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils.ts";
+import {Table} from "../../../src/index.ts";
 
 describe("github issues > #1863 createTable.uniques doesn't work when the columnNames only has one item", () => {
 
@@ -45,3 +46,5 @@ describe("github issues > #1863 createTable.uniques doesn't work when the column
     })));
 
 });
+
+runIfMain(import.meta);

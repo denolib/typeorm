@@ -1,10 +1,11 @@
-import "reflect-metadata";
-import {createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
-import {expect} from "chai";
-import {User} from "./entity/User";
-import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver";
-import {PostgresDriver} from "../../../src/driver/postgres/PostgresDriver";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+import {User} from "./entity/User.ts";
+import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver.ts";
+//import {PostgresDriver} from "../../../src/driver/postgres/PostgresDriver.ts";
+
 describe("github issues > #1780 Support for insertion ignore on duplicate error", () => {
      let connections: Connection[];
     before(async () => connections = await createTestingConnections({
@@ -79,7 +80,7 @@ describe("github issues > #1780 Support for insertion ignore on duplicate error"
      })));
      it("should save one row without duplicate error in PostgreSQL", () => Promise.all(connections.map(async connection => {
          try {
-            if (connection.driver instanceof PostgresDriver) {
+            if (false/*connection.driver instanceof PostgresDriver*/) { // TODO(uki00a) uncomment this when PostgresDriver is implemented.
 
                 const UserRepository = connection.manager.getRepository(User);
                  // ignore while insertion duplicated row
@@ -158,3 +159,5 @@ describe("github issues > #1780 Support for insertion ignore on duplicate error"
         }
     })));
  });
+
+runIfMain(import.meta);
