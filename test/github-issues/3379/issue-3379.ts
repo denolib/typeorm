@@ -1,16 +1,19 @@
-import "reflect-metadata";
-import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver";
-import {PostgresDriver} from "../../../src/driver/postgres/PostgresDriver";
-import {AbstractSqliteDriver} from "../../../src/driver/sqlite-abstract/AbstractSqliteDriver";
-import {SqlServerDriver} from "../../../src/driver/sqlserver/SqlServerDriver";
-import {createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection, Table} from "../../../src";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import "../../deps/chai.ts";
+import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver.ts";
+// import {PostgresDriver} from "../../../src/driver/postgres/PostgresDriver.ts";
+import {AbstractSqliteDriver} from "../../../src/driver/sqlite-abstract/AbstractSqliteDriver.ts";
+import {SqlServerDriver} from "../../../src/driver/sqlserver/SqlServerDriver.ts";
+import {getDirnameOfCurrentModule, createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Connection, Table} from "../../../src/index.ts";
 
 describe("github issues > #3379 Migration will keep create and drop indexes if index name is the same across tables", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"]
+        entities: [joinPaths(__dirname, "/entity/*.ts")]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
@@ -26,7 +29,7 @@ describe("github issues > #3379 Migration will keep create and drop indexes if i
             await queryRunner.createDatabase("testDB", true);
             await queryRunner.createSchema("testDB.testSchema", true);
 
-        } else if (connection.driver instanceof PostgresDriver) {
+        } else if (false/*connection.driver instanceof PostgresDriver*/) { // TODO(uki00a) uncomment this when PostgresDriver is implemented.
             postTableName = "testSchema.post";
             await queryRunner.createSchema("testSchema", true);
 
@@ -81,3 +84,5 @@ describe("github issues > #3379 Migration will keep create and drop indexes if i
     })));
 
 });
+
+runIfMain(import.meta);
