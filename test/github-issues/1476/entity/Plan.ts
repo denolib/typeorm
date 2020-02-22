@@ -1,11 +1,11 @@
-import { Entity, PrimaryColumn, Column } from "../../../../src/index";
+import { Entity, PrimaryColumn, Column } from "../../../../src/index.ts";
 
 
 @Entity()
 export class Plan {
-    @PrimaryColumn()
+    @PrimaryColumn({ type: Number })
     planId: number;
 
-    @Column()
+    @Column({ type: String })
     planName: string;
 }

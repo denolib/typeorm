@@ -1,8 +1,8 @@
-import {Column, PrimaryGeneratedColumn} from "../../../../src/index";
+import {Column, PrimaryGeneratedColumn} from "../../../../src/index.ts";
 
 export abstract class AbstractEntity {
   @PrimaryGeneratedColumn() id: number;
-  @Column() firstname: string;
-  @Column() lastname: string;
-  @Column() fullname: string;
+  @Column({ type: String }) firstname: string;
+  @Column({ type: String }) lastname: string;
+  @Column({ type: String }) fullname: string;
 }

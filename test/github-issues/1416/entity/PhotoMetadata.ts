@@ -1,5 +1,5 @@
-import {Entity, PrimaryGeneratedColumn, Column, OneToOne} from "../../../../src/index";
-import {Photo} from "./Photo";
+import {Entity, PrimaryGeneratedColumn, Column, OneToOne} from "../../../../src/index.ts";
+import {Photo} from "./Photo.ts";
 
 @Entity()
 export class PhotoMetadata {
@@ -13,13 +13,13 @@ export class PhotoMetadata {
   @Column("int")
   width: number;
 
-  @Column()
+  @Column({ type: String })
   orientation: string;
 
-  @Column()
+  @Column({ type: Boolean })
   compressed: boolean;
 
-  @Column()
+  @Column({ type: String })
   comment: string;
 
   @OneToOne(type => Photo, photo => photo.metadata)

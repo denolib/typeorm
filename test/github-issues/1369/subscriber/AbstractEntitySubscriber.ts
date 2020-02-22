@@ -1,5 +1,5 @@
-import {EntitySubscriberInterface, EventSubscriber, InsertEvent, UpdateEvent} from "../../../../src/index";
-import {AbstractEntity} from "../entity/AbstractEntity";
+import {EntitySubscriberInterface, EventSubscriber, InsertEvent, UpdateEvent} from "../../../../src/index.ts";
+import {AbstractEntity} from "../entity/AbstractEntity.ts";
 
 @EventSubscriber()
 export class AbstractEntitySubscriber implements EntitySubscriberInterface<AbstractEntity> {

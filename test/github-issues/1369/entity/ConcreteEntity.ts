@@ -1,7 +1,7 @@
-import {Column, Entity} from "../../../../src/index";
-import {AbstractEntity} from "./AbstractEntity";
+import {Column, Entity} from "../../../../src/index.ts";
+import {AbstractEntity} from "./AbstractEntity.ts";
 
 @Entity()
 export class ConcreteEntity extends AbstractEntity {
-    @Column() position: string;
+    @Column({ type: String }) position: string;
 }

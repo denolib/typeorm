@@ -357,5 +357,17 @@ import "./test/github-issues/1245/issue-1245.ts";
 import "./test/github-issues/1259/issue-1259.ts";
 import "./test/github-issues/1261/issue-1261.ts";
 import "./test/github-issues/1282/issue-1282.ts";
+import "./test/github-issues/1308/issue-1308.ts";
+import "./test/github-issues/1314/issue-1314.ts";
+import "./test/github-issues/1326/issue-1326.ts";
+import "./test/github-issues/1369/issue-1369.ts";
+import "./test/github-issues/1377/issue-1377.ts";
+import "./test/github-issues/1388/issue-1388.ts";
+import "./test/github-issues/1397/issue-1397.ts";
+import "./test/github-issues/1416/issue-1416.ts";
+import "./test/github-issues/1427/issue-1427.ts";
+import "./test/github-issues/1465/save-relation.ts";
+import "./test/github-issues/1476/issue-1476.ts";
+import "./test/github-issues/1493/issue-1493.ts";
 
 runTests();

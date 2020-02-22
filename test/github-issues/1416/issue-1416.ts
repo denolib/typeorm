@@ -1,15 +1,17 @@
-import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Author} from "./entity/Author";
-import {Photo} from "./entity/Photo";
-import {Connection} from "../../../src/connection/Connection";
-import {PhotoMetadata} from "./entity/PhotoMetadata";
-import {expect} from "chai";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Author} from "./entity/Author.ts";
+import {Photo} from "./entity/Photo.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+import {PhotoMetadata} from "./entity/PhotoMetadata.ts";
 
 describe("github issue > #1416 Wrong behavior when fetching an entity that has a relation with its own eager relations", () => {
     let connections: Connection[] = [];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
         enabledDrivers: ["mysql"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
@@ -37,11 +39,11 @@ describe("github issue > #1416 Wrong behavior when fetching an entity that has a
         photoAuthor.photos = [photo];
         await connection.manager.save(photoAuthor);
 
-        const author = await connection.manager.findOne(Author, { 
-            where: { 
+        const author = await connection.manager.findOne(Author, {
+            where: {
                 name: photoAuthor.name
-            }, 
-            relations: ["photos"] 
+            },
+            relations: ["photos"]
         }) as Author;
         expect(author).not.to.be.undefined;
         expect(author.photos[0]).not.to.be.undefined;
@@ -50,3 +52,5 @@ describe("github issue > #1416 Wrong behavior when fetching an entity that has a
         expect(author.photos[0].metadata).to.eql(metadata);
     })));
 });
+
+runIfMain(import.meta);
