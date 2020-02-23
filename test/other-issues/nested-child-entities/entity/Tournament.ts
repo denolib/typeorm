@@ -1,6 +1,6 @@
-import {TableInheritance, Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn} from "../../../../src/index";
+import {TableInheritance, Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn} from "../../../../src/index.ts";
 
-import {TournamentGraph} from "./TournamentGraph";
+import {TournamentGraph} from "./TournamentGraph.ts";
 
 @Entity()
 @TableInheritance({
@@ -14,7 +14,7 @@ export abstract class Tournament {
     @PrimaryGeneratedColumn()
     public id: number;
 
-    @Column()
+    @Column({ type: String })
     public name: string;
 
     @OneToOne(type => TournamentGraph, graph => graph.tournament)

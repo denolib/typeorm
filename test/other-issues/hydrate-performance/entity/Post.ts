@@ -1,4 +1,4 @@
-import {Column, Entity, PrimaryGeneratedColumn} from "../../../../src";
+import {Column, Entity, PrimaryGeneratedColumn} from "../../../../src/index.ts";
 
 @Entity()
 export class Post {
@@ -6,7 +6,7 @@ export class Post {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     title: string;
 
     constructor(title?: string) {

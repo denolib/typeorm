@@ -1,6 +1,6 @@
-import {ChildEntity} from "../../../../src/index";
+import {ChildEntity} from "../../../../src/index.ts";
 
-import {BilliardsTournament} from "./BilliardsTournament";
+import {BilliardsTournament} from "./BilliardsTournament.ts";
 
 @ChildEntity()
 export class SquadBilliardsTournament extends BilliardsTournament {

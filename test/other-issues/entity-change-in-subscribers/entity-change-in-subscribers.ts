@@ -1,16 +1,19 @@
-import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src/connection/Connection";
-import {Post} from "./entity/Post";
-import {expect} from "chai";
-import {PostCategory} from "./entity/PostCategory";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
+import {Post} from "./entity/Post.ts";
+import {PostCategory} from "./entity/PostCategory.ts";
 
 describe("other issues > entity change in subscribers should affect persistence", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
-        subscribers: [__dirname + "/subscriber/*{.js,.ts}"]
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        subscribers: [joinPaths(__dirname, "/subscriber/*.ts")],
+        enabledDrivers: ["postgres", "mysql", "mariadb", "mssql", "oracle", "mongodb", "cockroachdb"] // TODO(uki00a) `sqlite` is ommited because `@UpdateDateColumn` doesn't currently work. Remove `enableDrivers` when deno-sqite supports `datetime('now')`.
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
@@ -50,3 +53,5 @@ describe("other issues > entity change in subscribers should affect persistence"
     })));
 
 });
+
+runIfMain(import.meta);

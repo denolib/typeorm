@@ -1,22 +1,23 @@
-import "reflect-metadata";
-
-import {expect} from "chai";
-
-import {Connection} from "../../../src/connection/Connection";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {Connection} from "../../../src/connection/Connection.ts";
 import {
+  getDirnameOfCurrentModule,
   closeTestingConnections,
   createTestingConnections,
   reloadTestingDatabases
-} from "../../utils/test-utils";
-import {Role} from "./entity/Role";
-import {User} from "./entity/User";
+} from "../../utils/test-utils.ts";
+import {Role} from "./entity/Role.ts";
+import {User} from "./entity/User.ts";
 
 describe("other issues > using take with multiple primary keys", () => {
   let connections: Connection[];
+  const __dirname = getDirnameOfCurrentModule(import.meta);
   before(
     async () =>
       (connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
       }))
   );
   beforeEach(() => reloadTestingDatabases(connections));
@@ -87,3 +88,5 @@ describe("other issues > using take with multiple primary keys", () => {
       })
     ));
 });
+
+runIfMain(import.meta);

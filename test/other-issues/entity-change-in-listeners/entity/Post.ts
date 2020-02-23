@@ -1,8 +1,8 @@
-import {Entity} from "../../../../src/decorator/entity/Entity";
-import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryGeneratedColumn";
-import {Column} from "../../../../src/decorator/columns/Column";
-import {BeforeUpdate} from "../../../../src/decorator/listeners/BeforeUpdate";
-import {UpdateDateColumn} from "../../../../src/decorator/columns/UpdateDateColumn";
+import {Entity} from "../../../../src/decorator/entity/Entity.ts";
+import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
+import {Column} from "../../../../src/decorator/columns/Column.ts";
+import {BeforeUpdate} from "../../../../src/decorator/listeners/BeforeUpdate.ts";
+import {UpdateDateColumn} from "../../../../src/decorator/columns/UpdateDateColumn.ts";
 
 @Entity()
 export class Post {
@@ -10,14 +10,14 @@ export class Post {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     title: string;
 
-    @Column({ default: false })
+    @Column({ type: Boolean, default: false })
     active: boolean;
 
-    @UpdateDateColumn()
-    updateDate: Date;
+    //@UpdateDateColumn()
+    //updateDate: Date;
 
     @BeforeUpdate()
     beforeUpdate() {

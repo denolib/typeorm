@@ -1,6 +1,6 @@
-import {Entity, PrimaryGeneratedColumn, OneToOne} from "../../../../src/index";
+import {Entity, PrimaryGeneratedColumn, OneToOne} from "../../../../src/index.ts";
 
-import {Tournament} from "./Tournament";
+import {Tournament} from "./Tournament.ts";
 
 @Entity()
 export class TournamentGraph {
