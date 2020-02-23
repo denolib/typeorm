@@ -22,6 +22,7 @@ import {OrmUtils} from "../../util/OrmUtils.ts";
 import {Query} from "../Query.ts";
 import {IsolationLevel} from "../types/IsolationLevel.ts";
 import {PostgresDriver} from "./PostgresDriver.ts";
+import {NotImplementedError} from "../../error/NotImplementedError.ts";
 
 /**
  * Runs queries on a single postgres database connection.
@@ -199,23 +200,24 @@ export class PostgresQueryRunner extends BaseQueryRunner implements QueryRunner 
      * Returns raw data stream.
      */
     stream(query: string, parameters?: any[], onEnd?: Function, onError?: Function): Promise<ReadStream> {
-        const QueryStream = this.driver.loadStreamDependency();
-        if (this.isReleased)
-            throw new QueryRunnerAlreadyReleasedError();
+        return Promise.reject(new NotImplementedError('PostgresQueryRunner#stream'));
+        //const QueryStream = this.driver.loadStreamDependency();
+        //if (this.isReleased)
+        //    throw new QueryRunnerAlreadyReleasedError();
 
-        return new Promise(async (ok, fail) => {
-            try {
-                const databaseConnection = await this.connect();
-                this.driver.connection.logger.logQuery(query, parameters, this);
-                const stream = databaseConnection.query(new QueryStream(query, parameters));
-                if (onEnd) stream.on("end", onEnd);
-                if (onError) stream.on("error", onError);
-                ok(stream);
+        //return new Promise(async (ok, fail) => {
+        //    try {
+        //        const databaseConnection = await this.connect();
+        //        this.driver.connection.logger.logQuery(query, parameters, this);
+        //        const stream = databaseConnection.query(new QueryStream(query, parameters));
+        //        if (onEnd) stream.on("end", onEnd);
+        //        if (onError) stream.on("error", onError);
+        //        ok(stream);
 
-            } catch (err) {
-                fail(err);
-            }
-        });
+        //    } catch (err) {
+        //        fail(err);
+        //    }
+        //});
     }
 
     /**
