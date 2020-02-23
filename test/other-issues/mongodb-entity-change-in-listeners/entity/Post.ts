@@ -1,8 +1,8 @@
-import {Entity} from "../../../../src/decorator/entity/Entity";
-import {Column} from "../../../../src/decorator/columns/Column";
-import {BeforeUpdate} from "../../../../src/decorator/listeners/BeforeUpdate";
-import {UpdateDateColumn} from "../../../../src/decorator/columns/UpdateDateColumn";
-import {AfterLoad, ObjectIdColumn} from "../../../../src";
+import {Entity} from "../../../../src/decorator/entity/Entity.ts";
+import {Column} from "../../../../src/decorator/columns/Column.ts";
+import {BeforeUpdate} from "../../../../src/decorator/listeners/BeforeUpdate.ts";
+import {UpdateDateColumn} from "../../../../src/decorator/columns/UpdateDateColumn.ts";
+import {AfterLoad, ObjectIdColumn} from "../../../../src/index.ts";
 
 @Entity()
 export class Post {
@@ -10,10 +10,10 @@ export class Post {
     @ObjectIdColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     title: string;
 
-    @Column({default: false})
+    @Column({type: Boolean, default: false})
     active: boolean;
 
     @UpdateDateColumn()

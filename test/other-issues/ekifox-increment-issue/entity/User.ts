@@ -1,6 +1,6 @@
-import {Entity} from "../../../../src";
-import {Column} from "../../../../src";
-import {PrimaryColumn} from "../../../../src";
+import {Entity} from "../../../../src/index.ts";
+import {Column} from "../../../../src/index.ts";
+import {PrimaryColumn} from "../../../../src/index.ts";
 
 @Entity()
 export class User {

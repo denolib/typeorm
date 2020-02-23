@@ -1,17 +1,20 @@
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src";
-
-import {TournamentGraph} from "./entity/TournamentGraph";
-import {SquadBilliardsTournament} from "./entity/SquadBilliardsTournament";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import "../../deps/chai.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/index.ts";
+import {TournamentGraph} from "./entity/TournamentGraph.ts";
+import {SquadBilliardsTournament} from "./entity/SquadBilliardsTournament.ts";
 
 describe("other issues > using nested child entities", () => {
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
 
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
         enabledDrivers: ["postgres"]
     }));
-    
+
     beforeEach(() => reloadTestingDatabases(connections));
 
     after(() => closeTestingConnections(connections));
@@ -29,3 +32,5 @@ describe("other issues > using nested child entities", () => {
         await connection.manager.save(tournamentGraph);
     })));
 });
+
+runIfMain(import.meta);

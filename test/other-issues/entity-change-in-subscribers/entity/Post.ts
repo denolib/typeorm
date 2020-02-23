@@ -1,10 +1,10 @@
-import {Entity} from "../../../../src/decorator/entity/Entity";
-import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryGeneratedColumn";
-import {Column} from "../../../../src/decorator/columns/Column";
-import {UpdateDateColumn} from "../../../../src/decorator/columns/UpdateDateColumn";
-import {OneToOne} from "../../../../src/decorator/relations/OneToOne";
-import {PostCategory} from "./PostCategory";
-import {JoinColumn} from "../../../../src/decorator/relations/JoinColumn";
+import {Entity} from "../../../../src/decorator/entity/Entity.ts";
+import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
+import {Column} from "../../../../src/decorator/columns/Column.ts";
+import {UpdateDateColumn} from "../../../../src/decorator/columns/UpdateDateColumn.ts";
+import {OneToOne} from "../../../../src/decorator/relations/OneToOne.ts";
+import {PostCategory} from "./PostCategory.ts";
+import {JoinColumn} from "../../../../src/decorator/relations/JoinColumn.ts";
 
 @Entity()
 export class Post {
@@ -12,10 +12,10 @@ export class Post {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: String })
     title: string;
 
-    @Column({default: false})
+    @Column({type: Boolean, default: false})
     active: boolean;
 
     @UpdateDateColumn()
@@ -25,9 +25,9 @@ export class Post {
     @JoinColumn()
     category: PostCategory;
 
-    @Column()
+    @Column({ type: Number })
     updatedColumns: number = 0;
 
-    @Column()
+    @Column({ type: Number })
     updatedRelations: number = 0;
 }

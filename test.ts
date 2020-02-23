@@ -493,4 +493,22 @@ import "./test/github-issues/4842/issue-4842.ts";
 import "./test/github-issues/5004/issue-5004.ts";
 import "./test/github-issues/5174/issue-5174.ts";
 
+// Tests for other issues
+import "./test/other-issues/column-getters/column-getters.ts";
+import "./test/other-issues/ekifox-increment-issue/ekifox-increment-issue.ts";
+import "./test/other-issues/entity-change-in-listeners/entity-change-in-listeners.ts";
+import "./test/other-issues/entity-change-in-subscribers/entity-change-in-subscribers.ts";
+import "./test/other-issues/escaping-function-parameter/escaping-function-parameter.ts";
+import "./test/other-issues/hydrate-performance/hydrate-performance.ts";
+import "./test/other-issues/inheritance-duplicate-columns/inheritance-duplicate-columns.ts";
+import "./test/other-issues/join-empty-relations/join-empty-relations.ts";
+import "./test/other-issues/limit-with-order-by/limit-with-order-by.ts";
+import "./test/other-issues/mongodb-entity-change-in-listeners/mongodb-entity-change-in-listeners.ts";
+import "./test/other-issues/mongodb-entity-change-in-subscribers/mongodb-entity-change-in-subscribers.ts";
+import "./test/other-issues/mssql-add-column-with-default-value/mssql-add-column-with-default-value.ts";
+import "./test/other-issues/nested-child-entities/nested-child-entities.ts";
+import "./test/other-issues/preventing-injection/preventing-injection.ts";
+import "./test/other-issues/take-multiple-pk/take-multiple-pk.ts";
+import "./test/other-issues/update-relational-column-on-relation-change/update-relational-column-on-relation-change.ts";
+
 runTests();

@@ -1,14 +1,16 @@
-import "reflect-metadata";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils";
-import {Connection} from "../../../src";
-import {Post} from "./entity/Post";
-import {expect} from "chai";
+import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
+import {runIfMain} from "../../deps/mocha.ts";
+import {expect} from "../../deps/chai.ts";
+import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Connection} from "../../../src/index.ts";
+import {Post} from "./entity/Post.ts";
 
 describe("other issues > preventing-injection", () => {
 
     let connections: Connection[];
+    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [__dirname + "/entity/*{.js,.ts}"],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
@@ -23,9 +25,15 @@ describe("other issues > preventing-injection", () => {
         });
         postWithOnlyIdSelected.should.be.eql([{ id: 1 }]);
 
-        await connection.manager.find(Post, {
-            select: ["(WHERE LIMIT 1)" as any]
-        }).should.be.rejected;
+        let error;
+        try {
+            await connection.manager.find(Post, {
+                select: ["(WHERE LIMIT 1)" as any]
+            });
+        } catch (err) {
+            error = err;
+        }
+        expect(error).to.be.instanceOf(Error);
     })));
 
     it("should skip non-exist columns in where expression via FindOptions", () => Promise.all(connections.map(async function(connection) {
@@ -61,25 +69,42 @@ describe("other issues > preventing-injection", () => {
         });
         loadedPosts.should.be.eql([{ id: 1, title: "hello" }]);
 
-        await connection.manager.find(Post, {
-            order: {
-                ["(WHERE LIMIT 1)" as any]: "DESC"
-            }
-        }).should.be.rejected;
-
+        let error;
+        try {
+            await connection.manager.find(Post, {
+                order: {
+                    ["(WHERE LIMIT 1)" as any]: "DESC"
+                }
+            });
+        } catch (err) {
+            error = err;
+        }
+        expect(error).to.be.instanceOf(Error);
     })));
 
     it("should not allow non-numeric values in skip and take via FindOptions", () => Promise.all(connections.map(async function(connection) {
 
-        await connection.manager.find(Post, {
-            take: "(WHERE XXX)" as any
-        }).should.be.rejected;
+        let error;
 
-        await connection.manager.find(Post, {
-            skip: "(WHERE LIMIT 1)" as any,
-            take: "(WHERE XXX)" as any,
-        }).should.be.rejected;
+        try {
+            await connection.manager.find(Post, {
+                take: "(WHERE XXX)" as any
+            });
+        } catch (err) {
+            error = err;
+        }
+        expect(error).to.be.instanceOf(Error);
 
+        error = null;
+        try {
+            await connection.manager.find(Post, {
+                skip: "(WHERE LIMIT 1)" as any,
+                take: "(WHERE XXX)" as any,
+            });
+        } catch (err) {
+            error = err;
+        }
+        expect(error).to.be.instanceOf(Error);
     })));
 
     it("should not allow non-numeric values in skip and take in QueryBuilder", () => Promise.all(connections.map(async function(connection) {
@@ -115,3 +140,5 @@ describe("other issues > preventing-injection", () => {
     })));
 
 });
+
+runIfMain(import.meta);

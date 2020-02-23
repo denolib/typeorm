@@ -1,5 +1,5 @@
-import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryGeneratedColumn";
-import {BaseContent} from "./BaseContent";
+import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryGeneratedColumn.ts";
+import {BaseContent} from "./BaseContent.ts";
 
 export class BasePost extends BaseContent {
 

@@ -1,24 +1,24 @@
-import {Entity} from "../../../../src/decorator/entity/Entity";
-import {Column} from "../../../../src/decorator/columns/Column";
-import {UpdateDateColumn} from "../../../../src/decorator/columns/UpdateDateColumn";
-import {ObjectID, ObjectIdColumn} from "../../../../src";
+import {Entity} from "../../../../src/decorator/entity/Entity.ts";
+import {Column} from "../../../../src/decorator/columns/Column.ts";
+import {UpdateDateColumn} from "../../../../src/decorator/columns/UpdateDateColumn.ts";
+import {/*ObjectID, */ObjectIdColumn} from "../../../../src/index.ts";
 
 @Entity()
 export class Post {
 
-    @ObjectIdColumn()
-    id: ObjectID;
+    @ObjectIdColumn({ type: String })
+    id: any/*ObjectID*/; // TODO(uki00a) uncomment this when MongoDriver is implemented.
 
-    @Column()
+    @Column({ type: String })
     title: string;
 
-    @Column()
+    @Column({ type: Boolean })
     active: boolean = false;
 
     @UpdateDateColumn()
     updateDate: Date;
 
-    @Column()
+    @Column({ type: Number })
     updatedColumns: number|string[] = 0;
 
     loaded: boolean = false;
