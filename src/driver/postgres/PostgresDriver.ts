@@ -21,9 +21,7 @@ import {EntityMetadata} from "../../metadata/EntityMetadata.ts";
 import {OrmUtils} from "../../util/OrmUtils.ts";
 import {ApplyValueTransformers} from "../../util/ApplyValueTransformers.ts";
 import {NotImplementedError} from "../../error/NotImplementedError.ts";
-
-type ResolvedType<T> = T extends Promise<infer U> ? U : never;
-type PoolClient = ResolvedType<ReturnType<DenoPostgres.Pool['connect']>>;
+import {PoolClient} from "./typings.ts";
 
 /**
  * Organizes communication with PostgreSQL DBMS.

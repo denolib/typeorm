@@ -22,6 +22,7 @@ import {OrmUtils} from "../../util/OrmUtils.ts";
 import {Query} from "../Query.ts";
 import {IsolationLevel} from "../types/IsolationLevel.ts";
 import {PostgresDriver} from "./PostgresDriver.ts";
+import {PoolClient, QueryResult} from "./typings.ts";
 import {NotImplementedError} from "../../error/NotImplementedError.ts";
 
 /**
@@ -45,12 +46,14 @@ export class PostgresQueryRunner extends BaseQueryRunner implements QueryRunner 
     /**
      * Promise used to obtain a database connection for a first time.
      */
-    protected databaseConnectionPromise: Promise<any>;
+    protected databaseConnectionPromise: Promise<PoolClient>;
 
     /**
      * Special callback provided by a driver used to release a created connection.
      */
-    protected releaseCallback: Function;
+    protected releaseCallback: () => Promise<void>;
+
+    protected databaseConnection: PoolClient;
 
     // -------------------------------------------------------------------------
     // Constructor
@@ -72,7 +75,7 @@ export class PostgresQueryRunner extends BaseQueryRunner implements QueryRunner 
      * Creates/uses database connection from the connection pool to perform further operations.
      * Returns obtained database connection.
      */
-    connect(): Promise<any> {
+    connect(): Promise<PoolClient> {
         if (this.databaseConnection)
             return Promise.resolve(this.databaseConnection);
 
@@ -80,7 +83,7 @@ export class PostgresQueryRunner extends BaseQueryRunner implements QueryRunner 
             return this.databaseConnectionPromise;
 
         if (this.mode === "slave" && this.driver.isReplicated)  {
-            this.databaseConnectionPromise = this.driver.obtainSlaveConnection().then(([ connection, release]: any[]) => {
+            this.databaseConnectionPromise = this.driver.obtainSlaveConnection().then(([connection, release]: [PoolClient, () => Promise<void>]) => {
                 this.driver.connectedQueryRunners.push(this);
                 this.databaseConnection = connection;
                 this.releaseCallback = release;
@@ -88,7 +91,7 @@ export class PostgresQueryRunner extends BaseQueryRunner implements QueryRunner 
             });
 
         } else { // master
-            this.databaseConnectionPromise = this.driver.obtainMasterConnection().then(([connection, release]: any[]) => {
+            this.databaseConnectionPromise = this.driver.obtainMasterConnection().then(([connection, release]: [PoolClient, () => Promise<void>]) => {
                 this.driver.connectedQueryRunners.push(this);
                 this.databaseConnection = connection;
                 this.releaseCallback = release;
@@ -155,45 +158,45 @@ export class PostgresQueryRunner extends BaseQueryRunner implements QueryRunner 
     /**
      * Executes a given SQL query.
      */
-    query(query: string, parameters?: any[]): Promise<any> {
+    async query(query: string, parameters?: any[]): Promise<any> {
         if (this.isReleased)
             throw new QueryRunnerAlreadyReleasedError();
 
-        return new Promise<any[]>(async (ok, fail) => {
-            try {
-                const databaseConnection = await this.connect();
-                this.driver.connection.logger.logQuery(query, parameters, this);
-                const queryStartTime = +new Date();
+        const databaseConnection = await this.connect();
+        this.driver.connection.logger.logQuery(query, parameters, this);
+        const queryStartTime = +new Date();
 
-                databaseConnection.query(query, parameters, (err: any, result: any) => {
+        let error: any | undefined;
+        let result: QueryResult | undefined;
+        try {
+            result = await databaseConnection.query(query)
+        } catch (err) {
+            error = err;
+        }
 
-                    // log slow queries if maxQueryExecution time is set
-                    const maxQueryExecutionTime = this.driver.connection.options.maxQueryExecutionTime;
-                    const queryEndTime = +new Date();
-                    const queryExecutionTime = queryEndTime - queryStartTime;
-                    if (maxQueryExecutionTime && queryExecutionTime > maxQueryExecutionTime)
-                        this.driver.connection.logger.logQuerySlow(queryExecutionTime, query, parameters, this);
+        // log slow queries if maxQueryExecution time is set
+        const maxQueryExecutionTime = this.driver.connection.options.maxQueryExecutionTime;
+        const queryEndTime = +new Date();
+        const queryExecutionTime = queryEndTime - queryStartTime;
+        if (maxQueryExecutionTime && queryExecutionTime > maxQueryExecutionTime)
+            this.driver.connection.logger.logQuerySlow(queryExecutionTime, query, parameters, this);
 
-                    if (err) {
-                        this.driver.connection.logger.logQueryError(err, query, parameters, this);
-                        fail(new QueryFailedError(query, parameters, err));
-                    } else {
-                        switch (result.command) {
-                            case "DELETE":
-                            case "UPDATE":
-                                // for UPDATE and DELETE query additionally return number of affected rows
-                                ok([result.rows, result.rowCount]);
-                                break;
-                            default:
-                                ok(result.rows);
-                        }
-                    }
-                });
-
-            } catch (err) {
-                fail(err);
-            }
-        });
+        if (error) {
+            this.driver.connection.logger.logQueryError(error, query, parameters, this);
+            return Promise.reject(new QueryFailedError(query, parameters, error));
+        } else {
+            // TODO(uki00a) We want to preserve the same behavior as node-postgres.
+            // switch (result.command) {
+            //     case "DELETE":
+            //     case "UPDATE":
+            //         // for UPDATE and DELETE query additionally return number of affected rows
+            //         ok([result.rows, result.rowCount]);
+            //         break;
+            //     default:
+            //         ok(result.rows);
+            // }
+            return result.rowsOfObjects();
+        }
     }
 
     /**
