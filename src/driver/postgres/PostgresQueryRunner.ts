@@ -169,7 +169,7 @@ export class PostgresQueryRunner extends BaseQueryRunner implements QueryRunner 
         let error: any | undefined;
         let result: QueryResult | undefined;
         try {
-            result = await databaseConnection.query(query)
+            result = await databaseConnection.query(query, ...(parameters || []));
         } catch (err) {
             error = err;
         }
