@@ -24,6 +24,7 @@ import {IsolationLevel} from "../types/IsolationLevel.ts";
 import {PostgresDriver} from "./PostgresDriver.ts";
 import {PoolClient, QueryResult} from "./typings.ts";
 import {NotImplementedError} from "../../error/NotImplementedError.ts";
+import {PromiseQueue} from "../../util/PromiseQueue.ts";
 
 /**
  * Runs queries on a single postgres database connection.
@@ -155,6 +156,23 @@ export class PostgresQueryRunner extends BaseQueryRunner implements QueryRunner 
         this.isTransactionActive = false;
     }
 
+    private queryQueueMap = new Map<PoolClient, PromiseQueue<QueryResult>>();
+
+    /**
+     * This method is a workaround for a concurrency problem that occurs sometimes when using deno-postgres@v0.3.6.
+     */
+    private executeQuery(connection: PoolClient, query: string, parameters: any[]) {
+        if (!this.queryQueueMap.has(connection)) {
+            const queue = new PromiseQueue<QueryResult>();
+            this.queryQueueMap.set(connection, queue);
+            queue.onEmpty().then(() => {
+                this.queryQueueMap.delete(connection);
+            });
+        }
+        const queue = this.queryQueueMap.get(connection);
+        return queue.add(() => connection.query(query, ...parameters));
+    }
+
     /**
      * Executes a given SQL query.
      */
@@ -169,7 +187,8 @@ export class PostgresQueryRunner extends BaseQueryRunner implements QueryRunner 
         let error: any | undefined;
         let result: QueryResult | undefined;
         try {
-            result = await databaseConnection.query(query, ...(parameters || []));
+            //result = await databaseConnection.query(query, ...(parameters || []));
+            result = await this.executeQuery(databaseConnection, query, parameters || []);
         } catch (err) {
             error = err;
         }

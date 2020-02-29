@@ -8,7 +8,8 @@
         "/fmt/colors.ts",
         "/fs/mod.ts",
         "/node/module.ts",
-        "/path/mod.ts"
+        "/path/mod.ts",
+        "/util/async.ts"
       ]
     },
     {
