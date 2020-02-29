@@ -214,7 +214,19 @@ export class PostgresQueryRunner extends BaseQueryRunner implements QueryRunner 
             //     default:
             //         ok(result.rows);
             // }
-            return result.rowsOfObjects();
+
+            // TODO(uki00a) Use `QueryResult#rowsOfObjects`.
+            // return result.rowsOfObjects();
+            const rawObjects = [];
+            for (const row of result.rows) {
+                const rawObject = {};
+                for (let i = 0; i < result.rowDescription.columnCount; i++) {
+                    const column= result.rowDescription.columns[i];
+                    rawObject[column.name] = row[i];
+                }
+                rawObjects.push(rawObject);
+            }
+            return rawObjects;
         }
     }
 
