@@ -9,6 +9,7 @@ import {InsertValuesMissingError} from "../error/InsertValuesMissingError.ts";
 import {ColumnMetadata} from "../metadata/ColumnMetadata.ts";
 import {ReturningResultsEntityUpdator} from "./ReturningResultsEntityUpdator.ts";
 import {AbstractSqliteDriver} from "../driver/sqlite-abstract/AbstractSqliteDriver.ts";
+import {PostgresDriver} from "../driver/postgres/PostgresDriver.ts";
 import {BroadcasterResult} from "../subscriber/BroadcasterResult.ts";
 import {EntitySchema} from "../index.ts";
 
@@ -276,6 +277,11 @@ export class InsertQueryBuilder<Entity> extends QueryBuilder<Entity> {
             query += `${columns ? " ON CONFLICT " + conflict + " DO UPDATE SET " + columns : ""}`;
             query += `${overwrite ? " ON CONFLICT " + conflict + " DO UPDATE SET " + overwrite : ""}`;
           }
+        }
+
+        // add RETURNING expression
+        if (returningExpression && (this.connection.driver instanceof PostgresDriver/* || this.connection.driver instanceof OracleDriver || this.connection.driver instanceof CockroachDriver*/)) {
+            query += ` RETURNING ${returningExpression}`;
         }
 
         return query;
