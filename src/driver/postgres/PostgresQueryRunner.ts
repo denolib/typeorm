@@ -191,6 +191,12 @@ export class PostgresQueryRunner extends BaseQueryRunner implements QueryRunner 
             result = await this.executeQuery(databaseConnection, query, parameters || []);
         } catch (err) {
             error = err;
+            try {
+            // TODO(uki00a) We should remove this workaround.
+                await this.release();
+            } catch (err) {
+                this.driver.connection.logger.log("warn", err?.message);
+        }
         }
 
         // log slow queries if maxQueryExecution time is set
