@@ -10,7 +10,7 @@ import {
 } from "../../../utils/test-utils.ts";
 import { Post } from "./entity/Post.ts";
 
-// TODO(uki00a) We implement this deno-postgres supports cube.
+// TODO(uki00a) We implement when this deno-postgres supports cube.
 describe.skip("cube-postgres", () => {
     const __dirname = getDirnameOfCurrentModule(import.meta);
     let connections: Connection[];
