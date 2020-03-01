@@ -10,6 +10,7 @@ import {ReturningStatementNotSupportedError} from "../error/ReturningStatementNo
 import {ReturningResultsEntityUpdator} from "./ReturningResultsEntityUpdator.ts";
 import {BroadcasterResult} from "../subscriber/BroadcasterResult.ts";
 import {AbstractSqliteDriver} from "../driver/sqlite-abstract/AbstractSqliteDriver.ts";
+import {PostgresDriver} from "../driver/postgres/PostgresDriver.ts";
 import {OrderByCondition} from "../find-options/OrderByCondition.ts";
 import {LimitOnUpdateNotSupportedError} from "../error/LimitOnUpdateNotSupportedError.ts";
 import {UpdateValuesMissingError} from "../error/UpdateValuesMissingError.ts";
@@ -80,7 +81,14 @@ export class UpdateQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
             const updateResult = new UpdateResult();
             const result = await queryRunner.query(sql, parameters);
 
-            updateResult.raw = result;
+            const driver = queryRunner.connection.driver;
+            if (driver instanceof PostgresDriver) {
+                updateResult.raw = result[0];
+                updateResult.affected = result[1];
+            }
+            else {
+                updateResult.raw = result;
+            }
 
             // if we are updating entities and entity updation is enabled we must update some of entity columns (like version, update date, etc.)
             if (this.expressionMap.updateEntity === true &&
@@ -115,6 +123,11 @@ export class UpdateQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
         } finally {
             if (queryRunner !== this.queryRunner) { // means we created our own query runner
                 await queryRunner.release();
+            }
+            if (false/*this.connection.driver instanceof SqljsDriver && !queryRunner.isTransactionActive*/) { // TODO(uki00a) uncomment this when SqljsDriver is implemented.
+                /* // TODO(uki00a) uncomment this when SqljsDriver is implemented.
+                await this.connection.driver.autoSave();
+                */
             }
         }
     }
@@ -354,7 +367,11 @@ export class UpdateQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
         // prepare columns and values to be updated
         const updateColumnAndValues: string[] = [];
         const newParameters: ObjectLiteral = {};
-        let parametersCount = this.connection.driver instanceof AbstractSqliteDriver
+        let parametersCount =   /*this.connection.driver instanceof MysqlDriver || */ // TODO(uki00a) uncomment this when MysqlDriver is implemented.
+                                /*this.connection.driver instanceof AuroraDataApiDriver || */ // TODO(uki00a) uncomment this when AuroraDataApiDriver is implemented.
+                                /*this.connection.driver instanceof OracleDriver ||*/ // TODO(uki00a) uncomment this when OracleDriver is implemented.
+                                this.connection.driver instanceof AbstractSqliteDriver /*||
+                                this.connection.driver instanceof SapDriver*/ // TODO(uk00a) uncomment this when SapDriver is implemented.
             ? 0 : Object.keys(this.expressionMap.nativeParameters).length;
         if (metadata) {
             EntityMetadata.createPropertyPath(metadata, valuesSet).forEach(propertyPath => {
@@ -382,14 +399,48 @@ export class UpdateQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
                     // todo: duplication zone
                     if (value instanceof Function) { // support for SQL expressions in update query
                         updateColumnAndValues.push(this.escape(column.databaseName) + " = " + value());
+                    } else if (false/*this.connection.driver instanceof SapDriver && value === null*/) { // TODO(uki00a) uncomment this when SapDriver is implemented.
+                        updateColumnAndValues.push(this.escape(column.databaseName) + " = NULL");
                     } else {
-                        if (this.connection.driver instanceof AbstractSqliteDriver) {
+                        if (false/*this.connection.driver instanceof SqlServerDriver*/) { // TODO(uki00a) uncomment this when SqlServerDriver is implemented.
+                            /* // TODO(uki00a) uncomment this when SqlServerDriver is implemented.
+                            value = this.connection.driver.parametrizeValue(column, value);
+                            */
+
+                        // } else if (value instanceof Array) {
+                        //     value = new ArrayParameter(value);
+                        }
+
+                        if (/*this.connection.driver instanceof MysqlDriver ||*/ // TODO(uki00a) uncomment this when MysqlDriver is implemented.
+                            /*this.connection.driver instanceof AuroraDataApiDriver ||*/ // TODO(uki00a) uncomment this when AuroraDataApiDriver is implemented.
+                            /*this.connection.driver instanceof OracleDriver || */ // TODO(uki00a) uncomment this when OracleDriver is implemented.
+                            this.connection.driver instanceof AbstractSqliteDriver/*||
+                            this.connection.driver instanceof SapDriver*/) { // TODO(uki00a) uncomment this when SapDriver is implemented.
                             newParameters[paramName] = value;
                         } else {
                             this.expressionMap.nativeParameters[paramName] = value;
                         }
 
-                        let expression = this.connection.driver.createParameter(paramName, parametersCount);
+                        let expression = null;
+                        if (false/*(this.connection.driver instanceof MysqlDriver || this.connection.driver instanceof AuroraDataApiDriver) && this.connection.driver.spatialTypes.indexOf(column.type) !== -1*/) { // TODO(uki00a) uncomment this when MysqlDriver is implemented.
+                            /* // TODO(uki00a) uncomment this when MysqlDriver is implemented.
+                            const useLegacy = this.connection.driver.options.legacySpatialSupport;
+                            const geomFromText = useLegacy ? "GeomFromText" : "ST_GeomFromText";
+                            if (column.srid != null) {
+                                expression = `${geomFromText}(${this.connection.driver.createParameter(paramName, parametersCount)}, ${column.srid})`;
+                            } else {
+                                expression = `${geomFromText}(${this.connection.driver.createParameter(paramName, parametersCount)})`;
+                            }
+                            */
+                        } else if (this.connection.driver instanceof PostgresDriver && this.connection.driver.spatialTypes.indexOf(column.type) !== -1) {
+                            if (column.srid != null) {
+                              expression = `ST_SetSRID(ST_GeomFromGeoJSON(${this.connection.driver.createParameter(paramName, parametersCount)}), ${column.srid})::${column.type}`;
+                            } else {
+                              expression = `ST_GeomFromGeoJSON(${this.connection.driver.createParameter(paramName, parametersCount)})::${column.type}`;
+                            }
+                        } else {
+                            expression = this.connection.driver.createParameter(paramName, parametersCount);
+                        }
                         updateColumnAndValues.push(this.escape(column.databaseName) + " = " + expression);
                         parametersCount++;
                     }
@@ -408,13 +459,19 @@ export class UpdateQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
                 // todo: duplication zone
                 if (value instanceof Function) { // support for SQL expressions in update query
                     updateColumnAndValues.push(this.escape(key) + " = " + value());
+                } else if (false/*this.connection.driver instanceof SapDriver && value === null*/) { // TODO(uki00a) uncomment this when SapDriver is implemented.
+                    updateColumnAndValues.push(this.escape(key) + " = NULL");
                 } else {
 
                     // we need to store array values in a special class to make sure parameter replacement will work correctly
                     // if (value instanceof Array)
                     //     value = new ArrayParameter(value);
 
-                    if (this.connection.driver instanceof AbstractSqliteDriver) {
+                    if (/*this.connection.driver instanceof MysqlDriver ||*/ // TODO(uki00a) uncomment this when MysqlDriver is implemented.
+                        /*this.connection.driver instanceof AuroraDataApiDriver ||*/ // TODO(uki00a) uncomment this when AuroraDataApiDriver is implemented.
+                        /*this.connection.driver instanceof OracleDriver ||*/ // TODO(uki00a) uncomment this when OracleDriver is implemented.
+                        this.connection.driver instanceof AbstractSqliteDriver/* ||
+                        this.connection.driver instanceof SapDriver*/) { // TODO(uki00a) uncomment this when SapDriver is implemented.
                         newParameters[key] = value;
                     } else {
                         this.expressionMap.nativeParameters[key] = value;
@@ -432,15 +489,33 @@ export class UpdateQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
 
         // we re-write parameters this way because we want our "UPDATE ... SET" parameters to be first in the list of "nativeParameters"
         // because some drivers like mysql depend on order of parameters
-        if (this.connection.driver instanceof AbstractSqliteDriver) {
+        if (/*this.connection.driver instanceof MysqlDriver ||*/ // TODO(uki00a) uncomment this when MysqlDriver is implemented.
+            /*this.connection.driver instanceof AuroraDataApiDriver ||*/ // TODO(uki00a) uncomment this AuroraDataApiDriver is implemented.
+            /*this.connection.driver instanceof OracleDriver ||*/ // TODO(uki00a) uncomment this when OracleDriver is implemented.
+            this.connection.driver instanceof AbstractSqliteDriver/* ||
+            this.connection.driver instanceof SapDriver*/) { // TODO(uki00a) uncomment this when SapDriver is implemented.
             this.expressionMap.nativeParameters = Object.assign(newParameters, this.expressionMap.nativeParameters);
         }
 
         // get a table name and all column database names
         const whereExpression = this.createWhereExpression();
+        const returningExpression = this.createReturningExpression();
 
         // generate and return sql update query
-        return `UPDATE ${this.getTableName(this.getMainTableName())} SET ${updateColumnAndValues.join(", ")}${whereExpression}`; // todo: how do we replace aliases in where to nothing?
+        if (
+            returningExpression && (
+                this.connection.driver instanceof PostgresDriver
+                /*|| this.connection.driver instanceof OracleDriver*/ // TODO(uki00a) uncomment this when OracleDriver is implemented.
+                /*|| this.connection.driver instanceof CockroachDriver*/ // TODO(uki00a) uncomment this when CockroachDriver is implemented.
+            )) {
+            return `UPDATE ${this.getTableName(this.getMainTableName())} SET ${updateColumnAndValues.join(", ")}${whereExpression} RETURNING ${returningExpression}`;
+
+        } else if (false/*returningExpression && this.connection.driver instanceof SqlServerDriver*/) { // TODO(uki00a) uncomment this when SqlServerDriver is implemented.
+            return `UPDATE ${this.getTableName(this.getMainTableName())} SET ${updateColumnAndValues.join(", ")} OUTPUT ${returningExpression}${whereExpression}`;
+
+        } else {
+            return `UPDATE ${this.getTableName(this.getMainTableName())} SET ${updateColumnAndValues.join(", ")}${whereExpression}`; // todo: how do we replace aliases in where to nothing?
+        }
     }
 
     /**
@@ -469,7 +544,11 @@ export class UpdateQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
         let limit: number|undefined = this.expressionMap.limit;
 
         if (limit) {
-            throw new LimitOnUpdateNotSupportedError();
+            if (false/*this.connection.driver instanceof MysqlDriver || this.connection.driver instanceof AuroraDataApiDriver*/) { // TODO(uki00a) uncomment this when MysqlDriver is implemented.
+                return " LIMIT " + limit;
+            } else {
+                throw new LimitOnUpdateNotSupportedError();
+            }
         }
 
         return "";
