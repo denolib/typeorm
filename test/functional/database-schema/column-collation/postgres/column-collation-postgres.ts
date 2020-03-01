@@ -5,7 +5,7 @@ import {Post} from "./entity/Post.ts";
 import {Connection} from "../../../../../src/connection/Connection.ts";
 import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils.ts";
 
-describe.skip("database schema > column collation > postgres", () => {
+describe("database schema > column collation > postgres", () => {
 
     let connections: Connection[];
     const __dirname = getDirnameOfCurrentModule(import.meta);
