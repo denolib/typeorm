@@ -426,7 +426,25 @@ export class InsertQueryBuilder<Entity> extends QueryBuilder<Entity> {
                         //     value = new ArrayParameter(value);
 
                         this.expressionMap.nativeParameters[paramName] = value;
+                        if (false/*(this.connection.driver instanceof MysqlDriver || this.connection.driver instanceof AuroraDataApiDriver) && this.connection.driver.spatialTypes.indexOf(column.type) !== -1*/) { // TODO(uki00a) uncomment this when MsqlDriver is implemented.
+                            /* // TODO(uki00a) uncomment this when MysqlDriver is implemented.
+                            const useLegacy = this.connection.driver.options.legacySpatialSupport;
+                            const geomFromText = useLegacy ? "GeomFromText" : "ST_GeomFromText";
+                            if (column.srid != null) {
+                                expression += `${geomFromText}(${this.connection.driver.createParameter(paramName, parametersCount)}, ${column.srid})`;
+                            } else {
+                                expression += `${geomFromText}(${this.connection.driver.createParameter(paramName, parametersCount)})`;
+                            }
+                            */
+                        } else if (this.connection.driver instanceof PostgresDriver && this.connection.driver.spatialTypes.indexOf(column.type) !== -1) {
+                            if (column.srid != null) {
+                              expression += `ST_SetSRID(ST_GeomFromGeoJSON(${this.connection.driver.createParameter(paramName, parametersCount)}), ${column.srid})::${column.type}`;
+                            } else {
+                              expression += `ST_GeomFromGeoJSON(${this.connection.driver.createParameter(paramName, parametersCount)})::${column.type}`;
+                            }
+                        } else {
                         expression += this.connection.driver.createParameter(paramName, parametersCount);
+                        }
                         parametersCount++;
                     }
 
