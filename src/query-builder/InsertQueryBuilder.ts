@@ -267,6 +267,13 @@ export class InsertQueryBuilder<Entity> extends QueryBuilder<Entity> {
         if (valuesExpression) {
             query += ` VALUES ${valuesExpression}`;
         } else {
+            /* TODO(uki00a) uncomment this when MysqlDriver is implemented.
+            if (this.connection.driver instanceof MysqlDriver || this.connection.driver instanceof AuroraDataApiDriver) { // special syntax for mysql DEFAULT VALUES insertion
+                query += " VALUES ()";
+            } else {
+                query += ` DEFAULT VALUES`;
+            }
+            */
             query += ` DEFAULT VALUES`;
         }
         if (this.connection.driver instanceof PostgresDriver || this.connection.driver instanceof AbstractSqliteDriver) {
@@ -277,7 +284,13 @@ export class InsertQueryBuilder<Entity> extends QueryBuilder<Entity> {
             query += `${columns ? " ON CONFLICT " + conflict + " DO UPDATE SET " + columns : ""}`;
             query += `${overwrite ? " ON CONFLICT " + conflict + " DO UPDATE SET " + overwrite : ""}`;
           }
-        }
+        }/* else if (this.connection.driver instanceof MysqlDriver || this.connection.driver instanceof AuroraDataApiDriver) {
+            if (this.expressionMap.onUpdate) {
+              const { overwrite, columns } = this.expressionMap.onUpdate;
+              query += `${columns ? " ON DUPLICATE KEY UPDATE " + columns : ""}`;
+              query += `${overwrite ? " ON DUPLICATE KEY UPDATE " + overwrite : ""}`;
+            }
+        }*/ // TODO(uki00a) uncomment this when MysqlDriver is implemented.
 
         // add RETURNING expression
         if (returningExpression && (this.connection.driver instanceof PostgresDriver/* || this.connection.driver instanceof OracleDriver || this.connection.driver instanceof CockroachDriver*/)) {
@@ -420,6 +433,11 @@ export class InsertQueryBuilder<Entity> extends QueryBuilder<Entity> {
 
                     // just any other regular value
                     } else {
+                        // TODO(uki00a) uncomment this when SqlServerDriver is implemented.
+                        /*
+                        if (this.connection.driver instanceof SqlServerDriver)
+                            value = this.connection.driver.parametrizeValue(column, value);
+                        */
 
                         // we need to store array values in a special class to make sure parameter replacement will work correctly
                         // if (value instanceof Array)
@@ -443,7 +461,7 @@ export class InsertQueryBuilder<Entity> extends QueryBuilder<Entity> {
                               expression += `ST_GeomFromGeoJSON(${this.connection.driver.createParameter(paramName, parametersCount)})::${column.type}`;
                             }
                         } else {
-                        expression += this.connection.driver.createParameter(paramName, parametersCount);
+                            expression += this.connection.driver.createParameter(paramName, parametersCount);
                         }
                         parametersCount++;
                     }
