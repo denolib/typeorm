@@ -10,6 +10,7 @@ import {ReturningStatementNotSupportedError} from "../error/ReturningStatementNo
 import {BroadcasterResult} from "../subscriber/BroadcasterResult.ts";
 import {EntitySchema} from "../index.ts";
 import {AbstractQueryBuilderFactory} from "./AbstractQueryBuilderFactory.ts";
+import {PostgresDriver} from "../driver/postgres/PostgresDriver.ts";
 
 /**
  * Allows to build complex sql queries in a fashion way and execute those queries.
@@ -64,7 +65,25 @@ export class DeleteQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
             const deleteResult = new DeleteResult();
             const result = await queryRunner.query(sql, parameters);
 
-            deleteResult.raw = result;
+            const driver = queryRunner.connection.driver;
+            if (false/*driver instanceof MysqlDriver || driver instanceof AuroraDataApiDriver*/) { // TODO(uki00a) uncomment this when MysqlDriver is implemented.
+                deleteResult.raw = result;
+                deleteResult.affected = result.affectedRows;
+
+            } else if (
+                /*driver instanceof SqlServerDriver ||*/ // TODO(uki00a) uncomment this when SqlServerDriver is implemented.
+                driver instanceof PostgresDriver
+                /*|| driver instanceof CockroachDriver*/ ) { // TODO(uki00a) uncomment this when CockroachDriver is implemented.
+                deleteResult.raw = result[0] ? result[0] : null;
+                // don't return 0 because it could confuse. null means that we did not receive this value
+                deleteResult.affected = typeof result[1] === "number" ? result[1] : null;
+
+            } else if (false/*driver instanceof OracleDriver*/) { // TODO(uki00a) uncomment this when OracleDriver is implemented
+                deleteResult.affected = result;
+
+            } else {
+                deleteResult.raw = result;
+            }
 
             // call after deletion methods in listeners and subscribers
             if (this.expressionMap.callListeners === true && this.expressionMap.mainAlias!.hasMetadata) {
@@ -93,6 +112,11 @@ export class DeleteQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
             if (queryRunner !== this.queryRunner) { // means we created our own query runner
                 await queryRunner.release();
             }
+            /* // TODO(uki00a) uncomment this when SqljsDriver is implemented.
+            if (this.connection.driver instanceof SqljsDriver && !queryRunner.isTransactionActive) {
+                await this.connection.driver.autoSave();
+            }
+            */
         }
     }
 
@@ -233,8 +257,15 @@ export class DeleteQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
         const whereExpression = this.createWhereExpression();
         const returningExpression = this.createReturningExpression();
 
+        if (returningExpression && (this.connection.driver instanceof PostgresDriver/* || this.connection.driver instanceof CockroachDriver*/)) { // TODO(uki00a) uncomment this when CockroachDriver is implemented.
+            return `DELETE FROM ${tableName}${whereExpression} RETURNING ${returningExpression}`;
 
-        return `DELETE FROM ${tableName}${whereExpression}`;
+        } else if (false/*returningExpression !== "" && this.connection.driver instanceof SqlServerDriver*/) { // TODO(uki00a) uncomment this when SqlServerDriver is implemented.
+            return `DELETE FROM ${tableName} OUTPUT ${returningExpression}${whereExpression}`;
+
+        } else {
+            return `DELETE FROM ${tableName}${whereExpression}`;
+        }
     }
 
 }
