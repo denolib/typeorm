@@ -7,6 +7,7 @@ import {Table} from "../schema-builder/table/Table.ts";
 import {EntityManager} from "../entity-manager/EntityManager.ts";
 import {TableColumn} from "../schema-builder/table/TableColumn.ts";
 import {Broadcaster} from "../subscriber/Broadcaster.ts";
+import {PostgresConnectionOptions} from "../driver/postgres/PostgresConnectionOptions.ts";
 
 export abstract class BaseQueryRunner {
 
@@ -238,7 +239,8 @@ export abstract class BaseQueryRunner {
     }
 
     protected getTypeormMetadataTableName(): string {
-        return this.connection.driver.buildTableName("typeorm_metadata");
+        const options = </*SqlServerConnectionOptions|*/PostgresConnectionOptions>this.connection.driver.options; // TODO(uki00a) uncomment this when SqlServerDriver is implemented.
+        return this.connection.driver.buildTableName("typeorm_metadata", options.schema, options.database);
     }
 
     /**
