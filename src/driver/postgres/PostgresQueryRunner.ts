@@ -221,10 +221,6 @@ export class PostgresQueryRunner extends BaseQueryRunner implements QueryRunner 
             // TODO(uki00a) Use `QueryResult#rowsOfObjects`.
             // return result.rowsOfObjects();
             const rawObjects = [];
-            console.log(result.query.text);
-            console.log(result.rows);
-            console.log(JSON.stringify(result.rowDescription?.columns ?? [], null, 2));
-            console.log(result.rowDescription?.columnCount);
             for (const row of result.rows) {
                 const rawObject = {};
                 for (let i = 0; i < result.rowDescription.columnCount; i++) {
@@ -233,7 +229,6 @@ export class PostgresQueryRunner extends BaseQueryRunner implements QueryRunner 
                 }
                 rawObjects.push(rawObject);
             }
-            console.log(JSON.stringify(rawObjects, null, 2));
             return rawObjects;
         }
     }
@@ -1461,13 +1456,12 @@ export class PostgresQueryRunner extends BaseQueryRunner implements QueryRunner 
             `INNER JOIN "pg_class" "cl" ON "cl"."oid" = "con"."confrelid" ` +
             `INNER JOIN "pg_namespace" "ns" ON "cl"."relnamespace" = "ns"."oid" ` +
             `INNER JOIN "pg_attribute" "att2" ON "att2"."attrelid" = "con"."conrelid" AND "att2"."attnum" = "con"."parent"`;
-        const debug = (p, label) => p.then(r => {console.log(label); return r;}).catch(e => {console.error(e); throw e;})
         const [dbTables, dbColumns, dbConstraints, dbIndices, dbForeignKeys]: ObjectLiteral[][] = await Promise.all([
-            debug(this.query(tablesSql), 'tablesSql'),
-            debug(this.query(columnsSql), 'columnsSql'),
-            debug(this.query(constraintsSql), 'constraintSql'),
-            debug(this.query(indicesSql), 'indicesSql'),
-            debug(this.query(foreignKeysSql), 'foreignKeysSql'),
+            this.query(tablesSql),
+            this.query(columnsSql),
+            this.query(constraintsSql),
+            this.query(indicesSql),
+            this.query(foreignKeysSql),
         ]);
 
         // if tables were not found in the db, no need to proceed
