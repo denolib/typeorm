@@ -15,8 +15,7 @@ import {OptimisticLockCanNotBeUsedError} from "../../../../src/error/OptimisticL
 import {NoVersionOrUpdateDateColumnError} from "../../../../src/error/NoVersionOrUpdateDateColumnError.ts";
 import {PessimisticLockTransactionRequiredError} from "../../../../src/error/PessimisticLockTransactionRequiredError.ts";
 import {MysqlDriver} from "../../../../src/driver/mysql/MysqlDriver.ts";
-// TODO(uki00a) uncomment this when PostgresDriver is implemented.
-// import {PostgresDriver} from "../../../../src/driver/postgres/PostgresDriver.ts";
+import {PostgresDriver} from "../../../../src/driver/postgres/PostgresDriver.ts";
 import {SqlServerDriver} from "../../../../src/driver/sqlserver/SqlServerDriver.ts";
 import {AbstractSqliteDriver} from "../../../../src/driver/sqlite-abstract/AbstractSqliteDriver.ts";
 import {OracleDriver} from "../../../../src/driver/oracle/OracleDriver.ts";
@@ -51,7 +50,7 @@ describe("repository > find options > locking", () => {
         expect(results[0].status).to.equal('rejected');
         expect(results[0].reason).to.be.instanceOf(PessimisticLockTransactionRequiredError);
         expect(results[1].status).to.equal('rejected');
-        expect(results[1].status).to.equal(PessimisticLockTransactionRequiredError);
+        expect(results[1].reason).to.be.instanceOf(PessimisticLockTransactionRequiredError);
     })));
 
     it("should not throw error if pessimistic lock used with transaction", () => Promise.all(connections.map(async connection => {
@@ -94,7 +93,7 @@ describe("repository > find options > locking", () => {
         if (connection.driver instanceof MysqlDriver) {
             expect(executedSql[0].indexOf("LOCK IN SHARE MODE") !== -1).to.be.true;
 
-        } else if (false/*connection.driver instanceof PostgresDriver*/) { // TODO(uki00a) uncomment this when PostgresDriver is implemented.
+        } else if (connection.driver instanceof PostgresDriver) {
             expect(executedSql[0].indexOf("FOR SHARE") !== -1).to.be.true;
 
         } else if (connection.driver instanceof OracleDriver) {
@@ -125,7 +124,7 @@ describe("repository > find options > locking", () => {
                 .findOne(1, {lock: {mode: "pessimistic_write"}});
         });
 
-        if (connection.driver instanceof MysqlDriver || false/*connection.driver instanceof PostgresDriver*/ || connection.driver instanceof OracleDriver) { // TODO(uki00a) uncomment this when PostgresDriver is implemented.
+        if (connection.driver instanceof MysqlDriver || connection.driver instanceof PostgresDriver || connection.driver instanceof OracleDriver) {
             expect(executedSql[0].indexOf("FOR UPDATE") !== -1).to.be.true;
 
         } else if (connection.driver instanceof SqlServerDriver) {
@@ -275,7 +274,7 @@ describe("repository > find options > locking", () => {
     })));
 
     it("should throw error if pessimistic locking not supported by given driver", () => Promise.all(connections.map(async connection => {
-        if (connection.driver instanceof AbstractSqliteDriver || /*connection.driver instanceof CockroachDriver ||*/ connection.driver instanceof SapDriver) // TODO(uki00a) uncomment this when PostgresDriver is implemented.
+        if (connection.driver instanceof AbstractSqliteDriver || /*connection.driver instanceof CockroachDriver ||*/ connection.driver instanceof SapDriver) // TODO(uki00a) uncomment this when CockroachDriver is implemented.
             return connection.manager.transaction(async entityManager => {
                 const results = await allSettled([
                     entityManager
