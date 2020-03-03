@@ -1649,7 +1649,7 @@ export class SelectQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
                     throw new LockNotSupportedOnGivenDriverError();
                 }
             case "pessimistic_write":
-                if (false/*driver instanceof MysqlDriver || driver instanceof AuroraDataApiDriver || driver instanceof PostgresDriver || driver instanceof OracleDriver*/) { // TODO(uki00a) uncomment this when MysqlDriver is implemented.
+                if (/*driver instanceof MysqlDriver || driver instanceof AuroraDataApiDriver || */driver instanceof PostgresDriver/* || driver instanceof OracleDriver*/) { // TODO(uki00a) uncomment this when MysqlDriver is implemented.
                     return " FOR UPDATE";
 
                 } else if (false/*driver instanceof SqlServerDriver*/) { // TODO(uki00a) uncomment this when SqlServerDriver is implemented.

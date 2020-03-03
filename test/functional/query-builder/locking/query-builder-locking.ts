@@ -15,8 +15,7 @@ import {OptimisticLockCanNotBeUsedError} from "../../../../src/error/OptimisticL
 import {NoVersionOrUpdateDateColumnError} from "../../../../src/error/NoVersionOrUpdateDateColumnError.ts";
 import {PessimisticLockTransactionRequiredError} from "../../../../src/error/PessimisticLockTransactionRequiredError.ts";
 import {MysqlDriver} from "../../../../src/driver/mysql/MysqlDriver.ts";
-// TODO(uki00a) uncomment this when PostgresDriver is implemented.
-// import {PostgresDriver} from "../../../../src/driver/postgres/PostgresDriver.ts";
+import {PostgresDriver} from "../../../../src/driver/postgres/PostgresDriver.ts";
 import {SqlServerDriver} from "../../../../src/driver/sqlserver/SqlServerDriver.ts";
 import {AbstractSqliteDriver} from "../../../../src/driver/sqlite-abstract/AbstractSqliteDriver.ts";
 import {OracleDriver} from "../../../../src/driver/oracle/OracleDriver.ts";
@@ -100,7 +99,7 @@ describe("query builder > locking", () => {
         if (connection.driver instanceof MysqlDriver) {
             expect(sql.indexOf("LOCK IN SHARE MODE") !== -1).to.be.true;
 
-        } else if (false/*connection.driver instanceof PostgresDriver*/) { // TODO(uki00a) uncomment this when PostgresDriver is implemented.
+        } else if (connection.driver instanceof PostgresDriver) {
             expect(sql.indexOf("FOR SHARE") !== -1).to.be.true;
 
         } else if (connection.driver instanceof OracleDriver) {
@@ -144,8 +143,7 @@ describe("query builder > locking", () => {
             .where("post.id = :id", { id: 1 })
             .getSql();
 
-        // TODO(uki00a) uncomment this when PostgresDriver is implemented.
-        if (connection.driver instanceof MysqlDriver /*|| connection.driver instanceof PostgresDriver*/ || connection.driver instanceof OracleDriver) {
+        if (connection.driver instanceof MysqlDriver || connection.driver instanceof PostgresDriver || connection.driver instanceof OracleDriver) {
             expect(sql.indexOf("FOR UPDATE") !== -1).to.be.true;
 
         } else if (connection.driver instanceof SqlServerDriver) {
