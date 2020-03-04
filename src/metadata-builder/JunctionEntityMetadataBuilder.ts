@@ -70,7 +70,7 @@ export class JunctionEntityMetadataBuilder {
                     options: {
                         name: columnName,
                         length: !referencedColumn.length
-                        && this.connection.driver instanceof MysqlDriver
+                        && (this.connection.driver instanceof MysqlDriver/* || this.connection.driver instanceof AuroraDataApiDriver*/) // TODO(uki00a) uncomment this when AuroraDataApiDriver is implemented.
                         && (referencedColumn.generationStrategy === "uuid" || referencedColumn.type === "uuid")
                             ? "36"
                             : referencedColumn.length, // fix https://github.com/typeorm/typeorm/issues/3604
@@ -108,7 +108,7 @@ export class JunctionEntityMetadataBuilder {
                     propertyName: columnName,
                     options: {
                         length: !inverseReferencedColumn.length
-                        && this.connection.driver instanceof MysqlDriver
+                        && (this.connection.driver instanceof MysqlDriver /*|| this.connection.driver instanceof AuroraDataApiDriver*/) // TODO(uki00a) uncomment this when AuroraDataApiDriver is implemented.
                         && (inverseReferencedColumn.generationStrategy === "uuid" || inverseReferencedColumn.type === "uuid")
                             ? "36"
                             : inverseReferencedColumn.length, // fix https://github.com/typeorm/typeorm/issues/3604
