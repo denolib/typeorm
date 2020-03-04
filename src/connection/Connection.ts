@@ -32,6 +32,7 @@ import {RelationLoader} from "../query-builder/RelationLoader.ts";
 import {RelationIdLoader} from "../query-builder/RelationIdLoader.ts";
 import {EntitySchema} from "../index.ts";
 import {ObjectUtils} from "../util/ObjectUtils.ts";
+import {PromiseUtils} from "../util/PromiseUtils.ts";
 import {IsolationLevel} from "../driver/types/IsolationLevel.ts";
 import {QueryBuilderFactory} from "../query-builder/QueryBuilderFactory.ts";
 
@@ -255,7 +256,19 @@ export class Connection {
     async dropDatabase(): Promise<void> {
         const queryRunner = this.createQueryRunner("master");
         try {
-            await queryRunner.clearDatabase();
+            if (
+                false/*this.driver instanceof SqlServerDriver ||*/ // TODO(uki00a) uncomment this when SqlServerDriver is implemented.
+                /* this.driver instanceof MysqlDriver ||*/ // TODO(uki00a) uncomment this when MysqlDriver is implemented.
+                /*this.driver instanceof AuroraDataApiDriver*/) { // TODO(uki00a) uncomment this when AuroraDataApiDriver is implemented.
+                const databases: string[] = this.driver.database ? [this.driver.database] : [];
+                this.entityMetadatas.forEach(metadata => {
+                    if (metadata.database && databases.indexOf(metadata.database) === -1)
+                        databases.push(metadata.database);
+                });
+                await PromiseUtils.runInSequence(databases, database => queryRunner.clearDatabase(database));
+            } else {
+                await queryRunner.clearDatabase();
+            }
         } finally {
             await queryRunner.release();
         }
@@ -514,13 +527,13 @@ export class Connection {
     protected getDatabaseName(): string {
     const options = this.options;
     switch (options.type) {
-        // case "mysql" :
-        // case "mariadb" :
-        // case "postgres":
-        // case "cockroachdb":
-        // case "mssql":
-        // case "oracle":
-        //     return (options.replication ? options.replication.master.database : options.database) as string;
+        case "mysql" :
+        case "mariadb" :
+        case "postgres":
+        // case "cockroachdb": // TODO(uki00a) uncomment this when CockroachDriver is implemented.
+        // case "mssql": // TODO(uki00a) uncomment this when SqlServerDriver is implemented.
+        // case "oracle": // TODO(uki00a) uncomment this when OracleDriver is implemented.
+            return (options.replication ? options.replication.master.database : options.database) as string;
         default:
             return options.database as string;
     }
