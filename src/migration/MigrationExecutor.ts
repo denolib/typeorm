@@ -4,6 +4,7 @@ import {Migration} from "./Migration.ts";
 import {ObjectLiteral} from "../common/ObjectLiteral.ts";
 import {PromiseUtils} from "../util/PromiseUtils.ts";
 import {QueryRunner} from "../query-runner/QueryRunner.ts";
+import {PostgresConnectionOptions} from "../driver/postgres/PostgresConnectionOptions.ts";
 
 /**
  * Executes migrations: runs pending and reverts previously executed migrations.
@@ -36,8 +37,9 @@ export class MigrationExecutor {
     constructor(protected connection: Connection,
                 protected queryRunner?: QueryRunner) {
 
+        const options = </*SqlServerConnectionOptions|*/PostgresConnectionOptions>this.connection.driver.options; // TODO(uki00a) uncomment this when SqlServerDriver is implemented.
         this.migrationsTableName = connection.options.migrationsTableName || "migrations";
-        this.migrationsTable = this.connection.driver.buildTableName(this.migrationsTableName);
+        this.migrationsTable = this.connection.driver.buildTableName(this.migrationsTableName, options.schema, options.database);
     }
 
     // -------------------------------------------------------------------------
@@ -331,6 +333,10 @@ export class MigrationExecutor {
      * Creates table "migrations" that will store information about executed migrations.
      */
     protected async createMigrationsTableIfNotExist(queryRunner: QueryRunner): Promise<void> {
+        // If driver is mongo no need to create
+        if (false/*this.connection.driver instanceof MongoDriver*/) { // TODO(uki00a) uncomment this when MongoDriver is implemented.
+            return;
+        }
         const tableExist = await queryRunner.hasTable(this.migrationsTable); // todo: table name should be configurable
         if (!tableExist) {
             await queryRunner.createTable(new Table(
@@ -366,15 +372,27 @@ export class MigrationExecutor {
      * Loads all migrations that were executed and saved into the database (sorts by id).
      */
     protected async loadExecutedMigrations(queryRunner: QueryRunner): Promise<Migration[]> {
-        const migrationsRaw: ObjectLiteral[] = await this.connection.manager
-        .createQueryBuilder(queryRunner)
-        .select()
-        .orderBy(this.connection.driver.escape("id"), "DESC")
-        .from(this.migrationsTable, this.migrationsTableName)
-        .getRawMany();
-        return migrationsRaw.map(migrationRaw => {
-            return new Migration(parseInt(migrationRaw["id"]), parseInt(migrationRaw["timestamp"]), migrationRaw["name"]);
-        });
+        if (false/*this.connection.driver instanceof MongoDriver*/) { // TODO(uki00a) uncomment this when MongoDriver is implemented.
+            /* // TODO(uki00a) uncomment this when MongoDriver is implemented.
+            const mongoRunner = queryRunner as MongoQueryRunner;
+            return await mongoRunner.databaseConnection
+            .db(this.connection.driver.database!)
+            .collection(this.migrationsTableName)
+            .find<Migration>()
+            .sort({"_id": -1})
+            .toArray();
+            */
+        } else {
+            const migrationsRaw: ObjectLiteral[] = await this.connection.manager
+            .createQueryBuilder(queryRunner)
+            .select()
+            .orderBy(this.connection.driver.escape("id"), "DESC")
+            .from(this.migrationsTable, this.migrationsTableName)
+            .getRawMany();
+            return migrationsRaw.map(migrationRaw => {
+                return new Migration(parseInt(migrationRaw["id"]), parseInt(migrationRaw["timestamp"]), migrationRaw["name"]);
+            });
+        }
     }
 
     /**
@@ -426,13 +444,27 @@ export class MigrationExecutor {
      */
     protected async insertExecutedMigration(queryRunner: QueryRunner, migration: Migration): Promise<void> {
         const values: ObjectLiteral = {};
-        values["timestamp"] = migration.timestamp;
-        values["name"] = migration.name;
-        const qb = queryRunner.manager.createQueryBuilder();
-        await qb.insert()
-            .into(this.migrationsTable)
-            .values(values)
-            .execute();
+        if (false/*this.connection.driver instanceof SqlServerDriver*/) { // TODO(uki00a) uncomment this when SqlServerDriver is implemented.
+            /* // TODO(uki00a) uncomment this when SqlServerDriver is implemented.
+            values["timestamp"] = new MssqlParameter(migration.timestamp, this.connection.driver.normalizeType({ type: this.connection.driver.mappedDataTypes.migrationTimestamp }) as any);
+            values["name"] = new MssqlParameter(migration.name, this.connection.driver.normalizeType({ type: this.connection.driver.mappedDataTypes.migrationName }) as any);
+            */
+        } else {
+            values["timestamp"] = migration.timestamp;
+            values["name"] = migration.name;
+        }
+        if (false/*this.connection.driver instanceof MongoDriver*/) { // TODO(uki00a) uncomment this when MongoDriver is implemented.
+            /* // TODO(uki00a) uncomment this when MongoDriver is implemented.
+            const mongoRunner = queryRunner as MongoQueryRunner;
+            await mongoRunner.databaseConnection.db(this.connection.driver.database!).collection(this.migrationsTableName).insert(values);
+            */
+        } else {
+            const qb = queryRunner.manager.createQueryBuilder();
+            await qb.insert()
+                .into(this.migrationsTable)
+                .values(values)
+                .execute();
+        }
     }
 
     /**
@@ -441,18 +473,30 @@ export class MigrationExecutor {
     protected async deleteExecutedMigration(queryRunner: QueryRunner, migration: Migration): Promise<void> {
 
         const conditions: ObjectLiteral = {};
+        if (false/*this.connection.driver instanceof SqlServerDriver*/) { // TODO(uki00a) uncomment this when SqlServerDriver is implemented.
+            /* // TODO(uki00a) uncomment this when SqlServerDriver is implemented.
+            conditions["timestamp"] = new MssqlParameter(migration.timestamp, this.connection.driver.normalizeType({ type: this.connection.driver.mappedDataTypes.migrationTimestamp }) as any);
+            conditions["name"] = new MssqlParameter(migration.name, this.connection.driver.normalizeType({ type: this.connection.driver.mappedDataTypes.migrationName }) as any);
+            */
+        } else {
+            conditions["timestamp"] = migration.timestamp;
+            conditions["name"] = migration.name;
+        }
 
-        conditions["timestamp"] = migration.timestamp;
-        conditions["name"] = migration.name;
-
-
-        const qb = queryRunner.manager.createQueryBuilder();
-        await qb.delete()
-            .from(this.migrationsTable)
-            .where(`${qb.escape("timestamp")} = :timestamp`)
-            .andWhere(`${qb.escape("name")} = :name`)
-            .setParameters(conditions)
-            .execute();
+        if (false/*this.connection.driver instanceof MongoDriver*/) { // TODO(uki00a) uncomment this when MongoDriver is implemented.
+            /* // TODO(uki00a) uncomment this when MongoDriver is implemented.
+            const mongoRunner = queryRunner as MongoQueryRunner;
+            await mongoRunner.databaseConnection.db(this.connection.driver.database!).collection(this.migrationsTableName).deleteOne(conditions);
+            */
+        } else {
+            const qb = queryRunner.manager.createQueryBuilder();
+            await qb.delete()
+                .from(this.migrationsTable)
+                .where(`${qb.escape("timestamp")} = :timestamp`)
+                .andWhere(`${qb.escape("name")} = :name`)
+                .setParameters(conditions)
+                .execute();
+        }
 
     }
 
