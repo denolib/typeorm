@@ -20,6 +20,8 @@ import {RelationMetadata} from "./RelationMetadata.ts";
 import {TableType} from "./types/TableTypes.ts";
 import {TreeType} from "./types/TreeTypes.ts";
 import {UniqueMetadata} from "./UniqueMetadata.ts";
+import {PostgresConnectionOptions} from "../driver/postgres/PostgresConnectionOptions.ts";
+import {PostgresDriver} from "../driver/postgres/PostgresDriver.ts";
 
 /**
  * Contains all entity metadata.
@@ -776,8 +778,7 @@ export class EntityMetadata {
             this.schema = this.parentEntityMetadata.schema;
         }
         else {
-            // TODO(uki00a) avoid using any
-            this.schema = (this.connection.options as any).schema;
+            this.schema = (this.connection.options as PostgresConnectionOptions/*|SqlServerConnectionOptions*/).schema; // TODO(uki00a) uncomment this when SqlServerDriver is implemented.
         }
         this.givenTableName = this.tableMetadataArgs.type === "entity-child" && this.parentEntityMetadata ? this.parentEntityMetadata.givenTableName : this.tableMetadataArgs.name;
         this.synchronize = this.tableMetadataArgs.synchronize === false ? false : true;
@@ -843,12 +844,18 @@ export class EntityMetadata {
      */
     protected buildTablePath(): string {
         let tablePath = this.tableName;
-        if (this.schema) {
+        // TODO(uki00a) uncomment this when SqlServerDriver is implemented.
+        // TODO(uki00a) uncomment this when SapDriver is implemented.
+        if (this.schema  && ((this.connection.driver instanceof PostgresDriver)/* || (this.connection.driver instanceof SqlServerDriver) || (this.connection.driver instanceof SapDriver)*/)) {
             tablePath = this.schema + "." + tablePath;
         }
 
-        if (this.database/* && !(this.connection.driver instanceof PostgresDriver)*/) {
-            tablePath = this.database + "." + tablePath;
+        if (this.database && !(this.connection.driver instanceof PostgresDriver)) {
+            if (!this.schema && false/*this.connection.driver instanceof SqlServerDriver*/) { // TODO(uki00a) uncomment this when SqlServerDriver is implemented.
+                tablePath = this.database + ".." + tablePath;
+            } else {
+                tablePath = this.database + "." + tablePath;
+            }
         }
 
         return tablePath;
@@ -861,7 +868,7 @@ export class EntityMetadata {
         if (!this.schema)
             return undefined;
 
-        return this.database /*&& !(this.connection.driver instanceof PostgresDriver)*/ ? this.database + "." + this.schema : this.schema;
+        return this.database && !(this.connection.driver instanceof PostgresDriver) ? this.database + "." + this.schema : this.schema;
     }
 
 }
