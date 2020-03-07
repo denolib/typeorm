@@ -22,24 +22,24 @@ export class Post {
     @Column({ type: String })
     text: string;
 
-    @ManyToMany(type => Category)
+    @ManyToMany(type => Category, { lazy: true })
     @JoinTable()
     categories: Promise<Category[]>;
 
-    @ManyToMany(type => Category, category => category.twoSidePosts)
+    @ManyToMany(type => Category, category => category.twoSidePosts, { lazy: true })
     @JoinTable()
     twoSideCategories: Promise<Category[]>;
 
     @Column({ type: Number })
     viewCount: number = 0;
 
-    @ManyToOne(type => Category)
+    @ManyToOne(type => Category, { lazy: true })
     category: Promise<Category>;
 
-    @OneToOne(type => Category, category => category.onePost)
+    @OneToOne(type => Category, category => category.onePost, { lazy: true })
     @JoinColumn()
     oneCategory: Promise<Category>;
 
-    @ManyToOne(type => Category, category => category.twoSidePosts2)
+    @ManyToOne(type => Category, category => category.twoSidePosts2, { lazy: true })
     twoSideCategory: Promise<Category>;
 }

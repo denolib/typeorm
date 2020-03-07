@@ -135,7 +135,7 @@ describe("basic-lazy-relations", () => {
         newUser.profile = Promise.resolve(profile);
         await userRepository.save(newUser);
 
-        await newUser.profile.should.eventually.be.eql(profile);
+        expect(await newUser.profile).to.eql(profile);
 
         // const loadOptions: FindOptions = { alias: "user", innerJoinAndSelect };
         const loadedUser: any = await userRepository.findOne(1);
