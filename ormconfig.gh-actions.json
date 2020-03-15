@@ -1,6 +1,13 @@
 [
   {
     "skip": false,
+    "name": "sqlite",
+    "type": "sqlite",
+    "database": ":memory:",
+    "logging": false
+  },
+  {
+    "skip": true,
     "name": "postgres",
     "type": "postgres",
     "host": "localhost",
