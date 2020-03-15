@@ -9,7 +9,7 @@ The original source is found here: https://github.com/typeorm/typeorm/tree/00c9f
 
 ## Current status
 
-This module should *NOT* be used in production yet.
+This module should **NOT** be used in production yet.
 
 It is not stable enough and as mature as the original TypeORM.
 
