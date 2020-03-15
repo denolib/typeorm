@@ -1,5 +1,6 @@
 import {SqliteConnectionOptions} from "../driver/sqlite/SqliteConnectionOptions.ts";
 import {MysqlConnectionOptions} from "../driver/mysql/MysqlConnectionOptions.ts";
+import {PostgresConnectionOptions} from "../driver/postgres/PostgresConnectionOptions.ts";
 
 
 /**
@@ -9,4 +10,5 @@ import {MysqlConnectionOptions} from "../driver/mysql/MysqlConnectionOptions.ts"
  */
 export type ConnectionOptions =
     SqliteConnectionOptions|
-    MysqlConnectionOptions;
+    MysqlConnectionOptions|
+    PostgresConnectionOptions;

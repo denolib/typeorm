@@ -3,6 +3,15 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:11
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: test
+        ports:
+        - 5432:5432
     steps:
     - uses: actions/checkout@master
     - uses: denolib/setup-deno@master
@@ -11,4 +20,4 @@ jobs:
     - name: Run tests
       run: |
         cp ./ormconfig.gh-actions.json ./ormconfig.json
-        deno run --allow-read --allow-write --allow-env --config ./tsconfig.json ./test.ts
+        deno run --allow-read --allow-write --allow-env --allow-net --config ./tsconfig.json ./test.ts

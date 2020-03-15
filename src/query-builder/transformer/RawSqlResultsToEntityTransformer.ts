@@ -66,6 +66,10 @@ export class RawSqlResultsToEntityTransformer {
             const id = keys.map(key => {
                 const keyValue = rawResult[key];
 
+                if (false/*Buffer.isBuffer(keyValue)*/) {
+                    return keyValue.toString("hex");
+                }
+
                 return keyValue;
             }).join("_"); // todo: check partial
             if (!id) return;

@@ -17,6 +17,7 @@ import {EntityListenerMetadata} from "../metadata/EntityListenerMetadata.ts";
 import {UniqueMetadata} from "../metadata/UniqueMetadata.ts";
 import {CheckMetadata} from "../metadata/CheckMetadata.ts";
 import {ExclusionMetadata} from "../metadata/ExclusionMetadata.ts";
+import {PostgresDriver} from "../driver/postgres/PostgresDriver.ts";
 
 /**
  * Builds EntityMetadata objects and all its sub-metadatas.
@@ -124,12 +125,60 @@ export class EntityMetadataBuilder {
                         entityMetadata.foreignKeys.push(foreignKey);
                     }
                     if (uniqueConstraint) {
-                       if (relation.embeddedMetadata) {
-                           relation.embeddedMetadata.uniques.push(uniqueConstraint);
-                       } else {
-                           relation.entityMetadata.ownUniques.push(uniqueConstraint);
-                       }
-                       this.computeEntityMetadataStep2(entityMetadata);
+                        if (false
+                            /*this.connection.driver instanceof MysqlDriver ||*/ // TODO(uki00a) uncomment this when MysqlDriver is implemented.
+                            /*this.connection.driver instanceof AuroraDataApiDriver*/ // TODO(uki00a) uncomment this when AuroraDataApiDriver is implemented.
+                            /*|| this.connection.driver instanceof SqlServerDriver*/ // TODO(uki00a) uncomment this when SqlServerDriver is implemented.
+                            /*|| this.connection.driver instanceof SapDriver*/) { // TODO(uki00a) uncomment this when SapDriver is implemented.
+                            const index = new IndexMetadata({
+                                entityMetadata: uniqueConstraint.entityMetadata,
+                                columns: uniqueConstraint.columns,
+                                args: {
+                                    target: uniqueConstraint.target!,
+                                    name: uniqueConstraint.name,
+                                    unique: true,
+                                    synchronize: true
+                                }
+                            });
+
+                            if (false/*this.connection.driver instanceof SqlServerDriver*/) { // TODO(uki00a) uncomment this when SqlServerDriver is implemented.
+                                index.where = index.columns.map(column => {
+                                    return `${this.connection.driver.escape(column.databaseName)} IS NOT NULL`;
+                                }).join(" AND ");
+                            }
+
+                            if (relation.embeddedMetadata) {
+                                relation.embeddedMetadata.indices.push(index);
+                            } else {
+                                relation.entityMetadata.ownIndices.push(index);
+                            }
+                            this.computeEntityMetadataStep2(entityMetadata);
+
+                        } else {
+                            if (relation.embeddedMetadata) {
+                                relation.embeddedMetadata.uniques.push(uniqueConstraint);
+                            } else {
+                                relation.entityMetadata.ownUniques.push(uniqueConstraint);
+                            }
+                            this.computeEntityMetadataStep2(entityMetadata);
+                        }
+                    }
+
+                    if (foreignKey && false/*this.connection.driver instanceof CockroachDriver*/) { // TODO(uki00a) uncomment this when CockroachDriver is implemented.
+                        const index = new IndexMetadata({
+                            entityMetadata: relation.entityMetadata,
+                            columns: foreignKey.columns,
+                            args: {
+                                target: relation.entityMetadata.target!,
+                                synchronize: true
+                            }
+                        });
+                        if (relation.embeddedMetadata) {
+                            relation.embeddedMetadata.indices.push(index);
+                        } else {
+                            relation.entityMetadata.ownIndices.push(index);
+                        }
+                        this.computeEntityMetadataStep2(entityMetadata);
                     }
                 });
 
@@ -437,14 +486,65 @@ export class EntityMetadataBuilder {
             return new CheckMetadata({ entityMetadata, args });
         });
 
-        entityMetadata.ownIndices = this.metadataArgsStorage.filterIndices(entityMetadata.inheritanceTree).map(args => {
-            return new IndexMetadata({entityMetadata, args});
-        });
+        // Only PostgreSQL supports exclusion constraints.
+        if (this.connection.driver instanceof PostgresDriver) {
+            entityMetadata.exclusions = this.metadataArgsStorage.filterExclusions(entityMetadata.inheritanceTree).map(args => {
+                return new ExclusionMetadata({ entityMetadata, args });
+            });
+        }
 
-        const uniques = this.metadataArgsStorage.filterUniques(entityMetadata.inheritanceTree).map(args => {
-            return new UniqueMetadata({ entityMetadata, args });
-        });
-        entityMetadata.ownUniques.push(...uniques);
+        if (false/*this.connection.driver instanceof CockroachDriver*/) { // TODO(uki00a) uncomment this when CockroachDriver is implemented.
+            entityMetadata.ownIndices = this.metadataArgsStorage.filterIndices(entityMetadata.inheritanceTree)
+                .filter(args => !args.unique)
+                .map(args => {
+                    return new IndexMetadata({entityMetadata, args});
+                });
+
+            const uniques = this.metadataArgsStorage.filterIndices(entityMetadata.inheritanceTree)
+                .filter(args => args.unique)
+                .map(args => {
+                    return new UniqueMetadata({
+                        entityMetadata: entityMetadata,
+                        args: {
+                            target: args.target,
+                            name: args.name,
+                            columns: args.columns,
+                        }
+                    });
+                });
+            entityMetadata.ownUniques.push(...uniques);
+
+        } else {
+            entityMetadata.ownIndices = this.metadataArgsStorage.filterIndices(entityMetadata.inheritanceTree).map(args => {
+                return new IndexMetadata({entityMetadata, args});
+            });
+        }
+
+        // Mysql and SAP HANA stores unique constraints as unique indices.
+        if (false
+            /*this.connection.driver instanceof MysqlDriver*/ // TODO(uki00a) uncomment this when MysqlDriver is implemented.
+            /* || this.connection.driver instanceof AuroraDataApiDriver*/ // TODO(uki00a) uncomment this when AuroraDataApiDriver is implemented.
+            /* || this.connection.driver instanceof SapDriver*/) { // TODO(uki00a) uncomment this when SapDriver is implemented.
+            const indices = this.metadataArgsStorage.filterUniques(entityMetadata.inheritanceTree).map(args => {
+                return new IndexMetadata({
+                    entityMetadata: entityMetadata,
+                    args: {
+                        target: args.target,
+                        name: args.name,
+                        columns: args.columns,
+                        unique: true,
+                        synchronize: true
+                    }
+                });
+            });
+            entityMetadata.ownIndices.push(...indices);
+
+        } else {
+            const uniques = this.metadataArgsStorage.filterUniques(entityMetadata.inheritanceTree).map(args => {
+                return new UniqueMetadata({ entityMetadata, args });
+            });
+            entityMetadata.ownUniques.push(...uniques);
+        }
     }
 
     /**

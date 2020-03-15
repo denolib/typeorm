@@ -14,10 +14,10 @@ export class Post {
     @Column({ type: String })
     title: string;
 
-    @CreateDateColumn({ type: String })
+    @CreateDateColumn()
     createDate: string;
 
-    @UpdateDateColumn({ type: String })
+    @UpdateDateColumn()
     updateDate: string;
 
     @Column({ default: 100, type: Number })

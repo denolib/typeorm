@@ -19,24 +19,24 @@ export class Category {
     @Column({ type: String })
     name: string;
 
-    @OneToOne(type => Post, post => post.oneCategory)
+    @OneToOne(type => Post, post => post.oneCategory, { lazy: true })
     onePost: Promise<Post>;
 
-    @ManyToMany(type => Post, post => post.twoSideCategories)
+    @ManyToMany(type => Post, post => post.twoSideCategories, { lazy: true })
     twoSidePosts: Promise<Post[]>;
 
-    @OneToMany(type => Post, post => post.twoSideCategory)
+    @OneToMany(type => Post, post => post.twoSideCategory, { lazy: true })
     twoSidePosts2: Promise<Post[]>;
 
     // ManyToMany with named properties
-    @ManyToMany(type => Post, post => post.categoriesNamedColumn)
+    @ManyToMany(type => Post, post => post.categoriesNamedColumn, { lazy: true })
     postsNamedColumn: Promise<Post[]>;
 
     // OneToMany with named properties
-    @OneToMany(type => Post, post => post.categoryNamedColumn)
+    @OneToMany(type => Post, post => post.categoryNamedColumn, { lazy: true })
     onePostsNamedColumn: Promise<Post[]>;
 
     // OneToOne with named properties
-    @OneToOne(type => Post, post => post.oneCategoryNamedColumn)
+    @OneToOne(type => Post, post => post.oneCategoryNamedColumn, { lazy: true })
     onePostNamedColumn: Promise<Post>;
 }

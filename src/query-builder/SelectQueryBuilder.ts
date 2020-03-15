@@ -2,6 +2,7 @@ import {RawSqlResultsToEntityTransformer} from "./transformer/RawSqlResultsToEnt
 import {ObjectLiteral} from "../common/ObjectLiteral.ts";
 import {PessimisticLockTransactionRequiredError} from "../error/PessimisticLockTransactionRequiredError.ts";
 import {NoVersionOrUpdateDateColumnError} from "../error/NoVersionOrUpdateDateColumnError.ts";
+import {OffsetWithoutLimitNotSupportedError} from "../error/OffsetWithoutLimitNotSupportedError.ts";
 import {OptimisticLockVersionMismatchError} from "../error/OptimisticLockVersionMismatchError.ts";
 import {OptimisticLockCanNotBeUsedError} from "../error/OptimisticLockCanNotBeUsedError.ts";
 import {JoinAttribute} from "./JoinAttribute.ts";
@@ -29,6 +30,7 @@ import {BroadcasterResult} from "../subscriber/BroadcasterResult.ts";
 import {SelectQueryBuilderOption} from "./SelectQueryBuilderOption.ts";
 import {ObjectUtils} from "../util/ObjectUtils.ts";
 import {DriverUtils} from "../driver/DriverUtils.ts";
+import {PostgresDriver} from "../driver/postgres/PostgresDriver.ts";
 
 /**
  * Allows to build complex sql queries in a fashion way and execute those queries.
@@ -1387,6 +1389,21 @@ export class SelectQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
         if (allSelects.length === 0)
             allSelects.push({ selection: "*" });
 
+        let lock: string = "";
+        if (false/*this.connection.driver instanceof SqlServerDriver*/) { // TODO(uki00a) uncomment this when SqlServerDriver is implemented.
+            switch (this.expressionMap.lockMode) {
+                case "pessimistic_read":
+                    lock = " WITH (HOLDLOCK, ROWLOCK)";
+                    break;
+                case "pessimistic_write":
+                    lock = " WITH (UPDLOCK, ROWLOCK)";
+                    break;
+                case "dirty_read":
+                    lock = " WITH (NOLOCK)";
+                    break;
+            }
+        }
+
         // create a selection query
         const froms = this.expressionMap.aliases
             .filter(alias => alias.type === "from" && (alias.tablePath || alias.subQuery))
@@ -1400,7 +1417,7 @@ export class SelectQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
         const select = this.createSelectDistinctExpression();
         const selection = allSelects.map(select => select.selection + (select.aliasName ? " AS " + this.escape(select.aliasName) : "")).join(", ");
 
-        return select + selection + " FROM " + froms.join(", ");
+        return select + selection + " FROM " + froms.join(", ") + lock;
     }
 
     /**
@@ -1408,17 +1425,16 @@ export class SelectQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
      */
     protected createSelectDistinctExpression(): string {
         const {selectDistinct, selectDistinctOn} = this.expressionMap;
-        //const {driver} = this.connection;
+        const {driver} = this.connection;
 
         let select = "SELECT ";
-        // TODO(uki00a) uncomment this when PostgresDriver is implemented.
-        /*if (driver instanceof PostgresDriver && selectDistinctOn.length > 0) {
+        if (driver instanceof PostgresDriver && selectDistinctOn.length > 0) {
             const selectDistinctOnMap = selectDistinctOn.map(
               (on) => this.replacePropertyNames(on)
             ).join(", ");
 
             select = `SELECT DISTINCT ON (${selectDistinctOnMap}) `;
-        } */if (selectDistinct) {
+        } else if (selectDistinct) {
             select = "SELECT DISTINCT ";
         }
 
@@ -1554,7 +1570,34 @@ export class SelectQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
             limit = this.expressionMap.take;
         }
 
-        if (this.connection.driver instanceof AbstractSqliteDriver) {
+        if (false/*this.connection.driver instanceof SqlServerDriver*/) { // TODO(uki00a) uncomment this when SqlServerDriver is implemented.
+            // Due to a limitation in SQL Server's parser implementation it does not support using
+            // OFFSET or FETCH NEXT without an ORDER BY clause being provided. In cases where the
+            // user does not request one we insert a dummy ORDER BY that does nothing and should
+            // have no effect on the query planner or on the order of the results returned.
+            // https://dba.stackexchange.com/a/193799
+            let prefix = "";
+            if ((limit || offset) && Object.keys(this.expressionMap.allOrderBys).length <= 0) {
+                prefix = " ORDER BY (SELECT NULL)";
+            }
+
+            if (limit && offset)
+                return prefix + " OFFSET " + offset + " ROWS FETCH NEXT " + limit + " ROWS ONLY";
+            if (limit)
+                return prefix + " OFFSET 0 ROWS FETCH NEXT " + limit + " ROWS ONLY";
+            if (offset)
+                return prefix + " OFFSET " + offset + " ROWS";
+
+        } else if (false/*this.connection.driver instanceof MysqlDriver || this.connection.driver instanceof AuroraDataApiDriver || this.connection.driver instanceof SapDriver*/) { // TODO(uki00a) uncomment this when MysqlDriver is implemented.
+
+            if (limit && offset)
+                return " LIMIT " + limit + " OFFSET " + offset;
+            if (limit)
+                return " LIMIT " + limit;
+            if (offset)
+                throw new OffsetWithoutLimitNotSupportedError();
+
+        } else if (this.connection.driver instanceof AbstractSqliteDriver) {
 
             if (limit && offset)
                 return " LIMIT " + limit + " OFFSET " + offset;
@@ -1563,6 +1606,14 @@ export class SelectQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
             if (offset)
                 return " LIMIT -1 OFFSET " + offset;
 
+        } else if (false/*this.connection.driver instanceof OracleDriver*/) { // TODO(uki00a) uncomment this when OracleDriver is implemented.
+
+            if (limit && offset)
+                return " OFFSET " + offset + " ROWS FETCH NEXT " + limit + " ROWS ONLY";
+            if (limit)
+                return " FETCH NEXT " + limit + " ROWS ONLY";
+            if (offset)
+                return " OFFSET " + offset + " ROWS";
         } else {
             if (limit && offset)
                 return " LIMIT " + limit + " OFFSET " + offset;
@@ -1579,11 +1630,34 @@ export class SelectQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
      * Creates "LOCK" part of SQL query.
      */
     protected createLockExpression(): string {
+        const driver = this.connection.driver;
         switch (this.expressionMap.lockMode) {
             case "pessimistic_read":
-                throw new LockNotSupportedOnGivenDriverError();
+                if (false/*driver instanceof MysqlDriver || driver instanceof AuroraDataApiDriver*/) { // TODO(uki00a) uncomment this when MysqlDriver is implemented.
+                    return " LOCK IN SHARE MODE";
+
+                } else if (driver instanceof PostgresDriver) {
+                    return " FOR SHARE";
+
+                } else if (false/*driver instanceof OracleDriver*/) { // TODO(uki00a) uncomment this when OracleDriver is implemented.
+                    return " FOR UPDATE";
+
+                } else if (false/*driver instanceof SqlServerDriver*/) { // TODO(uki00a) uncomment this when SqlServerDriver is implemented.
+                    return "";
+
+                } else {
+                    throw new LockNotSupportedOnGivenDriverError();
+                }
             case "pessimistic_write":
-                throw new LockNotSupportedOnGivenDriverError();
+                if (/*driver instanceof MysqlDriver || driver instanceof AuroraDataApiDriver || */driver instanceof PostgresDriver/* || driver instanceof OracleDriver*/) { // TODO(uki00a) uncomment this when MysqlDriver is implemented.
+                    return " FOR UPDATE";
+
+                } else if (false/*driver instanceof SqlServerDriver*/) { // TODO(uki00a) uncomment this when SqlServerDriver is implemented.
+                    return "";
+
+                } else {
+                    throw new LockNotSupportedOnGivenDriverError();
+                }
             default:
                 return "";
         }
@@ -1632,6 +1706,22 @@ export class SelectQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
         return allColumns.map(column => {
             const selection = this.expressionMap.selects.find(select => select.selection === aliasName + "." + column.propertyPath);
             let selectionPath = this.escape(aliasName) + "." + this.escape(column.databaseName);
+            if (this.connection.driver.spatialTypes.indexOf(column.type) !== -1) {
+                if (false/*this.connection.driver instanceof MysqlDriver || this.connection.driver instanceof AuroraDataApiDriver*/) { // TODO(uki00a) uncomment this when MysqlDriver is implemented.
+                    /* // TODO(uki00a) uncomment this when MysqlDriver is implemented.
+                    const useLegacy = this.connection.driver.options.legacySpatialSupport;
+                    const asText = useLegacy ? "AsText" : "ST_AsText";
+                    selectionPath = `${asText}(${selectionPath})`;
+                    */
+                }
+
+                if (this.connection.driver instanceof PostgresDriver)
+                    // cast to JSON to trigger parsing in the driver
+                    selectionPath = `ST_AsGeoJSON(${selectionPath})::json`;
+
+                if (false/*this.connection.driver instanceof SqlServerDriver*/) // TODO(uki00a) uncomment this when SqlServerDriver is implemented.
+                    selectionPath = `${selectionPath}.ToString()`;
+            }
             return {
                 selection: selectionPath,
                 aliasName: selection && selection.aliasName ? selection.aliasName : DriverUtils.buildColumnAlias(this.connection.driver, aliasName, column.databaseName),

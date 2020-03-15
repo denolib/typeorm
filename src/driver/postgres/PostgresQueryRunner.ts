@@ -22,6 +22,9 @@ import {OrmUtils} from "../../util/OrmUtils.ts";
 import {Query} from "../Query.ts";
 import {IsolationLevel} from "../types/IsolationLevel.ts";
 import {PostgresDriver} from "./PostgresDriver.ts";
+import {PoolClient, QueryResult} from "./typings.ts";
+import {NotImplementedError} from "../../error/NotImplementedError.ts";
+import {PromiseQueue} from "../../util/PromiseQueue.ts";
 
 /**
  * Runs queries on a single postgres database connection.
@@ -44,12 +47,14 @@ export class PostgresQueryRunner extends BaseQueryRunner implements QueryRunner 
     /**
      * Promise used to obtain a database connection for a first time.
      */
-    protected databaseConnectionPromise: Promise<any>;
+    protected databaseConnectionPromise: Promise<PoolClient>;
 
     /**
      * Special callback provided by a driver used to release a created connection.
      */
-    protected releaseCallback: Function;
+    protected releaseCallback: () => Promise<void>;
+
+    protected databaseConnection: PoolClient;
 
     // -------------------------------------------------------------------------
     // Constructor
@@ -71,7 +76,7 @@ export class PostgresQueryRunner extends BaseQueryRunner implements QueryRunner 
      * Creates/uses database connection from the connection pool to perform further operations.
      * Returns obtained database connection.
      */
-    connect(): Promise<any> {
+    connect(): Promise<PoolClient> {
         if (this.databaseConnection)
             return Promise.resolve(this.databaseConnection);
 
@@ -79,7 +84,7 @@ export class PostgresQueryRunner extends BaseQueryRunner implements QueryRunner 
             return this.databaseConnectionPromise;
 
         if (this.mode === "slave" && this.driver.isReplicated)  {
-            this.databaseConnectionPromise = this.driver.obtainSlaveConnection().then(([ connection, release]: any[]) => {
+            this.databaseConnectionPromise = this.driver.obtainSlaveConnection().then(([connection, release]: [PoolClient, () => Promise<void>]) => {
                 this.driver.connectedQueryRunners.push(this);
                 this.databaseConnection = connection;
                 this.releaseCallback = release;
@@ -87,7 +92,7 @@ export class PostgresQueryRunner extends BaseQueryRunner implements QueryRunner 
             });
 
         } else { // master
-            this.databaseConnectionPromise = this.driver.obtainMasterConnection().then(([connection, release]: any[]) => {
+            this.databaseConnectionPromise = this.driver.obtainMasterConnection().then(([connection, release]: [PoolClient, () => Promise<void>]) => {
                 this.driver.connectedQueryRunners.push(this);
                 this.databaseConnection = connection;
                 this.releaseCallback = release;
@@ -151,71 +156,105 @@ export class PostgresQueryRunner extends BaseQueryRunner implements QueryRunner 
         this.isTransactionActive = false;
     }
 
+    private queryQueueMap = new Map<PoolClient, PromiseQueue<QueryResult>>();
+
+    /**
+     * This method is a workaround for a concurrency problem that occurs sometimes when using deno-postgres@v0.3.6.
+     */
+    private executeQuery(connection: PoolClient, query: string, parameters: any[]) {
+        if (!this.queryQueueMap.has(connection)) {
+            const queue = new PromiseQueue<QueryResult>();
+            this.queryQueueMap.set(connection, queue);
+            queue.onEmpty().then(() => {
+                this.queryQueueMap.delete(connection);
+            });
+        }
+        const queue = this.queryQueueMap.get(connection);
+        return queue.add(() => connection.query(query, ...parameters));
+    }
+
     /**
      * Executes a given SQL query.
      */
-    query(query: string, parameters?: any[]): Promise<any> {
+    async query(query: string, parameters?: any[]): Promise<any> {
         if (this.isReleased)
             throw new QueryRunnerAlreadyReleasedError();
 
-        return new Promise<any[]>(async (ok, fail) => {
-            try {
-                const databaseConnection = await this.connect();
-                this.driver.connection.logger.logQuery(query, parameters, this);
-                const queryStartTime = +new Date();
+        if (!query)
+            throw new Error('query must be provided')
 
-                databaseConnection.query(query, parameters, (err: any, result: any) => {
+        const databaseConnection = await this.connect();
+        this.driver.connection.logger.logQuery(query, parameters, this);
+        const queryStartTime = +new Date();
 
-                    // log slow queries if maxQueryExecution time is set
-                    const maxQueryExecutionTime = this.driver.connection.options.maxQueryExecutionTime;
-                    const queryEndTime = +new Date();
-                    const queryExecutionTime = queryEndTime - queryStartTime;
-                    if (maxQueryExecutionTime && queryExecutionTime > maxQueryExecutionTime)
-                        this.driver.connection.logger.logQuerySlow(queryExecutionTime, query, parameters, this);
+        let error: any | undefined;
+        let result: QueryResult | undefined;
+        try {
+            //result = await databaseConnection.query(query, ...(parameters || []));
+            result = await this.executeQuery(databaseConnection, query, parameters || []);
+        } catch (err) {
+            error = err;
+        }
 
-                    if (err) {
-                        this.driver.connection.logger.logQueryError(err, query, parameters, this);
-                        fail(new QueryFailedError(query, parameters, err));
-                    } else {
-                        switch (result.command) {
-                            case "DELETE":
-                            case "UPDATE":
-                                // for UPDATE and DELETE query additionally return number of affected rows
-                                ok([result.rows, result.rowCount]);
-                                break;
-                            default:
-                                ok(result.rows);
-                        }
-                    }
-                });
+        // log slow queries if maxQueryExecution time is set
+        const maxQueryExecutionTime = this.driver.connection.options.maxQueryExecutionTime;
+        const queryEndTime = +new Date();
+        const queryExecutionTime = queryEndTime - queryStartTime;
+        if (maxQueryExecutionTime && queryExecutionTime > maxQueryExecutionTime)
+            this.driver.connection.logger.logQuerySlow(queryExecutionTime, query, parameters, this);
 
-            } catch (err) {
-                fail(err);
+        if (error) {
+            this.driver.connection.logger.logQueryError(error, query, parameters, this);
+            return Promise.reject(new QueryFailedError(query, parameters, error));
+        } else {
+            // TODO(uki00a) We want to preserve the same behavior as node-postgres.
+            // switch (result.command) {
+            //     case "DELETE":
+            //     case "UPDATE":
+            //         // for UPDATE and DELETE query additionally return number of affected rows
+            //         ok([result.rows, result.rowCount]);
+            //         break;
+            //     default:
+            //         ok(result.rows);
+            // }
+
+            // TODO(uki00a) Use `QueryResult#rowsOfObjects`.
+            // return result.rowsOfObjects();
+            const rawObjects = [];
+            for (const row of result.rows) {
+                const rawObject = {};
+                for (let i = 0; i < result.rowDescription.columnCount; i++) {
+                    const column= result.rowDescription.columns[i];
+                    rawObject[column.name] = row[i];
+                }
+                rawObjects.push(rawObject);
             }
-        });
+            return rawObjects;
+        }
     }
 
     /**
      * Returns raw data stream.
      */
     stream(query: string, parameters?: any[], onEnd?: Function, onError?: Function): Promise<ReadStream> {
-        const QueryStream = this.driver.loadStreamDependency();
-        if (this.isReleased)
-            throw new QueryRunnerAlreadyReleasedError();
+        return Promise.reject(new NotImplementedError('PostgresQueryRunner#stream'));
+        //const QueryStream = this.driver.loadStreamDependency();
+        //if (this.isReleased)
+        //    throw new QueryRunnerAlreadyReleasedError();
 
-        return new Promise(async (ok, fail) => {
-            try {
-                const databaseConnection = await this.connect();
-                this.driver.connection.logger.logQuery(query, parameters, this);
-                const stream = databaseConnection.query(new QueryStream(query, parameters));
-                if (onEnd) stream.on("end", onEnd);
-                if (onError) stream.on("error", onError);
-                ok(stream);
+        //return new Promise(async (ok, fail) => {
+        //    try {
+        //        const databaseConnection = await this.connect();
+        //        this.driver.connection.logger.logQuery(query, parameters, this);
+        //        const stream = databaseConnection.query(new QueryStream(query, parameters));
+        //        if (onEnd) stream.on("end", onEnd);
+        //        if (onError) stream.on("error", onError);
+        //        ok(stream);
 
-            } catch (err) {
-                fail(err);
-            }
-        });
+        //    } catch (err) {
+        //        fail(err);
+        //    }
+        //});
     }
 
     /**

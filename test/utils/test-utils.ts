@@ -1,6 +1,6 @@
 import {Connection} from "../../src/connection/Connection.ts";
 import {ConnectionOptions} from "../../src/connection/ConnectionOptions.ts";
-//import {PostgresDriver} from "../../src/driver/postgres/PostgresDriver.ts";
+import {PostgresDriver} from "../../src/driver/postgres/PostgresDriver.ts";
 //import {SqlServerDriver} from "../../src/driver/sqlserver/SqlServerDriver.ts";
 import {DatabaseType} from "../../src/driver/types/DatabaseType.ts";
 import {EntitySchema} from "../../src/entity-schema/EntitySchema.ts";
@@ -250,23 +250,22 @@ export async function createTestingConnections(options?: TestingOptions): Promis
         await PromiseUtils.runInSequence(databases, database => queryRunner.createDatabase(database, true));
 
         // create new schemas
-        // TODO(uki00a) Uncomment this when PostgresDriver is implemented.
-        // if (connection.driver instanceof PostgresDriver || connection.driver instanceof SqlServerDriver) {
-        //     const schemaPaths: string[] = [];
-        //     connection.entityMetadatas
-        //         .filter(entityMetadata => !!entityMetadata.schemaPath)
-        //         .forEach(entityMetadata => {
-        //             const existSchemaPath = schemaPaths.find(path => path === entityMetadata.schemaPath);
-        //             if (!existSchemaPath)
-        //                 schemaPaths.push(entityMetadata.schemaPath!);
-        //         });
+        if (connection.driver instanceof PostgresDriver/* || connection.driver instanceof SqlServerDriver*/) { // TODO(uki00a) uncomment this when SqlServerDriver is implemented.
+            const schemaPaths: string[] = [];
+            connection.entityMetadatas
+                .filter(entityMetadata => !!entityMetadata.schemaPath)
+                .forEach(entityMetadata => {
+                    const existSchemaPath = schemaPaths.find(path => path === entityMetadata.schemaPath);
+                    if (!existSchemaPath)
+                        schemaPaths.push(entityMetadata.schemaPath!);
+                });
 
-        //     const schema = connection.driver.options.schema;
-        //     if (schema && schemaPaths.indexOf(schema) === -1)
-        //         schemaPaths.push(schema);
+            const schema = connection.driver.options.schema;
+            if (schema && schemaPaths.indexOf(schema) === -1)
+                schemaPaths.push(schema);
 
-        //     await PromiseUtils.runInSequence(schemaPaths, schemaPath => queryRunner.createSchema(schemaPath, true));
-        // }
+            await PromiseUtils.runInSequence(schemaPaths, schemaPath => queryRunner.createSchema(schemaPath, true));
+        }
 
         await queryRunner.release();
     }));

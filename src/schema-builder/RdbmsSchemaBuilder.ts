@@ -15,6 +15,8 @@ import {TableUnique} from "./table/TableUnique.ts";
 import {TableCheck} from "./table/TableCheck.ts";
 import {TableExclusion} from "./table/TableExclusion.ts";
 import {View} from "./view/View.ts";
+import {PostgresDriver} from "../driver/postgres/PostgresDriver.ts";
+import {PostgresConnectionOptions} from "../driver/postgres/PostgresConnectionOptions.ts";
 
 /**
  * Creates complete tables schemas in the database based on the entity metadatas.
@@ -57,8 +59,10 @@ export class RdbmsSchemaBuilder implements SchemaBuilder {
      */
     async build(): Promise<void> {
         this.queryRunner = this.connection.createQueryRunner("master");
+        // CockroachDB implements asynchronous schema sync operations which can not been executed in transaction.
         // E.g. if you try to DROP column and ADD it again in the same transaction, crdb throws error.
-        await this.queryRunner.startTransaction();
+        if (true/*!(this.connection.driver instanceof CockroachDriver)*/) // TODO(uki00a) uncomment this when CockroachDriver is implemented.
+            await this.queryRunner.startTransaction();
         try {
             const tablePaths = this.entityToSyncMetadatas.map(metadata => metadata.tablePath);
             // TODO: typeorm_metadata table needs only for Views for now.
@@ -73,12 +77,14 @@ export class RdbmsSchemaBuilder implements SchemaBuilder {
             if (this.connection.queryResultCache)
                 await this.connection.queryResultCache.synchronize(this.queryRunner);
 
-             await this.queryRunner.commitTransaction();
+            if (true/*!(this.connection.driver instanceof CockroachDriver)*/) // TODO(uki00a) uncomment this when CockroachDriver is implemented.
+                await this.queryRunner.commitTransaction();
 
         } catch (error) {
 
             try { // we throw original error even if rollback thrown an error
-                await this.queryRunner.rollbackTransaction();
+                if (true/*!(this.connection.driver instanceof CockroachDriver)*/) // TODO(uki00a) uncomment this when CockroachDriver is implemented.
+                    await this.queryRunner.rollbackTransaction();
             } catch (rollbackError) { }
             throw error;
 
@@ -285,6 +291,10 @@ export class RdbmsSchemaBuilder implements SchemaBuilder {
     }
 
     protected async dropOldChecks(): Promise<void> {
+        // Mysql does not support check constraints
+        if (false/*this.connection.driver instanceof MysqlDriver || this.connection.driver instanceof AuroraDataApiDriver*/) // TODO(uki00a) uncomment this when MysqlDriver is implemented.
+            return;
+
         await PromiseUtils.runInSequence(this.entityToSyncMetadatas, async metadata => {
             const table = this.queryRunner.loadedTables.find(table => table.name === metadata.tablePath);
             if (!table)
@@ -322,8 +332,7 @@ export class RdbmsSchemaBuilder implements SchemaBuilder {
 
     protected async dropOldExclusions(): Promise<void> {
         // Only PostgreSQL supports exclusion constraints
-        const isPostgres = false; // TODO(uki00a) refactor
-        if (!isPostgres)
+        if (!(this.connection.driver instanceof PostgresDriver))
             return;
 
         await PromiseUtils.runInSequence(this.entityToSyncMetadatas, async metadata => {
@@ -353,7 +362,7 @@ export class RdbmsSchemaBuilder implements SchemaBuilder {
             // check if table does not exist yet
             const existTable = this.queryRunner.loadedTables.find(table => {
                 const database = metadata.database && metadata.database !== this.connection.driver.database ? metadata.database : undefined;
-                const schema = metadata.schema || (this.connection.driver as any).options.schema; // TODO(uki00a) avoid using any. if driver is for pg or sql server, then it becomes true.
+                const schema = metadata.schema || (</*SqlServerDriver|*/PostgresDriver/*|SapDriver*/>this.connection.driver).options.schema; // TODO(uki00a) uncomment this when SqlServerDriver is implemented.
                 const fullTableName = this.connection.driver.buildTableName(metadata.tableName, schema, database);
 
                 return table.name === fullTableName;
@@ -375,7 +384,7 @@ export class RdbmsSchemaBuilder implements SchemaBuilder {
             // check if view does not exist yet
             const existView = this.queryRunner.loadedViews.find(view => {
                 const database = metadata.database && metadata.database !== this.connection.driver.database ? metadata.database : undefined;
-                const schema = metadata.schema || (this.connection.driver as any).options.schema; // TODO(uki00a) avoid using any. If driver is for pg or mssql, it becomes true.
+                const schema = metadata.schema || (</*SqlServerDriver|*/PostgresDriver>this.connection.driver).options.schema; // TODO(uki00a) uncomment this when SqlServerDriver is implemented.
                 const fullViewName = this.connection.driver.buildTableName(metadata.tableName, schema, database);
                 const viewExpression = typeof view.expression === "string" ? view.expression.trim() : view.expression(this.connection).getQuery();
                 const metadataExpression = typeof metadata.expression === "string" ? metadata.expression.trim() : metadata.expression!(this.connection).getQuery();
@@ -397,7 +406,7 @@ export class RdbmsSchemaBuilder implements SchemaBuilder {
         await PromiseUtils.runInSequence(this.queryRunner.loadedViews, async view => {
             const existViewMetadata = this.viewEntityToSyncMetadatas.find(metadata => {
                 const database = metadata.database && metadata.database !== this.connection.driver.database ? metadata.database : undefined;
-                const schema = metadata.schema || (this.connection.driver as any).options.schema; // TODO(uki00a) avoid using any. If driver is for pg or mssql, it becomes true.
+                const schema = metadata.schema || (</*SqlServerDriver|*/PostgresDriver>this.connection.driver).options.schema; // TODO(uki00a) uncomment this when SqlServerDriver is implemented.
                 const fullViewName = this.connection.driver.buildTableName(metadata.tableName, schema, database);
                 const viewExpression = typeof view.expression === "string" ? view.expression.trim() : view.expression(this.connection).getQuery();
                 const metadataExpression = typeof metadata.expression === "string" ? metadata.expression.trim() : metadata.expression!(this.connection).getQuery();
@@ -509,8 +518,7 @@ export class RdbmsSchemaBuilder implements SchemaBuilder {
 
             // drop all composite uniques related to this column
             // Mysql does not support unique constraints.
-            const isMysqlOrAurora = false; // TODO(uki00a) refactor
-            if (!isMysqlOrAurora) {
+            if (true/*!(this.connection.driver instanceof MysqlDriver || this.connection.driver instanceof AuroraDataApiDriver)*/) { // TODO(uki00a) uncomment this when MysqlDriver is implemented.
                 await PromiseUtils.runInSequence(changedColumns, changedColumn => this.dropColumnCompositeUniques(metadata.tablePath, changedColumn.databaseName));
             }
 
@@ -557,8 +565,7 @@ export class RdbmsSchemaBuilder implements SchemaBuilder {
 
     protected async createNewChecks(): Promise<void> {
         // Mysql does not support check constraints
-        const isMysqlOrAura = false; // TODO(uki00a) refactor
-        if (isMysqlOrAura)
+        if (false/*this.connection.driver instanceof MysqlDriver || this.connection.driver instanceof AuroraDataApiDriver*/) // TODO(uki00a) uncomment this when MysqlDriver is implemented.
             return;
 
         await PromiseUtils.runInSequence(this.entityToSyncMetadatas, async metadata => {
@@ -604,8 +611,7 @@ export class RdbmsSchemaBuilder implements SchemaBuilder {
      */
     protected async createNewExclusions(): Promise<void> {
         // Only PostgreSQL supports exclusion constraints
-        const supportsNewExclusions = false;
-        if (!supportsNewExclusions)
+        if (!(this.connection.driver instanceof PostgresDriver))
             return;
 
         await PromiseUtils.runInSequence(this.entityToSyncMetadatas, async metadata => {
@@ -727,7 +733,7 @@ export class RdbmsSchemaBuilder implements SchemaBuilder {
      * Creates typeorm service table for storing user defined Views.
      */
     protected async createTypeormMetadataTable() {
-        const options = this.connection.driver.options as any; // TODO(uki00a) This should be mssql or pg
+        const options = </*SqlServerConnectionOptions|*/PostgresConnectionOptions>this.connection.driver.options; // TODO(uki00a) uncomment this when SqlServerDriver is implemented.
         const typeormMetadataTable = this.connection.driver.buildTableName("typeorm_metadata", options.schema, options.database);
 
         await this.queryRunner.createTable(new Table(

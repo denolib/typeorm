@@ -381,6 +381,11 @@ export abstract class QueryBuilder<Entity> {
             if (queryRunner !== this.queryRunner) { // means we created our own query runner
                 await queryRunner.release();
             }
+            if (false/*this.connection.driver instanceof SqljsDriver*/) { // TODO(uki00a) uncomment this when SqljsDriver is implemented.
+                /* // TODO(uki00a) uncomment this when SqljsDriver is implemented.
+                await this.connection.driver.autoSave();
+                */
+            }
         }
     }
 
@@ -588,8 +593,26 @@ export abstract class QueryBuilder<Entity> {
         if (columns.length) {
             let columnsExpression = columns.map(column => {
                 const name = this.escape(column.databaseName);
-                return name;
+                if (false/*driver instanceof SqlServerDriver*/) { // TODO(uki00a) uncomment this when SqlServerDriver is implemented.
+                    if (this.expressionMap.queryType === "insert" || this.expressionMap.queryType === "update") {
+                        return "INSERTED." + name;
+                    } else {
+                        return this.escape(this.getMainTableName()) + "." + name;
+                    }
+                } else {
+                    return name;
+                }
             }).join(", ");
+
+            if (false/*driver instanceof OracleDriver*/) { // TODO(uki00a) uncomment this when OracleDriver is implemented.
+                /* // TODO(uki00a) uncomment this when OracleDriver is implemented.
+                columnsExpression += " INTO " + columns.map(column => {
+                    const parameterName = "output_" + column.databaseName;
+                    this.expressionMap.nativeParameters[parameterName] = { type: driver.columnTypeToNativeParameter(column.type), dir: driver.oracle.BIND_OUT };
+                    return this.connection.driver.createParameter(parameterName, Object.keys(this.expressionMap.nativeParameters).length);
+                }).join(", ");
+                */
+            }
 
             return columnsExpression;
 

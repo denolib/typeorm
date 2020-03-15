@@ -1,12 +1,13 @@
+import * as DenoPostgres from "../../../vendor/https/deno.land/x/postgres/mod.ts";
 import {Driver} from "../Driver.ts";
 import {ConnectionIsNotSetError} from "../../error/ConnectionIsNotSetError.ts";
 import {ObjectLiteral} from "../../common/ObjectLiteral.ts";
-import {DriverPackageNotInstalledError} from "../../error/DriverPackageNotInstalledError.ts";
+// import {DriverPackageNotInstalledError} from "../../error/DriverPackageNotInstalledError.ts";
 import {DriverUtils} from "../DriverUtils.ts";
 import {ColumnMetadata} from "../../metadata/ColumnMetadata.ts";
 import {PostgresQueryRunner} from "./PostgresQueryRunner.ts";
 import {DateUtils} from "../../util/DateUtils.ts";
-import {PlatformTools} from "../../platform/PlatformTools.ts";
+// import {PlatformTools} from "../../platform/PlatformTools.ts";
 import {Connection} from "../../connection/Connection.ts";
 import {RdbmsSchemaBuilder} from "../../schema-builder/RdbmsSchemaBuilder.ts";
 import {PostgresConnectionOptions} from "./PostgresConnectionOptions.ts";
@@ -19,6 +20,8 @@ import {PostgresConnectionCredentialsOptions} from "./PostgresConnectionCredenti
 import {EntityMetadata} from "../../metadata/EntityMetadata.ts";
 import {OrmUtils} from "../../util/OrmUtils.ts";
 import {ApplyValueTransformers} from "../../util/ApplyValueTransformers.ts";
+import {NotImplementedError} from "../../error/NotImplementedError.ts";
+import {PoolClient} from "./typings.ts";
 
 /**
  * Organizes communication with PostgreSQL DBMS.
@@ -37,18 +40,18 @@ export class PostgresDriver implements Driver {
     /**
      * Postgres underlying library.
      */
-    postgres: any;
+    private postgres: typeof DenoPostgres;
 
     /**
      * Pool for master database.
      */
-    master: any;
+    private master: DenoPostgres.Pool;
 
     /**
      * Pool for slave databases.
      * Used in replication.
      */
-    slaves: any[] = [];
+    private slaves: DenoPostgres.Pool[] = [];
 
     /**
      * We store all created query runners because we need to release them.
@@ -248,11 +251,12 @@ export class PostgresDriver implements Driver {
 
     constructor(connection: Connection) {
         this.connection = connection;
-        this.options = connection.options as PostgresConnectionOptions;
+        this.options = connection.options as any;
         this.isReplicated = this.options.replication ? true : false;
 
+        this.postgres = DenoPostgres;
         // load postgres package
-        this.loadDependencies();
+        // this.loadDependencies();
 
         // ObjectUtils.assign(this.options, DriverUtils.buildDriverOptions(connection.options)); // todo: do it better way
         // validate options to make sure everything is set
@@ -312,52 +316,47 @@ export class PostgresDriver implements Driver {
             return metadata.exclusions.length > 0;
         });
         if (hasUuidColumns || hasCitextColumns || hasHstoreColumns || hasGeometryColumns || hasCubeColumns || hasExclusionConstraints) {
-            await Promise.all([this.master, ...this.slaves].map(pool => {
-                return new Promise((ok, fail) => {
-                    pool.connect(async (err: any, connection: any, release: Function) => {
-                        const { logger } = this.connection;
-                        if (err) return fail(err);
-                        if (hasUuidColumns)
-                            try {
-                                await this.executeQuery(connection, `CREATE EXTENSION IF NOT EXISTS "${this.options.uuidExtension || "uuid-ossp"}"`);
-                            } catch (_) {
-                                logger.log("warn", `At least one of the entities has uuid column, but the '${this.options.uuidExtension || "uuid-ossp"}' extension cannot be installed automatically. Please install it manually using superuser rights, or select another uuid extension.`);
-                            }
-                        if (hasCitextColumns)
-                            try {
-                                await this.executeQuery(connection, `CREATE EXTENSION IF NOT EXISTS "citext"`);
-                            } catch (_) {
-                                logger.log("warn", "At least one of the entities has citext column, but the 'citext' extension cannot be installed automatically. Please install it manually using superuser rights");
-                            }
-                        if (hasHstoreColumns)
-                            try {
-                                await this.executeQuery(connection, `CREATE EXTENSION IF NOT EXISTS "hstore"`);
-                            } catch (_) {
-                                logger.log("warn", "At least one of the entities has hstore column, but the 'hstore' extension cannot be installed automatically. Please install it manually using superuser rights");
-                            }
-                        if (hasGeometryColumns)
-                            try {
-                                await this.executeQuery(connection, `CREATE EXTENSION IF NOT EXISTS "postgis"`);
-                            } catch (_) {
-                                logger.log("warn", "At least one of the entities has a geometry column, but the 'postgis' extension cannot be installed automatically. Please install it manually using superuser rights");
-                            }
-                        if (hasCubeColumns)
-                            try {
-                                await this.executeQuery(connection, `CREATE EXTENSION IF NOT EXISTS "cube"`);
-                            } catch (_) {
-                                logger.log("warn", "At least one of the entities has a cube column, but the 'cube' extension cannot be installed automatically. Please install it manually using superuser rights");
-                            }
-                        if (hasExclusionConstraints)
-                            try {
-                                // The btree_gist extension provides operator support in PostgreSQL exclusion constraints
-                                await this.executeQuery(connection, `CREATE EXTENSION IF NOT EXISTS "btree_gist"`);
-                            } catch (_) {
-                                logger.log("warn", "At least one of the entities has an exclusion constraint, but the 'btree_gist' extension cannot be installed automatically. Please install it manually using superuser rights");
-                            }
-                        release();
-                        ok();
-                    });
-                });
+            await Promise.all([this.master, ...this.slaves].map(async pool => {
+                const poolClient = await pool.connect();
+                const { logger } = this.connection;
+                if (hasUuidColumns)
+                    try {
+                        await this.executeQuery(poolClient, `CREATE EXTENSION IF NOT EXISTS "${this.options.uuidExtension || "uuid-ossp"}"`);
+                    } catch (_) {
+                        logger.log("warn", `At least one of the entities has uuid column, but the '${this.options.uuidExtension || "uuid-ossp"}' extension cannot be installed automatically. Please install it manually using superuser rights, or select another uuid extension.`);
+                    }
+                if (hasCitextColumns)
+                    try {
+                        await this.executeQuery(poolClient, `CREATE EXTENSION IF NOT EXISTS "citext"`);
+                    } catch (_) {
+                        logger.log("warn", "At least one of the entities has citext column, but the 'citext' extension cannot be installed automatically. Please install it manually using superuser rights");
+                    }
+                if (hasHstoreColumns)
+                    try {
+                        await this.executeQuery(poolClient, `CREATE EXTENSION IF NOT EXISTS "hstore"`);
+                    } catch (_) {
+                        logger.log("warn", "At least one of the entities has hstore column, but the 'hstore' extension cannot be installed automatically. Please install it manually using superuser rights");
+                    }
+                if (hasGeometryColumns)
+                    try {
+                        await this.executeQuery(poolClient, `CREATE EXTENSION IF NOT EXISTS "postgis"`);
+                    } catch (_) {
+                        logger.log("warn", "At least one of the entities has a geometry column, but the 'postgis' extension cannot be installed automatically. Please install it manually using superuser rights");
+                    }
+                if (hasCubeColumns)
+                    try {
+                        await this.executeQuery(poolClient, `CREATE EXTENSION IF NOT EXISTS "cube"`);
+                    } catch (_) {
+                        logger.log("warn", "At least one of the entities has a cube column, but the 'cube' extension cannot be installed automatically. Please install it manually using superuser rights");
+                    }
+                if (hasExclusionConstraints)
+                    try {
+                        // The btree_gist extension provides operator support in PostgreSQL exclusion constraints
+                        await this.executeQuery(poolClient, `CREATE EXTENSION IF NOT EXISTS "btree_gist"`);
+                    } catch (_) {
+                        logger.log("warn", "At least one of the entities has an exclusion constraint, but the 'btree_gist' extension cannot be installed automatically. Please install it manually using superuser rights");
+                    }
+                await poolClient.release();
             }));
         }
 
@@ -767,12 +766,8 @@ export class PostgresDriver implements Driver {
      * Used for replication.
      * If replication is not setup then returns default connection's database connection.
      */
-    obtainMasterConnection(): Promise<any> {
-        return new Promise((ok, fail) => {
-            this.master.connect((err: any, connection: any, release: any) => {
-                err ? fail(err) : ok([connection, release]);
-            });
-        });
+    obtainMasterConnection(): Promise<[PoolClient, () => Promise<void>]> {
+        return this.obtainConnectionFromPool(this.master);
     }
 
     /**
@@ -780,16 +775,17 @@ export class PostgresDriver implements Driver {
      * Used for replication.
      * If replication is not setup then returns master (default) connection's database connection.
      */
-    obtainSlaveConnection(): Promise<any> {
+    obtainSlaveConnection(): Promise<[PoolClient, () => Promise<void>]> {
         if (!this.slaves.length)
             return this.obtainMasterConnection();
 
-        return new Promise((ok, fail) => {
-            const random = Math.floor(Math.random() * this.slaves.length);
-            this.slaves[random].connect((err: any, connection: any, release: any) => {
-                err ? fail(err) : ok([connection, release]);
-            });
-        });
+        const random = Math.floor(Math.random() * this.slaves.length);
+        return this.obtainConnectionFromPool(this.slaves[random]);
+    }
+
+    private async obtainConnectionFromPool(pool: DenoPostgres.Pool): Promise<[PoolClient, () => Promise<void>]> {
+        const poolClient = await pool.connect();
+        return [poolClient, () => poolClient.release()];
     }
 
     /**
@@ -880,12 +876,13 @@ export class PostgresDriver implements Driver {
      * Loads postgres query stream package.
      */
     loadStreamDependency() {
-        try {
-            return PlatformTools.load("pg-query-stream");
+        throw new NotImplementedError(`We don't currently support query streaming.`);
+        // try {
+        //     return PlatformTools.load("pg-query-stream");
 
-        } catch (e) { // todo: better error for browser env
-            throw new Error(`To use streams you should install pg-query-stream package. Please run npm i pg-query-stream --save command.`);
-        }
+        // } catch (e) { // todo: better error for browser env
+        //     throw new Error(`To use streams you should install pg-query-stream package. Please run npm i pg-query-stream --save command.`);
+        // }
     }
 
     // -------------------------------------------------------------------------
@@ -896,23 +893,23 @@ export class PostgresDriver implements Driver {
      * If driver dependency is not given explicitly, then try to load it via "require".
      */
     protected loadDependencies(): void {
-        try {
-            this.postgres = PlatformTools.load("pg");
-            try {
-                const pgNative = PlatformTools.load("pg-native");
-                if (pgNative && this.postgres.native) this.postgres = this.postgres.native;
+        // try {
+        //     this.postgres = PlatformTools.load("pg");
+        //     try {
+        //         const pgNative = PlatformTools.load("pg-native");
+        //         if (pgNative && this.postgres.native) this.postgres = this.postgres.native;
 
-            } catch (e) { }
+        //     } catch (e) { }
 
-        } catch (e) { // todo: better error for browser env
-            throw new DriverPackageNotInstalledError("Postgres", "pg");
-        }
+        // } catch (e) { // todo: better error for browser env
+        //     throw new DriverPackageNotInstalledError("Postgres", "pg");
+        // }
     }
 
     /**
      * Creates a new connection pool for a given database credentials.
      */
-    protected async createPool(options: PostgresConnectionOptions, credentials: PostgresConnectionCredentialsOptions): Promise<any> {
+    protected async createPool(options: PostgresConnectionOptions, credentials: PostgresConnectionCredentialsOptions): Promise<DenoPostgres.Pool> {
 
         credentials = Object.assign({}, credentials, DriverUtils.buildDriverOptions(credentials)); // todo: do it better way
 
@@ -927,46 +924,40 @@ export class PostgresDriver implements Driver {
         }, options.extra || {});
 
         // create a connection pool
-        const pool = new this.postgres.Pool(connectionOptions);
-        const { logger } = this.connection;
+        const pool = new this.postgres.Pool(
+            connectionOptions,
+            10, // maxSize. This matches the default size of `node-postgres`. See: https://node-postgres.com/api/pool
+            true
+         );
+        //const { logger } = this.connection;
 
-        const poolErrorHandler = options.poolErrorHandler || ((error: any) => logger.log("warn", `Postgres pool raised an error. ${error}`));
+        // TODO(uki00a) We need some kind of error handling...
+        //const poolErrorHandler = options.poolErrorHandler || ((error: any) => logger.log("warn", `Postgres pool raised an error. ${error}`));
 
         /*
           Attaching an error handler to pool errors is essential, as, otherwise, errors raised will go unhandled and
           cause the hosting app to crash.
          */
-        pool.on("error", poolErrorHandler);
+        //pool.on("error", poolErrorHandler);
 
-        return new Promise((ok, fail) => {
-            pool.connect((err: any, connection: any, release: Function) => {
-                if (err) return fail(err);
-                release();
-                ok(pool);
-            });
-        });
+        const poolClient = await pool.connect();
+        await poolClient.release();
+        return pool;
     }
 
     /**
      * Closes connection pool.
      */
-    protected async closePool(pool: any): Promise<void> {
+    protected async closePool(pool: DenoPostgres.Pool): Promise<void> {
         await Promise.all(this.connectedQueryRunners.map(queryRunner => queryRunner.release()));
-        return new Promise<void>((ok, fail) => {
-            pool.end((err: any) => err ? fail(err) : ok());
-        });
+        return pool.end();
     }
 
     /**
      * Executes given query.
      */
-    protected executeQuery(connection: any, query: string) {
-        return new Promise((ok, fail) => {
-            connection.query(query, (err: any, result: any) => {
-                if (err) return fail(err);
-                ok(result);
-            });
-        });
+    protected executeQuery(connection: PoolClient, query: string) {
+        return connection.query(query);
     }
 
 }
