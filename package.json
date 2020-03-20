@@ -92,8 +92,7 @@
     "ts-node": "^8.0.2",
     "tslint": "^5.13.1",
     "typeorm-aurora-data-api-driver": "^1.1.1",
-    "typescript": "^3.3.3333",
-    "typescript-deno-plugin": "^1.2.7"
+    "typescript": "^3.3.3333"
   },
   "dependencies": {
     "app-root-path": "^3.0.0",
