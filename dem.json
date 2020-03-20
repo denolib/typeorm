@@ -3,11 +3,10 @@
     {
       "protocol": "https",
       "path": "deno.land/std",
-      "version": "v0.33.0",
+      "version": "v0.36.0",
       "files": [
         "/fmt/colors.ts",
         "/fs/mod.ts",
-        "/node/module.ts",
         "/path/mod.ts",
         "/util/async.ts"
       ]
@@ -31,7 +30,7 @@
     {
       "protocol": "https",
       "path": "deno.land/x/sqlite",
-      "version": "d451a28e55180730a296a9383cd5dd26155a2c11",
+      "version": "73935087a1ebe9108d784503bc5474662ba54b73",
       "files": [
         "/mod.ts"
       ]

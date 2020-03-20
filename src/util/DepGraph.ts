@@ -75,7 +75,7 @@ export class DepGraph {
                     if (idx >= 0) {
                         edgeList[key].splice(idx, 1);
                     }
-                }, this);
+                }/*, this*/);
             });
         }
     }

@@ -1,6 +1,7 @@
 {
     "version": "2.1.1",
     "compilerOptions": {
+        "strict": true,
         "target": "esnext",
         "experimentalDecorators": true,
         "sourceMap": true,

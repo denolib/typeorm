@@ -1,3 +1,5 @@
+import type {Question} from "../model/Question.ts";
+
 export default {
     name: "Question",
     table: {
@@ -14,7 +16,7 @@ export default {
             nullable: false
         }
     },
-    target: function Question() {
+    target: function Question(this: Question) {
         this.type = "question";
     }
 };

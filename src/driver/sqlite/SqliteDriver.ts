@@ -50,7 +50,18 @@ export class SqliteDriver extends AbstractSqliteDriver {
      */
     async disconnect(): Promise<void> {
         this.queryRunner = undefined;
-        this.databaseConnection.close();
+        try {
+            this.databaseConnection.close();
+        } catch (error) {
+            if (error.code === 5) { // SqliteBusy
+                // FIXME
+                // This problem occurs since deno-sqlite@73935087a1ebe9108d784503bc5474662ba54b73.
+                // We need more research...
+                console.warn(error); // this.connection.logger.log("warn", error.message);
+            } else {
+                throw error;
+            }
+        }
     }
 
     /**

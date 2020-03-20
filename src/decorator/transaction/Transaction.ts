@@ -18,7 +18,7 @@ import {IsolationLevel} from "../../driver/types/IsolationLevel.ts";
 export function Transaction(connectionName?: string): MethodDecorator;
 export function Transaction(options?: TransactionOptions): MethodDecorator;
 export function Transaction(connectionOrOptions?: string | TransactionOptions): MethodDecorator {
-    return function (target: Object, methodName: string, descriptor: PropertyDescriptor) {
+    return function (target: Object, methodName: string | symbol, descriptor: PropertyDescriptor) {
 
         // save original method - we gonna need it
         const originalMethod = descriptor.value;
@@ -45,10 +45,10 @@ export function Transaction(connectionOrOptions?: string | TransactionOptions): 
 
                 // filter all @TransactionEntityManager() and @TransactionRepository() decorator usages for this method
                 const transactionEntityManagerMetadatas = getMetadataArgsStorage()
-                    .filterTransactionEntityManagers(target.constructor, methodName)
+                    .filterTransactionEntityManagers(target.constructor, methodName as string)
                     .reverse();
                 const transactionRepositoryMetadatas = getMetadataArgsStorage()
-                    .filterTransactionRepository(target.constructor, methodName)
+                    .filterTransactionRepository(target.constructor, methodName as string)
                     .reverse();
 
                 // if there are @TransactionEntityManager() decorator usages the inject them

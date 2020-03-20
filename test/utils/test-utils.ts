@@ -7,10 +7,8 @@ import {EntitySchema} from "../../src/entity-schema/EntitySchema.ts";
 import {createConnections} from "../../src/index.ts";
 import {NamingStrategyInterface} from "../../src/naming-strategy/NamingStrategyInterface.ts";
 import {PromiseUtils} from "../../src/util/PromiseUtils.ts";
-import {createRequire} from "../../vendor/https/deno.land/std/node/module.ts";
 import {join} from "../../vendor/https/deno.land/std/path/mod.ts";
 
-const require = createRequire(import.meta.url);
 const __dirname = getDirnameOfCurrentModule(import.meta);
 
 export function getDirnameOfCurrentModule(meta: ImportMeta): string {
@@ -169,10 +167,10 @@ export function getTypeOrmConfig(): TestingConnectionOptions[] {
     try {
 
         try {
-            return require(__dirname + "/../../../../ormconfig.json");
+            return readJSONFile(__dirname + "/../../../../ormconfig.json");
 
         } catch (err) {
-            return require(join(__dirname + "../../ormconfig.json"));
+            return readJSONFile(join(__dirname + "../../ormconfig.json"));
         }
 
     } catch (err) {
@@ -302,10 +300,20 @@ export function generateRandomText(length: number): string {
 
 export function sleep(ms: number): Promise<void> {
     return new Promise<void>(ok => {
-        setTimeout(ok, ms);
+        setTimeout(() => ok(), ms);
     });
 }
 
 export function allSettled(values: any[]): Promise<Array<{ status: 'fulfilled' | 'rejected', value?: any, reason?: any }>> {
     return (Promise as any).allSettled(values);
+}
+
+let jsonFileCache = {} as { [path: string]: any };
+function readJSONFile(path: string): any {
+    if (jsonFileCache[path]) {
+        return jsonFileCache[path];
+    }
+    const decoder = new TextDecoder();
+    jsonFileCache[path] = JSON.parse(decoder.decode(Deno.readFileSync(path)));
+    return jsonFileCache[path];
 }
