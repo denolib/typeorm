@@ -950,7 +950,7 @@ export class EntityManager {
         // convert possible embeded path "social.likes" into object { social: { like: () => value } }
         const values: QueryDeepPartialEntity<Entity> = propertyPath
             .split(".")
-            .reduceRight(
+            .reduceRight<any>(
                 (value, key) => ({ [key]: value }) as any,
                 () => this.connection.driver.escape(column.databaseName) + " + " + value
             );
@@ -982,7 +982,7 @@ export class EntityManager {
         // convert possible embeded path "social.likes" into object { social: { like: () => value } }
         const values: QueryDeepPartialEntity<Entity> = propertyPath
             .split(".")
-            .reduceRight(
+            .reduceRight<any>(
                 (value, key) => ({ [key]: value }) as any,
                 () => this.connection.driver.escape(column.databaseName) + " - " + value
             );

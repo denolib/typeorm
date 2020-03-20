@@ -38,7 +38,7 @@ export class SqliteQueryRunner extends AbstractSqliteQueryRunner {
             throw new QueryRunnerAlreadyReleasedError();
 
         const connection = this.driver.connection;
-        const reportSlowQuery = function (): void {
+        const reportSlowQuery = (): void => {
 
             // log slow queries if maxQueryExecution time is set
             const maxQueryExecutionTime = connection.options.maxQueryExecutionTime;

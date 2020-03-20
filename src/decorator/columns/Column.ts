@@ -90,7 +90,7 @@ export function Column(type: (type?: any) => Function, options?: ColumnEmbeddedO
  * Column decorator is used to mark a specific class property as a table column.
  * Only properties decorated with this decorator will be persisted to the database when entity be saved.
  */
-export function Column(typeOrOptions: ((type?: any) => Function)|ColumnType|(ColumnOptions&ColumnEmbeddedOptions), options?: (ColumnOptions&ColumnEmbeddedOptions)): Function {
+export function Column(typeOrOptions: ((type?: any) => Function)|ColumnType|(ColumnOptions&ColumnEmbeddedOptions), options?: (ColumnOptions&ColumnEmbeddedOptions) | (ColumnCommonOptions&ColumnHstoreOptions)): Function {
     return function (object: Object, propertyName: string) {
 
         // normalize parameters
@@ -105,26 +105,26 @@ export function Column(typeOrOptions: ((type?: any) => Function)|ColumnType|(Col
         if (!options) options = {} as ColumnOptions;
 
         // check if there is no type in column options then set type from first function argument, or guessed one
-        if (!options.type && type)
-            options.type = type;
+        if (!(options as ColumnOptions).type && type)
+            (options as ColumnOptions).type = type;
 
         // specify HSTORE type if column is HSTORE
-        if (options.type === "hstore" && !options.hstoreType)
-            options.hstoreType = "string";
+        if ((options as ColumnOptions).type === "hstore" && !(options as ColumnOptions).hstoreType)
+            (options as ColumnOptions).hstoreType = "string";
 
         if (typeOrOptions instanceof Function) { // register an embedded
             getMetadataArgsStorage().embeddeds.push({
                 target: object.constructor,
                 propertyName: propertyName,
                 isArray: options.array === true,
-                prefix: options.prefix !== undefined ? options.prefix : undefined,
+                prefix: (options as ColumnEmbeddedOptions).prefix !== undefined ? (options as ColumnEmbeddedOptions).prefix : undefined,
                 type: typeOrOptions as (type?: any) => Function
             } as EmbeddedMetadataArgs);
 
         } else { // register a regular column
 
             // if we still don't have a type then we need to give error to user that type is required
-            if (!options.type)
+            if (!(options as ColumnOptions).type)
                 throw new ColumnTypeUndefinedError(object, propertyName);
 
             // create unique
