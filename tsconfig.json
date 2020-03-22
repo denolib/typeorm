@@ -3,7 +3,7 @@
     "compilerOptions": {
         "strict": true,
         "target": "esnext",
-        "experimentalDecorators": false,
+        "experimentalDecorators": true,
         "sourceMap": true,
         "plugins": [
           {
