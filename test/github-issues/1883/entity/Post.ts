@@ -6,9 +6,9 @@ import {Column} from "../../../../src/decorator/columns/Column.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column("enum", { enum: FruitEnum, default: FruitEnum.Apple })
-    fruit: FruitEnum;
+    fruit!: FruitEnum;
 
 }

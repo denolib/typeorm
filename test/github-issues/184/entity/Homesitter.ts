@@ -6,10 +6,10 @@ import {ChildEntity} from "../../../../src/decorator/entity/ChildEntity.ts";
 export class Homesitter extends Person {
 
     @Column({ type: Number })
-    numberOfKids: number;
+    numberOfKids!: number;
 
     @Column({ type: String })
-    shared: string;
+    shared!: string;
 
     constructor() {
         super();

@@ -10,21 +10,21 @@ import {Counters} from "./Counters.ts";
 export class Post {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @Column({ type: String })
-    description: string;
+    description!: string;
 
     @Column(type => Counters)
-    counters: Counters;
+    counters!: Counters;
 
     @ManyToMany(type => Category, category => category.posts, {
-        cascade: ["update"],
+        cascade!: ["update"],
     })
     @JoinTable()
-    categories: Category[];
+    categories!: Category[];
 
 }

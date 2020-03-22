@@ -6,9 +6,9 @@ import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryG
 export class Question {
 
     @PrimaryGeneratedColumn({ type: "smallint" })
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
 }

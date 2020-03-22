@@ -7,19 +7,19 @@ import {JoinTable} from "../../../../../../src/decorator/relations/JoinTable.ts"
 import {Column} from "../../../../../../src/decorator/columns/Column.ts";
 
 @Entity()
-export class User { // todo: check one-to-one relation as well, but in another model or test
+export class User { // todo!: check one-to-one relation as well, but in another model or test
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @OneToMany(type => Photo, photo => photo.user, { cascade: true })
-    manyPhotos: Photo[];
+    manyPhotos!: Photo[];
 
-    @ManyToMany(type => Photo, { cascade: true })
+    @ManyToMany(type => Photo, { cascade!: true })
     @JoinTable()
-    manyToManyPhotos: Photo[];
+    manyToManyPhotos!: Photo[];
 
 }

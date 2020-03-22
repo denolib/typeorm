@@ -6,36 +6,36 @@ import {Column} from "../../../../../../src/decorator/columns/Column.ts";
 export class Post {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column("char", {
-        length: 50
+        length!: 50
     })
-    char: string;
+    char!: string;
 
     @Column("varchar", {
-        length: 50
+        length!: 50
     })
-    varchar: string;
+    varchar!: string;
 
     @Column("nchar", {
-        length: 50
+        length!: 50
     })
-    nchar: string;
+    nchar!: string;
 
     @Column("nvarchar", {
-        length: 50
+        length!: 50
     })
-    nvarchar: string;
+    nvarchar!: string;
 
     @Column("binary", {
-        length: 50
+        length!: 50
     })
-    binary: Uint8Array;/* Buffer; */
+    binary!: Uint8Array;/* Buffer; */
 
     @Column("varbinary", {
-        length: 50
+        length!: 50
     })
-    varbinary: Uint8Array;/* Buffer; */
+    varbinary!: Uint8Array;/* Buffer; */
 
 }

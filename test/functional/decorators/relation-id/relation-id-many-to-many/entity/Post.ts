@@ -10,32 +10,32 @@ import {Category} from "./Category.ts";
 export class Post {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @Column({ type: Boolean })
     isRemoved: boolean = false;
 
     @ManyToMany(type => Category, category => category.posts)
     @JoinTable()
-    categories: Category[];
+    categories!: Category[];
 
     @ManyToMany(type => Category)
     @JoinTable()
-    subcategories: Category[];
+    subcategories!: Category[];
 
     @RelationId((post: Post) => post.categories)
-    categoryIds: number[];
+    categoryIds!: number[];
 
     @RelationId((post: Post) => post.categories, "rc", qb => qb.andWhere("rc.isRemoved = :isRemoved", { isRemoved: true }))
-    removedCategoryIds: number[];
+    removedCategoryIds!: number[];
 
     @RelationId((post: Post) => post.subcategories)
-    subcategoryIds: number[];
+    subcategoryIds!: number[];
 
     @RelationId((post: Post) => post.subcategories, "rsc", qb => qb.andWhere("rsc.isRemoved = :isRemoved", { isRemoved: true }))
-    removedSubcategoryIds: number[];
+    removedSubcategoryIds!: number[];
 
 }

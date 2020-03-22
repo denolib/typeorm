@@ -7,12 +7,12 @@ import {PrimaryColumn} from "../../../../../src/decorator/columns/PrimaryColumn.
 export class PostComplex {
 
     @PrimaryColumn({ type: Number })
-    firstId: number;
+    firstId!: number;
 
     @Column({ default: "Hello Complexity", type: String })
-    text: string;
+    text!: string;
 
     @Column(type => PostEmbedded)
-    embed: PostEmbedded;
+    embed!: PostEmbedded;
 
 }

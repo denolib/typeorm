@@ -6,6 +6,6 @@ import {Content} from "./Content.ts";
 export class Post extends Content {
 
     @Column({ type: String })
-    text: string;
+    text!: string;
 
 }

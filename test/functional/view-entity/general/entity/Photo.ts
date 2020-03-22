@@ -9,16 +9,16 @@ import {Album} from "./Album.ts";
 export class Photo {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @Column({ type: String })
-    albumId: number;
+    albumId!: number;
 
     @ManyToOne(() => Album)
     @JoinColumn({ name: "albumId" })
-    album: Album;
+    album!: Album;
 
 }

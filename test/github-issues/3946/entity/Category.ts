@@ -10,27 +10,27 @@ import {JoinTable} from "../../../../src/decorator/relations/JoinTable.ts";
 export class Category {
 
     @PrimaryGeneratedColumn("uuid")
-    id: string;
+    id!: string;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @Column({ type: Boolean })
     isRemoved: boolean = false;
 
     @ManyToMany(type => Post, post => post.categories)
-    posts: Post[];
+    posts!: Post[];
 
     @ManyToMany(type => Image, image => image.categories)
     @JoinTable()
-    images: Image[];
+    images!: Image[];
 
-    postCount: number;
+    postCount!: number;
 
-    removedPostCount: number;
+    removedPostCount!: number;
 
-    imageCount: number;
+    imageCount!: number;
 
-    removedImageCount: number;
+    removedImageCount!: number;
 
 }

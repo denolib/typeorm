@@ -10,18 +10,18 @@ import {JoinColumn} from "../../../../../src/decorator/relations/JoinColumn.ts";
 export class Details {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @OneToOne(type => Post, post => post.details)
-    post: Post;
+    post!: Post;
 
     @OneToOne(type => Photo, photo => photo.details, {
-        nullable: false
+        nullable!: false
     })
     @JoinColumn()
-    photo: Photo;
+    photo!: Photo;
 
 }

@@ -10,20 +10,20 @@ import {JoinColumn} from "../../../../src/decorator/relations/JoinColumn.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @Column({type: Boolean, default: false})
-    active: boolean;
+    active!: boolean;
 
     @UpdateDateColumn()
-    updateDate: Date;
+    updateDate!: Date;
 
     @OneToOne(type => PostCategory)
     @JoinColumn()
-    category: PostCategory;
+    category!: PostCategory;
 
     @Column({ type: Number })
     updatedColumns: number = 0;

@@ -7,12 +7,12 @@ import {VersionColumn} from "../../../../../src/decorator/columns/VersionColumn.
 export class PostWithVersion {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @VersionColumn()
-    version: number;
+    version!: number;
 
 }

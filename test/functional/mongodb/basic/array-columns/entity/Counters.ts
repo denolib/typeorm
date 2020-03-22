@@ -3,10 +3,10 @@ import {Column} from "../../../../../../src/decorator/columns/Column.ts";
 export class Counters {
 
     @Column({ type: Number })
-    likes: number;
+    likes!: number;
 
     @Column({ type: String })
-    text: string;
+    text!: string;
 
     constructor(likes: number, text: string) {
         this.likes = likes;

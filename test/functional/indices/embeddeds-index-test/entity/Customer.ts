@@ -5,19 +5,19 @@ import {Column} from "../../../../../src/decorator/columns/Column.ts";
 import {Profile} from "./Profile.ts";
 
 @Entity()
-@Index("index_name_english", ["nameEnglish"], { unique: true })
+@Index("index_name_english", ["nameEnglish"], { unique!: true })
 @Index("index_profile_job", ["profile.job"])
 export class Customer {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    nameHebrew: string;
+    nameHebrew!: string;
 
     @Column({ type: String })
-    nameEnglish: string;
+    nameEnglish!: string;
 
     @Column(() => Profile)
-    profile: Profile;
+    profile!: Profile;
 }

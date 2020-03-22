@@ -6,50 +6,50 @@ import {Column} from "../../../../../../src/decorator/columns/Column.ts";
 export class PostWithOptions {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     // -------------------------------------------------------------------------
     // Numeric Types
     // -------------------------------------------------------------------------
 
     @Column("numeric", { precision: 5, scale: 2 })
-    numeric: string;
+    numeric!: string;
 
     @Column("decimal", { precision: 5, scale: 2 })
-    decimal: string;
+    decimal!: string;
 
     // -------------------------------------------------------------------------
     // Character Types
     // -------------------------------------------------------------------------
 
     @Column("char", { length: 3 })
-    char: string;
+    char!: string;
 
     @Column("character", { length: 3 })
-    character: string;
+    character!: string;
 
     @Column("varchar", { length: 30 })
-    varchar: string;
+    varchar!: string;
 
     @Column("character varying", { length: 30 })
-    characterVarying: string;
+    characterVarying!: string;
 
     // -------------------------------------------------------------------------
     // Date Types
     // -------------------------------------------------------------------------
 
     @Column("timestamp", { precision: 3 })
-    timestamp: Date;
+    timestamp!: Date;
 
     @Column("timestamp with time zone", { precision: 5 })
-    timestampWithTimeZone: Date;
+    timestampWithTimeZone!: Date;
 
     @Column("time", { precision: 3 })
-    time: string;
+    time!: string;
 
     @Column("time with time zone", { precision: 5 })
-    timeWithTimeZone: string;
+    timeWithTimeZone!: string;
 
     @Column("int4range", { nullable: true })
-    int4range: string;
+    int4range!: string;
 }

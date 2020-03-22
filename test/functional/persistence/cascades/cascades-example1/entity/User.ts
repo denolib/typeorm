@@ -8,12 +8,12 @@ import {OneToOne} from "../../../../../../src/decorator/relations/OneToOne.ts";
 export class User {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @OneToOne(type => Profile, profile => profile.user, { cascade: ["insert"] })
-    profile: Profile;
+    profile!: Profile;
 
 }

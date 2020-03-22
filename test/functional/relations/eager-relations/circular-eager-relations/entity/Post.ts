@@ -8,12 +8,12 @@ import {ManyToOne} from "../../../../../../src/decorator/relations/ManyToOne.ts"
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @ManyToOne(type => User, { eager: true })
-    author: User;
+    author!: User;
 
 }

@@ -4,11 +4,11 @@ import { PrimaryGeneratedColumn } from "../../../../src/decorator/columns/Primar
 @Entity()
 export class TestEntity {
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: "varchar", length: 100, nullable: true, unique: true })
-    unique_column: string;
+    unique_column!: string;
 
     @Column({ type: "varchar", length: 100, nullable: true, unique: false })
-    nonunique_column: string;
+    nonunique_column!: string;
 }

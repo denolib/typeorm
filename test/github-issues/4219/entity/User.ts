@@ -1,37 +1,37 @@
 import {Shim} from "../shim.ts";
 import {Photo} from "./Photo.ts";
 
-// NOTE: The relations in here make no sense, we just care for the types.
+// NOTE!: The relations in here make no sense, we just care for the types.
 // In real applications, this would of course not work!
 
 @Shim.Entity()
 export class User {
 
     @Shim.PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Shim.Column({ type: String })
-    name: string;
+    name!: string;
 
     @Shim.Column({ type: Date })
-    someDate: Date;
+    someDate!: Date;
 
     @Shim.OneToOne(() => Photo)
     @Shim.JoinColumn()
-    oneToOnePhoto: Photo;
+    oneToOnePhoto!: Photo;
 
     @Shim.OneToMany(() => Photo, (photo: Photo) => photo.user)
-    oneToManyPhotos: Photo[];
+    oneToManyPhotos!: Photo[];
 
     @Shim.ManyToOne(() => Photo)
     @Shim.JoinColumn()
-    manyToOnePhoto: Photo;
+    manyToOnePhoto!: Photo;
 
     @Shim.ManyToMany(() => Photo)
     @Shim.JoinColumn()
-    manyToManyPhotos: Photo[];
+    manyToManyPhotos!: Photo[];
 
     @Shim.TreeParent()
-    treeParentPhoto: Photo;
+    treeParentPhoto!: Photo;
 
 }

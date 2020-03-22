@@ -6,15 +6,15 @@ import {Column} from "../../../../../src/decorator/columns/Column.ts";
 export class Post {
 
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column({ type: String })
-  title: string;
+  title!: string;
 
   @Column({ type: String })
-  author: string;
+  author!: string;
 
   @Column({ type: String })
-  moderator: string;
+  moderator!: string;
 
 }

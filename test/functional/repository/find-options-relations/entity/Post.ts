@@ -14,22 +14,22 @@ import {Counters} from "./Counters.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @OneToMany(type => Photo, photo => photo.post)
-    photos: Photo[];
+    photos!: Photo[];
 
     @ManyToOne(type => User)
-    user: User;
+    user!: User;
 
     @ManyToMany(type => Category)
     @JoinTable()
-    categories: Category[];
+    categories!: Category[];
 
     @Column(type => Counters)
-    counters: Counters;
+    counters!: Counters;
 
 }

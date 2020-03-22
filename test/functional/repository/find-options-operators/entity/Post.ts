@@ -4,12 +4,12 @@ import {Column, Entity, PrimaryGeneratedColumn} from "../../../../../src/index.t
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ nullable: true, type: String })
-    title: string;
+    title!: string;
 
     @Column({ type: Number })
-    likes: number;
+    likes!: number;
 
 }

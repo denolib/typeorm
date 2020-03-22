@@ -36,54 +36,54 @@ export type ArrayDefinedNumericEnumType = 11 | 12 | 13;
 export class SimpleEnumEntity {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column({
-        type: "simple-enum",
+        type!: "simple-enum",
         enum: NumericEnum,
-        default: NumericEnum.MODERATOR
+        default!: NumericEnum.MODERATOR
     })
-    numericEnum: NumericEnum;
+    numericEnum!: NumericEnum;
 
     @Column({
-        type: "simple-enum",
+        type!: "simple-enum",
         enum: StringEnum,
-        default: StringEnum.GHOST
+        default!: StringEnum.GHOST
     })
-    stringEnum: StringEnum;
+    stringEnum!: StringEnum;
 
     @Column({
-        type: "simple-enum",
+        type!: "simple-enum",
         enum: StringNumericEnum,
-        default: StringNumericEnum.FOUR
+        default!: StringNumericEnum.FOUR
     })
-    stringNumericEnum: StringNumericEnum;
+    stringNumericEnum!: StringNumericEnum;
 
     @Column({
-        type: "simple-enum",
+        type!: "simple-enum",
         enum: HeterogeneousEnum,
-        default: HeterogeneousEnum.NO
+        default!: HeterogeneousEnum.NO
     })
-    heterogeneousEnum: HeterogeneousEnum;
+    heterogeneousEnum!: HeterogeneousEnum;
 
     @Column({
-        type: "simple-enum",
+        type!: "simple-enum",
         enum: ["admin", "editor", "ghost"],
-        default: "ghost"
+        default!: "ghost"
     })
-    arrayDefinedStringEnum: ArrayDefinedStringEnumType;
+    arrayDefinedStringEnum!: ArrayDefinedStringEnumType;
 
     @Column({
-        type: "simple-enum",
+        type!: "simple-enum",
         enum: [11, 12, 13],
-        default: 12
+        default!: 12
     })
-    arrayDefinedNumericEnum: ArrayDefinedNumericEnumType;
+    arrayDefinedNumericEnum!: ArrayDefinedNumericEnumType;
 
     @Column({
-        type: "simple-enum",
-        enum: StringEnum,
+        type!: "simple-enum",
+        enum!: StringEnum,
     })
-    enumWithoutdefault: StringEnum;
+    enumWithoutdefault!: StringEnum;
 
 }

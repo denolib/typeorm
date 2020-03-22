@@ -4,11 +4,11 @@ import { Entity } from "../../../../src/decorator/entity/Entity.ts";
 import { TableInheritance } from "../../../../src/decorator/entity/TableInheritance.ts";
 
 @Entity()
-@TableInheritance({column: {type: "varchar", name: "type"}})
+@TableInheritance({column: {type: "varchar", name!: "type"}})
 export class Token {
-  @PrimaryGeneratedColumn() id: number;
+  @PrimaryGeneratedColumn() id!: number;
 
-  @Column({ type: String }) tokenSecret: string;
+  @Column({ type: String }) tokenSecret!: string;
 
-  @Column({ type: Date }) expiresOn: Date;
+  @Column({ type: Date }) expiresOn!: Date;
 }

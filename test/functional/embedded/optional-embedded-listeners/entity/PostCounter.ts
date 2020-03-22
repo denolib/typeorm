@@ -5,7 +5,7 @@ import {BeforeUpdate} from "../../../../../src/decorator/listeners/BeforeUpdate.
 export class PostCounter {
 
     @Column({nullable: true, type: Number})
-    likes: number;
+    likes!: number;
 
     @BeforeInsert()
     beforeInsert() {

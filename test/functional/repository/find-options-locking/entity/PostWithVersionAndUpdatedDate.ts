@@ -8,15 +8,15 @@ import {UpdateDateColumn} from "../../../../../src/decorator/columns/UpdateDateC
 export class PostWithVersionAndUpdatedDate {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @VersionColumn()
-    version: number;
+    version!: number;
 
     @UpdateDateColumn()
-    updateDate: Date;
+    updateDate!: Date;
 
 }

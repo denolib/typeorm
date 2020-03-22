@@ -4,12 +4,12 @@ import { DataModel } from "./DataModel.ts";
 @Entity()
 export class MainModel {
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @OneToMany(
         type => DataModel,
         dataModel => dataModel.main,
-        {cascade: true, eager: true}
+        {cascade: true, eager!: true}
     )
-    dataModel: DataModel[];
+    dataModel!: DataModel[];
 }

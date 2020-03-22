@@ -6,13 +6,13 @@ import {PrimaryColumn} from "../../../../../src/decorator/columns/PrimaryColumn.
 export class Post {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @Column({ type: String })
-    categoryName: string;
+    categoryName!: string;
 
     @Column({ type: Boolean })
     isNew: boolean = false;

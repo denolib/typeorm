@@ -5,12 +5,12 @@ import {Order} from "./Order.ts";
 export class User {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String, unique: true })
-    email: string;
+    email!: string;
 
     @OneToMany(type => Order, recurringOrder => recurringOrder.user)
-    recurringOrders: Order[];
+    recurringOrders!: Order[];
 
 }

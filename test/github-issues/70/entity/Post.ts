@@ -8,14 +8,14 @@ import {OneToMany} from "../../../../src/decorator/relations/OneToMany.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @OneToMany(() => Category, category => category.post, {
-        cascade: ["insert"]
+        cascade!: ["insert"]
     })
-    categories: Category[];
+    categories!: Category[];
 
 }

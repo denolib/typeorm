@@ -12,9 +12,9 @@ export class Flight {
 
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column("timestamp with time zone")
-    date: Date;
+    date!: Date;
 
 }

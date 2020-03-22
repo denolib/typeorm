@@ -6,174 +6,174 @@ import {Column} from "../../../../../../src/index.ts";
 export class Post {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     // -------------------------------------------------------------------------
     // Numeric Types
     // -------------------------------------------------------------------------
 
     @Column("integer")
-    integer: string;
+    integer!: string;
 
     @Column("int4")
-    int4: string;
+    int4!: string;
 
     @Column("int")
-    int: string;
+    int!: string;
 
     @Column("smallint")
-    smallint: string;
+    smallint!: string;
 
     @Column("int2")
-    int2: string;
+    int2!: string;
 
     @Column("bigint")
-    bigint: string;
+    bigint!: string;
 
     @Column("int8")
-    int8: string;
+    int8!: string;
 
     @Column("int64")
-    int64: string;
+    int64!: string;
 
     @Column("double precision")
-    doublePrecision: number;
+    doublePrecision!: number;
 
     @Column("float4")
-    float4: number;
+    float4!: number;
 
     @Column("float8")
-    float8: number;
+    float8!: number;
 
     @Column("real")
-    real: number;
+    real!: number;
 
     @Column("numeric")
-    numeric: string;
+    numeric!: string;
 
     @Column("decimal")
-    decimal: string;
+    decimal!: string;
 
     @Column("dec")
-    dec: string;
+    dec!: string;
 
     // -------------------------------------------------------------------------
     // Character Types
     // -------------------------------------------------------------------------
 
     @Column("char")
-    char: string;
+    char!: string;
 
     @Column("character")
-    character: string;
+    character!: string;
 
     @Column("varchar")
-    varchar: string;
+    varchar!: string;
 
     @Column("character varying")
-    characterVarying: string;
+    characterVarying!: string;
 
     @Column("char varying")
-    charVarying: string;
+    charVarying!: string;
 
     @Column("string")
-    string: string;
+    string!: string;
 
     @Column("text")
-    text: string;
+    text!: string;
 
     // -------------------------------------------------------------------------
     // Binary Data Types
     // -------------------------------------------------------------------------
 
     @Column("bytes")
-    bytes: Uint8Array;/* Buffer; */
+    bytes!: Uint8Array;/* Buffer; */
 
     @Column("bytea")
-    bytea: Uint8Array;/* Buffer; */
+    bytea!: Uint8Array;/* Buffer; */
 
     @Column("blob")
-    blob: Uint8Array;/* Buffer; */
+    blob!: Uint8Array;/* Buffer; */
 
     // -------------------------------------------------------------------------
     // Date/Time Types
     // -------------------------------------------------------------------------
 
     @Column("date")
-    date: string;
+    date!: string;
 
     @Column("interval")
-    interval: any;
+    interval!: any;
 
     @Column("time")
-    time: string;
+    time!: string;
 
     @Column("time without time zone")
-    timeWithoutTimeZone: string;
+    timeWithoutTimeZone!: string;
 
     @Column("timestamp")
-    timestamp: Date;
+    timestamp!: Date;
 
     @Column("timestamp with time zone")
-    timestampWithTimeZone: Date;
+    timestampWithTimeZone!: Date;
 
     @Column("timestamp without time zone")
-    timestampWithoutTimeZone: Date;
+    timestampWithoutTimeZone!: Date;
 
     @Column("timestamptz")
-    timestamptz: Date;
+    timestamptz!: Date;
 
     // -------------------------------------------------------------------------
     // Boolean Type
     // -------------------------------------------------------------------------
 
     @Column("boolean")
-    boolean: boolean;
+    boolean!: boolean;
 
     @Column("bool")
-    bool: boolean;
+    bool!: boolean;
 
     // -------------------------------------------------------------------------
     // Network Address Type
     // -------------------------------------------------------------------------
 
     @Column("inet")
-    inet: string;
+    inet!: string;
 
     // -------------------------------------------------------------------------
     // UUID Type
     // -------------------------------------------------------------------------
 
     @Column("uuid")
-    uuid: string;
+    uuid!: string;
 
     // -------------------------------------------------------------------------
     // JSON Type
     // -------------------------------------------------------------------------
 
     @Column("jsonb")
-    jsonb: Object;
+    jsonb!: Object;
 
     @Column("json")
-    json: Object;
+    json!: Object;
 
     // -------------------------------------------------------------------------
     // Array Type
     // -------------------------------------------------------------------------
 
     @Column("int", { array: true })
-    array: string[];
+    array!: string[];
 
     // -------------------------------------------------------------------------
     // TypeOrm Specific Types
     // -------------------------------------------------------------------------
 
     @Column("simple-array")
-    simpleArray: string[];
+    simpleArray!: string[];
 
     @Column("simple-json")
-    simpleJson: { param: string };
+    simpleJson!: { param: string };
 }

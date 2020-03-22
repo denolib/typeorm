@@ -8,19 +8,19 @@ import { Gender } from "./GenderEnum.ts";
 export class Animal {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @Column({
-        type: "enum",
+        type!: "enum",
         enum: Gender,
-        enumName: "genderEnum"
+        enumName!: "genderEnum"
     })
-    gender: Gender;
+    gender!: Gender;
 
     @Column({ type: String })
-    specie: string;
+    specie!: string;
 
 }

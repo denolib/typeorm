@@ -12,18 +12,18 @@ import {Exclusion} from "../../../../src/decorator/Exclusion.ts";
 export class Post {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column({ unique: true, type: Number })
-    version: number;
+    version!: number;
 
     @Column({ default: "My post", type: String })
-    name: string;
+    name!: string;
 
     @Column({ type: String })
-    text: string;
+    text!: string;
 
     @Column({ type: String })
-    tag: string;
+    tag!: string;
 
 }

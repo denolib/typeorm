@@ -15,12 +15,12 @@ import {Post} from "./Post.ts";
 export class PostCategory {
 
     @ViewColumn()
-    id: number;
+    id!: number;
 
     @ViewColumn()
-    name: string;
+    name!: string;
 
     @ViewColumn()
-    categoryName: string;
+    categoryName!: string;
 
 }

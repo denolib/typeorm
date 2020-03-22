@@ -14,9 +14,9 @@ const transformer = {
 @Entity()
 export class Post {
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({type: Date, transformer})
-    ts: number;
+    ts!: number;
 
 }

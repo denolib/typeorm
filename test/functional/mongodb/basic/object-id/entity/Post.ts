@@ -7,8 +7,8 @@ import { ObjectID } from "../../../../../../src/driver/mongodb/typings.ts";
 export class Post {
 
     @ObjectIdColumn()
-    nonIdNameOfObjectId: ObjectID;
+    nonIdNameOfObjectId!: ObjectID;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 }

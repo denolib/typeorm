@@ -11,24 +11,24 @@ import {PostCategory} from "./PostCategory.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @ManyToOne(type => Category)
     @JoinColumn({ referencedColumnName: "name" })
-    categoryByName: Category;
+    categoryByName!: Category;
 
     @ManyToOne(type => Category)
     @JoinColumn()
-    category: Category;
+    category!: Category;
 
     @OneToMany(type => PostCategory, postCategoryRelation => postCategoryRelation.post)
-    categories: PostCategory[];
+    categories!: PostCategory[];
 
-    categoryId: number;
+    categoryId!: number;
 
-    categoryName: string;
+    categoryName!: string;
 
 }

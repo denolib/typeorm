@@ -5,7 +5,7 @@ import {LoadEvent} from "../../../../src/subscriber/event/LoadEvent.ts";
 @Entity()
 export class Post {
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     simpleSubscriberSaw?: boolean;
     extendedSubscriberSaw?: LoadEvent<Post>;

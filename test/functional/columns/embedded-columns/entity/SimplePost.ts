@@ -7,14 +7,14 @@ import { SimpleCounters } from "./SimpleCounters.ts";
 export class SimplePost {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @Column({ type: String })
-    text: string;
+    text!: string;
 
     @Column(type => SimpleCounters)
-    counters: SimpleCounters;
+    counters!: SimpleCounters;
 }

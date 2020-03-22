@@ -4,8 +4,8 @@ import {BaseEntity, Entity, PrimaryGeneratedColumn, Column} from "../../../../sr
 export class Post extends BaseEntity {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: Number })
-    data: number;
+    data!: number;
 }

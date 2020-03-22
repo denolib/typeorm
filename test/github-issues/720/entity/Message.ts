@@ -5,6 +5,6 @@ import {Entity} from "../../../../src/decorator/entity/Entity.ts";
 export class Message {
 
     @PrimaryGeneratedColumn("increment", { type: "bigint" })
-    id: string;
+    id!: string;
 
 }

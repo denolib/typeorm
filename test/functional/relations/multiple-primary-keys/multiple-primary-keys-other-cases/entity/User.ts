@@ -8,12 +8,12 @@ import {EventMember} from "./EventMember.ts";
 export class User {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @OneToMany(type => EventMember, member => member.user)
-    members: EventMember[];
+    members!: EventMember[];
 
 }

@@ -5,19 +5,19 @@ import { Entity } from "../../../../src/decorator/entity/Entity.ts";
 
 @Entity("foo")
 export class Foo  extends BaseEntity {
-  @PrimaryColumn({ type: Number }) id: number;
+  @PrimaryColumn({ type: Number }) id!: number;
 
   @JoinTable()
   @ManyToMany(() => Bar, bar => bar.foos, {
-    cascade: ["insert", "update"],
-    onDelete: "NO ACTION"
+    cascade!: ["insert", "update"],
+    onDelete!: "NO ACTION"
   })
   bars?: Bar[];
 
 
   @JoinTable()
   @ManyToMany(() => Bar, bar => bar.foos, {
-    cascade: ["insert", "update"],
+    cascade!: ["insert", "update"],
   })
   otherBars?: Bar[];
 }

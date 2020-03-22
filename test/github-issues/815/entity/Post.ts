@@ -11,22 +11,22 @@ import {JoinTable} from "../../../../src/decorator/relations/JoinTable.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @OneToMany(type => Category, category => category.post)
-    categories: Category[];
+    categories!: Category[];
 
     @RelationId((post: Post) => post.categories)
-    categoryIds: { firstId: number, secondId: number }[];
+    categoryIds!: { firstId: number, secondId: number }[];
 
     @ManyToMany(type => Category, category => category.manyPosts)
     @JoinTable()
-    manyCategories: Category[];
+    manyCategories!: Category[];
 
     @RelationId((post: Post) => post.manyCategories)
-    manyCategoryIds: { firstId: number, secondId: number }[];
+    manyCategoryIds!: { firstId: number, secondId: number }[];
 
 }

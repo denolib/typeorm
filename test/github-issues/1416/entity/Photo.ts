@@ -5,27 +5,27 @@ import {Author} from "./Author.ts";
 @Entity()
 export class Photo {
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({
-        type: String,
-        length: 500,
+        type!: String,
+        length!: 500,
     })
-    name: string;
+    name!: string;
 
     @Column("text")
-    description: string;
+    description!: string;
 
     @Column({ type: String })
-    filename: string;
+    filename!: string;
 
     @Column({ type: Boolean })
-    isPublished: boolean;
+    isPublished!: boolean;
 
     @ManyToOne(type => Author, author => author.photos)
-    author: Author;
+    author!: Author;
 
     @OneToOne(type => PhotoMetadata, photoMetadata => photoMetadata.photo, {eager: true})
     @JoinColumn()
-    metadata: PhotoMetadata;
+    metadata!: PhotoMetadata;
 }

@@ -6,16 +6,16 @@ import {OneToMany} from "../../../../src/decorator/relations/OneToMany.ts";
 import {Index} from "../../../../src/decorator/Index.ts";
 
 @Entity()
-@Index("ignored_index", { synchronize: false })
+@Index("ignored_index", { synchronize!: false })
 export class Teacher {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @OneToMany(type => Student, student => student.teacher)
-    students: Student[];
+    students!: Student[];
 
 }

@@ -5,11 +5,11 @@ import { Contact } from "./Contact.ts";
 export class Booking {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
-    @ManyToOne(type => Contact, contact => contact.bookings, { eager: true })
+    @ManyToOne(type => Contact, contact => contact.bookings, { eager!: true })
     @JoinColumn({
-      name: "contact_id",
+      name!: "contact_id",
     })
-    contact: Contact;
+    contact!: Contact;
 }

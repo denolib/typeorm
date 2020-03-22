@@ -6,10 +6,10 @@ import {Column} from "../../../../../src/decorator/columns/Column.ts";
 export class Post {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     constructor(id: number, title: string) {
         this.id = id;

@@ -11,12 +11,12 @@ export class Category {
 
     @PrimaryColumn("int")
     @Generated()
-    categoryId: number;
+    categoryId!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @OneToMany(type => Post, post => post.category)
-    posts: Post[];
+    posts!: Post[];
 
 }

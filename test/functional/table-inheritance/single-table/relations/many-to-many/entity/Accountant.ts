@@ -9,6 +9,6 @@ export class Accountant extends Employee {
 
     @ManyToMany(type => Department, department => department.accountants)
     @JoinTable()
-    departments: Department[];
+    departments!: Department[];
 
 }

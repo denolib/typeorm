@@ -4,12 +4,12 @@ import {Entity, Column, PrimaryColumn} from "../../../../src/index.ts";
 export class Complex {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @PrimaryColumn({ type: Number })
-    code: number;
+    code!: number;
 
     @Column({ type: Number })
-    x: number;
+    x!: number;
 
 }

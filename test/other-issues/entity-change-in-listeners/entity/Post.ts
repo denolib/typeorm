@@ -8,13 +8,13 @@ import {UpdateDateColumn} from "../../../../src/decorator/columns/UpdateDateColu
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @Column({ type: Boolean, default: false })
-    active: boolean;
+    active!: boolean;
 
     //@UpdateDateColumn()
     //updateDate: Date;

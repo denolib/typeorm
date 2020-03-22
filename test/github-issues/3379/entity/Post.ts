@@ -7,9 +7,9 @@ import {Entity} from "../../../../src/index.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
 }

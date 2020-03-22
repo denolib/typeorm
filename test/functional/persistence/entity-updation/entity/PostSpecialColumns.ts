@@ -9,18 +9,18 @@ import {VersionColumn} from "../../../../../src/decorator/columns/VersionColumn.
 export class PostSpecialColumns {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @CreateDateColumn()
-    createDate: Date;
+    createDate!: Date;
 
     @UpdateDateColumn()
-    updateDate: Date;
+    updateDate!: Date;
 
     @VersionColumn({ type: Number })
-    version: number;
+    version!: number;
 
 }

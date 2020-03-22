@@ -5,12 +5,12 @@ import { PrimaryColumn, Entity, Column } from "../../../../src/index.ts";
 export class Post {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column({
-        type: String,
+        type!: String,
         nullable: true,
-        transformer: {
+        transformer!: {
             from(val: string | undefined | null) {
                 return val === null ? "This is null" : val;
             },
@@ -19,6 +19,6 @@ export class Post {
             }
         }
     })
-    text: string;
+    text!: string;
 
 }

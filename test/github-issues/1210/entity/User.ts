@@ -8,18 +8,18 @@ import {Event} from "./Event.ts";
 export class User {
 
     @ObjectIdColumn()
-    id: ObjectID;
+    id!: ObjectID;
 
     @Column({ type: String })
-    firstName: string;
+    firstName!: string;
 
     @Column({ type: String })
-    lastName: string;
+    lastName!: string;
 
     @Column({ type: Number })
-    age: number;
+    age!: number;
 
     @Column(type => Event)
-    events: Event[];
+    events!: Event[];
 
 }

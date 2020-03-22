@@ -9,19 +9,19 @@ import {Category} from "./Category.ts";
 export class Post extends BaseEntity {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @Column({
-        type: String,
-        default: "This is default text."
+        type!: String,
+        default!: "This is default text."
     })
-    text: string;
+    text!: string;
 
     @ManyToMany(type => Category)
     @JoinTable()
-    categories: Category[];
+    categories!: Category[];
 
 }

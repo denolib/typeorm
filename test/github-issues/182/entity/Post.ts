@@ -7,12 +7,12 @@ import {PostStatus} from "../model/PostStatus.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @Column({ nullable: false, type: Number })
-    status: PostStatus;
+    status!: PostStatus;
 
 }

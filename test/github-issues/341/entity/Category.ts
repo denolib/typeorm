@@ -8,12 +8,12 @@ import {OneToOne} from "../../../../src/decorator/relations/OneToOne.ts";
 export class Category {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String, unique: true })
-    name: string;
+    name!: string;
 
     @OneToOne(type => Post, post => post.category)
-    post: Post;
+    post!: Post;
 
 }

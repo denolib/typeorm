@@ -9,13 +9,13 @@ import {Post} from "./Post.ts";
 export class User {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @ManyToOne(type => Post, post => post.counters.subcounters.watchedUsers)
     @JoinColumn()
-    posts: Post[];
+    posts!: Post[];
 
 }

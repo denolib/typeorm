@@ -8,21 +8,21 @@ import {UpdateDateColumn} from "../../../../../src/decorator/columns/UpdateDateC
 export class Post {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @Column({ type: String })
-    category: string;
+    category!: string;
 
     @Column({ type: String })
-    text: string;
+    text!: string;
 
     @CreateDateColumn()
-    createDate: Date;
+    createDate!: Date;
 
     @UpdateDateColumn()
-    updateDate: Date;
+    updateDate!: Date;
 
 }

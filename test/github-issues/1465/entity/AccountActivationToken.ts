@@ -5,13 +5,13 @@ import { OneToOne, JoinColumn } from "../../../../src/index.ts";
 import { Account } from "./Account.ts";
 
 @Entity()
-@TableInheritance({ column: { type: "varchar", name: "type" } })
+@TableInheritance({ column: { type: "varchar", name!: "type" } })
 export class AccountActivationToken extends Token {
   @OneToOne(type => Account, "accountActivationToken", {
-    cascade: ["insert", "update"]
+    cascade!: ["insert", "update"]
   })
   @JoinColumn()
-  account: Account;
+  account!: Account;
 
   constructor(public tokenSecret: string, public expiresOn: Date) {
     super();

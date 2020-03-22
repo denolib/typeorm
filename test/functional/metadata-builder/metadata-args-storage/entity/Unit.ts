@@ -4,9 +4,9 @@ import {Column} from "../../../../../src/decorator/columns/Column.ts";
 export class Unit {
 
     @PrimaryGeneratedColumn()
-    id: string;
+    id!: string;
 
     @Column({ type: String })
-    type: string;
+    type!: string;
 
 }

@@ -6,12 +6,12 @@ import {ManyToOne} from "../../../../src/decorator/relations/ManyToOne.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @ManyToOne(type => User)
-    user: User;
+    user!: User;
 
 }

@@ -8,14 +8,14 @@ import {Post} from "./Post.ts";
 export class Category {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @ManyToOne(type => Post, post => post.categories, {
-        cascade: true,
-        onDelete: "SET NULL"
+        cascade!: true,
+        onDelete!: "SET NULL"
     })
     post?: Post|null|number;
 

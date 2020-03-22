@@ -2,15 +2,15 @@ import {EntitySchema} from "../../../../../src/index.ts";
 import {Category} from "../model/Category.ts";
 
 export const CategoryEntity = new EntitySchema<Category>({
-    name: "category",
+    name!: "category",
     columns: {
-        id: {
+        id!: {
             type: Number,
-            primary: true,
-            generated: true
+            primary!: true,
+            generated!: true
         },
-        name: {
-            type: String
+        name!: {
+            type!: String
         }
     }
 });

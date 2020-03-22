@@ -8,24 +8,24 @@ import {Subcounters} from "./Subcounters.ts";
 export class Counters {
 
     @PrimaryColumn({ type: Number })
-    code: number;
+    code!: number;
 
     @Column({ type: Number })
-    likes: number;
+    likes!: number;
 
     @Column({ type: Number })
-    comments: number;
+    comments!: number;
 
     @Column({ type: Number })
-    favorites: number;
+    favorites!: number;
 
     @ManyToMany(type => Category, category => category.posts)
     @JoinTable({ name: "counter_categories" })
-    categories: Category[];
+    categories!: Category[];
 
     @Column(() => Subcounters)
-    subcntrs: Subcounters;
+    subcntrs!: Subcounters;
 
-    categoryIds: number[];
+    categoryIds!: number[];
 
 }

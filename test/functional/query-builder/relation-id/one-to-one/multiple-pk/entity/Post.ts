@@ -9,25 +9,25 @@ import {Category} from "./Category.ts";
 export class Post {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @PrimaryColumn({ type: Number })
-    authorId: number;
+    authorId!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @Column({ type: Boolean })
     isRemoved: boolean = false;
 
     @OneToOne(type => Category, category => category.post)
     @JoinColumn()
-    category: Category;
+    category!: Category;
 
     @OneToOne(type => Category)
     @JoinColumn()
-    subcategory: Category;
+    subcategory!: Category;
 
-    categoryId: number;
+    categoryId!: number;
 
 }

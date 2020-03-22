@@ -6,6 +6,6 @@ import {Employee} from "./Employee.ts";
 export class Teacher extends Employee {
 
     @Column({ type: String })
-    specialization: string;
+    specialization!: string;
 
 }

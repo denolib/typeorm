@@ -10,15 +10,15 @@ import {Person} from "./Person.ts";
 export class Event {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @ManyToOne(type => Person)
-    author: Person;
+    author!: Person;
 
     @OneToMany(type => EventMember, member => member.event)
-    members: EventMember[];
+    members!: EventMember[];
 
 }

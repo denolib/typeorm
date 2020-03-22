@@ -5,9 +5,9 @@ import { Column, Entity, PrimaryColumn } from "../../../../src/index.ts";
 export class User {
 
     @PrimaryColumn("binary", {
-        length: 16
+        length!: 16
     })
-    public _id: Uint8Array;
+    public _id!: Uint8Array;
     get id(): string {
         //const decoder = new StringDecoder("hex");
         //return decoder.end(this._id);
@@ -18,6 +18,6 @@ export class User {
     }
 
     @Column({ type: Number })
-    age: number;
+    age!: number;
 
 }

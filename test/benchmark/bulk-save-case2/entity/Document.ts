@@ -6,26 +6,26 @@ import {PrimaryColumn} from "../../../../src/decorator/columns/PrimaryColumn";
 export class Document {
 
     @PrimaryColumn("text")
-    id: string;
+    id!: string;
 
     @Column("text")
-    docId: string;
+    docId!: string;
 
     @Column("text")
-    label: string;
+    label!: string;
 
     @Column("text")
-    context: string;
+    context!: string;
 
     @Column({type: "jsonb"})
-    distributions: Distribution[];
+    distributions!: Distribution[];
 
     @Column({type: "timestamp with time zone"})
-    date: Date;
+    date!: Date;
 }
 
 export interface Distribution {
-    weight: string;
+    weight!: string;
     id: number;
-    docId: number;
+    docId!: number;
 }

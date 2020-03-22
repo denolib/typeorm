@@ -9,13 +9,13 @@ import {Post} from "./Post.ts";
 export class User {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @ManyToOne(type => Post)
     @JoinColumn()
-    likedPost: Post;
+    likedPost!: Post;
 
 }

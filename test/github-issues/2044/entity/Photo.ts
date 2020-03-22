@@ -6,9 +6,9 @@ import {User} from "./User.ts";
 export class Photo {
 
   @PrimaryColumn("binary", {
-    length: 2
+    length!: 2
   })
-  private _id: Uint8Array;
+  private _id!: Uint8Array;
 
   get id(): string {
       //const decoder = new StringDecoder("hex");
@@ -21,9 +21,9 @@ export class Photo {
   }
 
   @Column({ type: String })
-  description: string;
+  description!: string;
 
   @ManyToOne(type => User, user => user.photos)
-  user: User;
+  user!: User;
 
 }

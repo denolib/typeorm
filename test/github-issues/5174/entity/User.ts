@@ -6,9 +6,9 @@ import {Role} from "./Role.ts";
 export class User {
 
   @PrimaryColumn({ type: Number })
-  id: number;
+  id!: number;
 
   @ManyToOne(_ => Role, role => role.users)
-  role: Role;
+  role!: Role;
 
 }

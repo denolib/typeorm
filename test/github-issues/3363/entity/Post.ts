@@ -6,9 +6,9 @@ import { PrimaryGeneratedColumn } from "../../../../src/decorator/columns/Primar
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
 }

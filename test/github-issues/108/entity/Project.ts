@@ -6,8 +6,8 @@ import {Column} from "../../../../src/decorator/columns/Column.ts";
 export class Project {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ unique: true, type: String })
-    name: string;
+    name!: string;
 }

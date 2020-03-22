@@ -2,34 +2,34 @@ import {EntitySchemaOptions} from "../../../../src/entity-schema/EntitySchemaOpt
 import {Author} from "./Author.ts";
 
 export class Post {
-    id: number;
+    id!: number;
 
-    title: string;
+    title!: string;
 
-    author: Author;
+    author!: Author;
 }
 
 export const PostSchema: EntitySchemaOptions<Post> = {
-    name: "Post",
+    name!: "Post",
 
-    target: Post,
+    target!: Post,
 
-    columns: {
+    columns!: {
         id: {
-            primary: true,
-            type: Number
+            primary!: true,
+            type!: Number
         },
 
-        title: {
-            type: "varchar"
+        title!: {
+            type!: "varchar"
         }
     },
 
-    relations: {
+    relations!: {
         author: {
             target: () => Author,
             type: "many-to-one",
-            eager: true
+            eager!: true
         }
     }
 };

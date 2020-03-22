@@ -7,12 +7,12 @@ import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryG
 export class Cat {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     // @Column()
-    // dogDogID: string; // Need to do this to allow the Foreign Key to work
+    // dogDogID!: string; // Need to do this to allow the Foreign Key to work
 
     @ManyToOne(type => Dog, dog => dog.cats)
-    dog: Dog;
+    dog!: Dog;
 
 }

@@ -8,12 +8,12 @@ import {Image} from "./Image.ts";
 export class ImageInfo {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @ManyToOne(type => Image, image => image.informations)
-    image: Image;
+    image!: Image;
 
 }

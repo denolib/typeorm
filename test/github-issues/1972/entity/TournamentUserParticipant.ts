@@ -5,10 +5,10 @@ import {User} from "./User.ts";
 @ChildEntity()
 export class TournamentUserParticipant extends TournamentParticipant {
     @OneToOne(type => User, {
-        eager: true,
+        eager!: true,
     })
     @JoinColumn()
-    public user: User;
+    public user!: User;
 
     constructor(tournamentUserParticipant?: { user: User }) {
         super();

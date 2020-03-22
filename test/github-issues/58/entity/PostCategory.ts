@@ -8,21 +8,21 @@ import {Category} from "./Category.ts";
 export class PostCategory {
 
     @ManyToOne(type => Post, post => post.categories, {
-        primary: true,
-        cascade: ["insert"]
+        primary!: true,
+        cascade!: ["insert"]
     })
-    post: Post;
+    post!: Post;
 
     @ManyToOne(type => Category, category => category.posts, {
-        primary: true,
-        cascade: ["insert"]
+        primary!: true,
+        cascade!: ["insert"]
     })
-    category: Category;
+    category!: Category;
 
     @Column({ type: Boolean })
-    addedByAdmin: boolean;
+    addedByAdmin!: boolean;
 
     @Column({ type: Boolean })
-    addedByUser: boolean;
+    addedByUser!: boolean;
 
 }

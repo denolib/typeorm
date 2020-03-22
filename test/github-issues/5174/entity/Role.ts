@@ -6,9 +6,9 @@ import {User} from "./User.ts";
 export class Role {
 
   @PrimaryColumn({ type: String })
-  id: string;
+  id!: string;
 
   @OneToMany(_ => User, user => user.role, { cascade: true })
-  users: User[];
+  users!: User[];
 
 }

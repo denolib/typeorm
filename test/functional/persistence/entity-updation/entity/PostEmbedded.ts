@@ -6,15 +6,15 @@ import {VersionColumn} from "../../../../../src/decorator/columns/VersionColumn.
 export class PostEmbedded {
 
     @PrimaryColumn({ type: Number })
-    secondId: number;
+    secondId!: number;
 
     @CreateDateColumn({ type: Date })
-    createDate: Date;
+    createDate!: Date;
 
     @UpdateDateColumn({ type: Date })
-    updateDate: Date;
+    updateDate!: Date;
 
     @VersionColumn({ type: Number })
-    version: number;
+    version!: number;
 
 }

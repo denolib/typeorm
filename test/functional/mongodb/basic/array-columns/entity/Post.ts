@@ -8,27 +8,27 @@ import {ObjectID} from "../../../../../../src/driver/mongodb/typings.ts";
 export class Post {
 
     @ObjectIdColumn()
-    id: ObjectID;
+    id!: ObjectID;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @Column(type => Counters)
-    counters: Counters[];
+    counters!: Counters[];
 
     @Column({ type: String, array: true })
-    names: string[];
+    names!: string[];
 
     @Column({ type: Number, array: true })
-    numbers: number[];
+    numbers!: number[];
 
     @Column({ type: Boolean, array: true })
-    booleans: boolean[];
+    booleans!: boolean[];
 
     @Column(type => Counters)
-    other1: Counters[];
+    other1!: Counters[];
 
     @Column(type => Counters)
-    other2: Counters[];
+    other2!: Counters[];
 
 }

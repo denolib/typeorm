@@ -4,9 +4,9 @@ import {Column, Entity, PrimaryGeneratedColumn} from "../../../../src/index.ts";
 export class Product {
 
     @PrimaryGeneratedColumn("uuid")
-    id: string;
+    id!: string;
 
     @Column({ type: Boolean })
-    liked: boolean;
+    liked!: boolean;
 
 }

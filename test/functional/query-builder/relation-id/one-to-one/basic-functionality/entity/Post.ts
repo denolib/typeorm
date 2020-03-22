@@ -9,19 +9,19 @@ import {Category} from "./Category.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @OneToOne(type => Category)
     @JoinColumn()
-    category: Category;
+    category!: Category;
 
     @OneToOne(type => Category, category => category.post)
     @JoinColumn()
-    category2: Category;
+    category2!: Category;
 
-    categoryId: number;
+    categoryId!: number;
 
 }

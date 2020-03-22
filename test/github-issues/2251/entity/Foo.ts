@@ -4,10 +4,10 @@ import { Bar } from "./Bar.ts";
 
 @Entity("foo")
 export class Foo {
-  @PrimaryGeneratedColumn() id: number;
+  @PrimaryGeneratedColumn() id!: number;
 
-  @Column({ type: String, default: "foo description" }) description: string;
+  @Column({ type: String, default: "foo description" }) description!: string;
 
-  @OneToMany(() => Bar, bar => bar.foo, { cascade: true, eager: true })
+  @OneToMany(() => Bar, bar => bar.foo, { cascade: true, eager!: true })
   bars?: Bar[];
 }

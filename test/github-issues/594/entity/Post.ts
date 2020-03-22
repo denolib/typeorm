@@ -4,9 +4,9 @@ import {Column, Entity, PrimaryGeneratedColumn} from "../../../../src/index.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    postId: number;
+    postId!: number;
 
     @Column({ type: Number })
-    modelId: number;
+    modelId!: number;
 
 }

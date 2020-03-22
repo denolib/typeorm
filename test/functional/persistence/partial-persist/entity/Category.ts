@@ -8,15 +8,15 @@ import {ManyToMany} from "../../../../../src/decorator/relations/ManyToMany.ts";
 export class Category {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @Column({ type: Number })
-    position: number;
+    position!: number;
 
     @ManyToMany(type => Post, post => post.categories)
-    posts: Post[];
+    posts!: Post[];
 
 }

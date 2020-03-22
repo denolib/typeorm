@@ -6,14 +6,14 @@ import {PostWithVeryLongName} from "./PostWithVeryLongName.ts";
 @Entity()
 export class AuthorWithVeryLongName {
     @PrimaryGeneratedColumn()
-    authorId: number;
+    authorId!: number;
 
     @Column({ type: String })
-    firstName: string;
+    firstName!: string;
 
     @ManyToOne(() => GroupWithVeryLongName, group => group.authorsWithVeryLongName)
-    groupWithVeryLongName: GroupWithVeryLongName;
+    groupWithVeryLongName!: GroupWithVeryLongName;
 
     @OneToMany(() => PostWithVeryLongName, post => post.authorWithVeryLongName)
-    postsWithVeryLongName: PostWithVeryLongName[];
+    postsWithVeryLongName!: PostWithVeryLongName[];
 }

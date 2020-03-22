@@ -10,18 +10,18 @@ import {Tree} from "../../../../../src/decorator/tree/Tree.ts";
 export class Category {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @TreeParent()
-    parentCategory: Category;
+    parentCategory!: Category;
 
     @TreeChildren({ cascade: true })
-    childCategories: Category[];
+    childCategories!: Category[];
 
     // @TreeLevelColumn()
-    // level: number;
+    // level!: number;
 
 }

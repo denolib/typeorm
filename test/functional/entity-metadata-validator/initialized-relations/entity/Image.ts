@@ -8,10 +8,10 @@ import {OneToMany} from "../../../../../src/decorator/relations/OneToMany.ts";
 export class Image {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @OneToMany(type => ImageInfo, imageInfo => imageInfo.image)
     informations: ImageInfo[] = [];

@@ -11,24 +11,24 @@ import {Photo} from "./Photo.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @OneToOne(type => Category, category => category.post, {
-        nullable: true
+        nullable!: true
     })
     @JoinColumn()
-    category: Category;
+    category!: Category;
 
     @OneToOne(type => Details, details => details.post, {
-        nullable: false
+        nullable!: false
     })
     @JoinColumn()
-    details: Details;
+    details!: Details;
 
     @OneToOne(type => Photo, photo => photo.post)
-    photo: Photo;
+    photo!: Photo;
 
 }

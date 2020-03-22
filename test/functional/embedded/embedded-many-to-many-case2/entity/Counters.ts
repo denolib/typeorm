@@ -6,21 +6,21 @@ import {User} from "./User.ts";
 export class Counters {
 
     @Column({ type: Number })
-    code: number;
+    code!: number;
 
     @Column({ type: Number })
-    likes: number;
+    likes!: number;
 
     @Column({ type: Number })
-    comments: number;
+    comments!: number;
 
     @Column({ type: Number })
-    favorites: number;
+    favorites!: number;
 
     @Column(() => Subcounters, { prefix: "subcnt" })
-    subcounters: Subcounters;
+    subcounters!: Subcounters;
 
     @ManyToMany(type => User, user => user.likedPosts)
-    likedUsers: User[];
+    likedUsers!: User[];
 
 }

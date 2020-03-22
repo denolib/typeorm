@@ -2,16 +2,16 @@ import {Entity} from "../../../../src/decorator/entity/Entity.ts";
 import {Column} from "../../../../src/decorator/columns/Column.ts";
 import {PrimaryColumn} from "../../../../src/decorator/columns/PrimaryColumn.ts";
 
-@Entity({ synchronize: false })
+@Entity({ synchronize!: false })
 export class Photo {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @Column({ type: Number })
-    albumId: number;
+    albumId!: number;
 
 }

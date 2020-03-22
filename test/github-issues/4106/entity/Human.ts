@@ -8,17 +8,17 @@ import { Gender } from "./GenderEnum.ts";
 export class Human {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @Column({
-        type: "enum",
+        type!: "enum",
         enum: Gender,
-        enumName: "genderEnum",
-        name: "Gender"
+        enumName!: "genderEnum",
+        name!: "Gender"
     })
-    gender: Gender;
+    gender!: Gender;
 
 }

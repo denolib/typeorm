@@ -6,12 +6,12 @@ import {PostWithVeryLongName} from "./PostWithVeryLongName.ts";
 @Entity()
 export class CategoryWithVeryLongName {
     @PrimaryGeneratedColumn()
-    categoryId: number;
+    categoryId!: number;
 
     @Column({ type: String, default: "dummy name" })
-    name: string;
+    name!: string;
 
     @ManyToMany(() => PostWithVeryLongName, post => post.categories)
     @JoinTable()
-    postsWithVeryLongName: PostWithVeryLongName[];
+    postsWithVeryLongName!: PostWithVeryLongName[];
 }

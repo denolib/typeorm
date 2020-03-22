@@ -9,18 +9,18 @@ import {RelationId} from "../../../../src/decorator/relations/RelationId.ts";
 export class Category {
 
     @PrimaryColumn({ type: Number })
-    firstId: number;
+    firstId!: number;
 
     @PrimaryColumn({ type: Number })
-    secondId: number;
+    secondId!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @ManyToOne(type => Post, post => post.categories)
-    post: Post;
+    post!: Post;
 
     @RelationId((category: Category) => category.post)
-    postId: number;
+    postId!: number;
 
 }

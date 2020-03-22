@@ -8,13 +8,13 @@ import {Column} from "../../../../../../src/decorator/columns/Column.ts";
 export class Photo {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @ManyToOne(type => User, user => user.manyPhotos)
-    user: User;
+    user!: User;
 
     constructor(name: string) {
         this.name = name;

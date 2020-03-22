@@ -8,14 +8,14 @@ import {Post} from "./Post.ts";
 export class Category {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @OneToOne(type => Post, post => post.category2)
-    post: Post;
+    post!: Post;
 
-    postId: number;
+    postId!: number;
 
 }

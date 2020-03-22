@@ -4,15 +4,15 @@ import {CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, Vers
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @VersionColumn({ type: Number })
-    version: number;
+    version!: number;
 
     @CreateDateColumn({type: "timestamp"})
-    createdAt: Date;
+    createdAt!: Date;
 
     @UpdateDateColumn({type: "timestamp"})
-    updatedAt: Date;
+    updatedAt!: Date;
 
 }

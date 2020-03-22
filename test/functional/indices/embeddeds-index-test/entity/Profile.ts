@@ -4,9 +4,9 @@ import {Index} from "../../../../../src/decorator/Index.ts";
 export class Profile {
 
     @Column({ type: String })
-    job: string;
+    job!: string;
 
-    @Column({ type: String })
+    @Column({ type!: String })
     @Index("customer_profile_address")
-    address: string;
+    address!: string;
 }

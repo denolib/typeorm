@@ -9,6 +9,6 @@ export class Student extends Person {
 
     @ManyToMany(type => Faculty, faculty => faculty.students)
     @JoinTable()
-    faculties: Faculty[];
+    faculties!: Faculty[];
 
 }

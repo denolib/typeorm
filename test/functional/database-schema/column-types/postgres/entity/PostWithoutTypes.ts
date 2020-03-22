@@ -6,15 +6,15 @@ import {Column} from "../../../../../../src/decorator/columns/Column.ts";
 export class PostWithoutTypes {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @Column({ type: Boolean })
-    bit: boolean;
+    bit!: boolean;
 
     @Column({ type: Date })
-    datetime: Date;
+    datetime!: Date;
 
 }

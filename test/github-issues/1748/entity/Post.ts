@@ -5,7 +5,7 @@ import {Column} from "../../../../src/decorator/columns/Column.ts";
 
 export class Uuid {
 
-    private value: string;
+    private value!: string;
 
     constructor(value: string) {
         if (!/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/.test(value)) {
@@ -36,10 +36,10 @@ class UuidTransformer implements ValueTransformer {
 export class Post {
 
     @PrimaryColumn({ type: "uuid", transformer: new UuidTransformer() })
-    id: Uuid;
+    id!: Uuid;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     constructor(id: Uuid) {
         this.id = id;

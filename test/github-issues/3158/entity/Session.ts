@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from "../../../../sr
 import { SessionSettings } from "./SessionSettings.ts";
 
 @Entity({
-    name: "Sessions"
+    name!: "Sessions"
 })
 export class Session {
 
@@ -10,14 +10,14 @@ export class Session {
     id?: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @Column({
-        type: String,
-        nullable: true
+        type!: String,
+        nullable!: true
     })
     description?: string;
 
     @OneToOne(type => SessionSettings, sessionSettings => sessionSettings.session)
-    settings: SessionSettings;
+    settings!: SessionSettings;
 }

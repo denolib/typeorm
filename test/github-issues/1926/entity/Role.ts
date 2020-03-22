@@ -6,12 +6,12 @@ import {OneToMany} from "../../../../src/index.ts";
 export class Role {
 
     @PrimaryGeneratedColumn("uuid")
-    id: string;
+    id!: string;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @OneToMany(type => EventRole, role => role.role)
-    roles: EventRole[];
+    roles!: EventRole[];
 
 }

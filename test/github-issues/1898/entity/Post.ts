@@ -5,16 +5,16 @@ import {Column} from "../../../../src/decorator/columns/Column.ts";
 export class Post extends BaseEntity {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    type: string;
+    type!: string;
 
     @Column({ type: String, nullable: true })
-    token: string;
+    token!: string;
 
     @Column("simple-json", { default: "{}" })
-    values: Object;
+    values!: Object;
 
     // TODO(uki00a) This is commented out because deno-sqlite doesn't currently support `datetime('now')`.
     //@CreateDateColumn()

@@ -8,12 +8,12 @@ import {Index} from "../../../../../src/decorator/Index.ts";
 export class Person {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    firstname: string;
+    firstname!: string;
 
     @Column({ type: String })
-    lastname: string;
+    lastname!: string;
 
 }

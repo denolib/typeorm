@@ -8,16 +8,16 @@ import {Category} from "./Category.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @OneToMany(type => Category, category => category.post)
-    categories: Category[];
+    categories!: Category[];
 
-    categoryCount: number;
+    categoryCount!: number;
 
-    removedCategoryCount: number;
+    removedCategoryCount!: number;
 
 }

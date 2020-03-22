@@ -3,17 +3,17 @@ import {PrimaryGeneratedColumn} from "../../../../../src/decorator/columns/Prima
 import {Column} from "../../../../../src/decorator/columns/Column.ts";
 
 @Entity({
-    orderBy: {
-        myOrder: "DESC"
+    orderBy!: {
+        myOrder!: "DESC"
     }
 })
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: Number })
-    myOrder: number;
+    myOrder!: number;
 
     @Column({ type: Number })
     num1: number = 1;

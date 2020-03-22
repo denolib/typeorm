@@ -7,9 +7,9 @@ import {Group} from "./Group.ts";
 export class Player {
 
     @PrimaryColumn({ type: String })
-    email: string;
+    email!: string;
 
     @ManyToOne(type => Group)
-    group: Group;
+    group!: Group;
 
 }

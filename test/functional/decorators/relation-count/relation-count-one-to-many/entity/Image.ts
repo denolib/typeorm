@@ -8,15 +8,15 @@ import {Category} from "./Category.ts";
 export class Image {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @Column({ type: Boolean })
     isRemoved: boolean = false;
 
     @ManyToOne(type => Category, category => category.images)
-    category: Category;
+    category!: Category;
 
 }

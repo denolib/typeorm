@@ -7,12 +7,12 @@ import {Contact} from "./Contact.ts";
 @Entity()
 export class Person extends BaseEntity {
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column(_type => Contact)
-    contact: Contact;
+    contact!: Contact;
 
-    // I added the unique: true just for the sake of the example
+    // I added the unique!: true just for the sake of the example
     @Column({ type: String, unique: true })
-    status: string;
+    status!: string;
 }

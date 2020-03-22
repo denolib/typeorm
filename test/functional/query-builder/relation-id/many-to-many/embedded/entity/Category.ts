@@ -8,14 +8,14 @@ import {Post} from "./Post.ts";
 export class Category {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @ManyToMany(type => Post, post => post.counters.categories)
-    posts: Post[];
+    posts!: Post[];
 
-    postIds: number[];
+    postIds!: number[];
 
 }

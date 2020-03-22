@@ -5,11 +5,11 @@ enum MyEntityEnum {
     SomethingElse = "SOMETHING_ELSE"
 }
 
-@Entity({ name: "MyEntity" })
+@Entity({ name!: "MyEntity" })
 export class MyEntity {
     @PrimaryGeneratedColumn("uuid")
-    id: number;
+    id!: number;
 
     @Column("enum", { enum: MyEntityEnum })
-    myColumn: MyEntityEnum;
+    myColumn!: MyEntityEnum;
 }

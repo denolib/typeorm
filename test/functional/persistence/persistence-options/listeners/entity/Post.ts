@@ -8,13 +8,13 @@ import {AfterRemove} from "../../../../../../src/decorator/listeners/AfterRemove
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @Column({ type: String })
-    description: string;
+    description!: string;
 
     isRemoved: boolean = false;
 

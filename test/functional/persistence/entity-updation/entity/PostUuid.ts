@@ -6,9 +6,9 @@ import {PrimaryGeneratedColumn} from "../../../../../src/decorator/columns/Prima
 export class PostUuid {
 
     @PrimaryGeneratedColumn("uuid")
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    text: string;
+    text!: string;
 
 }

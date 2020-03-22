@@ -8,13 +8,13 @@ import {OneToMany} from "../../../../../src/decorator/relations/OneToMany.ts";
 export class Post {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @OneToMany(type => Category, category => category.post)
-    categories: Category[];
+    categories!: Category[];
 
     constructor(id: number, title: string) {
         this.id = id;

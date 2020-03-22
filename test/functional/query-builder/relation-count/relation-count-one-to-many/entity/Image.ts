@@ -8,15 +8,15 @@ import {ManyToOne} from "../../../../../../src/decorator/relations/ManyToOne.ts"
 export class Image {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @Column({ type: Boolean })
     isRemoved: boolean = false;
 
     @ManyToOne(type => Category, category => category.images)
-    category: Category[];
+    category!: Category[];
 
 }

@@ -8,17 +8,17 @@ import {Category} from "./Category.ts";
 export class Post {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @Column({ type: Boolean })
     isRemoved: boolean = false;
 
     @ManyToOne(type => Category)
-    category: Category;
+    category!: Category;
 
-    categoryId: number;
+    categoryId!: number;
 
 }

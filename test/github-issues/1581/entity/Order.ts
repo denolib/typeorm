@@ -7,14 +7,14 @@ import {Column, Entity, ManyToOne, OneToMany} from "../../../../src/index.ts";
 export class Order {
 
     @ManyToOne(type => DeliverySlot, { primary: true })
-    deliverySlot: DeliverySlot;
+    deliverySlot!: DeliverySlot;
 
     @ManyToOne(type => User, user => user.recurringOrders, { primary: true })
-    user: User;
+    user!: User;
 
     @Column({ type: Boolean })
-    enabled: boolean;
+    enabled!: boolean;
 
     @OneToMany(type => OrderItem, item => item.order)
-    items: OrderItem[];
+    items!: OrderItem[];
 }

@@ -9,13 +9,13 @@ import {Category} from "./Category.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: Number, name: "category_id" })
-    categoryId: number;
+    categoryId!: number;
 
     @ManyToOne(() => Category)
     @JoinColumn({ name: "category_id" })
-    category: Category;
+    category!: Category;
 
 }

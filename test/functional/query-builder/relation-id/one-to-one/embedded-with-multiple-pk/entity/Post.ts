@@ -7,12 +7,12 @@ import {PrimaryColumn} from "../../../../../../../src/decorator/columns/PrimaryC
 export class Post {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @Column(() => Counters)
-    counters: Counters;
+    counters!: Counters;
 
 }

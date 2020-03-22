@@ -6,12 +6,12 @@ import {Column} from "../../../../src/decorator/columns/Column.ts";
 export class TestEntity {
 
     @PrimaryColumn({ type: String })
-    id1: string;
+    id1!: string;
 
     @PrimaryColumn({ type: String })
-    id2: string;
+    id2!: string;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
 }

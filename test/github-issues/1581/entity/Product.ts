@@ -4,9 +4,9 @@ import {Column, Entity} from "../../../../src/index.ts";
 export class Product {
 
     @Column({ type: Number, primary: true })
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
 }

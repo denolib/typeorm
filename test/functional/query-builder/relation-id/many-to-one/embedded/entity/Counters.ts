@@ -6,20 +6,20 @@ import {Subcounters} from "./Subcounters.ts";
 export class Counters {
 
     @Column({ type: Number })
-    likes: number;
+    likes!: number;
 
     @Column({ type: Number })
-    comments: number;
+    comments!: number;
 
     @Column({ type: Number })
-    favorites: number;
+    favorites!: number;
 
     @ManyToOne(type => Category, category => category.posts)
-    category: Category;
+    category!: Category;
 
     @Column(() => Subcounters)
-    subcounters: Subcounters;
+    subcounters!: Subcounters;
 
-    categoryId: number;
+    categoryId!: number;
 
 }

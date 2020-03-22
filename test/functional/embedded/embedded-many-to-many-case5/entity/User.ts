@@ -8,15 +8,15 @@ import {Post} from "./Post.ts";
 export class User {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @PrimaryColumn({ type: Number })
-    personId: number;
+    personId!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @ManyToMany(type => Post, post => post.counters.likedUsers)
-    likedPosts: Post[];
+    likedPosts!: Post[];
 
 }

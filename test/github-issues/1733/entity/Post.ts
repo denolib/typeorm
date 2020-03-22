@@ -4,12 +4,12 @@ import {Column, Entity, PrimaryGeneratedColumn} from "../../../../src/index.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @Column({ type: String, length: 255 })
-    name2: string;
+    name2!: string;
 
 }

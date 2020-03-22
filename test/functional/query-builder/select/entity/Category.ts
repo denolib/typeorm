@@ -7,15 +7,15 @@ import {VersionColumn} from "../../../../../src/decorator/columns/VersionColumn.
 export class Category {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @Column({ type: String })
-    description: string;
+    description!: string;
 
     @VersionColumn()
-    version: string;
+    version!: string;
 
 }

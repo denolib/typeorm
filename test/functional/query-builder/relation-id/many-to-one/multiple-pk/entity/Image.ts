@@ -8,14 +8,14 @@ import {Category} from "./Category.ts";
 export class Image {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @OneToMany(type => Category, category => category.image)
-    categories: Category[];
+    categories!: Category[];
 
-    categoryIds: number[];
+    categoryIds!: number[];
 
 }

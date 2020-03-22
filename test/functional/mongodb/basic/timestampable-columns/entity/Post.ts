@@ -9,16 +9,16 @@ import { UpdateDateColumn } from "../../../../../../src/decorator/columns/Update
 export class Post {
 
     @ObjectIdColumn()
-    id: ObjectID;
+    id!: ObjectID;
 
     @Column({ type: String })
-    message: string;
+    message!: string;
 
-    @Column({ type: Date })
+    @Column({ type!: Date })
     @CreateDateColumn()
-    createdAt: Date;
+    createdAt!: Date;
 
-    @Column({ type: Date })
+    @Column({ type!: Date })
     @UpdateDateColumn()
-    updatedAt: Date;
+    updatedAt!: Date;
 }

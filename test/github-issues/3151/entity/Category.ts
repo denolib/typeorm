@@ -8,11 +8,11 @@ import { Note } from "./Note.ts";
 export class Category {
 
     @PrimaryGeneratedColumn("uuid")
-    id: string;
+    id!: string;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @ManyToMany((type) => Note, (note) => note.categories)
-    notes: Note[];
+    notes!: Note[];
 }

@@ -7,12 +7,12 @@ import {Counters} from "./Counters.ts";
 export class Photo {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    url: string;
+    url!: string;
 
     @Column(type => Counters)
-    counters: Counters;
+    counters!: Counters;
 
 }

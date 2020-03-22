@@ -8,18 +8,18 @@ import {Information} from "./Information.ts";
 export class User {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @Column({ type: Date })
-    registeredAt: Date;
+    registeredAt!: Date;
 
     @Column("json")
-    profile: Profile;
+    profile!: Profile;
 
     @Column(type => Information)
-    information: Information;
+    information!: Information;
 
 }

@@ -7,13 +7,13 @@ import {Index} from "../../../../../src/decorator/Index.ts";
 export class PostCounter {
 
     @Column({ type: Number })
-    likes: number;
+    likes!: number;
 
     @Column({ type: Number })
-    favorites: number;
+    favorites!: number;
 
     @Column({ type: Number })
-    comments: number;
+    comments!: number;
 
     @BeforeInsert()
     beforeInsert() {

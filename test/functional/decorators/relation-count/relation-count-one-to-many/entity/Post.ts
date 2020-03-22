@@ -9,18 +9,18 @@ import {Category} from "./Category.ts";
 export class Post {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @OneToMany(type => Category, category => category.post)
-    categories: Category[];
+    categories!: Category[];
 
     @RelationCount((post: Post) => post.categories)
-    categoryCount: number;
+    categoryCount!: number;
 
     @RelationCount((post: Post) => post.categories, "rc", qb => qb.andWhere("rc.isRemoved = :isRemoved", { isRemoved: true }))
-    removedCategoryCount: number;
+    removedCategoryCount!: number;
 
 }

@@ -9,16 +9,16 @@ import {Category} from "./Category.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @Column({ type: Number })
-    categoryId: number;
+    categoryId!: number;
 
     @ManyToOne(() => Category)
     @JoinColumn({ name: "categoryId" })
-    category: Category;
+    category!: Category;
 
 }

@@ -147,7 +147,7 @@ describe("repository > basic methods", () => {
 
         it("should create a new empty object if entity schema is used", () => connections.forEach(connection => {
             const repository = connection.getRepository("User");
-            repository.create().should.be.eql({});
+            (repository.create() as User).should.be.eql({});
         }));
 
         it("should create a new empty object if entity schema with a target is used", () => connections.forEach(connection => {

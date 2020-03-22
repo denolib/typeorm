@@ -9,13 +9,13 @@ import {JoinColumn} from "../../../../../src/decorator/relations/JoinColumn.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @OneToOne(type => PostDetails)
     @JoinColumn()
-    details: PostDetails;
+    details!: PostDetails;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
 }

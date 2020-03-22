@@ -11,15 +11,15 @@ export class Product {
     }
 
     @ObjectIdColumn()
-    id: any/*ObjectID*/; // TODO(uki00a) uncomment this when MongdbDriver is implemented.
+    id!: any/*ObjectID*/; // TODO(uki00a) uncomment this when MongdbDriver is implemented.
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @Column({ type: String })
-    label: string;
+    label!: string;
 
     @Column({ type: Number })
-    price: number;
+    price!: number;
 
 }

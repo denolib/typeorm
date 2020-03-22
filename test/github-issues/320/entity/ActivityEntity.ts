@@ -7,14 +7,14 @@ import {TileEntity} from "./TileEntity.ts";
 @Entity("activity")
 export class ActivityEntity {
     @PrimaryGeneratedColumn({type: "bigint"})
-    id: string;
+    id!: string;
 
     @Column({type: "datetime"})
-    endDate: Date;
+    endDate!: Date;
 
     @ManyToMany(type => TileEntity, tile => tile.activities, {
-        cascade: true
+        cascade!: true
     })
-    tiles: TileEntity[];
+    tiles!: TileEntity[];
 
 }

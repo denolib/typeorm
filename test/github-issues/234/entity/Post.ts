@@ -11,20 +11,20 @@ import {Tag} from "./Tag.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @ManyToOne(() => Category, category => category.posts, {
-        cascade: ["insert"]
+        cascade!: ["insert"]
     })
-    category: Promise<Category>;
+    category!: Promise<Category>;
 
     @ManyToMany(type => Tag, tag => tag.posts, {
-        cascade: ["insert"]
+        cascade!: ["insert"]
     })
     @JoinTable()
-    tags: Promise<Tag[]>;
+    tags!: Promise<Tag[]>;
 
 }

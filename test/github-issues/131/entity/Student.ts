@@ -6,6 +6,6 @@ import {ChildEntity} from "../../../../src/decorator/entity/ChildEntity.ts";
 export class Student extends Person {
 
     @Column({ type: String })
-    faculty: string;
+    faculty!: string;
 
 }

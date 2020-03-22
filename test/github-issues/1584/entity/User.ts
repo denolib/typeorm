@@ -7,9 +7,9 @@ import {ObjectID} from "../../../../src/driver/mongodb/typings.ts";
 export class User {
 
     @ObjectIdColumn()
-    id: ObjectID;
+    id!: ObjectID;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
 }

@@ -5,6 +5,6 @@ import {Entity} from "../../../../src/decorator/entity/Entity.ts";
 export class AccessToken {
 
     @PrimaryColumn({ type: String })
-    access_token: string;
+    access_token!: string;
 
 }

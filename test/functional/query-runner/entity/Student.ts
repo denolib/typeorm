@@ -11,15 +11,15 @@ import {Index} from "../../../../src/decorator/Index.ts";
 export class Student {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @ManyToOne(type => Faculty)
-    faculty: Faculty;
+    faculty!: Faculty;
 
     @ManyToOne(type => Teacher)
-    teacher: Teacher;
+    teacher!: Teacher;
 
 }

@@ -5,11 +5,11 @@ import {TestEntity2} from "./TestEntity2.ts";
 export class TestEntity1 {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
-    @Column({ type: String }) name: string;
+    @Column({ type: String }) name!: string;
 
     @OneToOne(t => TestEntity2, a => a.Entity1)
     @JoinColumn()
-    Entity2: TestEntity2;
+    Entity2!: TestEntity2;
 }

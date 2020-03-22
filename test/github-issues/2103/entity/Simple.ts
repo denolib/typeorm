@@ -4,9 +4,9 @@ import {Entity, Column, PrimaryGeneratedColumn} from "../../../../src/index.ts";
 export class Simple {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: Number })
-    x: number;
+    x!: number;
 
 }

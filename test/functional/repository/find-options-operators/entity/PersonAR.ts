@@ -7,9 +7,9 @@ import {BaseEntity} from "../../../../../src/index.ts";
 export class PersonAR extends BaseEntity {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
 }

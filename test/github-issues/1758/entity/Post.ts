@@ -4,6 +4,6 @@ import {Entity, PrimaryGeneratedColumn} from "../../../../src/index.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
 }

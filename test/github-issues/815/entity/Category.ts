@@ -10,25 +10,25 @@ import {ManyToMany} from "../../../../src/decorator/relations/ManyToMany.ts";
 export class Category {
 
     @PrimaryColumn({ type: Number })
-    firstId: number;
+    firstId!: number;
 
     @PrimaryColumn({ type: Number })
-    secondId: number;
+    secondId!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @ManyToOne(type => Post, post => post.categories)
-    post: Post|null;
+    post!: Post|null;
 
     @RelationId((category: Category) => category.post)
-    postId: number;
+    postId!: number;
 
     @ManyToMany(type => Post, post => post.manyCategories)
-    manyPosts: Post[];
+    manyPosts!: Post[];
 
     @RelationId((category: Category) => category.manyPosts)
-    manyPostIds: number[];
+    manyPostIds!: number[];
 
 }
 

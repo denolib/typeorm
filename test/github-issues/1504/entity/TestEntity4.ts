@@ -5,11 +5,11 @@ import {TestEntity3} from "./TestEntity3.ts";
 export class TestEntity4 {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @ManyToOne(t => TestEntity3, entity3 => entity3.Entity4)
-    Entity3: TestEntity3;
+    Entity3!: TestEntity3;
 }

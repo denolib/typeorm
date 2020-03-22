@@ -6,6 +6,6 @@ import {ChildEntity} from "../../../../src/decorator/entity/ChildEntity.ts";
 export class Employee extends Person {
 
     @Column({ type: Number })
-    salary: number;
+    salary!: number;
 
 }

@@ -7,8 +7,8 @@ import { RecordContext } from "./context.ts";
 @Entity({ name: "records" })
 export class Record extends BaseEntity {
     @PrimaryColumn({ type: String })
-    public id: string;
+    public id!: string;
 
     @OneToMany(type => RecordContext, context => context.record)
-    public contexts: RecordContext[];
+    public contexts!: RecordContext[];
 }

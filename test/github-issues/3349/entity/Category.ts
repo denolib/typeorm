@@ -4,9 +4,9 @@ import {Entity} from "../../../../src/index.ts";
 
 @Entity()
 export class Category {
-    @PrimaryColumn({ type: Number })
+    @PrimaryColumn({ type!: Number })
     public id!: number;
 
-    @Column({ type: Number })
+    @Column({ type!: Number })
     public myField!: number;
 }

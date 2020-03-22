@@ -6,9 +6,9 @@ import {Column} from "../../../../src/decorator/columns/Column.ts";
 export class User {
 
     @PrimaryGeneratedColumn()
-    userId: number;
+    userId!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
 }

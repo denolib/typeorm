@@ -4,9 +4,9 @@ import {VersionColumn} from "../../../../../src/decorator/columns/VersionColumn.
 export class Subcounters {
 
     @VersionColumn({ type: Number })
-    version: number;
+    version!: number;
 
     @Column({ type: Number })
-    watches: number;
+    watches!: number;
 
 }

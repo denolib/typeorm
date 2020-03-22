@@ -10,8 +10,8 @@ export enum EquipmentModelType {
 @Entity("equipmentmodels")
 export class EquipmentModel {
     @PrimaryGeneratedColumn("uuid")
-    id: string;
+    id!: string;
 
     @Column("enum", { enum: EquipmentModelType })
-    type: EquipmentModelType;
+    type!: EquipmentModelType;
 }

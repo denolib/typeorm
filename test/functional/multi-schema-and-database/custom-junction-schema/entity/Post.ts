@@ -6,18 +6,18 @@ import {JoinTable} from "../../../../../src/decorator/relations/JoinTable.ts";
 import {Category} from "./Category.ts";
 
 @Entity({
-    schema: "yoman"
+    schema!: "yoman"
 })
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @ManyToMany(type => Category)
     @JoinTable({ schema: "yoman" })
-    categories: Category[];
+    categories!: Category[];
 
 }

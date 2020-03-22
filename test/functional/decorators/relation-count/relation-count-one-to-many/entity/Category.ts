@@ -11,24 +11,24 @@ import {Post} from "./Post.ts";
 export class Category {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @Column({ type: Boolean })
     isRemoved: boolean = false;
 
     @ManyToOne(type => Post, post => post.categories)
-    post: Post;
+    post!: Post;
 
     @OneToMany(type => Image, image => image.category)
-    images: Image[];
+    images!: Image[];
 
     @RelationCount((category: Category) => category.images)
-    imageCount: number;
+    imageCount!: number;
 
     @RelationCount((category: Category) => category.images, "removedImages", qb => qb.andWhere("removedImages.isRemoved = :isRemoved", { isRemoved: true }))
-    removedImageCount: number;
+    removedImageCount!: number;
 
 }

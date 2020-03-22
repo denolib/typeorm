@@ -6,12 +6,12 @@ import {Column} from "../../../../../src/decorator/columns/Column.ts";
 export class User {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @Column({ type: Boolean })
-    registered: boolean;
+    registered!: boolean;
 
 }

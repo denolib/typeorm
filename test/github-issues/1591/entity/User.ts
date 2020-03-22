@@ -5,13 +5,13 @@ import {Photo} from "./Photo.ts";
 export class User {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @ManyToMany(type => Photo)
     @JoinTable()
-    photos: Photo[];
+    photos!: Photo[];
 
 }

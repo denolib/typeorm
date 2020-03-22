@@ -5,16 +5,16 @@ import {Column} from "../../../../../src/decorator/columns/Column.ts";
 @Entity()
 export class Post {
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column("cube", {
-        nullable: true
+        nullable!: true
     })
-    mainColor: number[];
+    mainColor!: number[];
 
     @Column("cube", {
-        nullable: true,
-        array: true
+        nullable!: true,
+        array!: true
     })
-    colors: number[][];
+    colors!: number[][];
 }

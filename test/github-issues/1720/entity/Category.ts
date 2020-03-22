@@ -4,10 +4,10 @@ import {AfterLoad, Column, Entity, PrimaryGeneratedColumn} from "../../../../src
 export class Category {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     loaded: boolean = false;
 

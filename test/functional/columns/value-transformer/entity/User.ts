@@ -32,8 +32,8 @@ export const lowercase: ValueTransformer = {
 @Entity()
 export class User {
     @PrimaryGeneratedColumn("uuid")
-    id: string;
+    id!: string;
 
     @Column({type: String, transformer: [lowercase, encode, encrypt]})
-    email: string;
+    email!: string;
 }

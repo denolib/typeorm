@@ -7,9 +7,9 @@ import {Cat} from "./Cat.ts";
 export class Dog {
 
     @PrimaryColumn({ type: String })
-    DogID: string;
+    DogID!: string;
 
     @OneToMany(type => Cat, cat => cat.dog)
-    cats: Cat[];
+    cats!: Cat[];
 
 }

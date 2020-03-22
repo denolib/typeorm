@@ -4,15 +4,15 @@ import {Column, Entity, PrimaryGeneratedColumn} from "../../../../src/index.ts";
 export class User {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column("varchar", { nullable: true })
     token: string | null = null;
 
     @Column({
-        type: "tinyint",
+        type!: "tinyint",
         default: 0,
-        width: 1
+        width!: 1
     })
     dnd: boolean = false;
 

@@ -7,16 +7,16 @@ import {/*ObjectID, */ObjectIdColumn} from "../../../../src/index.ts";
 export class Post {
 
     @ObjectIdColumn({ type: String })
-    id: any/*ObjectID*/; // TODO(uki00a) uncomment this when MongoDriver is implemented.
+    id!: any/*ObjectID*/; // TODO(uki00a) uncomment this when MongoDriver is implemented.
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @Column({ type: Boolean })
     active: boolean = false;
 
     @UpdateDateColumn()
-    updateDate: Date;
+    updateDate!: Date;
 
     @Column({ type: Number })
     updatedColumns: number|string[] = 0;

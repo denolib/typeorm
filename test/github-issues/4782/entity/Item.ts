@@ -5,8 +5,8 @@ import { Entity } from "../../../../src/decorator/entity/Entity.ts";
 @Entity()
 export class Item {
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @CreateDateColumn()
-    date: Date;
+    date!: Date;
 }

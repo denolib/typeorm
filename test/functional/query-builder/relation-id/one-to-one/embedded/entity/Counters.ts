@@ -7,21 +7,21 @@ import {JoinColumn} from "../../../../../../../src/decorator/relations/JoinColum
 export class Counters {
 
     @Column({ type: Number })
-    likes: number;
+    likes!: number;
 
     @Column({ type: Number })
-    comments: number;
+    comments!: number;
 
     @Column({ type: Number })
-    favorites: number;
+    favorites!: number;
 
     @OneToOne(type => Category, category => category.post)
     @JoinColumn()
-    category: Category;
+    category!: Category;
 
     @Column(() => Subcounters)
-    subcounters: Subcounters;
+    subcounters!: Subcounters;
 
-    categoryId: number;
+    categoryId!: number;
 
 }

@@ -5,12 +5,12 @@ import {User} from "./User.ts";
 export class Photo {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    url: string;
+    url!: string;
 
     @ManyToOne("User", "photos")
-    user: User;
+    user!: User;
 
 }

@@ -2,19 +2,19 @@ import {EntitySchema} from "../../../../../src/index.ts";
 import {Post} from "../model/Post.ts";
 
 export const PostEntity = new EntitySchema<Post>({
-    name: "post",
+    name!: "post",
     target: Post,
-    columns: {
+    columns!: {
         id: {
-            type: Number,
+            type!: Number,
             primary: true,
-            generated: true
+            generated!: true
         },
-        title: {
-            type: String
+        title!: {
+            type!: String
         },
-        text: {
-            type: String
+        text!: {
+            type!: String
         }
     }
 });

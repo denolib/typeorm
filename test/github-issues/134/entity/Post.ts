@@ -6,12 +6,12 @@ import {Column} from "../../../../src/decorator/columns/Column.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @Column("time", { nullable: false })
-    creationDate: Date|string;
+    creationDate!: Date|string;
 
 }

@@ -5,12 +5,12 @@ import { Cliente } from "./cliente.ts";
 export class TipoCliente {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({type: String, name: "tipo"})
-    descricao: string;
+    descricao!: string;
 
     @OneToMany(() => Cliente, c => c.tipo)
-    clientes: Cliente[];
+    clientes!: Cliente[];
 
 }

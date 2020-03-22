@@ -4,7 +4,7 @@ import {PostCounter} from "./PostCounter.ts";
 
 export class PostInformation {
 
-    @Column({nullable: true, type: String})
+    @Column({nullable: true, type!: String})
     description?: string;
 
     @Column(type => PostCounter, {prefix: "counters"})

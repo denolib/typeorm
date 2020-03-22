@@ -4,13 +4,13 @@ import {Entity} from "../../../../src/decorator/entity/Entity.ts";
 import {PrimaryColumn} from "../../../../src/decorator/columns/PrimaryColumn.ts";
 
 @Entity()
-@TableInheritance({ column: { name: "type", type: "varchar" } })
+@TableInheritance({ column: { name: "type", type!: "varchar" } })
 export class Person {
 
     @PrimaryColumn("int")
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
 }

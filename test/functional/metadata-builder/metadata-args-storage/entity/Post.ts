@@ -6,9 +6,9 @@ import {ContentModule} from "./ContentModule.ts";
 export class Post extends ContentModule {
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @Column({ type: String })
-    text: string;
+    text!: string;
 
 }

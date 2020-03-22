@@ -7,31 +7,31 @@ import {Index} from "../../../../../src/decorator/Index.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column("geometry", {
-      nullable: true
+      nullable!: true
     })
     @Index({
-      spatial: true
+      spatial!: true
     })
-    geom: object;
+    geom!: object;
 
     @Column("geometry", {
-      nullable: true,
-      spatialFeatureType: "Point"
+      nullable!: true,
+      spatialFeatureType!: "Point"
     })
-    pointWithoutSRID: object;
+    pointWithoutSRID!: object;
 
     @Column("geometry", {
-      nullable: true,
+      nullable!: true,
       spatialFeatureType: "Point",
-      srid: 4326
+      srid!: 4326
     })
-    point: object;
+    point!: object;
 
     @Column("geography", {
-      nullable: true
+      nullable!: true
     })
-    geog: object;
+    geog!: object;
 }

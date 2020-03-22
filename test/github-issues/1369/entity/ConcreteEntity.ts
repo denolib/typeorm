@@ -3,5 +3,5 @@ import {AbstractEntity} from "./AbstractEntity.ts";
 
 @Entity()
 export class ConcreteEntity extends AbstractEntity {
-    @Column({ type: String }) position: string;
+    @Column({ type: String }) position!: string;
 }

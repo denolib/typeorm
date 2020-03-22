@@ -8,12 +8,12 @@ import {User} from "./User.ts";
 export class Profile {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    about: string;
+    about!: string;
 
     @OneToOne(type => User, user => user.profile, { eager: true })
-    user: User;
+    user!: User;
 
 }

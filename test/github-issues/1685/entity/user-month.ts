@@ -5,25 +5,25 @@ import {User} from "./user.ts";
 @Entity()
 export class UserMonth {
 
-    @PrimaryColumn({ type: Number })
-    public yearNo: number;
+    @PrimaryColumn({ type!: Number })
+    public yearNo!: number;
 
-    @PrimaryColumn({ type: Number })
-    public monthNo: number;
+    @PrimaryColumn({ type!: Number })
+    public monthNo!: number;
 
-    @PrimaryColumn({ type: String })
-    public username: string;
+    @PrimaryColumn({ type!: String })
+    public username!: string;
 
     @ManyToOne(type => Month, month => month.userMonth)
     @JoinColumn([
-        {name: "yearNo", referencedColumnName: "yearNo"},
-        {name: "monthNo", referencedColumnName: "monthNo"}
+        {name: "yearNo", referencedColumnName!: "yearNo"},
+        {name: "monthNo", referencedColumnName!: "monthNo"}
     ])
-    public month: Month;
+    public month!: Month;
 
     @ManyToOne(type => User, user => user.username)
-    @JoinColumn({name: "username", referencedColumnName: "username"})
-    public user: User;
+    @JoinColumn({name: "username", referencedColumnName!: "username"})
+    public user!: User;
 
     @BeforeInsert()
     workaround() {

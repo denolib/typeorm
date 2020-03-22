@@ -7,18 +7,18 @@ import {Column} from "../../../../src/decorator/columns/Column.ts";
 export class User {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
-    @Column({ type: String })
+    @Column({ type!: String })
     @Index()
-    email: string;
+    email!: string;
 
-    @Column({ type: String })
+    @Column({ type!: String })
     @Index()
-    username: string;
+    username!: string;
 
-    @Column({ type: Number })
+    @Column({ type!: Number })
     @Index()
-    privilege: number;
+    privilege!: number;
 
 }

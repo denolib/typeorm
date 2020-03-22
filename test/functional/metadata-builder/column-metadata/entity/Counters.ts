@@ -4,18 +4,18 @@ import {Subcounters} from "./Subcounters.ts";
 export class Counters {
 
     @Column({ type: Number })
-    code: number;
+    code!: number;
 
     @Column({ type: Number })
-    likes: number;
+    likes!: number;
 
     @Column({ type: Number })
-    comments: number;
+    comments!: number;
 
     @Column({ type: Number })
-    favorites: number;
+    favorites!: number;
 
     @Column(() => Subcounters)
-    subcounters: Subcounters;
+    subcounters!: Subcounters;
 
 }

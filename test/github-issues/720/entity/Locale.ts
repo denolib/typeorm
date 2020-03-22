@@ -9,13 +9,13 @@ import {Message} from "./Message.ts";
 export class Locale {
 
     @PrimaryColumn("varchar", { length: 5 })
-    code: string;
+    code!: string;
 
     @Column("varchar", { length: 50 })
-    englishName: string;
+    englishName!: string;
 
-    @OneToOne(() => Message, { onDelete: "SET NULL" })
+    @OneToOne(() => Message, { onDelete!: "SET NULL" })
     @JoinColumn()
-    name: Message;
+    name!: Message;
 
 }

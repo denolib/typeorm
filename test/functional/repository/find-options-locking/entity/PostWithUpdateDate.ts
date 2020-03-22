@@ -7,12 +7,12 @@ import {UpdateDateColumn} from "../../../../../src/decorator/columns/UpdateDateC
 export class PostWithUpdateDate {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @UpdateDateColumn()
-    updateDate: Date;
+    updateDate!: Date;
 
 }

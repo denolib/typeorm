@@ -9,13 +9,13 @@ import {Post} from "./Post.ts";
 export class PostVersion {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @ManyToOne(type => Post)
     @JoinColumn({ referencedColumnName: "version" })
-    post: Post;
+    post!: Post;
 
     @Column({ type: String })
-    details: string;
+    details!: string;
 
 }

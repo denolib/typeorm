@@ -4,10 +4,10 @@ import {Index} from "../../../../../../src/decorator/Index.ts";
 export class Information {
 
     @Column({ type: String })
-    description: string;
+    description!: string;
 
-    @Column({ type: Number })
+    @Column({ type!: Number })
     @Index("post_likes")
-    likes: number;
+    likes!: number;
 
 }

@@ -1,1 +1,1 @@
-window['global'] = window;
+(window as any)['global'] = window;

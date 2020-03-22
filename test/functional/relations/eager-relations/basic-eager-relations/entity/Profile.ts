@@ -6,9 +6,9 @@ import {Column} from "../../../../../../src/decorator/columns/Column.ts";
 export class Profile {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    about: string;
+    about!: string;
 
 }

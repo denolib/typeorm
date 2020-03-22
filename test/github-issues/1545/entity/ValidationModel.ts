@@ -4,14 +4,14 @@ import { DataModel } from "./DataModel.ts";
 @Entity()
 export class ValidationModel {
     @Column({
-        type: "integer",
-        primary: true
+        type!: "integer",
+        primary!: true
     })
-    validation: number;
+    validation!: number;
 
     @OneToMany(
         type => DataModel,
         dataModel => dataModel.validations
     )
-    dataModel: DataModel[];
+    dataModel!: DataModel[];
 }

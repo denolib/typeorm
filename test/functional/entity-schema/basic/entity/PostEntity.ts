@@ -2,24 +2,24 @@ import {EntitySchema} from "../../../../../src/index.ts";
 import {Post} from "../model/Post.ts";
 
 export const PostEntity = new EntitySchema<Post>({
-    name: "post",
+    name!: "post",
     columns: {
-        id: {
+        id!: {
             type: Number,
-            primary: true,
-            generated: true
+            primary!: true,
+            generated!: true
         },
-        title: {
-            type: String
+        title!: {
+            type!: String
         },
-        text: {
-            type: String
+        text!: {
+            type!: String
         }
     },
-    relations: {
+    relations!: {
         categories: {
-            type: "many-to-many",
-            target: "category" // CategoryEntity
+            type!: "many-to-many",
+            target!: "category" // CategoryEntity
         }
     }
 });

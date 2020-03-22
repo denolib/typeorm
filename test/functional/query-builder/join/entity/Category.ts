@@ -10,23 +10,23 @@ import {Image} from "./Image.ts";
 export class Category {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @Column({ type: Boolean })
     isRemoved: boolean = false;
 
     @ManyToMany(type => Post, post => post.categories)
-    posts: Post[];
+    posts!: Post[];
 
     @ManyToMany(type => Image)
     @JoinTable()
-    images: Image[];
+    images!: Image[];
 
-    titleImage: Image;
+    titleImage!: Image;
 
-    removedImages: Image[];
+    removedImages!: Image[];
 
 }

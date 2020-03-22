@@ -1,7 +1,7 @@
 export class Profile {
 
-    firstName: string;
-    lastName: string;
-    age: number;
+    firstName!: string;
+    lastName!: string;
+    age!: number;
 
 }

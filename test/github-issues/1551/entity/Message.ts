@@ -36,7 +36,7 @@ export class Message {
     if (recipients) {
       recipients.forEach(recipient => recipient.message = this);
       this.recipients = recipients;
-      // this.recipients = recipients.map(recipient => (new Recipient({...recipient, message: this})));
+      // this.recipients = recipients.map(recipient => (new Recipient({...recipient, message!: this})));
     }
     if (holders) {
       this.holders = holders;
@@ -47,27 +47,27 @@ export class Message {
   }
 
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @ManyToOne(type => User, user => user.senderMessages, {eager: true})
-  sender: User;
+  sender!: User;
 
   @Column({ type: String })
-  content: string;
+  content!: string;
 
   @CreateDateColumn()
-  createdAt: number;
+  createdAt!: number;
 
   @Column({type: Number, nullable: true})
-  type: MessageType;
+  type!: MessageType;
 
   @OneToMany(type => Recipient, recipient => recipient.message, {cascade: true, eager: true})
-  recipients: Recipient[];
+  recipients!: Recipient[];
 
   @ManyToMany(type => User, user => user.holderMessages, {eager: true})
   @JoinTable()
-  holders: User[];
+  holders!: User[];
 
   @ManyToOne(type => Chat, chat => chat.messages)
-  chat: Chat;
+  chat!: Chat;
 }

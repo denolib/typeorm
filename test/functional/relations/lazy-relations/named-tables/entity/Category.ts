@@ -9,36 +9,36 @@ import {
 } from "./Post.ts";
 
 @Entity("s_category", {
-    orderBy: {
-        id: "ASC",
+    orderBy!: {
+        id!: "ASC",
     }
 })
 export class Category {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @OneToOne(type => Post, post => post.oneCategory, { lazy: true })
-    onePost: Promise<Post>;
+    onePost!: Promise<Post>;
 
     @ManyToMany(type => Post, post => post.twoSideCategories, { lazy: true })
-    twoSidePosts: Promise<Post[]>;
+    twoSidePosts!: Promise<Post[]>;
 
     @OneToMany(type => Post, post => post.twoSideCategory, { lazy: true })
-    twoSidePosts2: Promise<Post[]>;
+    twoSidePosts2!: Promise<Post[]>;
 
     // ManyToMany with named properties
     @ManyToMany(type => Post, post => post.categoriesNamedTable, { lazy: true })
-    postsNamedTable: Promise<Post[]>;
+    postsNamedTable!: Promise<Post[]>;
 
     // OneToMany with named properties
     @OneToMany(type => Post, post => post.categoryNamedTable, { lazy: true })
-    onePostsNamedTable: Promise<Post[]>;
+    onePostsNamedTable!: Promise<Post[]>;
 
     // OneToOne with named properties
     @OneToOne(type => Post, post => post.oneCategoryNamedTable, { lazy: true })
-    onePostNamedTable: Promise<Post>;
+    onePostNamedTable!: Promise<Post>;
 }

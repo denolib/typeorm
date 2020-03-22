@@ -8,22 +8,22 @@ import {Subcounters} from "./Subcounters.ts";
 export class Counters {
 
     @PrimaryColumn({ type: Number })
-    code: number;
+    code!: number;
 
     @Column({ type: Number })
-    likes: number;
+    likes!: number;
 
     @Column({ type: Number })
-    comments: number;
+    comments!: number;
 
     @Column({ type: Number })
-    favorites: number;
+    favorites!: number;
 
     @Column(() => Subcounters, { prefix: "subcnt" })
-    subcounters: Subcounters;
+    subcounters!: Subcounters;
 
     @ManyToOne(type => User)
     @JoinColumn()
-    likedUser: User;
+    likedUser!: User;
 
 }

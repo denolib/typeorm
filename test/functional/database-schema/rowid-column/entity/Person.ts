@@ -8,16 +8,16 @@ import {Column} from "../../../../../src";
 export class Person {
 
     @PrimaryGeneratedColumn("rowid")
-    id: string;
+    id!: string;
 
     @PrimaryColumn()
     @Generated("rowid")
-    id2: string;
+    id2!: string;
 
     @PrimaryColumn({ generated: "rowid" })
-    id3: string;
+    id3!: string;
 
     @Column({ generated: "rowid" })
-    id4: string;
+    id4!: string;
 
 }

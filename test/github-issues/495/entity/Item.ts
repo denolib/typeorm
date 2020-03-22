@@ -11,16 +11,16 @@ import {User} from "./User.ts";
 export class Item {
 
     @PrimaryGeneratedColumn()
-    postId: number;
+    postId!: number;
 
     @OneToOne(type => User, users => users.userId)
     @JoinColumn({ name: "userId" })
-    userData: User;
+    userData!: User;
 
     @Column({ type: "int"})
-    userId: number;
+    userId!: number;
 
     @Column({ type: "int" })
-    mid: number;
+    mid!: number;
 
 }

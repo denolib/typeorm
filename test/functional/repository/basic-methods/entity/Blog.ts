@@ -9,17 +9,17 @@ import {JoinTable} from "../../../../../src/decorator/relations/JoinTable.ts";
 export class Blog {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @Column({ type: String })
-    text: string;
+    text!: string;
 
     @ManyToMany(type => Category)
     @JoinTable()
-    categories: Category[];
+    categories!: Category[];
 
     @Column({ type: Number })
     counter: number = 0;

@@ -6,15 +6,15 @@ import {PrimaryGeneratedColumn} from "../../../../../src/decorator/columns/Prima
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @Column({ type: String })
-    text: string;
+    text!: string;
 
     @Column({ type: String, select: false })
-    authorName: string;
+    authorName!: string;
 
 }

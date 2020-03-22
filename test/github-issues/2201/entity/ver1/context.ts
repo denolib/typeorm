@@ -9,18 +9,18 @@ import { Record } from "./record.ts";
 @Entity({ name: "record_contexts" })
 export class RecordContext extends BaseEntity {
     @PrimaryColumn({ type: String, name: "record_id"})
-    recordId: string;
+    recordId!: string;
 
     @PrimaryColumn({ type: String, name: "user_id"})
-    userId: string;
+    userId!: string;
 
     @ManyToOne(type => Record, record => record.contexts)
     @JoinColumn({ name: "record_id" })
-    public readonly record: Record;
+    public readonly record!: Record;
 
     @ManyToOne(type => User, user => user.contexts)
     @JoinColumn({ name: "user_id" })
-    public readonly user: User;
+    public readonly user!: User;
 
     @Column("simple-json")
     public readonly meta: any;

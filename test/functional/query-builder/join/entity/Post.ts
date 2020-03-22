@@ -15,26 +15,26 @@ import {Image} from "./Image.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @ManyToOne(type => Tag)
-    tag: Tag;
+    tag!: Tag;
 
     @OneToOne(type => User)
     @JoinColumn()
-    author: User;
+    author!: User;
 
     @ManyToMany(type => Category, category => category.posts)
     @JoinTable()
-    categories: Category[];
+    categories!: Category[];
 
-    subcategories: Category[];
+    subcategories!: Category[];
 
-    removedCategories: Category[];
+    removedCategories!: Category[];
 
-    images: Image[];
+    images!: Image[];
 
 }

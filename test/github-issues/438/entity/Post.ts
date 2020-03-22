@@ -4,9 +4,9 @@ import {Column, Entity, PrimaryColumn} from "../../../../src/index.ts";
 export class Post {
 
     @PrimaryColumn({ type: Number, unsigned: true })
-    id: number;
+    id!: number;
 
     @Column({ type: Number, zerofill: true })
-    num: number;
+    num!: number;
 
 }

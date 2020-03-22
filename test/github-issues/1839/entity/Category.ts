@@ -6,9 +6,9 @@ import {Post} from "./Post.ts";
 export class Category {
 
     @PrimaryColumn({ type: String, collation: "ascii_general_ci", charset: "ascii" })
-    id: string;
+    id!: string;
 
     @ManyToMany(type => Post, post => post.categories)
-    posts: Post[];
+    posts!: Post[];
 
 }

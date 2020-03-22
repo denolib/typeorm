@@ -6,20 +6,20 @@ import {OneToMany} from "../../../../../../../src/decorator/relations/OneToMany.
 export class Counters {
 
     @Column({ type: Number })
-    likes: number;
+    likes!: number;
 
     @Column({ type: Number })
-    comments: number;
+    comments!: number;
 
     @Column({ type: Number })
-    favorites: number;
+    favorites!: number;
 
     @OneToMany(type => Category, category => category.posts)
-    categories: Category[];
+    categories!: Category[];
 
     @Column(() => Subcounters)
-    subcounters: Subcounters;
+    subcounters!: Subcounters;
 
-    categoryIds: number[];
+    categoryIds!: number[];
 
 }

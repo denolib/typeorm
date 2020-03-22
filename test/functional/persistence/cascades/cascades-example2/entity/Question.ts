@@ -8,12 +8,12 @@ import {OneToMany} from "../../../../../../src/decorator/relations/OneToMany.ts"
 export class Question {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ default: "My question", type: String })
-    name: string;
+    name!: string;
 
     @OneToMany(type => Answer, answer => answer.question, { cascade: ["insert"] })
-    answers: Answer[];
+    answers!: Answer[];
 
 }

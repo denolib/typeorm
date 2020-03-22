@@ -4,27 +4,27 @@ import { PrimaryGeneratedColumn } from "../../../../src/decorator/columns/Primar
 
 export class PersonalInfo {
     @Column({ type: String })
-    firstName: string;
+    firstName!: string;
 
     @Column({ type: String })
-    lastName: string;
+    lastName!: string;
 
     @Column({ type: String })
-    address: string;
+    address!: string;
 }
 
 export class UserInfo extends PersonalInfo {
     @Column({ type: String })
-    userName: string;
+    userName!: string;
 }
 
 @Entity()
 export class User {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column(type => UserInfo)
-    info: UserInfo;
+    info!: UserInfo;
 
 }

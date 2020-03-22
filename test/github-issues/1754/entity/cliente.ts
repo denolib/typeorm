@@ -5,13 +5,13 @@ import { TipoCliente } from "./tipo-cliente.ts";
 export class Cliente {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    nome: string;
+    nome!: string;
 
     @ManyToOne(() => TipoCliente, tc => tc.clientes)
     @JoinColumn({name: "tipoCliente"})
-    tipo: TipoCliente;
+    tipo!: TipoCliente;
 
 }

@@ -6,10 +6,10 @@ import {Entity} from "../../../../../src/decorator/entity/Entity.ts";
 export class Category {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     constructor(id: number, name: string) {
         this.id = id;

@@ -6,10 +6,10 @@ import {Entity} from "../../../../src/decorator/entity/Entity.ts";
 export class Post {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     inserted: boolean = false;
     updated: boolean = false;

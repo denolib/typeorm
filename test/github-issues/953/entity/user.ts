@@ -9,31 +9,31 @@ export type Role = "sa" | "user" | "admin" | "server";
 export class User {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({
-        type: String,
+        type!: String,
         length: 32,
-        unique: true
+        unique!: true
     })
-    username: string;
+    username!: string;
 
     @Column({
-        type: String,
-        nullable: true
+        type!: String,
+        nullable!: true
     })
-    password: string;
+    password!: string;
 
     @Column({
-        type: String,
-        nullable: true
+        type!: String,
+        nullable!: true
     })
-    phone: string;
+    phone!: string;
 
     @Column("json")
-    roles: Role[];
+    roles!: Role[];
 
     @Column({ type: Date })
-    lastLoginAt: Date;
+    lastLoginAt!: Date;
 
 }

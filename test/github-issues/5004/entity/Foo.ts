@@ -6,5 +6,5 @@ import {Index} from "../../../../src/decorator/Index.ts";
 export class Foo {
   @Column("date")
   @Index({ expireAfterSeconds: 0 })
-  expireAt: Date;
+  expireAt!: Date;
 }

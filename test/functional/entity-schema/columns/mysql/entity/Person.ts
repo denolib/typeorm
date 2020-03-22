@@ -1,43 +1,43 @@
 import {EntitySchema} from "../../../../../../src/index.ts";
 
 export const PersonSchema = new EntitySchema<any>({
-    name: "Person",
+    name!: "Person",
     columns: {
-        Id: {
+        Id!: {
             primary: true,
-            type: "int",
+            type!: "int",
             unsigned: true,
-            generated: "increment"
+            generated!: "increment"
         },
-        PostCode: {
+        PostCode!: {
             type: "int",
-            width: 9,
-            zerofill: true,
+            width!: 9,
+            zerofill!: true,
         },
-        FirstName: {
+        FirstName!: {
             type: String,
-            length: 30
+            length!: 30
         },
-        LastName: {
+        LastName!: {
             type: String,
-            length: 50,
+            length!: 50,
         },
-        VirtualFullName: {
+        VirtualFullName!: {
             type: String,
-            length: 50,
-            asExpression: "concat(`FirstName`,' ',`LastName`)"
+            length!: 50,
+            asExpression!: "concat(`FirstName`,' ',`LastName`)"
         },
-        StoredFullName: {
+        StoredFullName!: {
             type: String,
-            length: 50,
+            length!: 50,
             asExpression: "concat(`FirstName`,' ',`LastName`)",
-            generatedType: "STORED"
+            generatedType!: "STORED"
         },
-        LastVisitDate: {
+        LastVisitDate!: {
             type: "timestamp",
-            precision: 3,
+            precision!: 3,
             default: () => "CURRENT_TIMESTAMP(3)",
-            onUpdate: "CURRENT_TIMESTAMP(3)"
+            onUpdate!: "CURRENT_TIMESTAMP(3)"
         }
     }
 });

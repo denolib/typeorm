@@ -5,10 +5,10 @@ import {Category} from "./Category.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @ManyToMany(() => Category)
     @JoinTable()
@@ -20,7 +20,7 @@ export class Post {
         this._categories = arr;
     }
 
-    private _categories: Category[];
+    private _categories!: Category[];
 
 
 }

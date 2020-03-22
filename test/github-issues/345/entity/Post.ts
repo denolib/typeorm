@@ -8,14 +8,14 @@ import {ManyToMany} from "../../../../src/decorator/relations/ManyToMany.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @ManyToMany(() => Category, category => category.posts, {
-        cascade: ["insert"]
+        cascade!: ["insert"]
     })
-    categories: Category[];
+    categories!: Category[];
 
 }

@@ -32,44 +32,44 @@ export class User {
   }
 
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column({ type: String })
-  username: string;
+  username!: string;
 
   @Column({ type: String })
-  password: string;
+  password!: string;
 
   @Column({ type: String })
-  name: string;
+  name!: string;
 
-  @Column({type: String, nullable: true})
+  @Column({type: String, nullable!: true})
   picture?: string;
 
-  @Column({type: String, nullable: true})
+  @Column({type: String, nullable!: true})
   phone?: string;
 
   @ManyToMany(type => Chat, chat => chat.allTimeMembers)
-  allTimeMemberChats: Chat[];
+  allTimeMemberChats!: Chat[];
 
   @ManyToMany(type => Chat, chat => chat.listingMembers)
-  listedMemberChats: Chat[];
+  listedMemberChats!: Chat[];
 
   @ManyToMany(type => Chat, chat => chat.actualGroupMembers)
-  actualGroupMemberChats: Chat[];
+  actualGroupMemberChats!: Chat[];
 
   @ManyToMany(type => Chat, chat => chat.admins)
-  adminChats: Chat[];
+  adminChats!: Chat[];
 
   @ManyToMany(type => Message, message => message.holders)
-  holderMessages: Message[];
+  holderMessages!: Message[];
 
   @OneToMany(type => Chat, chat => chat.owner)
-  ownerChats: Chat[];
+  ownerChats!: Chat[];
 
   @OneToMany(type => Message, message => message.sender)
-  senderMessages: Message[];
+  senderMessages!: Message[];
 
   @OneToMany(type => Recipient, recipient => recipient.user)
-  recipients: Recipient[];
+  recipients!: Recipient[];
 }

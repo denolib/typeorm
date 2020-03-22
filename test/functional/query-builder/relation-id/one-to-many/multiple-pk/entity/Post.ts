@@ -8,17 +8,17 @@ import {OneToMany} from "../../../../../../../src/decorator/relations/OneToMany.
 export class Post {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @PrimaryColumn({ type: Number })
-    authorId: number;
+    authorId!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @OneToMany(type => Category, category => category.post)
-    categories: Category[];
+    categories!: Category[];
 
-    categoryIds: number[];
+    categoryIds!: number[];
 
 }

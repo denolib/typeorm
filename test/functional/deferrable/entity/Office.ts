@@ -8,14 +8,14 @@ import {Company} from "./Company.ts";
 export class Office {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @ManyToOne(type => Company, company => company.id, {
-        deferrable: "INITIALLY IMMEDIATE",
+        deferrable!: "INITIALLY IMMEDIATE",
     })
-    company: Company;
+    company!: Company;
 }
 

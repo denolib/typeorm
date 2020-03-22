@@ -8,12 +8,12 @@ import {Column} from "../../../../../src/decorator/columns/Column.ts";
 export class Category {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @ManyToOne(type => Post, post => post.categories)
-    post: Post;
+    post!: Post;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
 }

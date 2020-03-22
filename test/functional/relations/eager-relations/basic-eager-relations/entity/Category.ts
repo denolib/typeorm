@@ -9,13 +9,13 @@ import {Post} from "./Post.ts";
 export class Category {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @ManyToMany(type => Post, post => post.categories2)
     @JoinTable()
-    posts2: Post[];
+    posts2!: Post[];
 
 }

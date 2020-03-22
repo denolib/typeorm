@@ -6,6 +6,6 @@ import {BaseEntity} from "../../../../src/repository/BaseEntity.ts";
 export class Foo extends BaseEntity {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
 }

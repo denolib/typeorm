@@ -9,13 +9,13 @@ import {JoinTable} from "../../../../../src/decorator/relations/JoinTable.ts";
 export class User {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @ManyToMany(type => Post, post => post.counters.likedUsers)
     @JoinTable()
-    likedPosts: Post[];
+    likedPosts!: Post[];
 
 }

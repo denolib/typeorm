@@ -8,9 +8,9 @@ import {Author} from "./Author.ts";
 export class Post {
 
     @PrimaryGeneratedColumn("uuid")
-    id: string;
+    id!: string;
 
     @ManyToOne(type => Author)
     @JoinColumn()
-    author: Author;
+    author!: Author;
 }
