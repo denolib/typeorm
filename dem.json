@@ -22,7 +22,7 @@
     {
       "protocol": "https",
       "path": "deno.land/x/sha256",
-      "version": "v1.0.0",
+      "version": "v1.0.2",
       "files": [
         "/mod.ts"
       ]
