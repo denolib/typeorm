@@ -47,14 +47,14 @@ export class PostgresQueryRunner extends BaseQueryRunner implements QueryRunner 
     /**
      * Promise used to obtain a database connection for a first time.
      */
-    protected databaseConnectionPromise: Promise<PoolClient>;
+    protected databaseConnectionPromise!: Promise<PoolClient>;
 
     /**
      * Special callback provided by a driver used to release a created connection.
      */
-    protected releaseCallback: () => Promise<void>;
+    protected releaseCallback!: () => Promise<void>;
 
-    protected databaseConnection: PoolClient;
+    protected databaseConnection!: PoolClient;
 
     // -------------------------------------------------------------------------
     // Constructor
@@ -170,7 +170,7 @@ export class PostgresQueryRunner extends BaseQueryRunner implements QueryRunner 
             });
         }
         const queue = this.queryQueueMap.get(connection);
-        return queue.add(() => connection.query(query, ...parameters));
+        return queue!.add(() => connection.query(query, ...parameters));
     }
 
     /**
@@ -221,10 +221,10 @@ export class PostgresQueryRunner extends BaseQueryRunner implements QueryRunner 
             // TODO(uki00a) Use `QueryResult#rowsOfObjects`.
             // return result.rowsOfObjects();
             const rawObjects = [];
-            for (const row of result.rows) {
-                const rawObject = {};
-                for (let i = 0; i < result.rowDescription.columnCount; i++) {
-                    const column= result.rowDescription.columns[i];
+            for (const row of result!.rows) {
+                const rawObject = {} as { [column: string]: any };
+                for (let i = 0; i < result!.rowDescription.columnCount; i++) {
+                    const column= result!.rowDescription.columns[i];
                     rawObject[column.name] = row[i];
                 }
                 rawObjects.push(rawObject);

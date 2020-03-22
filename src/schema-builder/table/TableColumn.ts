@@ -12,12 +12,12 @@ export class TableColumn {
     /**
      * Column name.
      */
-    name: string;
+    name!: string;
 
     /**
      * Column type.
      */
-    type: string;
+    type!: string;
 
     /**
      * Column's default value.

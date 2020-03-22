@@ -52,12 +52,12 @@ export class ForeignKeyMetadata {
     /**
      * Gets the table name to which this foreign key is referenced.
      */
-    referencedTablePath: string;
+    referencedTablePath!: string;
 
     /**
      * Gets foreign key name.
      */
-    name: string;
+    name!: string;
 
     /**
      * Gets array of column names.

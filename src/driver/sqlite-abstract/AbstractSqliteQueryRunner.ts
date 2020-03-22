@@ -31,7 +31,7 @@ export abstract class AbstractSqliteQueryRunner extends BaseQueryRunner implemen
     /**
      * Database driver used by connection.
      */
-    driver: AbstractSqliteDriver;
+    driver!: AbstractSqliteDriver;
 
     // -------------------------------------------------------------------------
     // Constructor

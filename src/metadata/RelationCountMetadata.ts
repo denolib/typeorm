@@ -20,7 +20,7 @@ export class RelationCountMetadata {
     /**
      * Relation which needs to be counted.
      */
-    relation: RelationMetadata;
+    relation!: RelationMetadata;
 
     /**
      * Relation name which need to count.

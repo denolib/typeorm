@@ -24,7 +24,7 @@ export class ExclusionMetadata {
     /**
      * Exclusion expression.
      */
-    expression: string;
+    expression!: string;
 
     /**
      * User specified exclusion constraint name.
@@ -36,7 +36,7 @@ export class ExclusionMetadata {
      * If exclusion constraint name was given by a user then it stores normalized (by naming strategy) givenName.
      * If exclusion constraint name was not given then its generated.
      */
-    name: string;
+    name!: string;
 
     // ---------------------------------------------------------------------
     // Constructor

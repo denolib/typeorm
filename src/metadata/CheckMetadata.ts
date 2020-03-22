@@ -24,7 +24,7 @@ export class CheckMetadata {
     /**
      * Check expression.
      */
-    expression: string;
+    expression!: string;
 
     /**
      * User specified check constraint name.
@@ -36,7 +36,7 @@ export class CheckMetadata {
      * If check constraint name was given by a user then it stores normalized (by naming strategy) givenName.
      * If check constraint name was not given then its generated.
      */
-    name: string;
+    name!: string;
 
     // ---------------------------------------------------------------------
     // Constructor

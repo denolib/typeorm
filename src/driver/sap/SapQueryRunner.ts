@@ -49,7 +49,7 @@ export class SapQueryRunner extends BaseQueryRunner implements QueryRunner {
     /**
      * Promise used to obtain a database connection from a pool for a first time.
      */
-    protected databaseConnectionPromise: Promise<any>;
+    protected databaseConnectionPromise!: Promise<any>;
 
     // -------------------------------------------------------------------------
     // Constructor

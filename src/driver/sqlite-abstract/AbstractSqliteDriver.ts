@@ -169,7 +169,7 @@ export abstract class AbstractSqliteDriver implements Driver {
      * Default values of length, precision and scale depends on column data type.
      * Used in the cases when length/precision/scale is not specified by user.
      */
-    dataTypeDefaults: DataTypeDefaults;
+    dataTypeDefaults!: DataTypeDefaults;
 
     /**
      * No documentation specifying a maximum length for identifiers could be found

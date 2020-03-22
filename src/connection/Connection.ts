@@ -260,7 +260,7 @@ export class Connection {
                 false/*this.driver instanceof SqlServerDriver ||*/ // TODO(uki00a) uncomment this when SqlServerDriver is implemented.
                 /* this.driver instanceof MysqlDriver ||*/ // TODO(uki00a) uncomment this when MysqlDriver is implemented.
                 /*this.driver instanceof AuroraDataApiDriver*/) { // TODO(uki00a) uncomment this when AuroraDataApiDriver is implemented.
-                const databases: string[] = this.driver.database ? [this.driver.database] : [];
+                const databases: string[] = this.driver.database ? [this.driver.database!] : [] as string[];
                 this.entityMetadatas.forEach(metadata => {
                     if (metadata.database && databases.indexOf(metadata.database) === -1)
                         databases.push(metadata.database);

@@ -26,7 +26,7 @@ export class EntitySchemaOptions<T> {
     /**
      * Entity name.
      */
-    name: string;
+    name!: string;
 
     /**
      * Table name.
@@ -56,7 +56,7 @@ export class EntitySchemaOptions<T> {
     /**
      * Entity column's options.
      */
-    columns: {
+    columns!: {
         [P in keyof T]?: EntitySchemaColumnOptions;
     };
 

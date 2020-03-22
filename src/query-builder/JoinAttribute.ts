@@ -18,17 +18,17 @@ export class JoinAttribute {
     /**
      * Join direction.
      */
-    direction: "LEFT"|"INNER";
+    direction!: "LEFT"|"INNER";
 
     /**
      * Alias of the joined (destination) table.
      */
-    alias: Alias;
+    alias!: Alias;
 
     /**
      * Joined table, entity target, or relation in "post.category" format.
      */
-    entityOrProperty: Function|string;
+    entityOrProperty!: Function|string;
 
     /**
      * Extra condition applied to "ON" section of join.
@@ -70,7 +70,7 @@ export class JoinAttribute {
     }
 
 
-    isSelectedCache: boolean;
+    isSelectedCache!: boolean;
     isSelectedEvaluated: boolean = false;
     /**
      * Indicates if this join is selected.

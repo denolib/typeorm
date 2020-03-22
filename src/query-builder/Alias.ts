@@ -5,9 +5,9 @@ import { ObjectUtils } from "../util/ObjectUtils.ts";
  */
 export class Alias {
 
-    type: "from"|"select"|"join"|"other"; // todo: make something with "other"
+    type!: "from"|"select"|"join"|"other"; // todo: make something with "other"
 
-    name: string;
+    name!: string;
 
     /**
      * Table on which this alias is applied.

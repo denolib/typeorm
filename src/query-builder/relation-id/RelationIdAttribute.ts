@@ -22,12 +22,12 @@ export class RelationIdAttribute {
     /**
      * Name of relation.
      */
-    relationName: string;
+    relationName!: string;
 
     /**
      * Property + alias of the object where to joined data should be mapped.
      */
-    mapToProperty: string;
+    mapToProperty!: string;
 
     /**
      * Extra condition applied to "ON" section of join.

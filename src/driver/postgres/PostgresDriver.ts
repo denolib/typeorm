@@ -45,7 +45,7 @@ export class PostgresDriver implements Driver {
     /**
      * Pool for master database.
      */
-    private master: DenoPostgres.Pool;
+    private master?: DenoPostgres.Pool;
 
     /**
      * Pool for slave databases.
@@ -317,7 +317,7 @@ export class PostgresDriver implements Driver {
         });
         if (hasUuidColumns || hasCitextColumns || hasHstoreColumns || hasGeometryColumns || hasCubeColumns || hasExclusionConstraints) {
             await Promise.all([this.master, ...this.slaves].map(async pool => {
-                const poolClient = await pool.connect();
+                const poolClient = await pool!.connect();
                 const { logger } = this.connection;
                 if (hasUuidColumns)
                     try {
@@ -767,7 +767,7 @@ export class PostgresDriver implements Driver {
      * If replication is not setup then returns default connection's database connection.
      */
     obtainMasterConnection(): Promise<[PoolClient, () => Promise<void>]> {
-        return this.obtainConnectionFromPool(this.master);
+        return this.obtainConnectionFromPool(this.master!);
     }
 
     /**

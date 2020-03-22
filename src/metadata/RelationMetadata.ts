@@ -24,14 +24,14 @@ export class RelationMetadata {
      *
      * For example for @ManyToMany(type => Category) in Post, entityMetadata will be metadata of Post entity.
      */
-    entityMetadata: EntityMetadata;
+    entityMetadata!: EntityMetadata;
 
     /**
      * Entity metadata of the entity that is targeted by this relation.
      *
      * For example for @ManyToMany(type => Category) in Post, inverseEntityMetadata will be metadata of Category entity.
      */
-    inverseEntityMetadata: EntityMetadata;
+    inverseEntityMetadata!: EntityMetadata;
 
     /**
      * Entity metadata of the junction table.
@@ -73,7 +73,7 @@ export class RelationMetadata {
      * For example it will return "counters.subcounters.likes".
      * If property is not in embeds then it returns just property name of the column.
      */
-    propertyPath: string;
+    propertyPath!: string;
 
     /**
      * Indicates if this is a parent (can be only many-to-one relation) relation in the tree tables.
@@ -208,7 +208,7 @@ export class RelationMetadata {
     /**
      * Gets the property path of the inverse side of the relation.
      */
-    inverseSidePropertyPath: string;
+    inverseSidePropertyPath!: string;
 
     /**
      * Inverse side of the relation set by user.
@@ -217,7 +217,7 @@ export class RelationMetadata {
      * either can be a function that accepts a map of properties with the object and returns one of them.
      * Second approach is used to achieve type-safety.
      */
-    givenInverseSidePropertyFactory: PropertyTypeFactory<any>;
+    givenInverseSidePropertyFactory!: PropertyTypeFactory<any>;
 
     /**
      * Gets the relation metadata of the inverse side of this relation.
@@ -227,7 +227,7 @@ export class RelationMetadata {
     /**
      * Join table name.
      */
-    joinTableName: string;
+    joinTableName!: string;
 
     /**
      * Foreign keys created for this relation.

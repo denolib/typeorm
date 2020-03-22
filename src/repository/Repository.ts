@@ -27,12 +27,12 @@ export class Repository<Entity extends ObjectLiteral> {
     /**
      * Entity Manager used by this repository.
      */
-    readonly manager: EntityManager;
+    readonly manager!: EntityManager;
 
     /**
      * Entity metadata of the entity current repository manages.
      */
-    readonly metadata: EntityMetadata;
+    readonly metadata!: EntityMetadata;
 
     /**
      * Query runner provider used for this repository.

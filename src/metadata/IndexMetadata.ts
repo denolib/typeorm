@@ -89,7 +89,7 @@ export class IndexMetadata {
      * If index name was given by a user then it stores normalized (by naming strategy) givenName.
      * If index name was not given then its generated.
      */
-    name: string;
+    name!: string;
 
     /**
      * Index filter condition.

@@ -22,7 +22,7 @@ export class Table {
      * Contains database name, schema name and table name.
      * E.g. "myDB"."mySchema"."myTable"
      */
-    name: string;
+    name!: string;
 
     /**
      * Table columns.
