@@ -6,11 +6,11 @@ import {Entity, ObjectIdColumn, /*ObjectID,*/ Column} from "../../../../src/inde
 @Entity()
 export class Config {
   @ObjectIdColumn()
-  _id: any;/*ObjectID;*/ // TODO(uki00a) uncomment this when MongoDriver is implemented.
+  _id!: any;/*ObjectID;*/ // TODO(uki00a) uncomment this when MongoDriver is implemented.
 
   @Column({ type: String })
-  itemId: string;
+  itemId!: string;
 
   @Column({ type: "json" })
-  data: any;
+  data!: any;
 }

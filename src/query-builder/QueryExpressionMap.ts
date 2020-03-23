@@ -70,7 +70,7 @@ export class QueryExpressionMap {
     /**
      * Optional returning (or output) clause for insert, update or delete queries.
      */
-    returning: string|string[];
+    returning!: string|string[];
 
     /**
      * Extra returning columns to be added to the returning statement if driver supports it.
@@ -90,7 +90,7 @@ export class QueryExpressionMap {
     /**
      * Optional on update statement used in insertion query in databases.
      */
-    onUpdate: { columns?: string, conflict?: string, overwrite?: string };
+    onUpdate!: { columns?: string, conflict?: string, overwrite?: string };
 
     /**
      * JOIN queries.
@@ -190,7 +190,7 @@ export class QueryExpressionMap {
     /**
      * If QueryBuilder was created in a subquery mode then its parent QueryBuilder (who created subquery) will be stored here.
      */
-    parentQueryBuilder: QueryBuilder<any>;
+    parentQueryBuilder!: QueryBuilder<any>;
 
     /**
      * Indicates if property names are prefixed with alias names during property replacement.
@@ -208,13 +208,13 @@ export class QueryExpressionMap {
      * Time in milliseconds in which cache will expire.
      * If not set then global caching time will be used.
      */
-    cacheDuration: number;
+    cacheDuration!: number;
 
     /**
      * Cache id.
      * Used to identifier your cache queries.
      */
-    cacheId: string;
+    cacheId!: string;
 
     /**
      * Options that define QueryBuilder behaviour.
@@ -225,7 +225,7 @@ export class QueryExpressionMap {
      * Property path of relation to work with.
      * Used in relational query builder.
      */
-    relationPropertyPath: string;
+    relationPropertyPath!: string;
 
     /**
      * Entity (target) which relations will be updated.

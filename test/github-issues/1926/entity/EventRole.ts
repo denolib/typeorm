@@ -6,24 +6,24 @@ import {Role} from "./Role.ts";
 export class EventRole {
 
     @PrimaryColumn({ type: String })
-    eventId: string;
+    eventId!: string;
 
     @PrimaryColumn({ type: String })
-    roleId: string;
+    roleId!: string;
 
     @Column({ type: String })
-    description: string;
+    description!: string;
 
     @Column({ type: String })
-    compensation: string;
+    compensation!: string;
 
     @ManyToOne(type => Role, role => role.roles, {
-        onDelete: "CASCADE"
+        onDelete!: "CASCADE"
     })
-    role: Role;
+    role!: Role;
 
     @ManyToOne(type => Event, event => event.roles, {
-        onDelete: "CASCADE"
+        onDelete!: "CASCADE"
     })
-    event: Event;
+    event!: Event;
 }

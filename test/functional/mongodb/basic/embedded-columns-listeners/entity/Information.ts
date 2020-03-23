@@ -3,10 +3,10 @@ import {AfterLoad, BeforeInsert} from "../../../../../../src/index.ts";
 
 export class Information {
 
-    @Column({ type: String })
+    @Column({ type!: String })
     description?: string;
 
-    @Column({ type: Number })
+    @Column({ type!: Number })
     comments?: number;
 
     @BeforeInsert()

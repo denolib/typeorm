@@ -5,9 +5,9 @@ import {Column} from "../../../../src/decorator/columns/Column.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column("int", { array: true, nullable: true})
-    skill_id_array: number[];
+    skill_id_array!: number[];
 
 }

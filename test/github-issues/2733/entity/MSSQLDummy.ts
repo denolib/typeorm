@@ -5,9 +5,9 @@ import {Entity} from "../../../../src/decorator/entity/Entity.ts";
 @Entity()
 export class Dummy {
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String, nullable: true, default: () => "GETDATE()" })
-    UploadDate: string;
+    UploadDate!: string;
 }
 

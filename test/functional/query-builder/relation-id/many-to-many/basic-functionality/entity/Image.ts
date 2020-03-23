@@ -6,9 +6,9 @@ import {Column} from "../../../../../../../src/decorator/columns/Column.ts";
 export class Image {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
 }

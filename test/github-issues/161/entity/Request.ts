@@ -8,18 +8,18 @@ import {Column} from "../../../../src/decorator/columns/Column.ts";
 export class Request {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    owner: string;
+    owner!: string;
 
     @Column({ type: String })
-    type: string;
+    type!: string;
 
     @Column({ type: Boolean })
-    success: boolean;
+    success!: boolean;
 
     @OneToOne(type => Ticket, ticket => ticket.request)
-    ticket: Ticket;
+    ticket!: Ticket;
 
 }

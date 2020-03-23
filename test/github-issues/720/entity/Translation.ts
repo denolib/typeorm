@@ -7,17 +7,17 @@ import {Message} from "./Message.ts";
 import {Locale} from "./Locale.ts";
 
 @Entity()
-@Index(["locale", "message"], { unique: true })
+@Index(["locale", "message"], { unique!: true })
 export class Translation {
 
-    @ManyToOne(() => Locale, { primary: true, nullable: false })
+    @ManyToOne(() => Locale, { primary: true, nullable!: false })
     @JoinColumn()
-    locale: Locale;
+    locale!: Locale;
 
-    @ManyToOne(() => Message, { primary: true, nullable: false })
+    @ManyToOne(() => Message, { primary: true, nullable!: false })
     @JoinColumn()
-    message: Message;
+    message!: Message;
 
     @Column("text")
-    text: string;
+    text!: string;
 }

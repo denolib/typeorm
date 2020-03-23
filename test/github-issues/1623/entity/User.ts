@@ -4,15 +4,15 @@ import {Column, Entity, PrimaryGeneratedColumn} from "../../../../src/index.ts";
 export class User {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    firstName: string;
+    firstName!: string;
 
     @Column({ type: String })
-    lastName: string;
+    lastName!: string;
 
     @Column({ type: Number })
-    age: number;
+    age!: number;
 
 }

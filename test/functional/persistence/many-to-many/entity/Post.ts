@@ -9,13 +9,13 @@ import {JoinTable} from "../../../../../src/decorator/relations/JoinTable.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @ManyToMany(type => Category, category => category.posts)
     @JoinTable()
-    categories: Category[]|null;
+    categories!: Category[]|null;
 
 }

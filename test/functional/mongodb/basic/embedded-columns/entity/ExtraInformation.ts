@@ -4,6 +4,6 @@ import {EditHistory} from "./EditHistory.ts";
 export class ExtraInformation {
 
     @Column(type => EditHistory)
-    lastEdit: EditHistory;
+    lastEdit!: EditHistory;
 
 }

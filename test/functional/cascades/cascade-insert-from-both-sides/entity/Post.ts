@@ -9,15 +9,15 @@ import {JoinColumn} from "../../../../../src/decorator/relations/JoinColumn.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    key: number;
+    key!: number;
 
     @OneToOne(type => PostDetails, details => details.post, {
-        cascade: ["insert"]
+        cascade!: ["insert"]
     })
     @JoinColumn()
-    details: PostDetails;
+    details!: PostDetails;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
 }

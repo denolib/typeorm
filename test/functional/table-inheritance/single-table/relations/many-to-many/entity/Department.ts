@@ -8,12 +8,12 @@ import {Accountant} from "./Accountant.ts";
 export class Department {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @ManyToMany(type => Accountant, accountant => accountant.departments)
-    accountants: Accountant[];
+    accountants!: Accountant[];
 
 }

@@ -45,7 +45,7 @@ export class EntityMetadata {
     /**
      * If entity's table is a closure-typed table, then this entity will have a closure junction table metadata.
      */
-    closureJunctionTable: EntityMetadata;
+    closureJunctionTable!: EntityMetadata;
 
     /**
      * If this is entity metadata for a junction closure table then its owner closure table metadata will be set here.
@@ -55,7 +55,7 @@ export class EntityMetadata {
     /**
      * Parent's entity metadata. Used in inheritance patterns.
      */
-    parentEntityMetadata: EntityMetadata;
+    parentEntityMetadata!: EntityMetadata;
 
     /**
      * Children entity metadatas. Used in inheritance patterns.
@@ -84,14 +84,14 @@ export class EntityMetadata {
     /**
      * Gets the name of the target.
      */
-    targetName: string;
+    targetName!: string;
 
     /**
      * Entity's name.
      * Equal to entity target class's name if target is set to table.
      * If target class is not then then it equals to table name.
      */
-    name: string;
+    name!: string;
 
     /**
      * View's expression.
@@ -116,13 +116,13 @@ export class EntityMetadata {
      * This name already passed naming strategy, and generated based on
      * multiple criteria, including user table name and global table prefix.
      */
-    tableName: string;
+    tableName!: string;
 
     /**
      * Entity table path. Contains database name, schema name and table name.
      * E.g. myDB.mySchema.myTable
      */
-    tablePath: string;
+    tablePath!: string;
 
     /**
      * Entity schema path. Contains database name and schema name.
@@ -136,7 +136,7 @@ export class EntityMetadata {
      * for example when you want to name a junction table that contains names of two other tables,
      * you may want a table name without prefix.
      */
-    tableNameWithoutPrefix: string;
+    tableNameWithoutPrefix!: string;
 
     /**
      * Indicates if schema will be synchronized for this entity or not.
@@ -476,7 +476,7 @@ export class EntityMetadata {
      * This method will create following object:
      * { id: "id", counterEmbed: { count: "counterEmbed.count" }, category: "category" }
      */
-    propertiesMap: ObjectLiteral;
+    propertiesMap!: ObjectLiteral;
 
     // ---------------------------------------------------------------------
     // Constructor

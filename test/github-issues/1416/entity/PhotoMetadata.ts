@@ -5,23 +5,23 @@ import {Photo} from "./Photo.ts";
 export class PhotoMetadata {
 
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column("int")
-  height: number;
+  height!: number;
 
   @Column("int")
-  width: number;
+  width!: number;
 
   @Column({ type: String })
-  orientation: string;
+  orientation!: string;
 
   @Column({ type: Boolean })
-  compressed: boolean;
+  compressed!: boolean;
 
   @Column({ type: String })
-  comment: string;
+  comment!: string;
 
   @OneToOne(type => Photo, photo => photo.metadata)
-  photo: Photo;
+  photo!: Photo;
 }

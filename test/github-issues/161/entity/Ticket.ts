@@ -9,15 +9,15 @@ import {Column} from "../../../../src/decorator/columns/Column.ts";
 export class Ticket {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @OneToOne(type => Request, {
-        cascade: true
+        cascade!: true
     })
     @JoinColumn()
-    request: Request;
+    request!: Request;
 
 }

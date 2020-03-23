@@ -5,6 +5,6 @@ import {PrimaryColumn} from "../../../../../src/decorator/columns/PrimaryColumn.
 export class PostDetails {
 
     @PrimaryColumn({ type: String })
-    keyword: string;
+    keyword!: string;
 
 }

@@ -6,13 +6,13 @@ import {Category} from "./Category.ts";
 export class Question {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @ManyToMany("Category")
     @JoinTable()
-    categories: Category[];
+    categories!: Category[];
 
 }

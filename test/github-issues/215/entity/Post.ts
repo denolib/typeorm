@@ -9,14 +9,14 @@ import {JoinColumn} from "../../../../src/decorator/relations/JoinColumn.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @OneToOne(type => Author)
     @JoinColumn({name: "author_id"})
-    author: Author;
+    author!: Author;
 
     @OneToOne(type => Abbreviation)
     @JoinColumn({name: "abbreviation_id"})
-    abbreviation: Abbreviation;
+    abbreviation!: Abbreviation;
 
 }

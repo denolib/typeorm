@@ -16,7 +16,7 @@ export class UniqueMetadata {
     /**
      * Entity metadata of the class to which this unique constraint is applied.
      */
-    entityMetadata: EntityMetadata;
+    entityMetadata!: EntityMetadata;
 
     /**
      * Embedded metadata if this unique was applied on embedded.
@@ -48,7 +48,7 @@ export class UniqueMetadata {
      * If unique constraint name was given by a user then it stores normalized (by naming strategy) givenName.
      * If unique constraint name was not given then its generated.
      */
-    name: string;
+    name!: string;
 
     /**
      * Map of column names with order set.

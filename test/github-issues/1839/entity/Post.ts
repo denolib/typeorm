@@ -6,10 +6,10 @@ import {Category} from "./Category.ts";
 export class Post {
 
     @PrimaryColumn({ type: String, collation: "utf8_unicode_ci", charset: "utf8" })
-    id: string;
+    id!: string;
 
     @ManyToMany(type => Category, category => category.posts)
     @JoinTable()
-    categories: Category[];
+    categories!: Category[];
 
 }

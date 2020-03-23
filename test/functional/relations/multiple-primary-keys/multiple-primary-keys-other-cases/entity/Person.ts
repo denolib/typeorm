@@ -8,10 +8,10 @@ import {User} from "./User.ts";
 export class Person {
 
     @Column({ type: String })
-    fullName: string;
+    fullName!: string;
 
-    @OneToOne(type => User, { primary: true })
+    @OneToOne(type => User, { primary!: true })
     @JoinColumn()
-    user: User;
+    user!: User;
 
 }

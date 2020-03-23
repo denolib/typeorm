@@ -6,13 +6,13 @@ import {Column} from "../../../../src/decorator/columns/Column.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
-    @Column({ type: String, name: "title" })
-    private _title: string;
+    @Column({ type: String, name!: "title" })
+    private _title!: string;
 
     @Column({ type: String })
-    text: string;
+    text!: string;
 
     set title(title: string) {
         this._title = title;

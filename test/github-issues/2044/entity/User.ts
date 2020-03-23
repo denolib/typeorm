@@ -7,9 +7,9 @@ import {Photo} from "./Photo.ts";
 export class User {
 
     @PrimaryColumn("binary", {
-        length: 2
+        length!: 2
     })
-    private _id: Uint8Array;
+    private _id!: Uint8Array;
 
     get id(): string {
         //const decoder = new StringDecoder("hex");
@@ -21,9 +21,9 @@ export class User {
     }
 
     @Column({ type: Number })
-    age: number;
+    age!: number;
 
     @OneToMany(type => Photo, photo => photo.user)
-    photos: Photo[];
+    photos!: Photo[];
 
 }

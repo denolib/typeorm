@@ -8,12 +8,12 @@ import {Category} from "./Category.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @OneToMany(type => Category, category => category.post)
-    categories: Promise<Category[]>;
+    categories!: Promise<Category[]>;
 
 }

@@ -4,16 +4,16 @@ import {PrimaryGeneratedColumn} from "../../../../../src/decorator/columns/Prima
 import {Column} from "../../../../../src/decorator/columns/Column.ts";
 
 @Entity()
-@Index("index_name_english", ["nameEnglish"], { unique: true })
+@Index("index_name_english", ["nameEnglish"], { unique!: true })
 export class Customer {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    nameHebrew: string;
+    nameHebrew!: string;
 
     @Column({ type: String })
-    nameEnglish: string;
+    nameEnglish!: string;
 
 }

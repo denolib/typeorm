@@ -5,12 +5,12 @@ import {Photo} from "./Photo.ts";
 export class Author {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @OneToMany(type => Photo, photo => photo.author)
-    photos: Photo[];
+    photos!: Photo[];
 
 }

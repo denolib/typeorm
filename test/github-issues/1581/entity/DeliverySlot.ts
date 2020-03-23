@@ -4,9 +4,9 @@ import {Column, Entity, PrimaryGeneratedColumn} from "../../../../src/index.ts";
 export class DeliverySlot {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
 }

@@ -6,12 +6,12 @@ import {Product} from "./Product.ts";
 export class OrderItem {
 
     @ManyToOne(type => Order, recurringOrder => recurringOrder.items, { primary: true })
-    order: Order;
+    order!: Order;
 
     @ManyToOne(type => Product, { primary: true })
-    product: Product;
+    product!: Product;
 
     @Column({ type: Number })
-    amount: number;
+    amount!: number;
 
 }

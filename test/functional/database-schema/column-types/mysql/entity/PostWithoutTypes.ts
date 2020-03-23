@@ -6,18 +6,18 @@ import {Column} from "../../../../../../src/decorator/columns/Column.ts";
 export class PostWithoutTypes {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @Column({ type: Boolean })
-    boolean: boolean;
+    boolean!: boolean;
 
     @Column({ type: Uint8Array })
-    blob: Uint8Array; /* Buffer; */
+    blob!: Uint8Array; /* Buffer; */
 
     @Column({ type: Date })
-    datetime: Date;
+    datetime!: Date;
 
 }

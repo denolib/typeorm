@@ -4,11 +4,11 @@ import {Shim} from "../shim.ts";
 export class Photo {
 
     @Shim.PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Shim.Column({ type: String })
-    url: string;
+    url!: string;
 
-    user: any;
+    user!: any;
 
 }

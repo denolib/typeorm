@@ -6,17 +6,17 @@ import {Column} from "../../../../../src/decorator/columns/Column.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number|undefined|null|string;
+    id!: number|undefined|null|string;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @Column({
-        type: "date",
+        type!: "date",
         transformer: {
             from: (value: any) => new Date(value),
             to: (value: Date) => value.toISOString(),
         }
     })
-    dateAdded: Date;
+    dateAdded!: Date;
 }

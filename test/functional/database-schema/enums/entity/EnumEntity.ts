@@ -36,54 +36,54 @@ export type ArrayDefinedNumericEnumType = 11 | 12 | 13;
 export class EnumEntity {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column({
-        type: "enum",
+        type!: "enum",
         enum: NumericEnum,
-        default: NumericEnum.MODERATOR
+        default!: NumericEnum.MODERATOR
     })
-    numericEnum: NumericEnum;
+    numericEnum!: NumericEnum;
 
     @Column({
-        type: "enum",
+        type!: "enum",
         enum: StringEnum,
-        default: StringEnum.GHOST
+        default!: StringEnum.GHOST
     })
-    stringEnum: StringEnum;
+    stringEnum!: StringEnum;
 
     @Column({
-        type: "enum",
+        type!: "enum",
         enum: StringNumericEnum,
-        default: StringNumericEnum.FOUR
+        default!: StringNumericEnum.FOUR
     })
-    stringNumericEnum: StringNumericEnum;
+    stringNumericEnum!: StringNumericEnum;
 
     @Column({
-        type: "enum",
+        type!: "enum",
         enum: HeterogeneousEnum,
-        default: HeterogeneousEnum.NO
+        default!: HeterogeneousEnum.NO
     })
-    heterogeneousEnum: HeterogeneousEnum;
+    heterogeneousEnum!: HeterogeneousEnum;
 
     @Column({
-        type: "enum",
+        type!: "enum",
         enum: ["admin", "editor", "ghost"],
-        default: "ghost"
+        default!: "ghost"
     })
-    arrayDefinedStringEnum: ArrayDefinedStringEnumType;
+    arrayDefinedStringEnum!: ArrayDefinedStringEnumType;
 
     @Column({
-        type: "enum",
+        type!: "enum",
         enum: [11, 12, 13],
-        default: 12
+        default!: 12
     })
-    arrayDefinedNumericEnum: ArrayDefinedNumericEnumType;
+    arrayDefinedNumericEnum!: ArrayDefinedNumericEnumType;
 
     @Column({
-        type: "enum",
-        enum: StringEnum,
+        type!: "enum",
+        enum!: StringEnum,
     })
-    enumWithoutdefault: StringEnum;
+    enumWithoutdefault!: StringEnum;
 
 }

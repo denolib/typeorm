@@ -7,12 +7,12 @@ import {Category} from "./Category.ts";
 export class Post {
 
     @ManyToOne(type => Category, category => category.posts, {
-        primary: true,
-        cascade: ["insert"]
+        primary!: true,
+        cascade!: ["insert"]
     })
-    category: Category;
+    category!: Category;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
 }

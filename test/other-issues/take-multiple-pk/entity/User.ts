@@ -7,15 +7,15 @@ import {Role} from "./Role.ts";
 
 @Entity()
 export class User {
-  @PrimaryColumn({ type: Number }) id: number;
+  @PrimaryColumn({ type: Number }) id!: number;
 
-  @PrimaryColumn({ type: String }) name: string;
+  @PrimaryColumn({ type: String }) name!: string;
 
-  @Column({ type: String }) handedness: string;
+  @Column({ type: String }) handedness!: string;
 
   @ManyToMany(type => Role, {
-      cascade: ["insert"]
+      cascade!: ["insert"]
 })
   @JoinTable()
-  roles: Role[];
+  roles!: Role[];
 }

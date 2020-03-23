@@ -6,15 +6,15 @@ import {PrimaryColumn} from "../../../../src/decorator/columns/PrimaryColumn.ts"
 export class Category {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @Column({ type: String })
-    postText: string;
+    postText!: string;
 
     @Column({ type: String })
-    postTag: string;
+    postTag!: string;
 
 }

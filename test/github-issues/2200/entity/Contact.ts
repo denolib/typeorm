@@ -5,8 +5,8 @@ import { Booking } from "./Booking.ts";
 export class Contact {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @OneToMany(type => Booking, booking => booking.contact)
-    bookings: Booking[];
+    bookings!: Booking[];
 }

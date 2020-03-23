@@ -4,9 +4,9 @@ import {Column, Entity, PrimaryGeneratedColumn} from "../../../../src/index.ts";
 export class User {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column("varchar", { array: true })
-    names: string[];
+    names!: string[];
 
 }

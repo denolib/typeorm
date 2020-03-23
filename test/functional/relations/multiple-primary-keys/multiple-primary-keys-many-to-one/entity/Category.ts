@@ -10,30 +10,30 @@ import {Unique} from "../../../../../../src/index.ts";
 export class Category {
 
     @PrimaryColumn({type: String})
-    name: string;
+    name!: string;
 
     @PrimaryColumn({type: String})
-    type: string;
+    type!: string;
 
     @Column({type: Number})
-    code: number;
+    code!: number;
 
     @Column({type: Number})
-    version: number;
+    version!: number;
 
     @Column({nullable: true, type: String})
-    description: string;
+    description!: string;
 
     @OneToMany(type => Post, post => post.category)
-    posts: Post[];
+    posts!: Post[];
 
     @OneToMany(type => Post, post => post.categoryWithJoinColumn)
-    postsWithJoinColumn: Post[];
+    postsWithJoinColumn!: Post[];
 
     @OneToMany(type => Post, post => post.categoryWithOptions)
-    postsWithOptions: Post[];
+    postsWithOptions!: Post[];
 
     @OneToMany(type => Post, post => post.categoryWithNonPKColumns)
-    postsWithNonPKColumns: Post[];
+    postsWithNonPKColumns!: Post[];
 
 }

@@ -25,7 +25,7 @@ export class AbstractRepository<Entity extends ObjectLiteral> {
     /**
      * Gets entity manager that allows to perform repository operations with any entity.
      */
-    protected manager: EntityManager;
+    protected manager!: EntityManager;
 
     // -------------------------------------------------------------------------
     // Protected Accessors

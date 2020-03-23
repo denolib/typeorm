@@ -9,13 +9,13 @@ import {Author} from "./Author.ts";
 export class Category {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @ManyToMany(type => Author)
     @JoinTable()
-    authors: Author[];
+    authors!: Author[];
 
 }

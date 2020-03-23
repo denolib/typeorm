@@ -41,7 +41,7 @@ export class RdbmsSchemaBuilder implements SchemaBuilder {
     /**
      * Used to execute schema creation queries in a single connection.
      */
-    protected queryRunner: QueryRunner;
+    protected queryRunner!: QueryRunner;
 
     // -------------------------------------------------------------------------
     // Constructor

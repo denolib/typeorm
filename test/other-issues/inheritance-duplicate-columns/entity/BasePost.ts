@@ -4,6 +4,6 @@ import {BaseContent} from "./BaseContent.ts";
 export class BasePost extends BaseContent {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
 }

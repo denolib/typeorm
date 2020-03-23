@@ -10,18 +10,18 @@ import {User} from "./User.ts";
 export class Photo {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    filename: string;
+    filename!: string;
 
     @ManyToOne(type => User)
-    user: User;
+    user!: User;
 
     @ManyToOne(type => Post, post => post.photos)
-    post: Post;
+    post!: Post;
 
     @Column(type => Counters)
-    counters: Counters;
+    counters!: Counters;
 
 }

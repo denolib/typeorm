@@ -5,15 +5,15 @@ import {EventRole} from "./EventRole.ts";
 export class Event {
 
     @PrimaryGeneratedColumn("uuid")
-    id: string;
+    id!: string;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @OneToMany(type => EventRole, role => role.event, {
-        // eager: true,
+        // eager!: true,
         // persistence: true,
-        cascade: true,
+        cascade!: true,
     })
-    roles: EventRole[];
+    roles!: EventRole[];
 }

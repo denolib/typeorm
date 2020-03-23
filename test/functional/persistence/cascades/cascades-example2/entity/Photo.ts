@@ -6,10 +6,10 @@ import {PrimaryGeneratedColumn} from "../../../../../../src/decorator/columns/Pr
 export class Photo {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ default: "My photo", type: String })
-    name: string;
+    name!: string;
 
 
 }

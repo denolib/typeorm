@@ -5,8 +5,8 @@ import {Column} from "../../../../src/decorator/columns/Column.ts";
 @Entity()
 export class Car {
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 }

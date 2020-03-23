@@ -13,22 +13,22 @@ import {Editor} from "./Editor.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
-    @ManyToMany(type => Category, { eager: true })
+    @ManyToMany(type => Category, { eager!: true })
     @JoinTable()
-    categories1: Category[];
+    categories1!: Category[];
 
     @ManyToMany(type => Category, category => category.posts2, { eager: true })
-    categories2: Category[];
+    categories2!: Category[];
 
     @ManyToOne(type => User, { eager: true })
-    author: User;
+    author!: User;
 
     @OneToMany(type => Editor, editor => editor.post, { eager: true })
-    editors: Editor[];
+    editors!: Editor[];
 
 }

@@ -3,6 +3,6 @@ import {PrimaryGeneratedColumn} from "../../../../../src/decorator/columns/Prima
 export class Unit {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
 }

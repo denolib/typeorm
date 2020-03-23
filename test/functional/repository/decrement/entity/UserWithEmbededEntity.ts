@@ -2,21 +2,21 @@ import { Column, Entity, PrimaryColumn } from "../../../../../src/index.ts";
 
 class FriendStats {
     @Column({ default: 0, type: Number })
-    count: number;
+    count!: number;
 
     @Column({ default: 0, type: Number })
-    sent: number;
+    sent!: number;
 
     @Column({ default: 0 , type: Number})
-    received: number;
+    received!: number;
 }
 
 @Entity()
 export class UserWithEmbededEntity {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column(type => FriendStats)
-    friend: FriendStats;
+    friend!: FriendStats;
 }

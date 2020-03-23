@@ -5,9 +5,9 @@ import {PrimaryColumn} from "../../../../../../../src/decorator/columns/PrimaryC
 export class User {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @PrimaryColumn({ type: String })
-    name: string;
+    name!: string;
 
 }

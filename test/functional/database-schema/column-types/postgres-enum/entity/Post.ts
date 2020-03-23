@@ -6,14 +6,14 @@ import {PrimaryGeneratedColumn} from "../../../../../../src/index.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column("enum", { enum: ["A", "B", "C"] })
-    enum: string;
+    enum!: string;
 
     @Column("simple-enum", { enum: ["A", "B", "C"] })
-    simpleEnum: string;
+    simpleEnum!: string;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 }

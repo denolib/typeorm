@@ -8,12 +8,12 @@ import {OneToOne} from "../../../../../src/decorator/relations/OneToOne.ts";
 export class User {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @OneToOne(() => Post, post => post.counters.likedUser)
-    likedPost: Post;
+    likedPost!: Post;
 
 }

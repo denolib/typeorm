@@ -8,12 +8,12 @@ import {Post} from "./Post.ts";
 export class User {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @OneToMany(type => Post, post => post.counters.likedUser)
-    likedPosts: Post[];
+    likedPosts!: Post[];
 
 }

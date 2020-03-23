@@ -8,12 +8,12 @@ import {Post} from "./Post.ts";
 export class PostMetadata {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @OneToOne(type => Post, post => post.metadata)
-    post: Post|null;
+    post!: Post|null;
 
 }

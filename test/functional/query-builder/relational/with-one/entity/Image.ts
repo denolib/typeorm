@@ -8,12 +8,12 @@ import {Post} from "./Post.ts";
 export class Image {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    url: string;
+    url!: string;
 
     @OneToOne(type => Post, post => post.image)
-    post: Post;
+    post!: Post;
 
 }

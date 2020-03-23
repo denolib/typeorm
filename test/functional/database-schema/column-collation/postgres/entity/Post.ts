@@ -6,9 +6,9 @@ import {Column} from "../../../../../../src/decorator/columns/Column.ts";
 export class Post {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column({ collation: "en_US", type: String })
-    name: string;
+    name!: string;
 
 }

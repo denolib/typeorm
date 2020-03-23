@@ -6,21 +6,21 @@ import {Column} from "../../../../src/decorator/columns/Column";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column()
-    title: string;
+    title!: string;
 
     @Column({ type: "text" })
-    text: string;
+    text!: string;
 
     @Column({ type: "int" })
-    likesCount: number;
+    likesCount!: number;
 
     @Column({ type: "int" })
-    commentsCount: number;
+    commentsCount!: number;
 
     @Column({ type: "int" })
-    watchesCount: number;
+    watchesCount!: number;
 
 }

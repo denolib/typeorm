@@ -7,15 +7,15 @@ export class Post {
 
     @PrimaryColumn("integer")
     @Generated()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @Column({ type: String })
-    text: string;
+    text!: string;
 
     @Column({ nullable: false, type: Number })
-    likesCount: number;
+    likesCount!: number;
 
 }

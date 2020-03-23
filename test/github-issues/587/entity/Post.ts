@@ -12,17 +12,17 @@ import {Tag} from "./Tag.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    a: string;
+    a!: string;
 
     @Column({ type: String })
-    b: string;
+    b!: string;
 
     @Column({ type: String })
-    c: string;
+    c!: string;
 
     @ManyToOne(() => Tag)
-    tag: Tag;
+    tag!: Tag;
 }

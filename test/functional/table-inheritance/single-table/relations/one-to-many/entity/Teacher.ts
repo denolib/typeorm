@@ -7,6 +7,6 @@ import {Specialization} from "./Specialization.ts";
 export class Teacher extends Employee {
 
     @OneToMany(type => Specialization, specialization => specialization.teacher)
-    specializations: Specialization[];
+    specializations!: Specialization[];
 
 }

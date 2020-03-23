@@ -7,20 +7,20 @@ import {Generated} from "../../../../../src/decorator/Generated.ts";
 export class Question {
 
     @PrimaryGeneratedColumn("uuid")
-    id: string;
+    id!: string;
 
-    @Column({ type: String })
+    @Column({ type!: String })
     @Generated("uuid")
-    uuid: string;
+    uuid!: string;
 
     @Column("uuid")
-    uuid2: string;
+    uuid2!: string;
 
     @Column("uuid", { nullable: true })
-    uuid3: string|null;
+    uuid3!: string|null;
 
-    @Column({ nullable: true, type: String })
+    @Column({ nullable: true, type!: String })
     @Generated("uuid")
-    uuid4: string|null;
+    uuid4!: string|null;
 
 }

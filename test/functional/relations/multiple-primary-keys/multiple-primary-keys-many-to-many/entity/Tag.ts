@@ -9,59 +9,59 @@ import {Column} from "../../../../../../src/decorator/columns/Column.ts";
 export class Tag {
 
     @Column({type: Number})
-    code: number;
+    code!: number;
 
     @PrimaryColumn({type: String})
-    title: string;
+    title!: string;
 
     @PrimaryColumn({type: String})
-    description: string;
+    description!: string;
 
     @ManyToMany(type => Category, category => category.tags)
     @JoinTable()
-    categories: Category[];
+    categories!: Category[];
 
     @ManyToMany(type => Category, category => category.tagsWithOptions)
     @JoinTable({
-        name: "tag_categories",
+        name!: "tag_categories",
         joinColumns: [{
-            name: "tagTitle",
-            referencedColumnName: "title"
+            name!: "tagTitle",
+            referencedColumnName!: "title"
         }, {
-            name: "tagDescription",
-            referencedColumnName: "description"
+            name!: "tagDescription",
+            referencedColumnName!: "description"
         }],
-        inverseJoinColumns: [{
+        inverseJoinColumns!: [{
             name: "categoryName",
-            referencedColumnName: "name"
+            referencedColumnName!: "name"
         }, {
-            name: "categoryType",
-            referencedColumnName: "type"
+            name!: "categoryType",
+            referencedColumnName!: "type"
         }]
     })
-    categoriesWithOptions: Category[];
+    categoriesWithOptions!: Category[];
 
     @ManyToMany(type => Category, category => category.tagsWithNonPKColumns)
     @JoinTable({
-        name: "tag_categories_non_primary",
+        name!: "tag_categories_non_primary",
         joinColumns: [{
-            name: "tagTitle",
-            referencedColumnName: "title"
+            name!: "tagTitle",
+            referencedColumnName!: "title"
         }, {
-            name: "tagDescription",
-            referencedColumnName: "description"
+            name!: "tagDescription",
+            referencedColumnName!: "description"
         }],
-        inverseJoinColumns: [{
+        inverseJoinColumns!: [{
             name: "categoryCode",
-            referencedColumnName: "code"
+            referencedColumnName!: "code"
         }, {
-            name: "categoryVersion",
-            referencedColumnName: "version"
+            name!: "categoryVersion",
+            referencedColumnName!: "version"
         }, {
-            name: "categoryDescription",
-            referencedColumnName: "description"
+            name!: "categoryDescription",
+            referencedColumnName!: "description"
         }]
     })
-    categoriesWithNonPKColumns: Category[];
+    categoriesWithNonPKColumns!: Category[];
 
 }

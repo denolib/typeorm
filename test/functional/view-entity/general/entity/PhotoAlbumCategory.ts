@@ -19,14 +19,14 @@ import {Photo} from "./Photo.ts";
 export class PhotoAlbumCategory {
 
     @ViewColumn()
-    id: number;
+    id!: number;
 
     @ViewColumn()
-    name: string;
+    name!: string;
 
     @ViewColumn()
-    categoryName: string;
+    categoryName!: string;
 
     @ViewColumn()
-    albumName: string;
+    albumName!: string;
 }

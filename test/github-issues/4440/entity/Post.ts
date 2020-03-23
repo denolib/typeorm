@@ -5,12 +5,12 @@ import { Entity } from "../../../../src/decorator/entity/Entity.ts";
 @Entity()
 export class Post {
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column({
-        type: "simple-json",
-        nullable: true
+        type!: "simple-json",
+        nullable!: true
     })
-    jsonField: any;
+    jsonField!: any;
 
 }

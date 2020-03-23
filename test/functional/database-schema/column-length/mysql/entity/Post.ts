@@ -6,16 +6,16 @@ import {Column} from "../../../../../../src/decorator/columns/Column.ts";
 export class Post {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column("char", {
-        length: 50
+        length!: 50
     })
-    char: string;
+    char!: string;
 
     @Column("varchar", {
-        length: 50
+        length!: 50
     })
-    varchar: string;
+    varchar!: string;
 
 }

@@ -8,14 +8,14 @@ import {OneToMany} from "../../../../../../../src/decorator/relations/OneToMany.
 export class Category {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @OneToMany(type => Post, post => post.counters.category)
-    posts: Post[];
+    posts!: Post[];
 
-    postIds: number[];
+    postIds!: number[];
 
 }

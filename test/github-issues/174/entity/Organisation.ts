@@ -7,12 +7,12 @@ import {Contact} from "./Contact.ts";
 export class Organisation {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @Column(type => Contact)
-    contact: Contact;
+    contact!: Contact;
 
 }

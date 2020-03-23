@@ -9,24 +9,24 @@ import {Generated} from "../../../../src/decorator/Generated.ts";
 @Entity("artikel")
 export class Artikel {
 
-    @PrimaryColumn("int", { name: "artikel_id" })
+    @PrimaryColumn("int", { name!: "artikel_id" })
     @Generated()
-    id: number;
+    id!: number;
 
     @Column({ name: "artikel_nummer", type: String })
-    nummer: string;
+    nummer!: string;
 
     @Column({ name: "artikel_name", type: String })
-    name: string;
+    name!: string;
 
     @Column({ name: "artikel_extrabarcode", type: String })
-    extrabarcode: string;
+    extrabarcode!: string;
 
     @Column({ name: "artikel_saison", type: String })
-    saison: string;
+    saison!: string;
 
-    @ManyToOne(type => Kollektion, { cascade: true })
+    @ManyToOne(type => Kollektion, { cascade!: true })
     @JoinColumn({ name: "id_kollektion" })
-    kollektion: Kollektion;
+    kollektion!: Kollektion;
 
 }

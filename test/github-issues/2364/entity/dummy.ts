@@ -4,13 +4,13 @@ import {Entity} from "../../../../src/decorator/entity/Entity.ts";
 @Entity()
 export class Dummy {
     @Column("integer", {
-        generated: true,
+        generated!: true,
         nullable: false,
-        primary: true,
+        primary!: true,
     })
-    id: number;
+    id!: number;
 
     @Column({ type: String, default: "name" })
-    name: string;
+    name!: string;
 }
 

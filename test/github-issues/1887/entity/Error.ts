@@ -5,18 +5,18 @@ import {Column} from "../../../../src/decorator/columns/Column.ts";
 export class Error {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column("uniqueidentifier", { nullable: false })
-    executionGuid: string;
+    executionGuid!: string;
 
     @Column({ type: Number })
-    errorNumber: number;
+    errorNumber!: number;
 
     @Column({ type: String })
-    errorDescription: string;
+    errorDescription!: string;
 
     @Column({ type: Date })
-    errorDate: Date;
+    errorDate!: Date;
 
 }

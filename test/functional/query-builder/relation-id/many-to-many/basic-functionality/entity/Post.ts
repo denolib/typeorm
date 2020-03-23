@@ -11,24 +11,24 @@ import {Tag} from "./Tag.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @ManyToOne(type => Tag)
-    tag: Tag;
+    tag!: Tag;
 
-    tagId: number;
+    tagId!: number;
 
     @ManyToMany(type => Category, category => category.posts)
     @JoinTable()
-    categories: Category[];
+    categories!: Category[];
 
     @ManyToMany(type => Category)
     @JoinTable()
-    subcategories: Category[];
+    subcategories!: Category[];
 
-    categoryIds: number[];
+    categoryIds!: number[];
 
 }

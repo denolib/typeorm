@@ -9,12 +9,12 @@ import {OneToMany} from "../../../../../src/decorator/relations/OneToMany.ts";
 export class Category {
 
     @PrimaryColumn({ type: Number })
-    categoryId: number;
+    categoryId!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @OneToMany(type => Post, post => post.category)
-    posts: Post[];
+    posts!: Post[];
 
 }

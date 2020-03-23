@@ -6,8 +6,8 @@ import {PrimaryColumn} from "../../../../../src/decorator/columns/PrimaryColumn.
 export class Post {
 
     @PrimaryColumn("int")
-    id: number;
+    id!: number;
 
     @Column({nullable: true, type: Boolean})
-    isNew: boolean;
+    isNew!: boolean;
 }

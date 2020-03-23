@@ -6,9 +6,9 @@ import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryG
 export class Post {
 
     @PrimaryGeneratedColumn()
-    identifier: number;
+    identifier!: number;
 
     @Column("simple-array")
-    names: string[];
+    names!: string[];
 
 }

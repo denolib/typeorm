@@ -7,10 +7,10 @@ import {Generated} from "../../../../../src/decorator/Generated.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
-    @Column({ type: String })
+    @Column({ type!: String })
     @Generated("uuid")
-    uuid: string;
+    uuid!: string;
 
 }

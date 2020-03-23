@@ -11,31 +11,31 @@ import {RelationId} from "../../../../../../src/decorator/relations/RelationId.t
 export class Category {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @Column({ type: Boolean })
     isRemoved: boolean = false;
 
     @ManyToMany(type => Post, post => post.categories)
-    posts: Post[];
+    posts!: Post[];
 
     @ManyToMany(type => Image)
     @JoinTable()
-    images: Image[];
+    images!: Image[];
 
     @RelationId((category: Category) => category.images)
-    imageIds: number[];
+    imageIds!: number[];
 
     @RelationId((category: Category) => category.images, "removedImages", qb => qb.andWhere("removedImages.isRemoved = :isRemoved", { isRemoved: true }))
-    removedImageIds: number[];
+    removedImageIds!: number[];
 
     @RelationId((category: Category) => category.posts)
-    postIds: number[];
+    postIds!: number[];
 
     @RelationId((category: Category) => category.posts, "removedPosts", qb => qb.andWhere("removedPosts.isRemoved = :isRemoved", { isRemoved: true }))
-    removedPostIds: number[];
+    removedPostIds!: number[];
 
 }

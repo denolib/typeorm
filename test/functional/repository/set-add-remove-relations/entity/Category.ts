@@ -9,15 +9,15 @@ import {ManyToMany} from "../../../../../src/decorator/relations/ManyToMany.ts";
 export class Category {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @ManyToOne(type => Post, post => post.categories)
-    post: Post;
+    post!: Post;
 
     @ManyToMany(type => Post, post => post.manyCategories)
-    manyPosts: Post[];
+    manyPosts!: Post[];
 
 }

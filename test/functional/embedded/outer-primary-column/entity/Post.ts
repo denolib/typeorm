@@ -6,12 +6,12 @@ import {Counters} from "./Counters.ts";
 export class Post {
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @Column({ type: String })
-    text: string;
+    text!: string;
 
     @Column(() => Counters, { prefix: "cnt" })
-    counters: Counters;
+    counters!: Counters;
 
 }

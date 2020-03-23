@@ -8,23 +8,23 @@ import {ManyToOne} from "../../../../../../../src/decorator/relations/ManyToOne.
 export class Post {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @PrimaryColumn({ type: Number })
-    authorId: number;
+    authorId!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @Column({ type: Boolean })
     isRemoved: boolean = false;
 
     @ManyToOne(type => Category, category => category.posts)
-    category: Category;
+    category!: Category;
 
     @ManyToOne(type => Category)
-    subcategory: Category;
+    subcategory!: Category;
 
-    categoryId: number;
+    categoryId!: number;
 
 }

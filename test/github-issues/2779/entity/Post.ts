@@ -5,11 +5,11 @@ import { Role } from "../set.ts";
 export class Post {
 
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column("set", {
-    default: [Role.Admin, Role.Developer],
-    enum: Role
+    default!: [Role.Admin, Role.Developer],
+    enum!: Role
   })
-  roles: Role[];
+  roles!: Role[];
 }

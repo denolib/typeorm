@@ -6,12 +6,12 @@ import {Column} from "../../../../src/decorator/columns/Column.ts";
 export class Post {
 
     @PrimaryColumn("int")
-    id: number;
+    id!: number;
 
     @Column({type: "datetime", nullable: true})
-    dateTimeColumn: Date;
+    dateTimeColumn!: Date;
 
     @Column({type: "time", nullable: true})
-    timeColumn: Date;
+    timeColumn!: Date;
 
 }

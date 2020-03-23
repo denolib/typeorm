@@ -5,9 +5,9 @@ import {Column} from "../../../../src/decorator/columns/Column.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column("timestamp", { precision: 3, default: () => "CURRENT_TIMESTAMP(3)", onUpdate: "CURRENT_TIMESTAMP(3)"})
-    updateAt: Date;
+    updateAt!: Date;
 
 }

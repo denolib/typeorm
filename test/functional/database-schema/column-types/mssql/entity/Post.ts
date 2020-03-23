@@ -7,142 +7,142 @@ import {FruitEnum} from "../enum/FruitEnum.ts";
 export class Post {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     // -------------------------------------------------------------------------
     // Numeric Types
     // -------------------------------------------------------------------------
 
     @Column("bit")
-    bit: boolean;
+    bit!: boolean;
 
     @Column("tinyint")
-    tinyint: number;
+    tinyint!: number;
 
     @Column("smallint")
-    smallint: number;
+    smallint!: number;
 
     @Column("int")
-    int: number;
+    int!: number;
 
     @Column("bigint")
-    bigint: string;
+    bigint!: string;
 
     @Column("decimal")
-    decimal: number;
+    decimal!: number;
 
     @Column("dec")
-    dec: number;
+    dec!: number;
 
     @Column("numeric")
-    numeric: number;
+    numeric!: number;
 
     @Column("float")
-    float: number;
+    float!: number;
 
     @Column("real")
-    real: number;
+    real!: number;
 
     @Column("smallmoney")
-    smallmoney: number;
+    smallmoney!: number;
 
     @Column("money")
-    money: number;
+    money!: number;
 
     // -------------------------------------------------------------------------
     // Character Types
     // -------------------------------------------------------------------------
 
     @Column("uniqueidentifier")
-    uniqueidentifier: string;
+    uniqueidentifier!: string;
 
     @Column("char")
-    char: string;
+    char!: string;
 
     @Column("varchar")
-    varchar: string;
+    varchar!: string;
 
     @Column("text")
-    text: string;
+    text!: string;
 
     @Column("nchar")
-    nchar: string;
+    nchar!: string;
 
     @Column("nvarchar")
-    nvarchar: string;
+    nvarchar!: string;
 
     @Column("ntext")
-    ntext: string;
+    ntext!: string;
 
     @Column("binary")
-    binary: Uint8Array;/* Buffer; */
+    binary!: Uint8Array;/* Buffer; */
 
     @Column("varbinary")
-    varbinary: Uint8Array; /* Buffer; */
+    varbinary!: Uint8Array; /* Buffer; */
 
     @Column("image")
-    image: Uint8Array; /* Buffer; */
+    image!: Uint8Array; /* Buffer; */
 
     @Column("rowversion")
-    rowversion: Uint8Array; /* Buffer; */
+    rowversion!: Uint8Array; /* Buffer; */
 
     // -------------------------------------------------------------------------
     // Date Types
     // -------------------------------------------------------------------------
 
     @Column("date")
-    dateObj: Date;
+    dateObj!: Date;
 
     @Column("date")
-    date: string;
+    date!: string;
 
     @Column("datetime")
-    datetime: Date;
+    datetime!: Date;
 
     @Column("datetime2")
-    datetime2: Date;
+    datetime2!: Date;
 
     @Column("smalldatetime")
-    smalldatetime: Date;
+    smalldatetime!: Date;
 
     @Column("time")
-    timeObj: Date;
+    timeObj!: Date;
 
     @Column("time")
-    time: string;
+    time!: string;
 
     @Column("datetimeoffset")
-    datetimeoffset: Date;
+    datetimeoffset!: Date;
 
     // -------------------------------------------------------------------------
     // Spatial Types
     // -------------------------------------------------------------------------
 
     @Column("geometry")
-    geometry1: string;
+    geometry1!: string;
 
     @Column("geometry")
-    geometry2: string;
+    geometry2!: string;
 
     @Column("geometry")
-    geometry3: string;
+    geometry3!: string;
 
     // -------------------------------------------------------------------------
     // TypeOrm Specific Types
     // -------------------------------------------------------------------------
 
     @Column("simple-array")
-    simpleArray: string[];
+    simpleArray!: string[];
 
     @Column("simple-json")
-    simpleJson: { param: string };
+    simpleJson!: { param: string };
 
     @Column("simple-enum", { enum: ["A", "B", "C"] })
-    simpleEnum: string;
+    simpleEnum!: string;
 
     @Column("simple-enum", { enum: FruitEnum })
-    simpleClassEnum1: FruitEnum;
+    simpleClassEnum1!: FruitEnum;
 }

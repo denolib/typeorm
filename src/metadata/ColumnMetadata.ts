@@ -25,7 +25,7 @@ export class ColumnMetadata {
      * Target class where column decorator is used.
      * This may not be always equal to entity metadata (for example embeds or inheritance cases).
      */
-    target: Function|string;
+    target!: Function|string;
 
     /**
      * Entity metadata where this column metadata is.
@@ -49,12 +49,12 @@ export class ColumnMetadata {
     /**
      * Class's property name on which this column is applied.
      */
-    propertyName: string;
+    propertyName!: string;
 
     /**
      * The database type of the column.
      */
-    type: ColumnType;
+    type!: ColumnType;
 
     /**
      * Type's length in the database.
@@ -190,13 +190,13 @@ export class ColumnMetadata {
      * For example it will return "counters.subcounters.likes".
      * If property is not in embeds then it returns just property name of the column.
      */
-    propertyPath: string;
+    propertyPath!: string;
 
     /**
      * Same as property path, but dots are replaced with '_'.
      * Used in query builder statements.
      */
-    propertyAliasName: string;
+    propertyAliasName!: string;
 
     /**
      * Gets full path to this column database name (including column database name).
@@ -204,17 +204,17 @@ export class ColumnMetadata {
      * For example it will return "counters.subcounters.likes".
      * If property is not in embeds then it returns just database name of the column.
      */
-    databasePath: string;
+    databasePath!: string;
 
     /**
      * Complete column name in the database including its embedded prefixes.
      */
-    databaseName: string;
+    databaseName!: string;
 
     /**
      * Database name in the database without embedded prefixes applied.
      */
-    databaseNameWithoutPrefixes: string;
+    databaseNameWithoutPrefixes!: string;
 
     /**
      * Database name set by entity metadata builder, not yet passed naming strategy process and without embedded prefixes.

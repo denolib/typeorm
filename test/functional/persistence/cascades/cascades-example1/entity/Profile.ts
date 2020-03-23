@@ -9,19 +9,19 @@ import {JoinColumn} from "../../../../../../src/decorator/relations/JoinColumn.t
 export class Profile {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @OneToOne(type => User, user => user.profile, {
-        nullable: false
+        nullable!: false
     })
     @JoinColumn()
-    user: User;
+    user!: User;
 
     @OneToOne(type => Photo, {
-        nullable: false,
-        cascade: ["insert"]
+        nullable!: false,
+        cascade!: ["insert"]
     })
     @JoinColumn()
-    photo: Photo;
+    photo!: Photo;
 
 }

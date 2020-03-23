@@ -6,11 +6,11 @@ import {Entity} from "../../../../src/decorator/entity/Entity.ts";
 export class Post {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column({
-        type: "text",
+        type!: "text",
     })
-    text: string;
+    text!: string;
 
 }

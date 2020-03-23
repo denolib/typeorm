@@ -11,31 +11,31 @@ import {Image} from "./Image.ts";
 export class Category {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @Column({ type: Boolean })
     isRemoved: boolean = false;
 
     @ManyToMany(type => Post, post => post.categories)
-    posts: Post[];
+    posts!: Post[];
 
     @ManyToMany(type => Image, image => image.categories)
     @JoinTable()
-    images: Image[];
+    images!: Image[];
 
     @RelationCount((category: Category) => category.posts)
-    postCount: number;
+    postCount!: number;
 
     @RelationCount((category: Category) => category.posts, "removedPosts", qb => qb.andWhere("removedPosts.isRemoved = :isRemoved", { isRemoved: true }))
-    removedPostCount: number;
+    removedPostCount!: number;
 
     @RelationCount((category: Category) => category.images)
-    imageCount: number;
+    imageCount!: number;
 
     @RelationCount((category: Category) => category.images, "removedImages", qb => qb.andWhere("removedImages.isRemoved = :isRemoved", { isRemoved: true }))
-    removedImageCount: number;
+    removedImageCount!: number;
 
 }

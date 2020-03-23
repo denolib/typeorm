@@ -70,7 +70,7 @@ export class ReturningResultsEntityUpdator {
 
                     if (loadedReturningColumns) {
                         this.queryRunner.manager.merge(metadata.target as any, entity, loadedReturningColumns as any); // TODO avoid using any
-                        updateResult.generatedMaps.push(loadedReturningColumns);
+                        updateResult.generatedMaps.push(loadedReturningColumns as ObjectLiteral);
                     }
                 }
             }

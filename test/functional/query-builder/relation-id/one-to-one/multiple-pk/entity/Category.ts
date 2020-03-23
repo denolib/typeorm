@@ -10,26 +10,26 @@ import {JoinColumn} from "../../../../../../../src/decorator/relations/JoinColum
 export class Category {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @PrimaryColumn({ type: Number })
-    code: number;
+    code!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @Column({ type: Boolean })
     isRemoved: boolean = false;
 
     @OneToOne(type => Post, post => post.category)
-    post: Post;
+    post!: Post;
 
     @OneToOne(type => Image, image => image.category)
     @JoinColumn()
-    image: Image;
+    image!: Image;
 
-    postId: number;
+    postId!: number;
 
-    imageId: number;
+    imageId!: number;
 
 }

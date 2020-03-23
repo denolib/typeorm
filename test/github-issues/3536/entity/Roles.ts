@@ -11,8 +11,8 @@ export enum AccountPermission {
 export class Roles {
 
     @PrimaryGeneratedColumn()
-    id: string;
+    id!: string;
 
     @Column("enum", { enum: AccountPermission, array: true, default: "{}" })
-    accountPermission: AccountPermission[];
+    accountPermission!: AccountPermission[];
 }

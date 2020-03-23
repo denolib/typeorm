@@ -10,23 +10,23 @@ import {Category} from "./Category.ts";
 export class Post {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @ManyToOne(type => Category)
     @JoinColumn()
-    category: Category;
+    category!: Category;
 
     @ManyToOne(type => Category)
     @JoinColumn({ referencedColumnName: "name" })
-    categoryByName: Category;
+    categoryByName!: Category;
 
     @RelationId((post: Post) => post.category)
-    categoryId: number;
+    categoryId!: number;
 
     @RelationId((post: Post) => post.categoryByName)
-    categoryName: string;
+    categoryName!: string;
 
 }

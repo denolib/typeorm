@@ -4,7 +4,7 @@ import {FooChildMetadata} from "./FooChildMetadata.ts";
 export class FooMetadata {
 
     @Column({ type: Number, nullable: true })
-    bar: number;
+    bar!: number;
 
     @Column(type => FooChildMetadata)
     child?: FooChildMetadata;

@@ -7,12 +7,12 @@ import {ManyToOne} from "../../../../../../src/decorator/relations/ManyToOne.ts"
 export class User {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @ManyToOne(type => Question, {
-        cascade: ["insert"],
-        nullable: true
+        cascade!: ["insert"],
+        nullable!: true
     })
-    question: Question;
+    question!: Question;
 
 }

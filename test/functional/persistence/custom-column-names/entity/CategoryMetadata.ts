@@ -8,12 +8,12 @@ import {Category} from "./Category.ts";
 export class CategoryMetadata {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    keyword: string;
+    keyword!: string;
 
     @OneToOne(type => Category, category => category.metadata)
-    category: Category;
+    category!: Category;
 
 }

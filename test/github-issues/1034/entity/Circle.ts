@@ -11,7 +11,7 @@ export class Circle {
      * Circle's identifier
      */
     @PrimaryGeneratedColumn({type: "bigint"})
-    private id: string;
+    private id!: string;
 
     /**
      * Circle's user
@@ -20,7 +20,7 @@ export class Circle {
      */
     @ManyToMany((type) => User, (user) => "circles")
     @JoinTable({name: "circle_users_user"})
-    private users: Promise<User[]>;
+    private users!: Promise<User[]>;
 
     /**
      * Getter identifier

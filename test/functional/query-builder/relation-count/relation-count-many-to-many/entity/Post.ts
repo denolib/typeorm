@@ -9,20 +9,20 @@ import {Category} from "./Category.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @Column({ type: Boolean })
     isRemoved: boolean = false;
 
     @ManyToMany(type => Category, category => category.posts)
     @JoinTable()
-    categories: Category[];
+    categories!: Category[];
 
-    categoryCount: number;
+    categoryCount!: number;
 
-    removedCategoryCount: number;
+    removedCategoryCount!: number;
 
 }

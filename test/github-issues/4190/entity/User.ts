@@ -6,16 +6,16 @@ import {Profile} from "./Profile.ts";
 export class User {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @OneToMany("Photo", "user")
-    photos: Photo[];
+    photos!: Photo[];
 
     @OneToOne("Profile")
     @JoinColumn()
-    profile: Profile;
+    profile!: Profile;
 
 }

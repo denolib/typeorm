@@ -9,24 +9,24 @@ import {Question} from "./Question.ts";
 export class Answer {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @ManyToOne(type => Question, question => question.answers, {
-        cascade: ["insert"],
-        nullable: false
+        cascade!: ["insert"],
+        nullable!: false
     })
-    question: Question;
+    question!: Question;
 
     @ManyToOne(type => Photo, {
-        cascade: ["insert"],
-        nullable: false
+        cascade!: ["insert"],
+        nullable!: false
     })
-    photo: Photo;
+    photo!: Photo;
 
     @ManyToOne(type => User, {
-        cascade: ["insert"],
-        nullable: false
+        cascade!: ["insert"],
+        nullable!: false
     })
-    user: User;
+    user!: User;
 
 }

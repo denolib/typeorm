@@ -7,21 +7,21 @@ import { Counters } from "./Counters.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @Column({ type: String })
-    text: string;
+    text!: string;
 
     @Column(type => Counters)
-    counters: Counters;
+    counters!: Counters;
 
     @Column(type => Counters, { prefix: "testCounters" })
-    otherCounters: Counters;
+    otherCounters!: Counters;
 
     @Column(type => Counters, { prefix: "" })
-    countersWithoutPrefix: Counters;
+    countersWithoutPrefix!: Counters;
 
 }

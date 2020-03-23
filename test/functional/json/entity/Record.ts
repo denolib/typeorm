@@ -9,12 +9,12 @@ import {Column} from "../../../../src/decorator/columns/Column.ts";
 export class Record {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: "json", nullable: true })
-    config: any;
+    config!: any;
 
     @Column({ type: "jsonb", nullable: true })
-    data: any;
+    data!: any;
 
 }

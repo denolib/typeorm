@@ -6,14 +6,14 @@ import { PrimaryColumn } from "../../../../../src/decorator/columns/PrimaryColum
 export class PostBigInt {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @Column("bigint", {
-        unsigned: true
+        unsigned!: true
     })
-    counter: string;
+    counter!: string;
 
 }

@@ -7,12 +7,12 @@ import {Duration} from "./Duration.ts";
 export class Race {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @Column(type => Duration)
-    duration: Duration;
+    duration!: Duration;
 
 }

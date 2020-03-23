@@ -7,10 +7,10 @@ import {FooMetadata} from "./FooMetadata.ts";
 export class Foo {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @Column(type => FooMetadata)
     metadata?: FooMetadata;

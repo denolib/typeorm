@@ -10,14 +10,14 @@ export class AccessToken {
 
     @PrimaryColumn("int")
     @Generated()
-    primaryKey: number;
+    primaryKey!: number;
 
     @Column({ type: Number })
-    expireTime: number;
+    expireTime!: number;
 
     @OneToOne(type => User, user => user.access_token, {
-        cascade: true
+        cascade!: true
     })
-    user: User;
+    user!: User;
 
 }

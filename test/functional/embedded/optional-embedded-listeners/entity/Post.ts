@@ -8,16 +8,16 @@ import {Index} from "../../../../../src/decorator/Index.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
-    @Column({ type: String })
+    @Column({ type!: String })
     @Index()
-    title: string;
+    title!: string;
 
     @Column({ type: String })
-    text: string;
+    text!: string;
 
-    @Column(type => PostInformation, { prefix: "info" })
+    @Column(type => PostInformation, { prefix!: "info" })
     information?: PostInformation;
 
 }

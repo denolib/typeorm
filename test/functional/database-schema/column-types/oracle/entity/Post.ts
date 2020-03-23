@@ -6,104 +6,104 @@ import {Column} from "../../../../../../src/decorator/columns/Column.ts";
 export class Post {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     // -------------------------------------------------------------------------
     // Numeric Types
     // -------------------------------------------------------------------------
 
     @Column("number")
-    number: number;
+    number!: number;
 
     @Column("numeric")
-    numeric: number;
+    numeric!: number;
 
     @Column("float")
-    float: number;
+    float!: number;
 
     @Column("dec")
-    dec: number;
+    dec!: number;
 
     @Column("decimal")
-    decimal: number;
+    decimal!: number;
 
     @Column("int")
-    int: number;
+    int!: number;
 
     @Column("integer")
-    integer: number;
+    integer!: number;
 
     @Column("smallint")
-    smallint: number;
+    smallint!: number;
 
     @Column("real")
-    real: number;
+    real!: number;
 
     @Column("double precision")
-    doublePrecision: number;
+    doublePrecision!: number;
 
     // -------------------------------------------------------------------------
     // Character Types
     // -------------------------------------------------------------------------
 
     @Column("char")
-    char: string;
+    char!: string;
 
     @Column("nchar")
-    nchar: string;
+    nchar!: string;
 
     @Column("nvarchar2")
-    nvarchar2: string;
+    nvarchar2!: string;
 
     @Column("varchar2")
-    varchar2: string;
+    varchar2!: string;
 
     @Column("long")
-    long: string;
+    long!: string;
 
     @Column("raw")
-    raw: Uint8Array; /* Buffer; */
+    raw!: Uint8Array; /* Buffer; */
 
     // -------------------------------------------------------------------------
     // Date Types
     // -------------------------------------------------------------------------
 
     @Column("date")
-    dateObj: Date;
+    dateObj!: Date;
 
     @Column("date")
-    date: string;
+    date!: string;
 
     @Column("timestamp")
-    timestamp: Date;
+    timestamp!: Date;
 
     @Column("timestamp with time zone")
-    timestampWithTimeZone: Date;
+    timestampWithTimeZone!: Date;
 
     @Column("timestamp with local time zone")
-    timestampWithLocalTimeZone: Date;
+    timestampWithLocalTimeZone!: Date;
 
     // -------------------------------------------------------------------------
     // LOB Type
     // -------------------------------------------------------------------------
 
     @Column("blob")
-    blob: Uint8Array; /* Buffer; */
+    blob!: Uint8Array; /* Buffer; */
 
     @Column("clob")
-    clob: string;
+    clob!: string;
 
     @Column("nclob")
-    nclob: string;
+    nclob!: string;
 
     // -------------------------------------------------------------------------
     // TypeOrm Specific Type
     // -------------------------------------------------------------------------
 
     @Column("simple-array")
-    simpleArray: string[];
+    simpleArray!: string[];
 
 }

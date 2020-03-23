@@ -5,15 +5,15 @@ import { Entity } from "../../../../src/decorator/entity/Entity.ts";
 export class Book {
 
     @PrimaryColumn({ type: String })
-    ean: string;
+    ean!: string;
 
 }
 
-@Entity({ withoutRowid: true })
+@Entity({ withoutRowid!: true })
 export class Book2 {
 
     @PrimaryColumn({ type: String })
-    ean: string;
+    ean!: string;
 
 }
 

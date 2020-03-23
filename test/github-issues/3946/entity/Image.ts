@@ -8,17 +8,17 @@ import {Category} from "./Category.ts";
 export class Image {
 
     @PrimaryGeneratedColumn("uuid")
-    id: string;
+    id!: string;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @Column({ type: Boolean })
     isRemoved: boolean = false;
 
     @ManyToMany(type => Category, category => category.images)
-    categories: Category[];
+    categories!: Category[];
 
-    categoryCount: number;
+    categoryCount!: number;
 
 }

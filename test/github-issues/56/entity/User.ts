@@ -11,13 +11,13 @@ export class User {
 
     @PrimaryColumn("int")
     @Generated()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    email: string;
+    email!: string;
 
     @OneToOne(type => AccessToken)
     @JoinColumn()
-    access_token: AccessToken;
+    access_token!: AccessToken;
 
 }

@@ -7,12 +7,12 @@ import {ManyToMany} from "../../../../src/decorator/relations/ManyToMany.ts";
 @Entity()
 export class Category {
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @ManyToMany(type => Post, post => post.categories)
-    posts: Post[];
+    posts!: Post[];
 
 }

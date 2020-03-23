@@ -6,12 +6,12 @@ import {PrimaryColumn} from "../../../../src/decorator/columns/PrimaryColumn.ts"
 export class Post {
 
     @PrimaryColumn({ type: String, name: "bla_id" })
-    lala_id: string;
+    lala_id!: string;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @Column({ type: Number, name: "my_index" })
-    index: number;
+    index!: number;
 
 }

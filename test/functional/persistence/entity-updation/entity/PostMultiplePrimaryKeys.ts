@@ -6,12 +6,12 @@ import {PrimaryColumn} from "../../../../../src/decorator/columns/PrimaryColumn.
 export class PostMultiplePrimaryKeys {
 
     @PrimaryColumn({ type: Number })
-    firstId: number;
+    firstId!: number;
 
     @PrimaryColumn({ type: Number })
-    secondId: number;
+    secondId!: number;
 
     @Column({ default: "Hello Multi Ids", type: String })
-    text: string;
+    text!: string;
 
 }

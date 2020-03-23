@@ -7,12 +7,12 @@ import {BasePost} from "./BasePost.ts";
 export class Post extends BasePost {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @Column({ type: Boolean, default: false })
-    active: boolean;
+    active!: boolean;
 
 }

@@ -8,15 +8,15 @@ import {Category} from "./Category.ts";
 export class Post {
 
     @PrimaryColumn({ type: Number })
-    firstId: number;
+    firstId!: number;
 
     @PrimaryColumn({ type: Number })
-    secondId: number;
+    secondId!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @ManyToOne(type => Category, category => category.posts)
-    category: Category;
+    category!: Category;
 
 }

@@ -6,20 +6,20 @@ import {PrimaryGeneratedColumn} from "../../../../../src/decorator/columns/Prima
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @Column({ type: String })
-    text: string;
+    text!: string;
 
     @Column({ type: String, update: false, default: "Default" })
-    authorFirstName: string;
+    authorFirstName!: string;
 
     @Column({ type: String, insert: false, default: "Default" })
-    authorMiddleName: string;
+    authorMiddleName!: string;
 
     @Column({ type: String, insert: false, update: false, default: "Default" })
-    authorLastName: string;
+    authorLastName!: string;
 }

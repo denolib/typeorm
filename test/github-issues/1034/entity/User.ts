@@ -10,10 +10,10 @@ export class User {
      * User's identifier
      */
     @PrimaryGeneratedColumn({type: "bigint"})
-    private id: string;
+    private id!: string;
 
-    @ManyToMany((type: object) => Circle, (circle) => "users")
-    private circles: Promise<Circle[]>;
+    @ManyToMany((type: object) => Circle, (circle: Circle) => "users")
+    private circles!: Promise<Circle[]>;
 
     /**
      * Getter identifier

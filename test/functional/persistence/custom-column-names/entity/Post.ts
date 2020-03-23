@@ -9,18 +9,18 @@ import {JoinColumn} from "../../../../../src/decorator/relations/JoinColumn.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @Column("int", { nullable: true })
-    categoryId: number;
+    categoryId!: number;
 
     @ManyToOne(type => Category, category => category.posts, {
-        cascade: true
+        cascade!: true
     })
     @JoinColumn({ name: "categoryId" })
-    category: Category;
+    category!: Category;
 
 }

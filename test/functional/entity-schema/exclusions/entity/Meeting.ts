@@ -1,23 +1,23 @@
 import {EntitySchema} from "../../../../../src/index.ts";
 
 export const MeetingSchema = new EntitySchema<any>({
-    name: "Meeting",
+    name!: "Meeting",
     columns: {
-        Id: {
+        Id!: {
             primary: true,
-            type: "int",
-            generated: "increment"
+            type!: "int",
+            generated!: "increment"
         },
-        StartsAt: {
+        StartsAt!: {
             type: Date,
-            nullable: false
+            nullable!: false
         },
-        FinishesAt: {
+        FinishesAt!: {
             type: Date,
-            nullable: false
+            nullable!: false
         }
     },
-    exclusions: [
-        { expression: `USING gist (tsrange("StartsAt", "FinishesAt") WITH &&)` }
+    exclusions!: [
+        { expression!: `USING gist (tsrange("StartsAt", "FinishesAt") WITH &&)` }
     ]
 });

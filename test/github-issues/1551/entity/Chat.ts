@@ -43,21 +43,21 @@ export class Chat {
   }
 
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
-  @Column({type: String, nullable: true})
+  @Column({type: String, nullable!: true})
   name?: string;
 
-  @Column({type: String, nullable: true})
+  @Column({type: String, nullable!: true})
   picture?: string;
 
   @ManyToMany(() => User, user => user.allTimeMemberChats, {eager: true})
   @JoinTable()
-  allTimeMembers: User[];
+  allTimeMembers!: User[];
 
   @ManyToMany(() => User, user => user.listedMemberChats, {eager: true})
   @JoinTable()
-  listingMembers: User[];
+  listingMembers!: User[];
 
   @ManyToMany(() => User, user => user.actualGroupMemberChats, {eager: true})
   @JoinTable()
@@ -71,5 +71,5 @@ export class Chat {
   owner?: User;
 
   @OneToMany(() => Message, message => message.chat, {cascade: true, eager: true})
-  messages: Message[];
+  messages!: Message[];
 }

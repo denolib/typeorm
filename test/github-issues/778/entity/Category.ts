@@ -6,9 +6,9 @@ import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryG
 export class Category {
 
     @PrimaryGeneratedColumn({ type: "bigint" })
-    id: string;
+    id!: string;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
 }

@@ -4,11 +4,11 @@ import { Column, Entity, PrimaryGeneratedColumn } from "../../../../src/index.ts
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column("enum", { enum: ["A", "B", "C"] })
-    enum: string;
+    enum!: string;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 }

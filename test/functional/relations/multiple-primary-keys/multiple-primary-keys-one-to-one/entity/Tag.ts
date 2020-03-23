@@ -9,31 +9,31 @@ import {Category} from "./Category.ts";
 export class Tag {
 
     @Column({type: Number})
-    code: number;
+    code!: number;
 
     @PrimaryColumn({type: String})
-    title: string;
+    title!: string;
 
     @PrimaryColumn({type: String})
-    description: string;
+    description!: string;
 
     @OneToOne(type => Category, category => category.tag)
     @JoinColumn()
-    category: Category;
+    category!: Category;
 
     @OneToOne(type => Category, category => category.tagWithOptions)
     @JoinColumn([
-        { name: "category_name", referencedColumnName: "name" },
-        { name: "category_type", referencedColumnName: "type" }
+        { name: "category_name", referencedColumnName!: "name" },
+        { name: "category_type", referencedColumnName!: "type" }
     ])
-    categoryWithOptions: Category;
+    categoryWithOptions!: Category;
 
     @OneToOne(type => Category, category => category.tagWithNonPKColumns)
     @JoinColumn([
-        { name: "category_code", referencedColumnName: "code" },
-        { name: "category_version", referencedColumnName: "version" },
-        { name: "category_description", referencedColumnName: "description" }
+        { name: "category_code", referencedColumnName!: "code" },
+        { name: "category_version", referencedColumnName!: "version" },
+        { name: "category_description", referencedColumnName!: "description" }
     ])
-    categoryWithNonPKColumns: Category;
+    categoryWithNonPKColumns!: Category;
 
 }

@@ -3,6 +3,6 @@ import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryG
 export class BaseContent {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
 }

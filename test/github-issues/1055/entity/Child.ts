@@ -7,11 +7,11 @@ import {ManyToOne} from "../../../../src/decorator/relations/ManyToOne.ts";
 @Entity()
 export class Child {
     @PrimaryGeneratedColumn()
-    public id: number;
+    public id!: number;
 
-    @Column({ type: String })
-    public name: string;
+    @Column({ type!: String })
+    public name!: string;
 
-    @ManyToOne(target => Parent, parent => parent.id, { lazy: true })
-    public parent: Promise<Parent>|Parent|number;
+    @ManyToOne(target => Parent, parent => parent.id, { lazy!: true })
+    public parent!: Promise<Parent>|Parent|number;
 }

@@ -6,54 +6,54 @@ import {Column} from "../../../../../../src/decorator/columns/Column.ts";
 export class PostWithOptions {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     // -------------------------------------------------------------------------
     // Numeric Types
     // -------------------------------------------------------------------------
 
     @Column("decimal", { precision: 10, scale: 5 })
-    decimal: number;
+    decimal!: number;
 
     @Column("dec", { precision: 10, scale: 5 })
-    dec: number;
+    dec!: number;
 
     @Column("numeric", { precision: 10, scale: 5 })
-    numeric: number;
+    numeric!: number;
 
     // -------------------------------------------------------------------------
     // Character Types
     // -------------------------------------------------------------------------
 
     @Column("char", { length: 3 })
-    char: string;
+    char!: string;
 
     @Column("varchar", { length: 50 })
-    varchar: string;
+    varchar!: string;
 
     @Column("nchar", { length: 3 })
-    nchar: string;
+    nchar!: string;
 
     @Column("nvarchar", { length: 40 })
-    nvarchar: string;
+    nvarchar!: string;
 
     @Column("binary", { length: 5 })
-    binary: Uint8Array; /* Buffer; */
+    binary!: Uint8Array; /* Buffer; */
 
     @Column("varbinary", { length: 5 })
-    varbinary: Uint8Array; /* Buffer; */
+    varbinary!: Uint8Array; /* Buffer; */
 
     // -------------------------------------------------------------------------
     // Date Types
     // -------------------------------------------------------------------------
 
     @Column("datetime2", { precision: 4 })
-    datetime2: Date;
+    datetime2!: Date;
 
     @Column("time", { precision: 5 })
-    time: Date;
+    time!: Date;
 
     @Column("datetimeoffset", { precision: 6 })
-    datetimeoffset: Date;
+    datetimeoffset!: Date;
 
 }

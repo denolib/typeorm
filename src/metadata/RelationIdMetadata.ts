@@ -21,7 +21,7 @@ export class RelationIdMetadata {
     /**
      * Relation from which ids will be extracted.
      */
-    relation: RelationMetadata;
+    relation!: RelationMetadata;
 
     /**
      * Relation name which need to count.

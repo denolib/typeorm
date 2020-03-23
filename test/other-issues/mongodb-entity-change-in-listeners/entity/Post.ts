@@ -8,16 +8,16 @@ import {AfterLoad, ObjectIdColumn} from "../../../../src/index.ts";
 export class Post {
 
     @ObjectIdColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @Column({type: Boolean, default: false})
-    active: boolean;
+    active!: boolean;
 
     @UpdateDateColumn()
-    updateDate: Date;
+    updateDate!: Date;
 
     @BeforeUpdate()
     async beforeUpdate() {

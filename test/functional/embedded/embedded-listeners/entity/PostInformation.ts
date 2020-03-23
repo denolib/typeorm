@@ -5,9 +5,9 @@ import {Index} from "../../../../../src/decorator/Index.ts";
 
 export class PostInformation {
 
-    @Column({ type: String })
+    @Column({ type!: String })
     @Index()
-    description: string;
+    description!: string;
 
     @Column(type => PostCounter, { prefix: "counters" } )
     counters: PostCounter = new PostCounter();

@@ -131,11 +131,11 @@ export class EntityMetadataBuilder {
                             /*|| this.connection.driver instanceof SqlServerDriver*/ // TODO(uki00a) uncomment this when SqlServerDriver is implemented.
                             /*|| this.connection.driver instanceof SapDriver*/) { // TODO(uki00a) uncomment this when SapDriver is implemented.
                             const index = new IndexMetadata({
-                                entityMetadata: uniqueConstraint.entityMetadata,
-                                columns: uniqueConstraint.columns,
+                                entityMetadata: uniqueConstraint!.entityMetadata,
+                                columns: uniqueConstraint!.columns,
                                 args: {
-                                    target: uniqueConstraint.target!,
-                                    name: uniqueConstraint.name,
+                                    target: uniqueConstraint!.target!,
+                                    name: uniqueConstraint!.name,
                                     unique: true,
                                     synchronize: true
                                 }
@@ -148,7 +148,7 @@ export class EntityMetadataBuilder {
                             }
 
                             if (relation.embeddedMetadata) {
-                                relation.embeddedMetadata.indices.push(index);
+                                relation.embeddedMetadata!.indices.push(index);
                             } else {
                                 relation.entityMetadata.ownIndices.push(index);
                             }
@@ -167,14 +167,14 @@ export class EntityMetadataBuilder {
                     if (foreignKey && false/*this.connection.driver instanceof CockroachDriver*/) { // TODO(uki00a) uncomment this when CockroachDriver is implemented.
                         const index = new IndexMetadata({
                             entityMetadata: relation.entityMetadata,
-                            columns: foreignKey.columns,
+                            columns: foreignKey!.columns,
                             args: {
                                 target: relation.entityMetadata.target!,
                                 synchronize: true
                             }
                         });
                         if (relation.embeddedMetadata) {
-                            relation.embeddedMetadata.indices.push(index);
+                            relation.embeddedMetadata!.indices.push(index);
                         } else {
                             relation.entityMetadata.ownIndices.push(index);
                         }

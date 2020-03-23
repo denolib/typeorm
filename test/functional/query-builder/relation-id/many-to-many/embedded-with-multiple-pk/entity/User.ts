@@ -7,14 +7,14 @@ import {Post} from "./Post.ts";
 export class User {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @PrimaryColumn({ type: String })
-    name: string;
+    name!: string;
 
     @ManyToMany(type => Post, post => post.counters.subcntrs.watchedUsers)
-    posts: Post[];
+    posts!: Post[];
 
-    postIds: number[];
+    postIds!: number[];
 
 }

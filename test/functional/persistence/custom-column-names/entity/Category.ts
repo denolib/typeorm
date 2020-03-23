@@ -11,21 +11,21 @@ import {CategoryMetadata} from "./CategoryMetadata.ts";
 export class Category {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @OneToMany(type => Post, post => post.category)
-    posts: Post[];
+    posts!: Post[];
 
     @Column({ type: "int", nullable: true })
-    metadataId: number;
+    metadataId!: number;
 
     @OneToOne(type => CategoryMetadata, metadata => metadata.category, {
-        cascade: ["insert"]
+        cascade!: ["insert"]
     })
     @JoinColumn({ name: "metadataId" })
-    metadata: CategoryMetadata;
+    metadata!: CategoryMetadata;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
 }

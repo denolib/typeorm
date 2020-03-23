@@ -6,24 +6,24 @@ import {Column} from "../../../../../src/decorator/columns/Column.ts";
 export class PostDefaultValues {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @Column({ default: "hello post", type: String })
-    text: string;
+    text!: string;
 
     @Column({ default: true, type: Boolean })
-    isActive: boolean;
+    isActive!: boolean;
 
     @Column({ default: () => "CURRENT_TIMESTAMP", type: Date })
-    addDate: Date;
+    addDate!: Date;
 
     @Column({ default: 0, type: Number })
-    views: number;
+    views!: number;
 
     @Column({ nullable: true, type: String })
-    description: string;
+    description!: string;
 
 }

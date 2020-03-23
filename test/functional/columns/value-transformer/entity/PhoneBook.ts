@@ -20,12 +20,12 @@ class PhonesTransformer implements ValueTransformer {
 export class PhoneBook {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @Column({ type: String, transformer: new PhonesTransformer() })
-    phones: Map<string, number>;
+    phones!: Map<string, number>;
 
 }

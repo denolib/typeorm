@@ -10,15 +10,15 @@ import {Tree} from "../../../../src/index.ts";
 export class Category {
 
     @PrimaryGeneratedColumn("uuid")
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @TreeParent()
-    parentCategory: Category;
+    parentCategory!: Category;
 
     @TreeChildren({ cascade: true })
-    childCategories: Category[];
+    childCategories!: Category[];
 
 }

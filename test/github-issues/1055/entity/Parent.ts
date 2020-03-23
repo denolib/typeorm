@@ -7,11 +7,11 @@ import {OneToMany} from "../../../../src/decorator/relations/OneToMany.ts";
 @Entity()
 export class Parent {
     @PrimaryGeneratedColumn()
-    public id: number;
+    public id!: number;
 
-    @Column({ type: String })
-    public name: string;
+    @Column({ type!: String })
+    public name!: string;
 
-    @OneToMany(target => Child, child => child.parent, { lazy: true })
-    public children: Promise<Child[]>;
+    @OneToMany(target => Child, child => child.parent, { lazy!: true })
+    public children!: Promise<Child[]>;
 }

@@ -7,12 +7,12 @@ import {Post} from "./Post.ts";
 export class User {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @PrimaryColumn({ type: Number })
-    name: string;
+    name!: string;
 
     @ManyToOne(type => Post, post => post.counters.subcounters.watchedUsers)
-    post: Post;
+    post!: Post;
 
 }

@@ -19,12 +19,12 @@ class TagTransformer implements ValueTransformer {
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @Column({ type: String, transformer: new TagTransformer() })
-    tags: string[];
+    tags!: string[];
 
 }

@@ -5,11 +5,11 @@ import {AuthorWithVeryLongName} from "./AuthorWithVeryLongName.ts";
 @Entity()
 export class GroupWithVeryLongName {
     @PrimaryGeneratedColumn()
-    groupId: number;
+    groupId!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @OneToMany(() => AuthorWithVeryLongName, author => author.groupWithVeryLongName)
-    authorsWithVeryLongName: AuthorWithVeryLongName[];
+    authorsWithVeryLongName!: AuthorWithVeryLongName[];
 }

@@ -4,22 +4,22 @@ import {Entity} from "../../../../src/decorator/entity/Entity.ts";
 @Entity()
 @Tree("closure-table")
 export class File {
-    @PrimaryGeneratedColumn() id: number;
+    @PrimaryGeneratedColumn() id!: number;
 
     @Column("text", {
-        nullable: false,
-        name: "name"
+        nullable!: false,
+        name!: "name"
     })
-    name: string;
+    name!: string;
 
     @Column("integer", {
-        nullable: true
+        nullable!: true
     })
-    parentId: number;
+    parentId!: number;
 
-    @TreeParent() parent: File;
+    @TreeParent() parent!: File;
 
-    @TreeChildren() children: File[];
+    @TreeChildren() children!: File[];
 
     //@Column("timestamp with time zone")
     //@CreateDateColumn()

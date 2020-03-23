@@ -9,15 +9,15 @@ import {JoinColumn} from "../../../../../../../src/decorator/relations/JoinColum
 export class Category {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @ManyToOne(type => Post, post => post.counters.categories)
     @JoinColumn()
-    posts: Post[];
+    posts!: Post[];
 
-    postIds: number[];
+    postIds!: number[];
 
 }

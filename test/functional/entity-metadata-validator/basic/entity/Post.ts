@@ -10,21 +10,21 @@ import {Category} from "./Category.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @OneToOne(type => Category)
-    category: Category;
+    category!: Category;
 
     @ManyToMany(type => Category)
-    category2: Category;
+    category2!: Category;
 
     @RelationCount((post: Post) => post.category)
-    categoryCount: number;
+    categoryCount!: number;
 
     @RelationCount((post: Post) => post.category2)
-    categoryCount2: number;
+    categoryCount2!: number;
 
 }

@@ -7,9 +7,9 @@ import {User} from "./User.ts";
 export class EventMember {
 
     @ManyToOne(type => Event, event => event.members, { primary: true })
-    event: Event;
+    event!: Event;
 
     @ManyToOne(type => User, user => user.members, { primary: true })
-    user: User;
+    user!: User;
 
 }

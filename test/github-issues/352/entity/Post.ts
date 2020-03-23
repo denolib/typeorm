@@ -6,9 +6,9 @@ import {PrimaryColumn} from "../../../../src/decorator/columns/PrimaryColumn.ts"
 export class Post {
 
     @PrimaryColumn("double precision")
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
 }

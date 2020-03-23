@@ -4,12 +4,12 @@ import { PrimaryGeneratedColumn } from "../../../../src/decorator/columns/Primar
 @Entity()
 export class User {
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: "varchar", length: 100, nullable: true, default: null })
-    first: string;
+    first!: string;
 
     @Column({ type: "varchar", length: 100, nullable: true, default: () => "null" })
-    second: string;
+    second!: string;
 
 }

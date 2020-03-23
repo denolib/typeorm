@@ -4,9 +4,9 @@ import { Foo } from "./Foo.ts";
 
 @Entity()
 export class Bar {
-  @PrimaryGeneratedColumn() id: number;
+  @PrimaryGeneratedColumn() id!: number;
 
-  @Column({ type: String }) description: string;
+  @Column({ type: String }) description!: string;
 
   @ManyToOne(type => Foo, foo => foo.bars)
   foo?: Foo;

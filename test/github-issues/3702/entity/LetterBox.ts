@@ -5,9 +5,9 @@ import {Column} from "../../../../src/decorator/columns/Column.ts";
 export class LetterBox {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: "point", srid: 4326 })
-    coord: string;
+    coord!: string;
 
 }

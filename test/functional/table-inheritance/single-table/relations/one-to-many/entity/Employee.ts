@@ -6,6 +6,6 @@ import {Person} from "./Person.ts";
 export class Employee extends Person {
 
     @Column({ type: Number })
-    salary: number;
+    salary!: number;
 
 }

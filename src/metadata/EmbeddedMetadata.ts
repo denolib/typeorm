@@ -44,7 +44,7 @@ export class EmbeddedMetadata {
      * Full path is relevant when embedded is used inside other embeds (one or multiple nested).
      * For example it will return "counters.subcounters".
      */
-    propertyPath: string;
+    propertyPath!: string;
 
     /**
      * Columns inside this embed.
@@ -105,7 +105,7 @@ export class EmbeddedMetadata {
      * But if custom prefix is set then it takes its value as a prefix.
      * However if custom prefix is set to empty string or false, then prefix to column is not applied at all.
      */
-    prefix: string;
+    prefix!: string;
 
     /**
      * Returns array of property names of current embed and all its parent embeds.

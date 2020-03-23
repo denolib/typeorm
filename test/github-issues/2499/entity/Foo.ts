@@ -5,8 +5,8 @@ import {Entity} from "../../../../src/decorator/entity/Entity.ts";
 export class Foo {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    description: string;
+    description!: string;
 }

@@ -9,12 +9,12 @@ import { Category } from "./Category.ts";
 export class Note {
 
     @PrimaryGeneratedColumn("uuid")
-    id: string;
+    id!: string;
 
     @Column({ type: String })
-    content: string;
+    content!: string;
 
     @ManyToMany((type) => Category, (category) => category.notes)
     @JoinTable()
-    categories: Category[];
+    categories!: Category[];
 }

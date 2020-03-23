@@ -6,16 +6,16 @@ import { User } from "./User.ts";
 @ChildEntity()
 export class TournamentSquadParticipant extends TournamentParticipant {
     @OneToOne(type => User, {
-        eager: true,
+        eager!: true,
     })
     @JoinColumn()
-    public owner: User;
+    public owner!: User;
 
     @ManyToMany(type => User, {
-        eager: true,
+        eager!: true,
     })
     @JoinTable({name: "tournament_squad_participants"})
-    public users: User[];
+    public users!: User[];
 
     constructor(tournamentSquadParticipant?: { users: User[], owner: User }) {
         super();

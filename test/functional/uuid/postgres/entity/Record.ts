@@ -5,6 +5,6 @@ import {PrimaryGeneratedColumn} from "../../../../../src/decorator/columns/Prima
 export class Record {
 
     @PrimaryGeneratedColumn("uuid")
-    id: string;
+    id!: string;
 
 }

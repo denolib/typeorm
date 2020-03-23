@@ -4,15 +4,15 @@ import { PrimaryColumn, Entity, Column } from "../../../../src/index.ts";
 export class MysqlEntity {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column("time")
-    fieldTime: Date;
+    fieldTime!: Date;
 
     @Column("timestamp")
-    fieldTimestamp: Date;
+    fieldTimestamp!: Date;
 
     @Column("datetime")
-    fieldDatetime: Date;
+    fieldDatetime!: Date;
 
 }

@@ -4,9 +4,9 @@ import {Entity, PrimaryColumn, PrimaryGeneratedColumn} from "../../../../src/ind
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @PrimaryColumn({ type: String })
-    name: string;
+    name!: string;
 
 }

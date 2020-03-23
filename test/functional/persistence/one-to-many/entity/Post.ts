@@ -8,15 +8,15 @@ import {Column} from "../../../../../src/decorator/columns/Column.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @OneToMany(type => Category, category => category.post)
-    categories: Category[]|null;
+    categories!: Category[]|null;
 
     @Column({
-        type: String,
-        default: "supervalue"
+        type!: String,
+        default!: "supervalue"
     })
-    title: string;
+    title!: string;
 
 }

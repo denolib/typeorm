@@ -6,15 +6,15 @@ import {Column} from "../../../../../../src/decorator/columns/Column.ts";
 export class Post {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column({ collation: "ascii_general_ci", type: String })
-    name: string;
+    name!: string;
 
     @Column({ charset: "utf8", type: String })
-    title: string;
+    title!: string;
 
     @Column({ charset: "cp852", collation: "cp852_general_ci", type: String })
-    description: string;
+    description!: string;
 
 }

@@ -7,15 +7,15 @@ import {User} from "./User.ts";
 export class Subcounters {
 
     @PrimaryColumn({ type: Number })
-    version: number;
+    version!: number;
 
     @Column({ type: Number })
-    watches: number;
+    watches!: number;
 
     @ManyToMany(type => User, user => user.posts)
     @JoinTable({ name: "subcnt_users" })
-    watchedUsers: User[];
+    watchedUsers!: User[];
 
-    watchedUserIds: number[];
+    watchedUserIds!: number[];
 
 }

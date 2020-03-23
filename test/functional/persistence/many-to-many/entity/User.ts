@@ -8,12 +8,12 @@ import {Post} from "./Post.ts";
 export class User {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @ManyToOne(type => Post, { cascade: ["update"] })
-    post: Post;
+    post!: Post;
 
 }

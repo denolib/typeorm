@@ -4,9 +4,9 @@ import {Column, Entity, PrimaryGeneratedColumn, ObjectLiteral} from "../../../..
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column("hstore", { hstoreType: "object" })
-    hstoreObj: ObjectLiteral;
+    hstoreObj!: ObjectLiteral;
 
 }

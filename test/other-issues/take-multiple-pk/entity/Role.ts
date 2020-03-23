@@ -4,7 +4,7 @@ import {Entity} from "../../../../src/decorator/entity/Entity.ts";
 
 @Entity()
 export class Role {
-  @PrimaryGeneratedColumn() id: number;
+  @PrimaryGeneratedColumn() id!: number;
 
-  @Column({ type: String }) name: string;
+  @Column({ type: String }) name!: string;
 }

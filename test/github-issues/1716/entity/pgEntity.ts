@@ -4,24 +4,24 @@ import { PrimaryColumn, Entity, Column } from "../../../../src/index.ts";
 export class PgEntity {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column("time")
-    fieldTime: Date;
+    fieldTime!: Date;
 
     @Column("time with time zone")
-    fieldTimeWithTZ: Date;
+    fieldTimeWithTZ!: Date;
 
     @Column("time without time zone")
-    fieldTimeWithoutTZ: Date;
+    fieldTimeWithoutTZ!: Date;
 
     @Column("timestamp")
-    fieldTimestamp: Date;
+    fieldTimestamp!: Date;
 
     @Column("timestamp without time zone")
-    fieldTimestampWithoutTZ: Date;
+    fieldTimestampWithoutTZ!: Date;
 
     @Column("timestamp with time zone")
-    fieldTimestampWithTZ: Date;
+    fieldTimestampWithTZ!: Date;
 
 }

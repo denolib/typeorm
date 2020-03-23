@@ -6,18 +6,18 @@ import {Column} from "../../../../src/decorator/columns/Column.ts";
 export class Device {
 
     @PrimaryColumn({
-        name: "id",
+        name!: "id",
         type: "char",
-        length: "12"
+        length!: "12"
     })
-    id: string;
+    id!: string;
 
     @Column({
-        name: "registration_token",
+        name!: "registration_token",
         type: "decimal",
-        precision: 6,
-        scale: 0
+        precision!: 6,
+        scale!: 0
     })
-    registrationToken: string;
+    registrationToken!: string;
 
 }

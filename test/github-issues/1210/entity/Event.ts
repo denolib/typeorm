@@ -7,14 +7,14 @@ import {Column} from "../../../../src/decorator/columns/Column.ts";
 export class Event {
 
     @ObjectIdColumn()
-    id: ObjectID;
+    id!: ObjectID;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @Column({ type: Date, name: "at_date", default: Date.now })
-    date: Date;
+    date!: Date;
 
     // @Column( type => User)
-    // participants: User[]
+    // participants!: User[]
 }

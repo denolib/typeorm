@@ -3,8 +3,8 @@ import { Entity, PrimaryGeneratedColumn, Column } from "../../../../../src/index
 @Entity()
 export class View {
     @PrimaryGeneratedColumn("uuid")
-    id: string;
+    id!: string;
 
     @Column({type: String, transformer: []})
-    title: string;
+    title!: string;
 }

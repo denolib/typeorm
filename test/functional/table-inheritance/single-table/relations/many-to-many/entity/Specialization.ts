@@ -8,12 +8,12 @@ import {Teacher} from "./Teacher.ts";
 export class Specialization {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @ManyToMany(type => Teacher, teacher => teacher.specializations)
-    teachers: Teacher[];
+    teachers!: Teacher[];
 
 }

@@ -11,61 +11,61 @@ import {Tag} from "./Tag.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @Column({ nullable: true, type: String })
-    categoryName: string;
+    categoryName!: string;
 
     @Column({ type: "int", nullable: true })
-    categoryId: number;
+    categoryId!: number;
 
     @Column({ nullable: true, type: String })
-    tagName: string;
+    tagName!: string;
 
     @Column({ type: "int", nullable: true })
-    tagId: number;
+    tagId!: number;
 
     @ManyToOne(type => Category)
     @JoinColumn()
-    categoryWithEmptyJoinCol: Category;
+    categoryWithEmptyJoinCol!: Category;
 
     @ManyToOne(type => Category)
     @JoinColumn({ name: "categoryId" })
-    categoryWithoutRefColName: Category;
+    categoryWithoutRefColName!: Category;
 
     @ManyToOne(type => Category)
     @JoinColumn({ referencedColumnName: "name" })
-    categoryWithoutColName: Category;
+    categoryWithoutColName!: Category;
 
     @ManyToOne(type => Category)
     @JoinColumn({ name: "categoryIdentifier" })
-    categoryWithoutRefColName2: Category;
+    categoryWithoutRefColName2!: Category;
 
     @ManyToOne(type => Category)
     @JoinColumn({ name: "categoryName", referencedColumnName: "name" })
-    category: Category;
+    category!: Category;
 
     @OneToOne(type => Tag)
     @JoinColumn()
-    tagWithEmptyJoinCol: Tag;
+    tagWithEmptyJoinCol!: Tag;
 
     @OneToOne(type => Tag)
     @JoinColumn({ name: "tagId" })
-    tagWithoutRefColName: Tag;
+    tagWithoutRefColName!: Tag;
 
     @OneToOne(type => Tag)
     @JoinColumn({ referencedColumnName: "name" })
-    tagWithoutColName: Tag;
+    tagWithoutColName!: Tag;
 
     @OneToOne(type => Tag)
     @JoinColumn({ name: "tagIdentifier" })
-    tagWithoutRefColName2: Tag;
+    tagWithoutRefColName2!: Tag;
 
     @OneToOne(type => Tag)
     @JoinColumn({ name: "tagName", referencedColumnName: "name" })
-    tag: Tag;
+    tag!: Tag;
 
 }

@@ -4,5 +4,5 @@ import { PrimaryGeneratedColumn } from "../../../../src/decorator/columns/Primar
 @Entity()
 export class User {
     @PrimaryGeneratedColumn("uuid")
-    id: string;
+    id!: string;
 }

@@ -8,6 +8,6 @@ export class UserEntity {
     id?: number;
 
     @OneToMany(type => UserToOrganizationEntity, userToOrganization => userToOrganization.user)
-    organizations: UserToOrganizationEntity[];
+    organizations!: UserToOrganizationEntity[];
 
 }

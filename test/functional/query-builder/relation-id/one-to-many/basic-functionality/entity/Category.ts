@@ -10,22 +10,22 @@ import {Post} from "./Post.ts";
 export class Category {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @Column({ type: Boolean })
     isRemoved: boolean = false;
 
     @OneToMany(type => Image, image => image.category)
-    images: Image[];
+    images!: Image[];
 
-    imageIds: number[];
+    imageIds!: number[];
 
     @ManyToOne(type => Post, post => post.categories)
-    post: Post;
+    post!: Post;
 
-    postId: number;
+    postId!: number;
 
 }

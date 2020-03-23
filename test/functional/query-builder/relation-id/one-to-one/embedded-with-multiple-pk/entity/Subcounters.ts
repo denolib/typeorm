@@ -7,15 +7,15 @@ import {User} from "./User.ts";
 export class Subcounters {
 
     @PrimaryColumn({ type: Number })
-    version: number;
+    version!: number;
 
     @Column({ type: Number })
-    watches: number;
+    watches!: number;
 
     @OneToOne(type => User)
     @JoinColumn()
-    watchedUser: User;
+    watchedUser!: User;
 
-    watchedUserId: number;
+    watchedUserId!: number;
 
 }

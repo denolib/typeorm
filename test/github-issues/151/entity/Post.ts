@@ -10,17 +10,17 @@ import {PostMetadata} from "./PostMetadata.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
-    @OneToOne(type => Category, { cascade: true })
+    @OneToOne(type => Category, { cascade!: true })
     @JoinColumn()
-    category: Category|null;
+    category!: Category|null;
 
-    @OneToOne(type => PostMetadata, metadata => metadata.post, { cascade: true })
+    @OneToOne(type => PostMetadata, metadata => metadata.post, { cascade!: true })
     @JoinColumn()
-    metadata: PostMetadata|null;
+    metadata!: PostMetadata|null;
 
 }

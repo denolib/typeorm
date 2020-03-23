@@ -7,12 +7,12 @@ import {Counters} from "./Counters.ts";
 export class Post {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @Column(() => Counters)
-    counters: Counters;
+    counters!: Counters;
 
 }

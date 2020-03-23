@@ -43,7 +43,7 @@ export class AuroraDataApiQueryRunner extends BaseQueryRunner implements QueryRu
     /**
      * Promise used to obtain a database connection from a pool for a first time.
      */
-    protected databaseConnectionPromise: Promise<any>;
+    protected databaseConnectionPromise!: Promise<any>;
 
     // -------------------------------------------------------------------------
     // Constructor

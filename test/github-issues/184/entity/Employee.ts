@@ -6,10 +6,10 @@ import {ChildEntity} from "../../../../src/decorator/entity/ChildEntity.ts";
 export class Employee extends Person {
 
     @Column({ type: Number })
-    salary: number;
+    salary!: number;
 
     @Column({ type: String })
-    shared: string;
+    shared!: string;
 
     constructor() {
         super();

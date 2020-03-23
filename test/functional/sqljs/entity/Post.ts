@@ -6,8 +6,8 @@ import {PrimaryColumn} from "../../../../src/decorator/columns/PrimaryColumn.ts"
 export class Post {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 }

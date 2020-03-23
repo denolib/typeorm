@@ -48,7 +48,7 @@ export class MongoRepository<Entity extends ObjectLiteral> extends Repository<En
     /**
      * Entity Manager used by this repository.
      */
-    readonly manager: MongoEntityManager;
+    readonly manager!: MongoEntityManager;
 
     // -------------------------------------------------------------------------
     // Overridden Methods

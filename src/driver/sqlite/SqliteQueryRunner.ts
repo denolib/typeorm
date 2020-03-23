@@ -98,8 +98,9 @@ export class SqliteQueryRunner extends AbstractSqliteQueryRunner {
     private getLastInsertRowID(databaseConnection: DB): unknown {
         const query = "SELECT last_insert_rowid()";
         this.connection.logger.logQuery(query, [], this);
-        const rows = databaseConnection.query(query);
-        for (const [lastID] of rows) {
+        const rows = databaseConnection.query(query, []);
+        for (const row of rows) {
+            const [lastID] = row!;
             rows.done();
             return lastID;
         }
@@ -109,10 +110,10 @@ export class SqliteQueryRunner extends AbstractSqliteQueryRunner {
         const columnNames = this.extractColumns(rows);
         const array = [] as unknown[];
         for (const row of rows) {
-            const converted = {};
-            for (let columnIndex = 0; columnIndex < row.length; ++columnIndex) {
+            const converted = {} as { [column: string]: any };
+            for (let columnIndex = 0; columnIndex < row!.length; ++columnIndex) {
                 const columnName = columnNames[columnIndex];
-                const columnValue = row[columnIndex];
+                const columnValue = row![columnIndex];
                 converted[columnName] = columnValue;
             }
             array.push(converted);
@@ -122,7 +123,7 @@ export class SqliteQueryRunner extends AbstractSqliteQueryRunner {
 
     private extractColumns(rows: ReturnType<DB['query']>): string[] {
         try {
-            return rows.columns().map(column => column.name);
+            return rows.columns().map((column: { name: string }) => column.name);
         } catch {
             return [];
         }

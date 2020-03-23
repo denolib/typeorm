@@ -42,7 +42,7 @@ export class OracleQueryRunner extends BaseQueryRunner implements QueryRunner {
     /**
      * Promise used to obtain a database connection for a first time.
      */
-    protected databaseConnectionPromise: Promise<any>;
+    protected databaseConnectionPromise!: Promise<any>;
 
     // -------------------------------------------------------------------------
     // Constructor

@@ -18,12 +18,12 @@ export abstract class BaseQueryRunner {
     /**
      * Connection used by this query runner.
      */
-    connection: Connection;
+    connection!: Connection;
 
     /**
      * Entity manager working only with current query runner.
      */
-    manager: EntityManager;
+    manager!: EntityManager;
 
     /**
      * Indicates if connection for this query runner is released.
@@ -55,7 +55,7 @@ export abstract class BaseQueryRunner {
     /**
      * Broadcaster used on this query runner to broadcast entity events.
      */
-    broadcaster: Broadcaster;
+    broadcaster!: Broadcaster;
 
     // -------------------------------------------------------------------------
     // Protected Properties
@@ -81,7 +81,7 @@ export abstract class BaseQueryRunner {
      * Used for replication.
      * If replication is not setup its value is ignored.
      */
-    protected mode: "master"|"slave";
+    protected mode!: "master"|"slave";
 
     // -------------------------------------------------------------------------
     // Public Abstract Methods

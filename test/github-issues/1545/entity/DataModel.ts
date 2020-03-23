@@ -5,26 +5,26 @@ import { ValidationModel } from "./ValidationModel.ts";
 @Entity()
 export class DataModel {
 
-    @ManyToOne(type => ValidationModel, {eager: true, primary: true})
+    @ManyToOne(type => ValidationModel, {eager: true, primary!: true})
     @JoinColumn({
-        name: "validation",
-        referencedColumnName: "validation"
+        name!: "validation",
+        referencedColumnName!: "validation"
     })
-    validations: ValidationModel;
+    validations!: ValidationModel;
 
 
     @ManyToOne(type => MainModel, {
-        primary: true
+        primary!: true
     })
     @JoinColumn({
-        name: "mainId",
-        referencedColumnName: "id"
+        name!: "mainId",
+        referencedColumnName!: "id"
     })
-    main: MainModel;
+    main!: MainModel;
 
     @Column({
-        type: "boolean",
-        default: false
+        type!: "boolean",
+        default!: false
     })
-    active: boolean;
+    active!: boolean;
 }

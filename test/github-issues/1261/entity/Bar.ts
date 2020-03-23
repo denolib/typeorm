@@ -9,12 +9,12 @@ import {JoinColumn} from "../../../../src/decorator/relations/JoinColumn.ts";
 export class Bar extends BaseEntity {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @OneToOne(type => Foo, {
-        onDelete: "SET NULL"
+        onDelete!: "SET NULL"
     })
     @JoinColumn()
-    foo: Foo;
+    foo!: Foo;
 
 }

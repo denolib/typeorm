@@ -13,8 +13,8 @@ const trim: ValueTransformer = {
 @Entity()
 export class Category {
     @PrimaryGeneratedColumn("uuid")
-    id: string;
+    id!: string;
 
     @Column({type: String, transformer: [lowercase, trim, encrypt]})
-    description: string;
+    description!: string;
 }

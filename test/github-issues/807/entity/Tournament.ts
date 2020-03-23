@@ -6,14 +6,14 @@ import {Column} from "../../../../src/decorator/columns/Column.ts";
 export class Tournament {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String, unique: true, length: 200 })
-    name: string;
+    name!: string;
 
     @Column({ type: Date })
-    startDate: Date;
+    startDate!: Date;
 
     @Column({ type: Date })
-    endDate: Date;
+    endDate!: Date;
 }

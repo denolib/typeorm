@@ -9,12 +9,12 @@ import {JoinTable} from "../../../../../src/decorator/relations/JoinTable.ts";
 export class Question {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
-    @ManyToMany(type => Category, { persistence: false })
+    @ManyToMany(type => Category, { persistence!: false })
     @JoinTable()
     categories: Category[] = [];
 

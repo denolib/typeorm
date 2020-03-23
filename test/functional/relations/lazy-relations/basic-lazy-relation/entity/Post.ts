@@ -14,32 +14,32 @@ import {
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @Column({ type: String })
-    text: string;
+    text!: string;
 
-    @ManyToMany(type => Category, { lazy: true })
+    @ManyToMany(type => Category, { lazy!: true })
     @JoinTable()
-    categories: Promise<Category[]>;
+    categories!: Promise<Category[]>;
 
-    @ManyToMany(type => Category, category => category.twoSidePosts, { lazy: true })
+    @ManyToMany(type => Category, category => category.twoSidePosts, { lazy!: true })
     @JoinTable()
-    twoSideCategories: Promise<Category[]>;
+    twoSideCategories!: Promise<Category[]>;
 
     @Column({ type: Number })
     viewCount: number = 0;
 
     @ManyToOne(type => Category, { lazy: true })
-    category: Promise<Category>;
+    category!: Promise<Category>;
 
-    @OneToOne(type => Category, category => category.onePost, { lazy: true })
+    @OneToOne(type => Category, category => category.onePost, { lazy!: true })
     @JoinColumn()
-    oneCategory: Promise<Category>;
+    oneCategory!: Promise<Category>;
 
     @ManyToOne(type => Category, category => category.twoSidePosts2, { lazy: true })
-    twoSideCategory: Promise<Category>;
+    twoSideCategory!: Promise<Category>;
 }

@@ -6,26 +6,26 @@ import {ObjectID} from "../../../../../../src/driver/mongodb/typings.ts";
 
 @Entity()
 @Index(["title", "name"])
-@Index(() => ({ title: -1, name: -1, count: 1 }))
-@Index("title_name_count", () => ({ title: 1, name: 1, count: 1 }))
-@Index("title_name_count_reversed", () => ({ title: -1, name: -1, count: -1 }))
-@Index("count_in_background", () => ({ count: -1 }), {background: true})
-@Index("count_expire", () => ({ title: -1 }), {expireAfterSeconds: 3600})
+@Index(() => ({ title: -1, name: -1, count!: 1 }))
+@Index("title_name_count", () => ({ title: 1, name: 1, count!: 1 }))
+@Index("title_name_count_reversed", () => ({ title: -1, name: -1, count!: -1 }))
+@Index("count_in_background", () => ({ count!: -1 }), {background: true})
+@Index("count_expire", () => ({ title!: -1 }), {expireAfterSeconds: 3600})
 export class Post {
 
     @ObjectIdColumn()
-    id: ObjectID;
+    id!: ObjectID;
 
-    @Column({ type: String })
+    @Column({ type!: String })
     @Index()
-    title: string;
+    title!: string;
 
-    @Column({ type: String })
+    @Column({ type!: String })
     @Index()
-    name: string;
+    name!: string;
 
-    @Column({ type: Number })
+    @Column({ type!: Number })
     @Index({ unique: true })
-    count: number;
+    count!: number;
 
 }

@@ -6,31 +6,31 @@ import {Column} from "../../../../../../src/index.ts";
 export class Post {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column("varchar", {
-        length: 50
+        length!: 50
     })
-    varchar: string;
+    varchar!: string;
 
     @Column("nvarchar", {
-        length: 50
+        length!: 50
     })
-    nvarchar: string;
+    nvarchar!: string;
 
     @Column("alphanum", {
-        length: 50
+        length!: 50
     })
-    alphanum: string;
+    alphanum!: string;
 
     @Column("shorttext", {
-        length: 50
+        length!: 50
     })
-    shorttext: string;
+    shorttext!: string;
 
     @Column("varbinary", {
-        length: 50
+        length!: 50
     })
-    varbinary: Uint8Array;/*Buffer;*/
+    varbinary!: Uint8Array;/*Buffer;*/
 
 }

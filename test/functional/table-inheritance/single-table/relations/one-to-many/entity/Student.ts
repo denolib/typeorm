@@ -7,6 +7,6 @@ import {Faculty} from "./Faculty.ts";
 export class Student extends Person {
 
     @OneToMany(type => Faculty, faculty => faculty.student)
-    faculties: Faculty[];
+    faculties!: Faculty[];
 
 }

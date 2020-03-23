@@ -8,11 +8,11 @@ import {Comment} from "./Comment.ts";
 export class Guest {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    username: string;
+    username!: string;
 
     @OneToMany(type => Comment, comment => comment.author)
-    comments: Comment[];
+    comments!: Comment[];
 }

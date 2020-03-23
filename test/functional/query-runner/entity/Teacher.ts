@@ -8,12 +8,12 @@ import {OneToMany} from "../../../../src/decorator/relations/OneToMany.ts";
 export class Teacher {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @OneToMany(type => Student, student => student.teacher)
-    students: Student[];
+    students!: Student[];
 
 }

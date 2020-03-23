@@ -7,12 +7,12 @@ import {Column} from "../../../../src/decorator/columns/Column.ts";
 export class Post {
 
     @ObjectIdColumn()
-    id: ObjectID;
+    id!: ObjectID;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @Column({ type: String })
-    text: string;
+    text!: string;
 
 }

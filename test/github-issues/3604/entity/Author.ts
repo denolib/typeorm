@@ -5,5 +5,5 @@ import {Entity} from "../../../../src/index.ts";
 export class Author {
 
     @PrimaryGeneratedColumn("uuid")
-    id: string;
+    id!: string;
 }

@@ -7,11 +7,11 @@ import {OneToOne} from "../../../../../src/decorator/relations/OneToOne.ts";
 export class PostDetails {
 
     @PrimaryColumn({ type: String })
-    keyword: string;
+    keyword!: string;
 
     @OneToOne(type => Post, post => post.details, {
-        cascade: ["insert"]
+        cascade!: ["insert"]
     })
-    post: Post;
+    post!: Post;
 
 }

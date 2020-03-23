@@ -6,6 +6,6 @@ import {Person} from "./Person.ts";
 export class Student extends Person {
 
     @Column({ type: String })
-    faculty: string;
+    faculty!: string;
 
 }

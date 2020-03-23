@@ -5,18 +5,18 @@ import {User} from "./User.ts";
 export class Photo {
 
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column({ type: String })
-  description: string;
+  description!: string;
 
   @Column({ type: String })
-  uri: string;
+  uri!: string;
 
   @Column({ type: Number })
-  userId: number;
+  userId!: number;
 
   @ManyToOne(type => User, user => user.photos)
-  user: User;
+  user!: User;
 
 }

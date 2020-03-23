@@ -7,14 +7,14 @@ import { Column } from "../../../../src/decorator/columns/Column.ts";
 export class Person {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Index({
-        unique: true
+        unique!: true
     })
     @Column({ type: String })
-    firstname: string;
+    firstname!: string;
 
     @Column({ type: String })
-    lastname: string;
+    lastname!: string;
 }

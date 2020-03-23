@@ -6,12 +6,12 @@ import {Column} from "../../../../src/decorator/columns/Column.ts";
 export class Participant {
 
     @PrimaryColumn({ type: Number })
-    order_id: number;
+    order_id!: number;
 
     @PrimaryColumn({ type: String })
-    distance: string;
+    distance!: string;
 
-    @Column({ type: String })
+    @Column({ type!: String })
     price?: string;
 
 }

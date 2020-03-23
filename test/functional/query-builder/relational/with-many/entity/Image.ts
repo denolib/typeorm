@@ -8,12 +8,12 @@ import {ManyToMany} from "../../../../../../src/decorator/relations/ManyToMany.t
 export class Image {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    url: string;
+    url!: string;
 
     @ManyToMany(type => Post, post => post.images)
-    posts: Post[];
+    posts!: Post[];
 
 }

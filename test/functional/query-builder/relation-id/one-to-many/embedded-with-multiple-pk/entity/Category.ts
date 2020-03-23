@@ -7,12 +7,12 @@ import {ManyToOne} from "../../../../../../../src/decorator/relations/ManyToOne.
 export class Category {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @PrimaryColumn({ type: String })
-    name: string;
+    name!: string;
 
     @ManyToOne(type => Post, post => post.counters.categories)
-    post: Post;
+    post!: Post;
 
 }

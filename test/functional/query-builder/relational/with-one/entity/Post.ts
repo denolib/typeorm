@@ -11,16 +11,16 @@ import {JoinColumn} from "../../../../../../src/decorator/relations/JoinColumn.t
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @ManyToOne(type => Category)
-    category: Category;
+    category!: Category;
 
     @OneToOne(type => Image, image => image.post)
     @JoinColumn()
-    image: Image;
+    image!: Image;
 
 }

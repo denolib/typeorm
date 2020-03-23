@@ -11,36 +11,36 @@ import {Unique} from "../../../../../../src/index.ts";
 export class Category {
 
     @PrimaryColumn({type: String})
-    name: string;
+    name!: string;
 
     @PrimaryColumn({type: String})
-    type: string;
+    type!: string;
 
     @Column({type: Number})
-    code: number;
+    code!: number;
 
     @Column({type: Number})
-    version: number;
+    version!: number;
 
     @Column({nullable: true, type: String})
-    description: string;
+    description!: string;
 
     @OneToOne(type => Post, post => post.category)
-    post: Post;
+    post!: Post;
 
     @OneToOne(type => Post, post => post.categoryWithOptions)
-    postWithOptions: Post;
+    postWithOptions!: Post;
 
     @OneToOne(type => Post, post => post.categoryWithNonPKColumns)
-    postWithNonPKColumns: Post;
+    postWithNonPKColumns!: Post;
 
     @OneToOne(type => Tag, tag => tag.category)
-    tag: Tag;
+    tag!: Tag;
 
     @OneToOne(type => Tag, tag => tag.categoryWithOptions)
-    tagWithOptions: Tag;
+    tagWithOptions!: Tag;
 
     @OneToOne(type => Tag, tag => tag.categoryWithNonPKColumns)
-    tagWithNonPKColumns: Tag;
+    tagWithNonPKColumns!: Tag;
 
 }

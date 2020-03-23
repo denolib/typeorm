@@ -1,7 +1,7 @@
 export class Post {
 
-    id: number;
-    title: string;
-    text: string;
+    id!: number;
+    title!: string;
+    text!: string;
 
 }

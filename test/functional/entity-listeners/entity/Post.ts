@@ -7,13 +7,13 @@ import {Entity} from "../../../../src/decorator/entity/Entity.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @Column({ type: String })
-    text: string;
+    text!: string;
 
     @BeforeUpdate()
     beforeUpdate() {

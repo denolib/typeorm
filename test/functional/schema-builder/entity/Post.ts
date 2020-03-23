@@ -12,21 +12,21 @@ import {Exclusion} from "../../../../src/decorator/Exclusion.ts";
 export class Post {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column({ unique: true, type: String })
-    version: string;
+    version!: string;
 
     @Column({ default: "My post", type: String })
-    name: string;
+    name!: string;
 
     @Column({ type: String })
-    text: string;
+    text!: string;
 
     @Column({ type: String })
-    tag: string;
+    tag!: string;
 
     @Column({ type: Number })
-    likesCount: number;
+    likesCount!: number;
 
 }

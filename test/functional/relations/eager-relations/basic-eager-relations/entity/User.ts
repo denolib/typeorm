@@ -9,16 +9,16 @@ import {Profile} from "./Profile.ts";
 export class User {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    firstName: string;
+    firstName!: string;
 
     @Column({ type: String })
-    lastName: string;
+    lastName!: string;
 
-    @OneToOne(type => Profile, { eager: true })
+    @OneToOne(type => Profile, { eager!: true })
     @JoinColumn()
-    profile: Profile;
+    profile!: Profile;
 
 }

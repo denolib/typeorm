@@ -9,16 +9,16 @@ import {JoinColumn} from "../../../../src/decorator/relations/JoinColumn.ts";
 export class Post {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @Column({ type: String, nullable: true })
-    categoryName: string;
+    categoryName!: string;
 
     @OneToOne(type => Category, category => category.post)
     @JoinColumn({ name: "categoryName", referencedColumnName: "name" })
-    category: Category;
+    category!: Category;
 
 }

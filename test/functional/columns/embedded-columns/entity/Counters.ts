@@ -3,20 +3,20 @@ import { Information } from "./Information.ts";
 
 export class Counters {
     @Column({ type: Number })
-    likes: number;
+    likes!: number;
 
     @Column({ type: Number })
-    comments: number;
+    comments!: number;
 
     @Column({ type: Number })
-    favorites: number;
+    favorites!: number;
 
     @Column(type => Information, { prefix: "info" })
-    information: Information;
+    information!: Information;
 
     @Column(type => Information, { prefix: "testData" })
-    data: Information;
+    data!: Information;
 
     @Column(type => Information, { prefix: "" })
-    dataWithoutPrefix: Information;
+    dataWithoutPrefix!: Information;
 }

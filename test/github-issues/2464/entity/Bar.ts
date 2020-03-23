@@ -5,9 +5,9 @@ import { Foo } from "./Foo.ts";
 
 @Entity()
 export class Bar extends BaseEntity {
-  @PrimaryGeneratedColumn() id: number;
+  @PrimaryGeneratedColumn() id!: number;
 
-  @Column({ type: String }) description: string;
+  @Column({ type: String }) description!: string;
 
   @ManyToMany(type => Foo, foo => foo.bars)
   foos?: Foo[];

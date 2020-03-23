@@ -5,6 +5,6 @@ import {PrimaryGeneratedColumn} from "../../../../src/decorator/columns/PrimaryG
 export class Post {
 
     @PrimaryGeneratedColumn("uuid")
-    id: string;
+    id!: string;
 
 }

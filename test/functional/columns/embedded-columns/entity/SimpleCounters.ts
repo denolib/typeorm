@@ -4,14 +4,14 @@ import { Information } from "./Information.ts";
 export class SimpleCounters {
 
     @Column({ type: Number })
-    likes: number;
+    likes!: number;
 
     @Column({ type: Number })
-    comments: number;
+    comments!: number;
 
     @Column({ type: Number })
-    favorites: number;
+    favorites!: number;
 
     @Column(type => Information, { prefix: "info" })
-    information: Information;
+    information!: Information;
 }

@@ -8,12 +8,12 @@ import {RecordConfig} from "./RecordConfig.ts";
 export class Record {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: "json" })
-    configs: RecordConfig[];
+    configs!: RecordConfig[];
 
     @Column({ type: "jsonb" })
-    datas: RecordData[];
+    datas!: RecordData[];
 
 }

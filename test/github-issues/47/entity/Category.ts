@@ -8,12 +8,12 @@ import {OneToMany} from "../../../../src/decorator/relations/OneToMany.ts";
 export class Category {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @OneToMany(() => Post, post => post.category)
-    posts: Promise<Post[]>;
+    posts!: Promise<Post[]>;
 
 }

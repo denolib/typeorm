@@ -4,18 +4,18 @@ import { PrimaryColumn, Entity, Column } from "../../../../src/index.ts";
 export class MssqlEntity {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
     @Column("time")
-    fieldTime: Date;
+    fieldTime!: Date;
 
     @Column("datetime")
-    fieldDatetime: Date;
+    fieldDatetime!: Date;
 
     @Column("datetime2")
-    fieldDatetime2: Date;
+    fieldDatetime2!: Date;
 
     @Column("datetimeoffset")
-    fieldDatetimeoffset: Date;
+    fieldDatetimeoffset!: Date;
 
 }

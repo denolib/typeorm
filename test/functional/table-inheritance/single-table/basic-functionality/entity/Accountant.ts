@@ -6,6 +6,6 @@ import {Employee} from "./Employee.ts";
 export class Accountant extends Employee {
 
     @Column({ type: String })
-    department: string;
+    department!: string;
 
 }

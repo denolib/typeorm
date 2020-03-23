@@ -4,15 +4,15 @@ import {PrimaryColumn} from "../../../../../src/decorator/columns/PrimaryColumn.
 export class Counters {
 
     @PrimaryColumn({ type: Number })
-    code: number;
+    code!: number;
 
     @Column({ type: Number })
-    likes: number;
+    likes!: number;
 
     @Column({ type: Number })
-    comments: number;
+    comments!: number;
 
     @Column({ type: Number })
-    favorites: number;
+    favorites!: number;
 
 }

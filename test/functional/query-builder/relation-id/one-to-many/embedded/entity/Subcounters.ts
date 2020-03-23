@@ -6,17 +6,17 @@ import {User} from "./User.ts";
 export class Subcounters {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: Number })
-    version: number;
+    version!: number;
 
     @Column({ type: Number })
-    watches: number;
+    watches!: number;
 
     @OneToMany(type => User, user => user.posts)
-    watchedUsers: User[];
+    watchedUsers!: User[];
 
-    watchedUserIds: number[];
+    watchedUserIds!: number[];
 
 }

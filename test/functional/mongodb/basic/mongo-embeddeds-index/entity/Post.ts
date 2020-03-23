@@ -10,15 +10,15 @@ import {Information} from "./Information.ts";
 export class Post {
 
     @ObjectIdColumn()
-    id: ObjectID;
+    id!: ObjectID;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @Column(() => Information)
-    info: Information;
+    info!: Information;
 
 }

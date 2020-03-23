@@ -7,8 +7,8 @@ import { ObjectID } from "../../../../../../src/driver/mongodb/typings.ts";
 export class PostWithUnderscoreId {
 
     @ObjectIdColumn()
-    _id: ObjectID;
+    _id!: ObjectID;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 }

@@ -10,12 +10,12 @@ export class User {
 
     @PrimaryColumn("int")
     @Generated()
-    primaryKey: number;
+    primaryKey!: number;
 
     @Column({ type: String })
-    email: string;
+    email!: string;
 
     @OneToOne(type => AccessToken, token => token.user)
-    access_token: AccessToken;
+    access_token!: AccessToken;
 
 }

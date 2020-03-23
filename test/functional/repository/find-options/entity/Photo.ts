@@ -11,28 +11,28 @@ import {Category} from "./Category.ts";
 export class Photo {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({
-        type: String,
-        length: 500
+        type!: String,
+        length!: 500
     })
-    name: string;
+    name!: string;
 
     @Column({ type: String })
-    description: string;
+    description!: string;
 
     @Column({ type: String })
-    filename: string;
+    filename!: string;
 
     @Column({ type: Number })
-    views: number;
+    views!: number;
 
     @Column({ type: Boolean })
-    isPublished: boolean;
+    isPublished!: boolean;
 
     @ManyToMany(type => Category)
     @JoinTable()
-    categories: Category[];
+    categories!: Category[];
 
 }

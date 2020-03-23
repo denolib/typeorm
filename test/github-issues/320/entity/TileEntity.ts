@@ -7,22 +7,22 @@ import {ActivityEntity} from "./ActivityEntity.ts";
 @Entity("tile")
 export class TileEntity {
     @PrimaryGeneratedColumn({type: "bigint"})
-    id: string;
+    id!: string;
 
     @ManyToMany(type => TileEntity, tile => tile.children, {
-        cascade: ["insert"]
+        cascade!: ["insert"]
     })
     @JoinTable()
-    parents: TileEntity[];
+    parents!: TileEntity[];
 
     @ManyToMany(type => TileEntity, tile => tile.parents, {
-        cascade: ["insert"]
+        cascade!: ["insert"]
     })
-    children: TileEntity[];
+    children!: TileEntity[];
 
     @ManyToMany(type => ActivityEntity, activity => activity.tiles, {
-        cascade: ["insert"]
+        cascade!: ["insert"]
     })
     @JoinTable()
-    activities: ActivityEntity[];
+    activities!: ActivityEntity[];
 }

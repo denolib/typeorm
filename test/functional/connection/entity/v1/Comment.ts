@@ -11,14 +11,14 @@ import {Guest} from "./Guest.ts";
 export class Comment {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
     @Index()
-    title: string;
+    title!: string;
 
     @Column({ type: String })
-    context: string;
+    context!: string;
 
     @OneToMany(type => Comment, comment => comment.relay)
     reference?: Comment;
@@ -27,5 +27,5 @@ export class Comment {
     relay?: Comment;
 
     @ManyToOne(type => Guest, guest => guest.comments)
-    author: Guest;
+    author!: Guest;
 }

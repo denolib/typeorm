@@ -4,12 +4,12 @@ import {Entity, PrimaryGeneratedColumn, Column} from "../../../../src/index.ts";
 export class Profile {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    gender: string;
+    gender!: string;
 
     @Column({ type: String })
-    photo: string;
+    photo!: string;
 
 }

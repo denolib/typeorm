@@ -8,12 +8,12 @@ import {Column} from "../../../../src/decorator/columns/Column.ts";
 export class Tag {
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({ type: String })
-    name: string;
+    name!: string;
 
     @ManyToMany(type => Post, post => post.tags)
-    posts: Promise<Post[]>;
+    posts!: Promise<Post[]>;
 
 }

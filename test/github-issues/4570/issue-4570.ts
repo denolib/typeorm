@@ -9,7 +9,7 @@ describe("github issues > #4570 Fix PrimaryColumn decorator modifies passed opti
 
         class Entity {
             @PrimaryColumn(options)
-            pkey: string;
+            pkey!: string;
         }
 
         expect(Entity).to.be;

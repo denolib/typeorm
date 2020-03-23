@@ -27,14 +27,14 @@ export class Recipient {
   }
 
   @ManyToOne(type => User, user => user.recipients, { primary: true })
-  user: User;
+  user!: User;
 
   @ManyToOne(type => Message, message => message.recipients, { primary: true })
-  message: Message;
+  message!: Message;
 
   @CreateDateColumn()
-  receivedAt: number;
+  receivedAt!: number;
 
   @CreateDateColumn()
-  readAt: number;
+  readAt!: number;
 }

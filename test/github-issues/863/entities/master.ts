@@ -9,19 +9,19 @@ import { Detail } from "./detail.ts";
 export class Master {
 
     @PrimaryColumn({
-        type: String,
-        length: 20
+        type!: String,
+        length!: 20
     })
-    id: string;
+    id!: string;
 
     @Column({
-        type: String,
+        type!: String,
         nullable: false,
-        length: 150
+        length!: 150
     })
-    description: string;
+    description!: string;
 
     @OneToMany(type => Detail, detail => detail.master)
-    details: Detail[];
+    details!: Detail[];
 
 }

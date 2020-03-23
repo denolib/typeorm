@@ -7,18 +7,18 @@ import {ObjectID} from "../../../../../../src/driver/mongodb/typings.ts";
 export class Post {
 
     @ObjectIdColumn()
-    id: ObjectID;
+    id!: ObjectID;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @Column({ type: String })
-    text: string;
+    text!: string;
 
     @Column({ type: Number })
-    index: number;
+    index!: number;
 
     // @Column(() => Counters)
-    // counters: Counters;
+    // counters!: Counters;
 
 }

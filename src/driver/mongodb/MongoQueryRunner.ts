@@ -69,7 +69,7 @@ export class MongoQueryRunner implements QueryRunner {
     /**
      * Entity manager working only with current query runner.
      */
-    manager: MongoEntityManager;
+    manager!: MongoEntityManager;
 
     /**
      * Indicates if connection for this query runner is released.
@@ -93,12 +93,12 @@ export class MongoQueryRunner implements QueryRunner {
     /**
      * All synchronized tables in the database.
      */
-    loadedTables: Table[];
+    loadedTables!: Table[];
 
     /**
      * All synchronized views in the database.
      */
-    loadedViews: View[];
+    loadedViews!: View[];
 
     /**
      * Real database connection from a connection pool used to perform queries.

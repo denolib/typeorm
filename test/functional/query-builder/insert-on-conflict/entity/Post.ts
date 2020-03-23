@@ -6,9 +6,9 @@ import {PrimaryColumn} from "../../../../../src/decorator/columns/PrimaryColumn.
 export class Post {
 
     @PrimaryColumn({ type: String })
-    id: string;
+    id!: string;
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
 }

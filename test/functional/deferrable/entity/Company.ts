@@ -6,9 +6,9 @@ import {PrimaryColumn} from "../../../../src/decorator/columns/PrimaryColumn.ts"
 export class Company {
 
     @PrimaryColumn({ type: Number })
-    id: number;
+    id!: number;
 
-    @Column({ type: String })
+    @Column({ type!: String })
     name?: string;
 
 }

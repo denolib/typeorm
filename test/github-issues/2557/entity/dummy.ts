@@ -6,8 +6,8 @@ import {WrappedNumber, transformer} from "../transformer.ts";
 @Entity()
 export class Dummy {
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column("int", {transformer})
-    num: WrappedNumber;
+    num!: WrappedNumber;
 }

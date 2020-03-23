@@ -1,37 +1,37 @@
 import {EntitySchema} from "../../../../../../src/index.ts";
 
 export const PersonSchema = new EntitySchema<any>({
-    name: "Person",
+    name!: "Person",
     columns: {
-        Id: {
+        Id!: {
             primary: true,
-            type: "int",
-            generated: "increment"
+            type!: "int",
+            generated!: "increment"
         },
-        FirstName: {
+        FirstName!: {
             type: String,
-            length: 30
+            length!: 30
         },
-        LastName: {
+        LastName!: {
             type: String,
-            length: 50,
-            nullable: false
+            length!: 50,
+            nullable!: false
         },
-        Location: {
+        Location!: {
             type: "point",
-            nullable: false
+            nullable!: false
         }
     },
-    indices: [
+    indices!: [
         {
-            spatial: true,
-            columns: [
+            spatial!: true,
+            columns!: [
                 "Location"
             ]
         },
         {
-            fulltext: true,
-            columns: [
+            fulltext!: true,
+            columns!: [
                 "FirstName",
                 "LastName"
             ]

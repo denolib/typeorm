@@ -2,25 +2,25 @@ import { Entity, ObjectIdColumn, Column/*, ObjectID*/ } from "../../../../src/in
 
 export class Page {
     @Column({ type: Number })
-    number: number;
+    number!: number;
 }
 
 export class Chapter {
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @Column(type => Page)
-    pages: Page[];
+    pages!: Page[];
 }
 
 @Entity()
 export class Book {
     @ObjectIdColumn()
-    id: /*ObjectID*/any; // TODO(uki00a) uncomment this when MongoDriver is implemented.
+    id!: /*ObjectID*/any; // TODO(uki00a) uncomment this when MongoDriver is implemented.
 
     @Column({ type: String })
-    title: string;
+    title!: string;
 
     @Column(type => Chapter)
-    chapters: Chapter[];
+    chapters!: Chapter[];
 }

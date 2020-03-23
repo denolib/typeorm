@@ -4,9 +4,9 @@ import {PrimaryColumn} from "../../../../../src/decorator/columns/PrimaryColumn.
 export class Subcounters {
 
     @PrimaryColumn({ type: Number })
-    version: number;
+    version!: number;
 
     @Column({ type: Number })
-    watches: number;
+    watches!: number;
 
 }

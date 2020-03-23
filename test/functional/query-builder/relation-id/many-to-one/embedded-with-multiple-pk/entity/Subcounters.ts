@@ -6,14 +6,14 @@ import {ManyToOne} from "../../../../../../../src/decorator/relations/ManyToOne.
 export class Subcounters {
 
     @PrimaryColumn({ type: Number })
-    version: number;
+    version!: number;
 
     @Column({ type: Number })
-    watches: number;
+    watches!: number;
 
     @ManyToOne(type => User)
-    watchedUser: User;
+    watchedUser!: User;
 
-    watchedUserId: number;
+    watchedUserId!: number;
 
 }

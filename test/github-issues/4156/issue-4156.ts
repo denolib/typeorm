@@ -1,5 +1,5 @@
 import {runIfMain} from "../../deps/mocha.ts";
-import {expect} from "../../deps/chai.ts";
+import "../../deps/chai.ts";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
 import {Connection} from "../../../src/connection/Connection.ts";
 import {EntitySchema, In} from "../../../src/index.ts";
@@ -43,7 +43,7 @@ describe("github issues > #4156 QueryExpressionMap doesn't clone all values corr
         const [loadedPost1, loadedPost2] = await Promise.all([
           qb.clone().where({ id: 1 }).getOne(),
           qb.clone().where({ id: In([1]) }).getOne(),
-        ]);
+        ]) as [Post, Post];
 
         loadedPost1!.should.be.eql({
           id: 1,
@@ -69,7 +69,7 @@ describe("github issues > #4156 QueryExpressionMap doesn't clone all values corr
         const [loadedPost1, loadedPost2] = await Promise.all([
           qb.clone().getOne(),
           qb.clone().getOne(),
-        ]);
+        ]) as [Post, Post];
 
         loadedPost1!.should.be.eql({
           id: 1,
