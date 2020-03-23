@@ -34,6 +34,14 @@
       "files": [
         "/mod.ts"
       ]
+    },
+    {
+      "protocol": "https",
+      "path": "unpkg.com/cac",
+      "version": "v6.5.8",
+      "files": [
+        "/mod.js"
+      ]
     }
   ]
 }
