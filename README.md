@@ -24,13 +24,11 @@ TODO
 ## Quick Start
 
 The quickest way to get started with TypeORM is to use its CLI commands to generate a starter project.
-Quick start works only if you are using TypeORM in a NodeJS application.
-If you are using other platforms, proceed to the [step-by-step guide](#step-by-step-guide).
 
-First, install TypeORM globally:
+First, install TypeORM CLI:
 
 ```
-npm install typeorm -g
+deno install --allow-read --allow-write --allow-net --allow-env -f typeorm https://denolib.com/denolib/typeorm@v0.2.23-rc1/cli.ts
 ```
 
 Then go to the directory where you want to create a new project and run the command:
