@@ -4,7 +4,8 @@ import { cac } from "../../vendor/https/unpkg.com/cac/mod.js";
  * This is a wrapper of cac.js that provides yargs-like API.
  */
 interface CliBuilder {
-    command(command: CommandModule): CliBuilder;
+    version(version: string): this;
+    command(command: CommandModule): this;
     parse(args?: string[]): object;
 }
 
@@ -23,7 +24,7 @@ export interface CommandBuilder {
 export interface CommandModule {
     command: string
     describe: string
-    builder(args: CommandBuilder): any
+    builder?(args: CommandBuilder): any
     handler(args: Args): any
 }
 
@@ -71,15 +72,22 @@ function createCommandBuilder(cli: ReturnType<typeof cac>, module: CommandModule
 }
 
 export function createCliBuilder(): CliBuilder {
-  const cli = cac("typeorm");
+  const cli = cac("typeorm").help();
   const builder = {
-    command(module: CommandModule) {
-        module.builder(createCommandBuilder(cli, module));
+      version(version: string) {
+        cli.version(version);
         return builder;
-    },
-    parse(args: string[]) {
-        return arguments.length === 0 ? cli.parse() : cli.parse(args);
-    }
+      },
+      command(module: CommandModule) {
+          const commandBuilder = createCommandBuilder(cli, module);
+          if (module.builder) {
+              module.builder(commandBuilder);
+          }
+          return builder;
+      },
+      parse(args: string[]) {
+          return arguments.length === 0 ? cli.parse() : cli.parse(args);
+      }
   } as CliBuilder;
   return builder;
 }

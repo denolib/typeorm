@@ -4,12 +4,7 @@
         "strict": true,
         "target": "esnext",
         "experimentalDecorators": true,
-        "sourceMap": true,
-        "plugins": [
-          {
-            "name": "typescript-deno-plugin"
-          }
-        ]
+        "sourceMap": true
     },
     "exclude": [
         "tmp",
