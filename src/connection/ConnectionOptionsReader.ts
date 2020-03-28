@@ -116,7 +116,7 @@ export class ConnectionOptionsReader {
             connectionOptions = await mod.default;
 
         } else if (foundFileFormat === "json") {
-            connectionOptions = PlatformTools.load(configFile);
+            connectionOptions = await import(configFile);
 
         } else if (foundFileFormat === "yml") {
             connectionOptions = new ConnectionOptionsYmlReader().read(configFile);
