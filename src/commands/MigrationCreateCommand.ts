@@ -1,19 +1,23 @@
-import {ConnectionOptionsReader} from "../connection/ConnectionOptionsReader";
-import {CommandUtils} from "./CommandUtils";
-import {camelCase} from "../util/StringUtils";
-import * as yargs from "yargs";
-const chalk = require("chalk");
+import {ConnectionOptionsReader} from "../connection/ConnectionOptionsReader.ts";
+import {CommandUtils} from "./CommandUtils.ts";
+import {camelCase} from "../util/StringUtils.ts";
+import {Connection} from "../connection/Connection.ts";
+import {ConnectionOptions} from "../connection/ConnectionOptions.ts";
+import {CommandBuilder, CommandModule, Args} from "./CliBuilder.ts";
+import * as colors from "../../vendor/https/deno.land/std/fmt/colors.ts";
+import {process} from "../../vendor/https/deno.land/std/node/process.ts";
+import {MOD_URL} from "../version.ts";
 
 /**
  * Creates a new migration file.
  */
-export class MigrationCreateCommand implements yargs.CommandModule {
+export class MigrationCreateCommand implements CommandModule {
 
     command = "migration:create";
     describe = "Creates a new migration file.";
     aliases = "migrations:create";
 
-    builder(args: yargs.Argv) {
+    builder(args: CommandBuilder) {
         return args
             .option("c", {
                 alias: "connection",
@@ -36,7 +40,7 @@ export class MigrationCreateCommand implements yargs.CommandModule {
             });
     }
 
-    async handler(args: yargs.Arguments) {
+    async handler(args: Args) {
         if (args._[0] === "migrations:create") {
             console.log("'migrations:create' is deprecated, please use 'migration:create' instead");
         }
@@ -61,10 +65,10 @@ export class MigrationCreateCommand implements yargs.CommandModule {
 
             const path = process.cwd() + "/" + (directory ? (directory + "/") : "") + filename;
             await CommandUtils.createFile(path, fileContent);
-            console.log(`Migration ${chalk.blue(path)} has been generated successfully.`);
+            console.log(`Migration ${colors.blue(path)} has been generated successfully.`);
 
         } catch (err) {
-            console.log(chalk.black.bgRed("Error during migration creation:"));
+            console.log(colors.black(colors.bgRed("Error during migration creation:")));
             console.error(err);
             process.exit(1);
         }
@@ -78,7 +82,8 @@ export class MigrationCreateCommand implements yargs.CommandModule {
      * Gets contents of the migration file.
      */
     protected static getTemplate(name: string, timestamp: number): string {
-        return `import {MigrationInterface, QueryRunner} from "typeorm";
+        // @see https://github.com/denoland/deno/issues/4464
+        return "import {MigrationInterface, QueryRunner} from \"" + MOD_URL + "\""; + `
 
 export class ${camelCase(name, true)}${timestamp} implements MigrationInterface {
 

@@ -1,19 +1,21 @@
-import {CommandUtils} from "./CommandUtils";
-import {ObjectLiteral} from "../common/ObjectLiteral";
-import * as path from "path";
-import * as yargs from "yargs";
-const chalk = require("chalk");
+import {CommandUtils} from "./CommandUtils.ts";
+import {ObjectLiteral} from "../common/ObjectLiteral.ts";
+import {CommandBuilder, CommandModule, Args} from "./CliBuilder.ts";
+import * as colors from "../../vendor/https/deno.land/std/fmt/colors.ts";
+import {process} from "../../vendor/https/deno.land/std/node/process.ts";
+import {MOD_URL} from "../version.ts";
+import * as path from "../../vendor/https/deno.land/std/path/mod.ts";
 
 /**
  * Generates a new project with TypeORM.
  */
-export class InitCommand implements yargs.CommandModule {
+export class InitCommand implements CommandModule {
     command = "init";
     describe = "Generates initial TypeORM project structure. " +
         "If name specified then creates files inside directory called as name. " +
         "If its not specified then creates files inside current directory.";
 
-    builder(args: yargs.Argv) {
+    builder(args: CommandBuilder) {
         return args
             .option("c", {
                 alias: "connection",
@@ -28,50 +30,36 @@ export class InitCommand implements yargs.CommandModule {
                 alias: "database",
                 describe: "Database type you'll use in your project."
             })
-            .option("express", {
-                describe: "Indicates if express should be included in the project."
-            })
             .option("docker", {
                 describe: "Set to true if docker-compose must be generated as well. False by default."
             });
     }
 
-    async handler(args: yargs.Arguments) {
+    async handler(args: Args) {
         try {
             const database: string = args.database as any || "mysql";
-            const isExpress = args.express !== undefined ? true : false;
             const isDocker = args.docker !== undefined ? true : false;
             const basePath = process.cwd() + (args.name ? ("/" + args.name) : "");
             const projectName = args.name ? path.basename(args.name as any) : undefined;
-            await CommandUtils.createFile(basePath + "/package.json", InitCommand.getPackageJsonTemplate(projectName), false);
             if (isDocker)
                 await CommandUtils.createFile(basePath + "/docker-compose.yml", InitCommand.getDockerComposeTemplate(database), false);
             await CommandUtils.createFile(basePath + "/.gitignore", InitCommand.getGitIgnoreFile());
             await CommandUtils.createFile(basePath + "/README.md", InitCommand.getReadmeTemplate({ docker: isDocker }), false);
             await CommandUtils.createFile(basePath + "/tsconfig.json", InitCommand.getTsConfigTemplate());
             await CommandUtils.createFile(basePath + "/ormconfig.json", InitCommand.getOrmConfigTemplate(database));
-            await CommandUtils.createFile(basePath + "/src/entity/User.ts", InitCommand.getUserEntityTemplate(database));
-            await CommandUtils.createFile(basePath + "/src/index.ts", InitCommand.getAppIndexTemplate(isExpress));
-            await CommandUtils.createDirectories(basePath + "/src/migration");
-
-            // generate extra files for express application
-            if (isExpress) {
-                await CommandUtils.createFile(basePath + "/src/routes.ts", InitCommand.getRoutesTemplate());
-                await CommandUtils.createFile(basePath + "/src/controller/UserController.ts", InitCommand.getControllerTemplate());
-            }
-
-            const packageJsonContents = await CommandUtils.readFile(basePath + "/package.json");
-            await CommandUtils.createFile(basePath + "/package.json", InitCommand.appendPackageJson(packageJsonContents, database, isExpress));
+            await CommandUtils.createFile(basePath + "/entity/User.ts", InitCommand.getUserEntityTemplate(database));
+            await CommandUtils.createFile(basePath + "/mod.ts", InitCommand.getAppIndexTemplate());
+            await CommandUtils.createDirectories(basePath + "/migration");
 
             if (args.name) {
-                console.log(chalk.green(`Project created inside ${chalk.blue(basePath)} directory.`));
+                console.log(colors.green(`Project created inside ${colors.blue(basePath)} directory.`));
 
             } else {
-                console.log(chalk.green(`Project created inside current directory.`));
+                console.log(colors.green(`Project created inside current directory.`));
             }
 
         } catch (err) {
-            console.log(chalk.black.bgRed("Error during project initialization:"));
+            console.log(colors.black(colors.bgRed("Error during project initialization:")));
             console.error(err);
             process.exit(1);
         }
@@ -163,18 +151,18 @@ export class InitCommand implements yargs.CommandModule {
             synchronize: true,
             logging: false,
             entities: [
-                "src/entity/**/*.ts"
+                "entity/**/*.ts"
             ],
             migrations: [
-                "src/migration/**/*.ts"
+                "migration/**/*.ts"
             ],
             subscribers: [
-                "src/subscriber/**/*.ts"
+                "subscriber/**/*.ts"
             ],
             cli: {
-                entitiesDir: "src/entity",
-                migrationsDir: "src/migration",
-                subscribersDir: "src/subscriber"
+                entitiesDir: "entity",
+                migrationsDir: "migration",
+                subscribersDir: "subscriber"
             }
         });
         return JSON.stringify(options, undefined, 3);
@@ -186,12 +174,8 @@ export class InitCommand implements yargs.CommandModule {
     protected static getTsConfigTemplate(): string {
         return JSON.stringify({
             compilerOptions: {
-                lib: ["es5", "es6"],
-                target: "es5",
-                module: "commonjs",
-                moduleResolution: "node",
-                outDir: "./build",
-                emitDecoratorMetadata: true,
+                strict: true,
+                target: "esnext",
                 experimentalDecorators: true,
                 sourceMap: true
             }
@@ -215,7 +199,11 @@ temp/`;
      * Gets contents of the user entity.
      */
     protected static getUserEntityTemplate(database: string): string {
-        return `import {Entity, ${ database === "mongodb" ? "ObjectIdColumn, ObjectID" : "PrimaryGeneratedColumn" }, Column} from "typeorm";
+        // @see https://github.com/denoland/deno/issues/4464
+        const importStatement = database === "mongodb"
+            ? "import {Entity, ObjectIdColumn, ObjectID} from \"" + MOD_URL + "\";\n"
+            : "import {Entity, PrimaryGeneratedColumn} from \"" + MOD_URL + "\"\n";
+        return importStatement + `;
 
 @Entity()
 export class User {
@@ -223,13 +211,13 @@ export class User {
     ${ database === "mongodb" ? "@ObjectIdColumn()" : "@PrimaryGeneratedColumn()" }
     id: ${ database === "mongodb" ? "ObjectID" : "number" };
 
-    @Column()
+    @Column({ type: String })
     firstName: string;
 
-    @Column()
+    @Column({ type: String })
     lastName: string;
 
-    @Column()
+    @Column({ type: Number })
     age: number;
 
 }
@@ -237,125 +225,12 @@ export class User {
     }
 
     /**
-     * Gets contents of the route file (used when express is enabled).
-     */
-    protected static getRoutesTemplate(): string {
-        return `import {UserController} from "./controller/UserController";
-
-export const Routes = [{
-    method: "get",
-    route: "/users",
-    controller: UserController,
-    action: "all"
-}, {
-    method: "get",
-    route: "/users/:id",
-    controller: UserController,
-    action: "one"
-}, {
-    method: "post",
-    route: "/users",
-    controller: UserController,
-    action: "save"
-}, {
-    method: "delete",
-    route: "/users/:id",
-    controller: UserController,
-    action: "remove"
-}];`;
-    }
-
-    /**
-     * Gets contents of the user controller file (used when express is enabled).
-     */
-    protected static getControllerTemplate(): string {
-        return `import {getRepository} from "typeorm";
-import {NextFunction, Request, Response} from "express";
-import {User} from "../entity/User";
-
-export class UserController {
-
-    private userRepository = getRepository(User);
-
-    async all(request: Request, response: Response, next: NextFunction) {
-        return this.userRepository.find();
-    }
-
-    async one(request: Request, response: Response, next: NextFunction) {
-        return this.userRepository.findOne(request.params.id);
-    }
-
-    async save(request: Request, response: Response, next: NextFunction) {
-        return this.userRepository.save(request.body);
-    }
-
-    async remove(request: Request, response: Response, next: NextFunction) {
-        let userToRemove = await this.userRepository.findOne(request.params.id);
-        await this.userRepository.remove(userToRemove);
-    }
-
-}`;
-    }
-
-    /**
      * Gets contents of the main (index) application file.
      */
-    protected static getAppIndexTemplate(express: boolean): string {
-        if (express) {
-            return `import "reflect-metadata";
-import {createConnection} from "typeorm";
-import * as express from "express";
-import * as bodyParser from "body-parser";
-import {Request, Response} from "express";
-import {Routes} from "./routes";
-import {User} from "./entity/User";
-
-createConnection().then(async connection => {
-
-    // create express app
-    const app = express();
-    app.use(bodyParser.json());
-
-    // register express routes from defined application routes
-    Routes.forEach(route => {
-        (app as any)[route.method](route.route, (req: Request, res: Response, next: Function) => {
-            const result = (new (route.controller as any))[route.action](req, res, next);
-            if (result instanceof Promise) {
-                result.then(result => result !== null && result !== undefined ? res.send(result) : undefined);
-
-            } else if (result !== null && result !== undefined) {
-                res.json(result);
-            }
-        });
-    });
-
-    // setup express app here
-    // ...
-
-    // start express server
-    app.listen(3000);
-
-    // insert new users for test
-    await connection.manager.save(connection.manager.create(User, {
-        firstName: "Timber",
-        lastName: "Saw",
-        age: 27
-    }));
-    await connection.manager.save(connection.manager.create(User, {
-        firstName: "Phantom",
-        lastName: "Assassin",
-        age: 24
-    }));
-
-    console.log("Express server has started on port 3000. Open http://localhost:3000/users to see results");
-
-}).catch(error => console.log(error));
-`;
-
-        } else {
-            return `import "reflect-metadata";
-import {createConnection} from "typeorm";
-import {User} from "./entity/User";
+    protected static getAppIndexTemplate(): string {
+        // @see https://github.com/denoland/deno/issues/4464
+        return "import {createConnection} from \"" + MOD_URL + "\";\n" +
+            "import {User} from \"./entity/User.ts\";\n" + `
 
 createConnection().then(async connection => {
 
@@ -375,24 +250,6 @@ createConnection().then(async connection => {
 
 }).catch(error => console.log(error));
 `;
-        }
-    }
-
-    /**
-     * Gets contents of the new package.json file.
-     */
-    protected static getPackageJsonTemplate(projectName?: string): string {
-        return JSON.stringify({
-            name: projectName || "new-typeorm-project",
-            version: "0.0.1",
-            description: "Awesome project developed with TypeORM.",
-            devDependencies: {
-            },
-            dependencies: {
-            },
-            scripts: {
-            }
-        }, undefined, 3);
     }
 
     /**
@@ -499,74 +356,19 @@ services:
 
 Steps to run this project:
 
-1. Run \`npm i\` command
 `;
 
         if (options.docker) {
-            template += `2. Run \`docker-compose up\` command
+            template += `1. Run \`docker-compose up\` command
 `;
         } else {
-            template += `2. Setup database settings inside \`ormconfig.json\` file
+            template += `1. Setup database settings inside \`ormconfig.json\` file
 `;
         }
 
-        template += `3. Run \`npm start\` command
+        template += `2. Run \`deno run\` command
 `;
         return template;
-    }
-
-    /**
-     * Appends to a given package.json template everything needed.
-     */
-    protected static appendPackageJson(packageJsonContents: string, database: string, express: boolean /*, docker: boolean*/): string {
-        const packageJson = JSON.parse(packageJsonContents);
-
-        if (!packageJson.devDependencies) packageJson.devDependencies = {};
-        Object.assign(packageJson.devDependencies, {
-            "ts-node": "3.3.0",
-            "@types/node": "^8.0.29",
-            "typescript": "3.3.3333"
-        });
-
-        if (!packageJson.dependencies) packageJson.dependencies = {};
-        Object.assign(packageJson.dependencies, {
-            "typeorm": require("../package.json").version,
-            "reflect-metadata": "^0.1.10"
-        });
-
-        switch (database) {
-            case "mysql":
-            case "mariadb":
-                packageJson.dependencies["mysql"] = "^2.14.1";
-                break;
-            case "postgres":
-            case "cockroachdb":
-                packageJson.dependencies["pg"] = "^7.3.0";
-                break;
-            case "sqlite":
-                packageJson.dependencies["sqlite3"] = "^4.0.3";
-                break;
-            case "oracle":
-                packageJson.dependencies["oracledb"] = "^1.13.1";
-                break;
-            case "mssql":
-                packageJson.dependencies["mssql"] = "^4.0.4";
-                break;
-            case "mongodb":
-                packageJson.dependencies["mongodb"] = "^3.0.8";
-                break;
-        }
-
-        if (express) {
-            packageJson.dependencies["express"] = "^4.15.4";
-            packageJson.dependencies["body-parser"] = "^1.18.1";
-        }
-
-        if (!packageJson.scripts) packageJson.scripts = {};
-        Object.assign(packageJson.scripts, {
-            start: /*(docker ? "docker-compose up && " : "") + */"ts-node src/index.ts"
-        });
-        return JSON.stringify(packageJson, undefined, 3);
     }
 
 }

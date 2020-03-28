@@ -1,23 +1,26 @@
-import {ConnectionOptionsReader} from "../connection/ConnectionOptionsReader";
-import {CommandUtils} from "./CommandUtils";
-import {Connection} from "../connection/Connection";
-import {createConnection} from "../index";
-import {MysqlDriver} from "../driver/mysql/MysqlDriver";
-import {camelCase} from "../util/StringUtils";
-import * as yargs from "yargs";
-import {AuroraDataApiDriver} from "../driver/aurora-data-api/AuroraDataApiDriver";
-const chalk = require("chalk");
+import {ConnectionOptionsReader} from "../connection/ConnectionOptionsReader.ts";
+import {CommandUtils} from "./CommandUtils.ts";
+import {Connection} from "../connection/Connection.ts";
+import {createConnection} from "../index.ts";
+import {MysqlDriver} from "../driver/mysql/MysqlDriver.ts";
+import {camelCase} from "../util/StringUtils.ts";
+import {AuroraDataApiDriver} from "../driver/aurora-data-api/AuroraDataApiDriver.ts";
+import {ConnectionOptions} from "../connection/ConnectionOptions.ts";
+import {CommandBuilder, CommandModule, Args} from "./CliBuilder.ts";
+import * as colors from "../../vendor/https/deno.land/std/fmt/colors.ts";
+import {process} from "../../vendor/https/deno.land/std/node/process.ts";
+import {MOD_URL} from "../version.ts";
 
 /**
  * Generates a new migration file with sql needs to be executed to update schema.
  */
-export class MigrationGenerateCommand implements yargs.CommandModule {
+export class MigrationGenerateCommand implements CommandModule {
 
     command = "migration:generate";
     describe = "Generates a new migration file with sql needs to be executed to update schema.";
     aliases = "migrations:generate";
 
-    builder(args: yargs.Argv) {
+    builder(args: CommandBuilder) {
         return args
             .option("c", {
                 alias: "connection",
@@ -40,7 +43,7 @@ export class MigrationGenerateCommand implements yargs.CommandModule {
             });
     }
 
-    async handler(args: yargs.Arguments) {
+    async handler(args: Args) {
         if (args._[0] === "migrations:generate") {
             console.log("'migrations:generate' is deprecated, please use 'migration:generate' instead");
         }
@@ -67,13 +70,13 @@ export class MigrationGenerateCommand implements yargs.CommandModule {
                 root: process.cwd(),
                 configName: args.config as any
             });
-            const connectionOptions = await connectionOptionsReader.get(args.connection as any);
-            Object.assign(connectionOptions, {
+            const connectionOptions = {
+                ...await connectionOptionsReader.get(args.connection as any),
                 synchronize: false,
                 migrationsRun: false,
                 dropSchema: false,
                 logging: false
-            });
+            } as ConnectionOptions;
             connection = await createConnection(connectionOptions);
             const sqlInMemory = await connection.driver.createSchemaBuilder().log();
             const upSqls: string[] = [], downSqls: string[] = [];
@@ -102,19 +105,19 @@ export class MigrationGenerateCommand implements yargs.CommandModule {
                     const path = process.cwd() + "/" + (directory ? (directory + "/") : "") + filename;
                     await CommandUtils.createFile(path, fileContent);
 
-                    console.log(chalk.green(`Migration ${chalk.blue(path)} has been generated successfully.`));
+                    console.log(colors.green(`Migration ${colors.blue(path)} has been generated successfully.`));
                 } else {
-                    console.log(chalk.yellow("Please specify migration name"));
+                    console.log(colors.yellow("Please specify migration name"));
                 }
             } else {
-                console.log(chalk.yellow(`No changes in database schema were found - cannot generate a migration. To create a new empty migration use "typeorm migration:create" command`));
+                console.log(colors.yellow(`No changes in database schema were found - cannot generate a migration. To create a new empty migration use "typeorm migration:create" command`));
             }
             await connection.close();
 
         } catch (err) {
             if (connection) await (connection as Connection).close();
 
-            console.log(chalk.black.bgRed("Error during migration generation:"));
+            console.log(colors.black(colors.bgRed("Error during migration generation:")));
             console.error(err);
             process.exit(1);
         }
@@ -130,7 +133,8 @@ export class MigrationGenerateCommand implements yargs.CommandModule {
     protected static getTemplate(name: string, timestamp: number, upSqls: string[], downSqls: string[]): string {
         const migrationName = `${camelCase(name, true)}${timestamp}`;
 
-        return `import {MigrationInterface, QueryRunner} from "typeorm";
+        // @see https://github.com/denoland/deno/issues/4464
+        return "import {MigrationInterface, QueryRunner} from \"" + MOD_URL + "\";" + `
 
 export class ${migrationName} implements MigrationInterface {
     name = '${migrationName}'

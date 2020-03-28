@@ -7,6 +7,7 @@
       "files": [
         "/fmt/colors.ts",
         "/fs/mod.ts",
+        "/node/process.ts",
         "/path/mod.ts",
         "/util/async.ts"
       ]
@@ -33,6 +34,14 @@
       "version": "73935087a1ebe9108d784503bc5474662ba54b73",
       "files": [
         "/mod.ts"
+      ]
+    },
+    {
+      "protocol": "https",
+      "path": "unpkg.com/cac",
+      "version": "v6.5.8",
+      "files": [
+        "/mod.js"
       ]
     }
   ]

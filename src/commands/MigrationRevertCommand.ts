@@ -1,19 +1,21 @@
-import {createConnection} from "../index";
-import {ConnectionOptionsReader} from "../connection/ConnectionOptionsReader";
-import {Connection} from "../connection/Connection";
-import * as yargs from "yargs";
-const chalk = require("chalk");
+import {createConnection} from "../index.ts";
+import {ConnectionOptionsReader} from "../connection/ConnectionOptionsReader.ts";
+import {Connection} from "../connection/Connection.ts";
+import {ConnectionOptions} from "../connection/ConnectionOptions.ts";
+import {CommandBuilder, CommandModule, Args} from "./CliBuilder.ts";
+import * as colors from "../../vendor/https/deno.land/std/fmt/colors.ts";
+import {process} from "../../vendor/https/deno.land/std/node/process.ts";
 
 /**
  * Reverts last migration command.
  */
-export class MigrationRevertCommand implements yargs.CommandModule {
+export class MigrationRevertCommand implements CommandModule {
 
     command = "migration:revert";
     describe = "Reverts last executed migration.";
     aliases = "migrations:revert";
 
-    builder(args: yargs.Argv) {
+    builder(args: CommandBuilder) {
         return args
             .option("c", {
                 alias: "connection",
@@ -32,7 +34,7 @@ export class MigrationRevertCommand implements yargs.CommandModule {
             });
     }
 
-    async handler(args: yargs.Arguments) {
+    async handler(args: Args) {
         if (args._[0] === "migrations:revert") {
             console.log("'migrations:revert' is deprecated, please use 'migration:revert' instead");
         }
@@ -43,14 +45,14 @@ export class MigrationRevertCommand implements yargs.CommandModule {
                 root: process.cwd(),
                 configName: args.config as any
             });
-            const connectionOptions = await connectionOptionsReader.get(args.connection as any);
-            Object.assign(connectionOptions, {
+            const connectionOptions = {
+                ...await connectionOptionsReader.get(args.connection as any),
                 subscribers: [],
                 synchronize: false,
                 migrationsRun: false,
                 dropSchema: false,
                 logging: ["query", "error", "schema"]
-            });
+            } as ConnectionOptions;
             connection = await createConnection(connectionOptions);
 
             const options = {
@@ -78,7 +80,7 @@ export class MigrationRevertCommand implements yargs.CommandModule {
         } catch (err) {
             if (connection) await (connection as Connection).close();
 
-            console.log(chalk.black.bgRed("Error during migration revert:"));
+            console.log(colors.black(colors.bgRed("Error during migration revert:")));
             console.error(err);
             process.exit(1);
         }
