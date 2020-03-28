@@ -1,18 +1,20 @@
-import {createConnection} from "../index";
-import {ConnectionOptionsReader} from "../connection/ConnectionOptionsReader";
-import {Connection} from "../connection/Connection";
-import * as yargs from "yargs";
-const chalk = require("chalk");
+import {createConnection} from "../index.ts";
+import {ConnectionOptionsReader} from "../connection/ConnectionOptionsReader.ts";
+import {Connection} from "../connection/Connection.ts";
+import {ConnectionOptions} from "../connection/ConnectionOptions.ts";
+import {CommandBuilder, CommandModule, Args} from "./CliBuilder.ts";
+import * as colors from "../../vendor/https/deno.land/std/fmt/colors.ts";
+import {process} from "../../vendor/https/deno.land/std/node/process.ts";
 
 /**
  * Clear cache command.
  */
-export class CacheClearCommand implements yargs.CommandModule {
+export class CacheClearCommand implements CommandModule {
 
     command = "cache:clear";
     describe = "Clears all data stored in query runner cache.";
 
-    builder(args: yargs.Argv) {
+    builder(args: CommandBuilder) {
         return args
             .option("connection", {
                 alias: "c",
@@ -26,7 +28,7 @@ export class CacheClearCommand implements yargs.CommandModule {
             });
     }
 
-    async handler(args: yargs.Arguments) {
+    async handler(args: Args) {
 
         let connection: Connection|undefined = undefined;
         try {
@@ -34,30 +36,30 @@ export class CacheClearCommand implements yargs.CommandModule {
                 root: process.cwd(),
                 configName: args.config as any
             });
-            const connectionOptions = await connectionOptionsReader.get(args.connection as any);
-            Object.assign(connectionOptions, {
+            const connectionOptions = {
+                ...await connectionOptionsReader.get(args.connection as any),
                 subscribers: [],
                 synchronize: false,
                 migrationsRun: false,
                 dropSchema: false,
                 logging: ["schema"]
-            });
+            } as ConnectionOptions;
             connection = await createConnection(connectionOptions);
 
-            if (!connection.queryResultCache) {
-                console.log(chalk.black.bgRed("Cache is not enabled. To use cache enable it in connection configuration."));
+            if (!connection!.queryResultCache) {
+                console.log(colors.black(colors.bgRed("Cache is not enabled. To use cache enable it in connection configuration.")));
                 return;
             }
 
             await connection.queryResultCache.clear();
-            console.log(chalk.green("Cache was successfully cleared"));
+            console.log(colors.green("Cache was successfully cleared"));
 
             if (connection) await connection.close();
 
         } catch (err) {
             if (connection) await (connection as Connection).close();
 
-            console.log(chalk.black.bgRed("Error during cache clear:"));
+            console.log(colors.black(colors.bgRed("Error during cache clear:")));
             console.error(err);
             process.exit(1);
         }
