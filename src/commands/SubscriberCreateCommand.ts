@@ -1,16 +1,19 @@
-import {ConnectionOptionsReader} from "../connection/ConnectionOptionsReader";
-import {CommandUtils} from "./CommandUtils";
-import * as yargs from "yargs";
-const chalk = require("chalk");
+import {ConnectionOptionsReader} from "../connection/ConnectionOptionsReader.ts";
+import {CommandUtils} from "./CommandUtils.ts";
+import {ConnectionOptions} from "../connection/ConnectionOptions.ts";
+import {CommandBuilder, CommandModule, Args} from "./CliBuilder.ts";
+import * as colors from "../../vendor/https/deno.land/std/fmt/colors.ts";
+import {process} from "../../vendor/https/deno.land/std/node/process.ts";
+import {MOD_URL} from "../version.ts";
 
 /**
  * Generates a new subscriber.
  */
-export class SubscriberCreateCommand implements yargs.CommandModule {
+export class SubscriberCreateCommand implements CommandModule {
     command = "subscriber:create";
     describe = "Generates a new subscriber.";
 
-    builder(args: yargs.Argv) {
+    builder(args: CommandBuilder) {
         return args
             .option("c", {
                 alias: "connection",
@@ -33,7 +36,7 @@ export class SubscriberCreateCommand implements yargs.CommandModule {
             });
     }
 
-    async handler(args: yargs.Arguments) {
+    async handler(args: Args) {
 
         try {
             const fileContent = SubscriberCreateCommand.getTemplate(args.name as any);
@@ -54,10 +57,10 @@ export class SubscriberCreateCommand implements yargs.CommandModule {
 
             const path = process.cwd() + "/" + (directory ? (directory + "/") : "") + filename;
             await CommandUtils.createFile(path, fileContent);
-            console.log(chalk.green(`Subscriber ${chalk.blue(path)} has been created successfully.`));
+            console.log(colors.green(`Subscriber ${colors.blue(path)} has been created successfully.`));
 
         } catch (err) {
-            console.log(chalk.black.bgRed("Error during subscriber creation:"));
+            console.log(colors.black(colors.bgRed("Error during subscriber creation:")));
             console.error(err);
             process.exit(1);
         }
@@ -71,7 +74,8 @@ export class SubscriberCreateCommand implements yargs.CommandModule {
      * Gets contents of the entity file.
      */
     protected static getTemplate(name: string): string {
-        return `import {EventSubscriber, EntitySubscriberInterface} from "typeorm";
+        // @see https://github.com/denoland/deno/issues/4464
+        return "import {EventSubscriber, EntitySubscriberInterface} from \"" + MOD_URL + "\";" + `
 
 @EventSubscriber()
 export class ${name} implements EntitySubscriberInterface<any> {
