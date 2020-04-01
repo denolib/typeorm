@@ -40,7 +40,7 @@ export async function importClassesFromDirectories(logger: Logger, directories: 
             const dtsExtension = file.substring(file.length - 5, file.length);
             return formats.indexOf(PlatformTools.pathExtname(file)) !== -1 && dtsExtension !== ".d.ts";
         })
-        .map(file => import(PlatformTools.pathResolve(file)));
+        .map(file => import(buildImportPath(file)));
     const dirs = (await Promise.all(promises)).map(mod => mod.default ? mod.default : mod);
 
     return loadFileClasses(dirs, []);
@@ -57,5 +57,9 @@ export function importJsonsFromDirectories(directories: string[], format = ".jso
 
     return allFiles
         .filter(file => PlatformTools.pathExtname(file) === format)
-        .map(file => PlatformTools.load(PlatformTools.pathResolve(file)));
+        .map(file => PlatformTools.load(buildImportPath(file)));
+}
+
+function buildImportPath(path: string): string {
+    return `file:///${PlatformTools.pathResolve(path)}`;
 }
