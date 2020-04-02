@@ -17,6 +17,8 @@ import {UpdateValuesMissingError} from "../error/UpdateValuesMissingError.ts";
 import {EntityColumnNotFound} from "../error/EntityColumnNotFound.ts";
 import {QueryDeepPartialEntity} from "./QueryPartialEntity.ts";
 import {AbstractQueryBuilderFactory} from "./AbstractQueryBuilderFactory.ts";
+import {DriverUtils} from "../driver/DriverUtils.ts";
+import type {AutoSavableDriver} from "../driver/types/AutoSavable.ts";
 
 /**
  * Allows to build complex sql queries in a fashion way and execute those queries.
@@ -124,10 +126,9 @@ export class UpdateQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
             if (queryRunner !== this.queryRunner) { // means we created our own query runner
                 await queryRunner.release();
             }
-            if (false/*this.connection.driver instanceof SqljsDriver && !queryRunner.isTransactionActive*/) { // TODO(uki00a) uncomment this when SqljsDriver is implemented.
-                /* // TODO(uki00a) uncomment this when SqljsDriver is implemented.
-                await this.connection.driver.autoSave();
-                */
+            if (DriverUtils.isAutoSavable(this.connection.driver) && !queryRunner.isTransactionActive) {
+                const driver: AutoSavableDriver = this.connection.driver;
+                await driver.autoSave();
             }
         }
     }

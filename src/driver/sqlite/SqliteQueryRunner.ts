@@ -1,4 +1,4 @@
-import {DB, save} from "../../../vendor/https/deno.land/x/sqlite/mod.ts";
+import {DB} from "../../../vendor/https/deno.land/x/sqlite/mod.ts";
 import {QueryRunnerAlreadyReleasedError} from "../../error/QueryRunnerAlreadyReleasedError.ts";
 import {QueryFailedError} from "../../error/QueryFailedError.ts";
 import {AbstractSqliteQueryRunner} from "../sqlite-abstract/AbstractSqliteQueryRunner.ts";
@@ -29,6 +29,17 @@ export class SqliteQueryRunner extends AbstractSqliteQueryRunner {
         this.connection = driver.connection;
         this.broadcaster = new Broadcaster(this);
     }
+
+    /**
+     * Commits transaction.
+     * Error will be thrown if transaction was not started.
+     */
+    async commitTransaction(): Promise<void> {
+        await super.commitTransaction();
+        await this.driver.autoSave();
+    }
+
+
 
     /**
      * Executes a given SQL query.
@@ -67,31 +78,10 @@ export class SqliteQueryRunner extends AbstractSqliteQueryRunner {
         const isInsertQuery = SqlUtils.isInsertQuery(query);
         try {
             const result = run();
-            await this.saveDatabaseToFileIfNeeded(databaseConnection, query);
             return result;
         } catch (err) {
             connection.logger.logQueryError(err, query, parameters, this);
             throw new QueryFailedError(query, parameters, err);
-        }
-    }
-
-    // TODO(uki00a) Optimize this method.
-    private async saveDatabaseToFileIfNeeded(databaseConnection: DB, executedQuery: string): Promise<void> {
-        if (this.driver.isInMemory()) {
-            return;
-        }
-
-        // FIXME(uki00a) I'm not sure if this is correct or not.
-        if (SqlUtils.isCommitQuery(executedQuery)) {
-            this.connection.logger.log("info", "Saving database to file...", this);
-            await save(databaseConnection);
-            return;
-        }
-
-        const hasSideEffects = !SqlUtils.isSelectQuery(executedQuery);
-        if (hasSideEffects && !this.isTransactionActive) {
-            this.connection.logger.log("info", "Saving database to file...", this);
-            await save(databaseConnection);
         }
     }
 

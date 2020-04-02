@@ -11,6 +11,8 @@ import {BroadcasterResult} from "../subscriber/BroadcasterResult.ts";
 import {EntitySchema} from "../index.ts";
 import {AbstractQueryBuilderFactory} from "./AbstractQueryBuilderFactory.ts";
 import {PostgresDriver} from "../driver/postgres/PostgresDriver.ts";
+import {DriverUtils} from "../driver/DriverUtils.ts";
+import type {AutoSavableDriver} from "../driver/types/AutoSavable.ts";
 
 /**
  * Allows to build complex sql queries in a fashion way and execute those queries.
@@ -112,11 +114,11 @@ export class DeleteQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
             if (queryRunner !== this.queryRunner) { // means we created our own query runner
                 await queryRunner.release();
             }
-            /* // TODO(uki00a) uncomment this when SqljsDriver is implemented.
-            if (this.connection.driver instanceof SqljsDriver && !queryRunner.isTransactionActive) {
-                await this.connection.driver.autoSave();
+
+            if (DriverUtils.isAutoSavable(this.connection.driver) && !queryRunner.isTransactionActive) {
+                const driver: AutoSavableDriver = this.connection.driver;
+                await driver.autoSave();
             }
-            */
         }
     }
 

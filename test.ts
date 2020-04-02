@@ -228,6 +228,7 @@ import "./test/functional/sqljs/auto-save.ts";
 import "./test/functional/sqljs/load.ts";
 import "./test/functional/sqljs/save.ts";
 import "./test/functional/sqljs/startup.ts";
+import "./test/functional/sqlite/auto-save.ts";
 import "./test/functional/table-inheritance/extending/extending-inheritance.ts";
 import "./test/functional/table-inheritance/single-table/basic-functionality/basic-functionality.ts";
 import "./test/functional/table-inheritance/single-table/database-option-inherited/database-option-inherited.ts";

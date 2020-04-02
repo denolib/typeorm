@@ -1,4 +1,4 @@
-import {open, DB} from "../../../vendor/https/deno.land/x/sqlite/mod.ts";
+import {open, save, DB} from "../../../vendor/https/deno.land/x/sqlite/mod.ts";
 import {ensureDir} from "../../../vendor/https/deno.land/std/fs/mod.ts";
 import {dirname} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {SqliteQueryRunner} from "./SqliteQueryRunner.ts";
@@ -8,11 +8,12 @@ import {SqliteConnectionOptions} from "./SqliteConnectionOptions.ts";
 import {ColumnType} from "../types/ColumnTypes.ts";
 import {QueryRunner} from "../../query-runner/QueryRunner.ts";
 import {AbstractSqliteDriver} from "../sqlite-abstract/AbstractSqliteDriver.ts";
+import type {AutoSavableDriver} from "../types/AutoSavable.ts";
 
 /**
  * Organizes communication with sqlite DBMS.
  */
-export class SqliteDriver extends AbstractSqliteDriver {
+export class SqliteDriver extends AbstractSqliteDriver implements AutoSavableDriver {
 
     // -------------------------------------------------------------------------
     // Public Properties
@@ -23,7 +24,29 @@ export class SqliteDriver extends AbstractSqliteDriver {
      */
     options: SqliteConnectionOptions;
 
-    databaseConnection: DB;
+    databaseConnection!: DB;
+
+    /**
+     * This method is simply copied from SqljsDriver#autoSave.
+     */
+    async autoSave(): Promise<void> {
+        if (this.options.autoSave) {
+            if (this.options.autoSaveCallback) {
+                await this.options.autoSaveCallback(this.databaseConnection.data());
+            }
+            else {
+                await this.save();
+            }
+        }
+    }
+
+    async save(): Promise<void> {
+        if (this.isInMemory()) {
+            return;
+        }
+
+        save(this.databaseConnection);
+    }
 
     // -------------------------------------------------------------------------
     // Constructor

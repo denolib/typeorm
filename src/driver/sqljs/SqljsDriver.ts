@@ -9,6 +9,7 @@ import {PlatformTools} from "../../platform/PlatformTools.ts";
 import {EntityMetadata} from "../../metadata/EntityMetadata.ts";
 import {OrmUtils} from "../../util/OrmUtils.ts";
 import {ObjectLiteral} from "../../common/ObjectLiteral.ts";
+import {AutoSavableDriver} from "../types/AutoSavable.ts";
 
 // This is needed to satisfy the typescript compiler.
 interface Window {
@@ -17,7 +18,7 @@ interface Window {
 }
 declare var window: Window;
 
-export class SqljsDriver extends AbstractSqliteDriver {
+export class SqljsDriver extends AbstractSqliteDriver implements AutoSavableDriver {
     // The driver specific options.
     options!: SqljsConnectionOptions;
 
