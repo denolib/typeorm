@@ -1,3 +1,3 @@
-export const VERSION = "v0.2.23-rc1";
+export const VERSION = "v0.2.23-rc2";
 export const MOD_URL = `https://denolib.com/denolib/typeorm@${VERSION}/mod.ts`;
 export const CLI_URL = `https://denolib.com/denolib/typeorm@${VERSION}/cli.ts`;
