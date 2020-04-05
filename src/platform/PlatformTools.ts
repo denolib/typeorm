@@ -96,7 +96,11 @@ export class PlatformTools {
     }
 
     static async writeFile(path: string, data: any): Promise<void> {
-        throw new NotImplementedError('PlatformTools.writeFile');
+        if (data instanceof Uint8Array) {
+            return Deno.writeFile(path, data);
+        } else {
+            return fs.writeFileStr(path, data);
+        }
     }
 
     /**

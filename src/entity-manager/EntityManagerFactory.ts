@@ -4,6 +4,8 @@ import {MongoEntityManager} from "./MongoEntityManager.ts";
 import {MongoDriver} from "../driver/mongodb/MongoDriver.ts";
 import {SqljsEntityManager} from "./SqljsEntityManager.ts";
 import {SqljsDriver} from "../driver/sqljs/SqljsDriver.ts";
+import {SqliteEntityManager} from "./SqliteEntityManager.ts";
+import {SqliteDriver} from "../driver/sqlite/SqliteDriver.ts";
 import {QueryRunner} from "../query-runner/QueryRunner.ts";
 
 /**
@@ -20,6 +22,9 @@ export class EntityManagerFactory {
 
         if (connection.driver instanceof SqljsDriver)
             return new SqljsEntityManager(connection, queryRunner);
+
+        if (connection.driver instanceof SqliteDriver)
+            return new SqliteEntityManager(connection, queryRunner);
 
         return new EntityManager(connection, queryRunner);
     }
