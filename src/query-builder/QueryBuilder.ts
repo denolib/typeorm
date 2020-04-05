@@ -17,6 +17,8 @@ import {EntitySchema} from "../index.ts";
 import {FindOperator} from "../find-options/FindOperator.ts";
 import {In} from "../find-options/operator/In.ts";
 import {AbstractQueryBuilderFactory} from "./AbstractQueryBuilderFactory.ts";
+import {DriverUtils} from "../driver/DriverUtils.ts";
+import type {AutoSavableDriver} from "../driver/types/AutoSavable.ts";
 
 // todo: completely cover query builder with tests
 // todo: entityOrProperty can be target name. implement proper behaviour if it is.
@@ -381,10 +383,9 @@ export abstract class QueryBuilder<Entity> {
             if (queryRunner !== this.queryRunner) { // means we created our own query runner
                 await queryRunner.release();
             }
-            if (false/*this.connection.driver instanceof SqljsDriver*/) { // TODO(uki00a) uncomment this when SqljsDriver is implemented.
-                /* // TODO(uki00a) uncomment this when SqljsDriver is implemented.
-                await this.connection.driver.autoSave();
-                */
+            if (DriverUtils.isAutoSavable(this.connection.driver)) {
+                const driver: AutoSavableDriver = this.connection.driver;
+                await driver.autoSave();
             }
         }
     }

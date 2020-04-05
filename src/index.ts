@@ -15,6 +15,7 @@ import {ConnectionOptionsReader} from "./connection/ConnectionOptionsReader.ts";
 import {PromiseUtils} from "./util/PromiseUtils.ts";
 import {MongoEntityManager} from "./entity-manager/MongoEntityManager.ts";
 import {SqljsEntityManager} from "./entity-manager/SqljsEntityManager.ts";
+import {SqliteEntityManager} from "./entity-manager/SqliteEntityManager.ts";
 import {SelectQueryBuilder} from "./query-builder/SelectQueryBuilder.ts";
 import {EntitySchema} from "./entity-schema/EntitySchema.ts";
 
@@ -275,6 +276,15 @@ export function getMongoManager(connectionName: string = "default"): MongoEntity
  */
 export function getSqljsManager(connectionName: string = "default"): SqljsEntityManager {
     return getConnectionManager().get(connectionName).manager as SqljsEntityManager;
+}
+
+/**
+ * Gets Sqlite entity manager from connection name.
+ * "default" connection is used, when no name is specified.
+ * Only works when sqlite driver is used.
+ */
+export function getSqliteManager(connectionName: string = "default"): SqliteEntityManager {
+    return getConnectionManager().get(connectionName).manager as SqliteEntityManager;
 }
 
 /**

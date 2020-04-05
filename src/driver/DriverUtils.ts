@@ -1,5 +1,6 @@
 import { Driver } from "./Driver.ts";
 import { hash } from "../util/StringUtils.ts";
+import type { AutoSavable, AutoSavableDriver } from "./types/AutoSavable.ts";
 
     /**
  * Common driver utility functions.
@@ -35,7 +36,7 @@ export class DriverUtils {
 
     /**
      * Builds column alias from given alias name and column name.
-     * 
+     *
      * If alias length is greater than the limit (if any) allowed by the current
      * driver, replaces it with a hashed string.
      *
@@ -53,6 +54,10 @@ export class DriverUtils {
         }
 
         return columnAliasName;
+    }
+
+    static isAutoSavable(driver: Driver): driver is AutoSavableDriver {
+        return typeof (driver as AutoSavableDriver)["autoSave"] === "function";
     }
 
     // -------------------------------------------------------------------------

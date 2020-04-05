@@ -12,6 +12,8 @@ import {AbstractSqliteDriver} from "../driver/sqlite-abstract/AbstractSqliteDriv
 import {PostgresDriver} from "../driver/postgres/PostgresDriver.ts";
 import {BroadcasterResult} from "../subscriber/BroadcasterResult.ts";
 import {EntitySchema} from "../index.ts";
+import {DriverUtils} from "../driver/DriverUtils.ts";
+import type {AutoSavableDriver} from "../driver/types/AutoSavable.ts";
 
 /**
  * Allows to build complex sql queries in a fashion way and execute those queries.
@@ -118,6 +120,10 @@ export class InsertQueryBuilder<Entity> extends QueryBuilder<Entity> {
             // console.time(".releasing connection");
             if (queryRunner !== this.queryRunner) { // means we created our own query runner
                 await queryRunner.release();
+            }
+            if (DriverUtils.isAutoSavable(this.connection.driver) && !queryRunner.isTransactionActive) {
+                const driver: AutoSavableDriver = this.connection.driver;
+                await driver.autoSave();
             }
             // console.timeEnd(".releasing connection");
             // console.timeEnd("QueryBuilder.execute");
