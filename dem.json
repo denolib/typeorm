@@ -14,6 +14,14 @@
     },
     {
       "protocol": "https",
+      "path": "deno.land/x/mysql",
+      "version": "1.6.0",
+      "files": [
+        "/mod.ts"
+      ]
+    },
+    {
+      "protocol": "https",
       "path": "deno.land/x/postgres",
       "version": "v0.3.11",
       "files": [
