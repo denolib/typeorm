@@ -15,7 +15,7 @@
     {
       "protocol": "https",
       "path": "deno.land/x/mysql",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "files": [
         "/mod.ts"
       ]
