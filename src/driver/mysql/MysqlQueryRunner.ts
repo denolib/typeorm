@@ -21,7 +21,10 @@ import {ColumnType, PromiseUtils} from "../../index.ts";
 import {TableCheck} from "../../schema-builder/table/TableCheck.ts";
 import {IsolationLevel} from "../types/IsolationLevel.ts";
 import {TableExclusion} from "../../schema-builder/table/TableExclusion.ts";
-import { VersionUtils } from "../../util/VersionUtils.ts";
+import {VersionUtils} from "../../util/VersionUtils.ts";
+import {NotImplementedError} from "../../error/NotImplementedError.ts";
+import type {Connection} from "../../../vendor/https/deno.land/x/mysql/mod.ts";
+import type {ExecuteResult} from "./typings.ts";
 
 /**
  * Runs queries on a single mysql database connection.
@@ -44,7 +47,9 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
     /**
      * Promise used to obtain a database connection from a pool for a first time.
      */
-    protected databaseConnectionPromise!: Promise<any>;
+    protected databaseConnectionPromise!: Promise<[Connection, () => Promise<void>]>;
+
+    protected databaseConnection!: [Connection, () => Promise<void>];
 
     // -------------------------------------------------------------------------
     // Constructor
@@ -66,7 +71,7 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
      * Creates/uses database connection from the connection pool to perform further operations.
      * Returns obtained database connection.
      */
-    connect(): Promise<any> {
+    connect(): Promise<[Connection, () => Promise<void>]> {
         if (this.databaseConnection)
             return Promise.resolve(this.databaseConnection);
 
@@ -97,7 +102,7 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
     release(): Promise<void> {
         this.isReleased = true;
         if (this.databaseConnection)
-            this.databaseConnection.release();
+            return this.databaseConnection[1]();
         return Promise.resolve();
     }
 
@@ -144,36 +149,28 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
     /**
      * Executes a raw SQL query.
      */
-    query(query: string, parameters?: any[]): Promise<any> {
+    async query(query: string, parameters?: any[]): Promise<ExecuteResult> {
         if (this.isReleased)
             throw new QueryRunnerAlreadyReleasedError();
 
-        return new Promise(async (ok, fail) => {
-            try {
-                const databaseConnection = await this.connect();
-                this.driver.connection.logger.logQuery(query, parameters, this);
-                const queryStartTime = +new Date();
-                databaseConnection.query(query, parameters, (err: any, result: any) => {
-
-                    // log slow queries if maxQueryExecution time is set
-                    const maxQueryExecutionTime = this.driver.connection.options.maxQueryExecutionTime;
-                    const queryEndTime = +new Date();
-                    const queryExecutionTime = queryEndTime - queryStartTime;
-                    if (maxQueryExecutionTime && queryExecutionTime > maxQueryExecutionTime)
-                        this.driver.connection.logger.logQuerySlow(queryExecutionTime, query, parameters, this);
-
-                    if (err) {
-                        this.driver.connection.logger.logQueryError(err, query, parameters, this);
-                        return fail(new QueryFailedError(query, parameters, err));
-                    }
-
-                    ok(result);
-                });
-
-            } catch (err) {
-                fail(err);
-            }
-        });
+        const [databaseConnection] = await this.connect();
+        this.driver.connection.logger.logQuery(query, parameters, this);
+        const queryStartTime = +new Date();
+        const logSlowQuery = () => {
+            // log slow queries if maxQueryExecution time is set
+            const maxQueryExecutionTime = this.driver.connection.options.maxQueryExecutionTime;
+            const queryEndTime = +new Date();
+            const queryExecutionTime = queryEndTime - queryStartTime;
+            if (maxQueryExecutionTime && queryExecutionTime > maxQueryExecutionTime)
+                this.driver.connection.logger.logQuerySlow(queryExecutionTime, query, parameters, this);
+        };
+        try {
+            const result = await databaseConnection.execute(query, parameters).finally(logSlowQuery);
+            return result;
+        } catch (err) {
+            this.driver.connection.logger.logQueryError(err, query, parameters, this);
+            throw new QueryFailedError(query, parameters, err);
+        }
     }
 
     /**
@@ -183,6 +180,8 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
         if (this.isReleased)
             throw new QueryRunnerAlreadyReleasedError();
 
+        return Promise.reject(new NotImplementedError("MysqlQueryRunner#stream is not currently supported yet"));
+        /*
         return new Promise(async (ok, fail) => {
             try {
                 const databaseConnection = await this.connect();
@@ -196,6 +195,7 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
                 fail(err);
             }
         });
+        */
     }
 
     /**
@@ -218,7 +218,7 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
      */
     async hasDatabase(database: string): Promise<boolean> {
         const result = await this.query(`SELECT * FROM \`INFORMATION_SCHEMA\`.\`SCHEMATA\` WHERE \`SCHEMA_NAME\` = '${database}'`);
-        return result.length ? true : false;
+        return result.rows!.length ? true : false;
     }
 
     /**
@@ -235,7 +235,7 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
         const parsedTableName = this.parseTableName(tableOrName);
         const sql = `SELECT * FROM \`INFORMATION_SCHEMA\`.\`COLUMNS\` WHERE \`TABLE_SCHEMA\` = '${parsedTableName.database}' AND \`TABLE_NAME\` = '${parsedTableName.tableName}'`;
         const result = await this.query(sql);
-        return result.length ? true : false;
+        return result.rows!.length ? true : false;
     }
 
     /**
@@ -246,7 +246,7 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
         const columnName = column instanceof TableColumn ? column.name : column;
         const sql = `SELECT * FROM \`INFORMATION_SCHEMA\`.\`COLUMNS\` WHERE \`TABLE_SCHEMA\` = '${parsedTableName.database}' AND \`TABLE_NAME\` = '${parsedTableName.tableName}' AND \`COLUMN_NAME\` = '${columnName}'`;
         const result = await this.query(sql);
-        return result.length ? true : false;
+        return result.rows!.length ? true : false;
     }
 
     /**
@@ -1117,17 +1117,18 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
         await this.startTransaction();
         try {
 
+            type ViewDropQuery = { query: string };
             const selectViewDropsQuery = `SELECT concat('DROP VIEW IF EXISTS \`', table_schema, '\`.\`', table_name, '\`') AS \`query\` FROM \`INFORMATION_SCHEMA\`.\`VIEWS\` WHERE \`TABLE_SCHEMA\` = '${dbName}'`;
-            const dropViewQueries: ObjectLiteral[] = await this.query(selectViewDropsQuery);
-            await Promise.all(dropViewQueries.map(q => this.query(q["query"])));
+            const dropViewQueries = await this.query(selectViewDropsQuery);
+            await Promise.all(dropViewQueries.rows!.map((q: ViewDropQuery) => this.query(q["query"])));
 
             const disableForeignKeysCheckQuery = `SET FOREIGN_KEY_CHECKS = 0;`;
             const dropTablesQuery = `SELECT concat('DROP TABLE IF EXISTS \`', table_schema, '\`.\`', table_name, '\`') AS \`query\` FROM \`INFORMATION_SCHEMA\`.\`TABLES\` WHERE \`TABLE_SCHEMA\` = '${dbName}'`;
             const enableForeignKeysCheckQuery = `SET FOREIGN_KEY_CHECKS = 1;`;
 
             await this.query(disableForeignKeysCheckQuery);
-            const dropQueries: ObjectLiteral[] = await this.query(dropTablesQuery);
-            await Promise.all(dropQueries.map(query => this.query(query["query"])));
+            const dropQueries = await this.query(dropTablesQuery);
+            await Promise.all(dropQueries.rows!.map((query: ViewDropQuery) => this.query(query["query"])));
             await this.query(enableForeignKeysCheckQuery);
 
             await this.commitTransaction();
@@ -1149,7 +1150,7 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
      */
     protected async getCurrentDatabase(): Promise<string> {
         const currentDBQuery = await this.query(`SELECT DATABASE() AS \`db_name\``);
-        return currentDBQuery[0]["db_name"];
+        return currentDBQuery.rows![0]["db_name"];
     }
 
     protected async loadViews(viewNames: string[]): Promise<View[]> {
@@ -1170,7 +1171,7 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
         const query = `SELECT \`t\`.*, \`v\`.\`check_option\` FROM ${this.escapePath(this.getTypeormMetadataTableName())} \`t\` ` +
             `INNER JOIN \`information_schema\`.\`views\` \`v\` ON \`v\`.\`table_schema\` = \`t\`.\`schema\` AND \`v\`.\`table_name\` = \`t\`.\`name\` WHERE \`t\`.\`type\` = 'VIEW' ${viewsCondition ? `AND (${viewsCondition})` : ""}`;
         const dbViews = await this.query(query);
-        return dbViews.map((dbView: any) => {
+        return dbViews.rows!.map((dbView: any) => {
             const view = new View();
             const db = dbView["schema"] === currentDatabase ? undefined : dbView["schema"];
             view.name = this.driver.buildTableName(dbView["name"], undefined, db);
@@ -1230,7 +1231,14 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
             `FROM \`INFORMATION_SCHEMA\`.\`KEY_COLUMN_USAGE\` \`kcu\` ` +
             `INNER JOIN \`INFORMATION_SCHEMA\`.\`REFERENTIAL_CONSTRAINTS\` \`rc\` ON \`rc\`.\`constraint_name\` = \`kcu\`.\`constraint_name\` ` +
             `WHERE ` + foreignKeysCondition;
-        const [dbTables, dbColumns, dbPrimaryKeys, dbCollations, dbIndices, dbForeignKeys]: ObjectLiteral[][] = await Promise.all([
+        const [
+            dbTablesResult,
+            dbColumnsResult,
+            dbPrimaryKeysResult,
+            dbCollationsResult,
+            dbIndicesResult,
+            dbForeignKeysResult
+        ] = await Promise.all([
             this.query(tablesSql),
             this.query(columnsSql),
             this.query(primaryKeySql),
@@ -1238,6 +1246,47 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
             this.query(indicesSql),
             this.query(foreignKeysSql)
         ]);
+
+        const dbTables = dbTablesResult.rows! as Array<{ "TABLE_SCHEMA": string, "TABLE_NAME": string }>;
+        const dbColumns = dbColumnsResult.rows! as Array<{
+            "TABLE_SCHEMA": string,
+            "TABLE_NAME": string,
+            "COLLATION_NAME": string,
+            "CHARACTER_MAXIMUM_LENGTH": string,
+            "CHARACTER_SET_NAME": string,
+            "COLUMN_COMMENT": string,
+            "COLUMN_NAME": string,
+            "COLUMN_DEFAULT": string,
+            "COLUMN_TYPE": string,
+            "DATA_TYPE": string,
+            "DATETIME_PRECISION": any,
+            "NUMERIC_PRECISION": any,
+            "NUMERIC_SCALE": any,
+            "EXTRA": string,
+            "GENERATION_EXPRESSION": string,
+            "IS_NULLABLE": string
+        }>;
+        const dbPrimaryKeys = dbPrimaryKeysResult.rows! as Array<{ "COLUMN_NAME": string, "TABLE_NAME": string, "TABLE_SCHEMA": string }>;
+        const dbCollations = dbCollationsResult.rows! as Array<{ "SCHEMA_NAME": string, "COLLATION": string, "CHARSET": string }>;
+        const dbIndices = dbIndicesResult.rows! as Array<{
+            "TABLE_SCHEMA": string,
+            "TABLE_NAME": string,
+            "INDEX_NAME": string,
+            "INDEX_TYPE": string,
+            "NON_UNIQUE": string,
+            "COLUMN_NAME": string
+        }>;
+        const dbForeignKeys = dbForeignKeysResult.rows! as Array<{
+            "CONSTRAINT_NAME": string,
+            "TABLE_NAME": string,
+            "TABLE_SCHEMA": string,
+            "REFERENCED_TABLE_NAME": string,
+            "REFERENCED_TABLE_SCHEMA": string,
+            "REFERENCED_COLUMN_NAME": string,
+            "COLUMN_NAME": string,
+            "ON_DELETE": string,
+            "ON_UPDATE": string
+        }>;
 
         // if tables were not found in the db, no need to proceed
         if (!dbTables.length)
@@ -1684,7 +1733,7 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
 
     protected async getVersion(): Promise<string> {
         const result = await this.query(`SELECT VERSION() AS \`version\``);
-        return result[0]["version"];
+        return result.rows![0]["version"];
     }
 
 }
