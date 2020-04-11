@@ -18,6 +18,8 @@ jobs:
           MYSQL_DATABASE: test
           MYSQL_USER: test
           MYSQL_ALLOW_EMPTY_PASSWORD: true
+        ports:
+        - 3306:3306
     steps:
     - uses: actions/checkout@master
     - uses: denolib/setup-deno@master
