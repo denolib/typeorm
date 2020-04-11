@@ -809,7 +809,7 @@ export class MysqlDriver implements Driver {
     /**
      * Creates a new connection pool for a given database credentials.
      */
-    protected createConnectionOptions(options: MysqlConnectionOptions, credentials: MysqlConnectionCredentialsOptions): MysqlConnectionOptions {
+    protected createConnectionOptions(options: MysqlConnectionOptions, credentials: MysqlConnectionCredentialsOptions): DenoMysql.ClientConfig {
 
         credentials = Object.assign({}, credentials, DriverUtils.buildDriverOptions(credentials)); // todo: do it better way
 
@@ -828,10 +828,10 @@ export class MysqlDriver implements Driver {
             flags: options.flags,
 
             // connection options
-            host: credentials.host,
-            user: credentials.username,
+            hostname: credentials.host,
+            username: credentials.username,
             password: credentials.password,
-            database: credentials.database,
+            db: credentials.database,
             port: credentials.port,
             ssl: options.ssl,
 
@@ -845,13 +845,13 @@ export class MysqlDriver implements Driver {
                 poolSize: 10, // This matches the default value of the Node.js's mysql module.
                 ...(options.extra || {})
             }
-        };
+        } as DenoMysql.ClientConfig;
     }
 
     /**
      * Creates a new connection pool for a given database credentials.
      */
-    protected createPool(connectionOptions: MysqlConnectionOptions): Promise<DenoMysql.Client> {
+    protected createPool(connectionOptions: DenoMysql.ClientConfig): Promise<DenoMysql.Client> {
 
         // create a connection pool
         const pool = new this.mysql.Client();
