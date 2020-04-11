@@ -828,7 +828,7 @@ export class MysqlDriver implements Driver {
             flags: options.flags,
 
             // connection options
-            hostname: credentials.host,
+            hostname: credentials.host || "localhost",
             username: credentials.username,
             password: credentials.password,
             db: credentials.database,

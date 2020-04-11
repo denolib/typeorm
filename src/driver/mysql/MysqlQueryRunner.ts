@@ -23,6 +23,7 @@ import {IsolationLevel} from "../types/IsolationLevel.ts";
 import {TableExclusion} from "../../schema-builder/table/TableExclusion.ts";
 import {VersionUtils} from "../../util/VersionUtils.ts";
 import {NotImplementedError} from "../../error/NotImplementedError.ts";
+import {PromiseQueue} from "../../util/PromiseQueue.ts";
 import type {Connection} from "../../../vendor/https/deno.land/x/mysql/mod.ts";
 import type {ExecuteResult} from "./typings.ts";
 
@@ -165,12 +166,31 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
                 this.driver.connection.logger.logQuerySlow(queryExecutionTime, query, parameters, this);
         };
         try {
-            const result = await databaseConnection.execute(query, parameters).finally(logSlowQuery);
+            // const result = await databaseConnection.execute(query, parameters).finally(logSlowQuery);
+            const result = await this.executeQuery(databaseConnection, query, parameters || []).finally(logSlowQuery);
             return result;
         } catch (err) {
             this.driver.connection.logger.logQueryError(err, query, parameters, this);
             throw new QueryFailedError(query, parameters, err);
         }
+    }
+
+    private queryQueueMap = new Map<Connection, PromiseQueue<ExecuteResult>>();
+
+    /**
+     * TODO Remove this method.
+     * This method is a workaround for a concurrency problem that occurs sometimes when using deno_mysql
+     */
+    private executeQuery(connection: Connection, query: string, parameters: any[]) {
+        if (!this.queryQueueMap.has(connection)) {
+            const queue = new PromiseQueue<ExecuteResult>();
+            this.queryQueueMap.set(connection, queue);
+            queue.onEmpty().then(() => {
+                this.queryQueueMap.delete(connection);
+            });
+        }
+        const queue = this.queryQueueMap.get(connection);
+        return queue!.add(() => connection.execute(query, parameters));
     }
 
     /**

@@ -159,6 +159,7 @@ export class PostgresQueryRunner extends BaseQueryRunner implements QueryRunner 
     private queryQueueMap = new Map<PoolClient, PromiseQueue<QueryResult>>();
 
     /**
+     * TODO Remove this method.
      * This method is a workaround for a concurrency problem that occurs sometimes when using deno-postgres@v0.3.6.
      */
     private executeQuery(connection: PoolClient, query: string, parameters: any[]) {
