@@ -31,6 +31,9 @@ import {SelectQueryBuilderOption} from "./SelectQueryBuilderOption.ts";
 import {ObjectUtils} from "../util/ObjectUtils.ts";
 import {DriverUtils} from "../driver/DriverUtils.ts";
 import {PostgresDriver} from "../driver/postgres/PostgresDriver.ts";
+import {MysqlDriver} from "../driver/mysql/MysqlDriver.ts";
+import {SapDriver} from "../driver/sap/SapDriver.ts";
+import {AuroraDataApiDriver} from "../driver/aurora-data-api/AuroraDataApiDriver.ts";
 
 /**
  * Allows to build complex sql queries in a fashion way and execute those queries.
@@ -1588,7 +1591,7 @@ export class SelectQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
             if (offset)
                 return prefix + " OFFSET " + offset + " ROWS";
 
-        } else if (false/*this.connection.driver instanceof MysqlDriver || this.connection.driver instanceof AuroraDataApiDriver || this.connection.driver instanceof SapDriver*/) { // TODO(uki00a) uncomment this when MysqlDriver is implemented.
+        } else if (this.connection.driver instanceof MysqlDriver || this.connection.driver instanceof AuroraDataApiDriver || this.connection.driver instanceof SapDriver) {
 
             if (limit && offset)
                 return " LIMIT " + limit + " OFFSET " + offset;
@@ -1633,7 +1636,7 @@ export class SelectQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
         const driver = this.connection.driver;
         switch (this.expressionMap.lockMode) {
             case "pessimistic_read":
-                if (false/*driver instanceof MysqlDriver || driver instanceof AuroraDataApiDriver*/) { // TODO(uki00a) uncomment this when MysqlDriver is implemented.
+                if (driver instanceof MysqlDriver || driver instanceof AuroraDataApiDriver) {
                     return " LOCK IN SHARE MODE";
 
                 } else if (driver instanceof PostgresDriver) {
@@ -1649,7 +1652,7 @@ export class SelectQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
                     throw new LockNotSupportedOnGivenDriverError();
                 }
             case "pessimistic_write":
-                if (/*driver instanceof MysqlDriver || driver instanceof AuroraDataApiDriver || */driver instanceof PostgresDriver/* || driver instanceof OracleDriver*/) { // TODO(uki00a) uncomment this when MysqlDriver is implemented.
+                if (driver instanceof MysqlDriver || driver instanceof AuroraDataApiDriver || driver instanceof PostgresDriver/* || driver instanceof OracleDriver*/) { // TODO(uki00a) uncomment this when OracleDriver is implemented.
                     return " FOR UPDATE";
 
                 } else if (false/*driver instanceof SqlServerDriver*/) { // TODO(uki00a) uncomment this when SqlServerDriver is implemented.
@@ -1707,12 +1710,10 @@ export class SelectQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
             const selection = this.expressionMap.selects.find(select => select.selection === aliasName + "." + column.propertyPath);
             let selectionPath = this.escape(aliasName) + "." + this.escape(column.databaseName);
             if (this.connection.driver.spatialTypes.indexOf(column.type) !== -1) {
-                if (false/*this.connection.driver instanceof MysqlDriver || this.connection.driver instanceof AuroraDataApiDriver*/) { // TODO(uki00a) uncomment this when MysqlDriver is implemented.
-                    /* // TODO(uki00a) uncomment this when MysqlDriver is implemented.
+                if (this.connection.driver instanceof MysqlDriver || this.connection.driver instanceof AuroraDataApiDriver) {
                     const useLegacy = this.connection.driver.options.legacySpatialSupport;
                     const asText = useLegacy ? "AsText" : "ST_AsText";
                     selectionPath = `${asText}(${selectionPath})`;
-                    */
                 }
 
                 if (this.connection.driver instanceof PostgresDriver)

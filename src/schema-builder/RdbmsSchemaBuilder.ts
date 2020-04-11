@@ -16,6 +16,8 @@ import {TableCheck} from "./table/TableCheck.ts";
 import {TableExclusion} from "./table/TableExclusion.ts";
 import {View} from "./view/View.ts";
 import {PostgresDriver} from "../driver/postgres/PostgresDriver.ts";
+import {MysqlDriver} from "../driver/mysql/MysqlDriver.ts";
+import {AuroraDataApiDriver} from "../driver/aurora-data-api/AuroraDataApiDriver.ts";
 import {PostgresConnectionOptions} from "../driver/postgres/PostgresConnectionOptions.ts";
 
 /**
@@ -292,7 +294,7 @@ export class RdbmsSchemaBuilder implements SchemaBuilder {
 
     protected async dropOldChecks(): Promise<void> {
         // Mysql does not support check constraints
-        if (false/*this.connection.driver instanceof MysqlDriver || this.connection.driver instanceof AuroraDataApiDriver*/) // TODO(uki00a) uncomment this when MysqlDriver is implemented.
+        if (this.connection.driver instanceof MysqlDriver || this.connection.driver instanceof AuroraDataApiDriver)
             return;
 
         await PromiseUtils.runInSequence(this.entityToSyncMetadatas, async metadata => {
@@ -518,7 +520,7 @@ export class RdbmsSchemaBuilder implements SchemaBuilder {
 
             // drop all composite uniques related to this column
             // Mysql does not support unique constraints.
-            if (true/*!(this.connection.driver instanceof MysqlDriver || this.connection.driver instanceof AuroraDataApiDriver)*/) { // TODO(uki00a) uncomment this when MysqlDriver is implemented.
+            if (!(this.connection.driver instanceof MysqlDriver || this.connection.driver instanceof AuroraDataApiDriver)) {
                 await PromiseUtils.runInSequence(changedColumns, changedColumn => this.dropColumnCompositeUniques(metadata.tablePath, changedColumn.databaseName));
             }
 
@@ -565,7 +567,7 @@ export class RdbmsSchemaBuilder implements SchemaBuilder {
 
     protected async createNewChecks(): Promise<void> {
         // Mysql does not support check constraints
-        if (false/*this.connection.driver instanceof MysqlDriver || this.connection.driver instanceof AuroraDataApiDriver*/) // TODO(uki00a) uncomment this when MysqlDriver is implemented.
+        if (this.connection.driver instanceof MysqlDriver || this.connection.driver instanceof AuroraDataApiDriver)
             return;
 
         await PromiseUtils.runInSequence(this.entityToSyncMetadatas, async metadata => {

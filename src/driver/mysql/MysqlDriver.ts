@@ -18,7 +18,7 @@ import {OrmUtils} from "../../util/OrmUtils.ts";
 import {ApplyValueTransformers} from "../../util/ApplyValueTransformers.ts";
 import {NotImplementedError} from "../../error/NotImplementedError.ts";
 import type * as DenoMysql from "../../../vendor/https/deno.land/x/mysql/mod.ts";
-import type {ReleaseConnection, ExecuteResult} from "./typings.ts";
+import type {ReleaseConnection, RawExecuteResult} from "./typings.ts";
 import {deferred} from "../../../vendor/https/deno.land/std/util/async.ts";
 
 /**
@@ -699,7 +699,7 @@ export class MysqlDriver implements Driver {
     /**
      * Creates generated map of values generated or returned by database after INSERT query.
      */
-    createGeneratedMap(metadata: EntityMetadata, insertResult: ExecuteResult) {
+    createGeneratedMap(metadata: EntityMetadata, insertResult: RawExecuteResult) {
         const generatedMap = metadata.generatedColumns.reduce((map, generatedColumn) => {
             let value: any;
             if (generatedColumn.generationStrategy === "increment" && insertResult.lastInsertId) {

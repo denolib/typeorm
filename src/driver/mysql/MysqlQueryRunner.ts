@@ -25,7 +25,7 @@ import {VersionUtils} from "../../util/VersionUtils.ts";
 import {NotImplementedError} from "../../error/NotImplementedError.ts";
 import {PromiseQueue} from "../../util/PromiseQueue.ts";
 import type {Connection} from "../../../vendor/https/deno.land/x/mysql/mod.ts";
-import type {ExecuteResult} from "./typings.ts";
+import type {RawExecuteResult, QueryResult} from "./typings.ts";
 
 /**
  * Runs queries on a single mysql database connection.
@@ -150,7 +150,7 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
     /**
      * Executes a raw SQL query.
      */
-    async query(query: string, parameters?: any[]): Promise<ExecuteResult> {
+    async query(query: string, parameters?: any[]): Promise<QueryResult> {
         if (this.isReleased)
             throw new QueryRunnerAlreadyReleasedError();
 
@@ -168,14 +168,16 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
         try {
             // const result = await databaseConnection.execute(query, parameters).finally(logSlowQuery);
             const result = await this.executeQuery(databaseConnection, query, parameters || []).finally(logSlowQuery);
-            return result;
+            return Array.isArray(result.rows)
+                ? result.rows as QueryResult // SELECT
+                : result as RawExecuteResult; // INSERT, UPDATE, DELETE
         } catch (err) {
             this.driver.connection.logger.logQueryError(err, query, parameters, this);
             throw new QueryFailedError(query, parameters, err);
         }
     }
 
-    private queryQueueMap = new Map<Connection, PromiseQueue<ExecuteResult>>();
+    private queryQueueMap = new Map<Connection, PromiseQueue<RawExecuteResult>>();
 
     /**
      * TODO Remove this method.
@@ -183,7 +185,7 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
      */
     private executeQuery(connection: Connection, query: string, parameters: any[]) {
         if (!this.queryQueueMap.has(connection)) {
-            const queue = new PromiseQueue<ExecuteResult>();
+            const queue = new PromiseQueue<RawExecuteResult>();
             this.queryQueueMap.set(connection, queue);
             queue.onEmpty().then(() => {
                 this.queryQueueMap.delete(connection);
@@ -238,7 +240,7 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
      */
     async hasDatabase(database: string): Promise<boolean> {
         const result = await this.query(`SELECT * FROM \`INFORMATION_SCHEMA\`.\`SCHEMATA\` WHERE \`SCHEMA_NAME\` = '${database}'`);
-        return result.rows!.length ? true : false;
+        return result.length ? true : false;
     }
 
     /**
@@ -255,7 +257,7 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
         const parsedTableName = this.parseTableName(tableOrName);
         const sql = `SELECT * FROM \`INFORMATION_SCHEMA\`.\`COLUMNS\` WHERE \`TABLE_SCHEMA\` = '${parsedTableName.database}' AND \`TABLE_NAME\` = '${parsedTableName.tableName}'`;
         const result = await this.query(sql);
-        return result.rows!.length ? true : false;
+        return result.length ? true : false;
     }
 
     /**
@@ -266,7 +268,7 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
         const columnName = column instanceof TableColumn ? column.name : column;
         const sql = `SELECT * FROM \`INFORMATION_SCHEMA\`.\`COLUMNS\` WHERE \`TABLE_SCHEMA\` = '${parsedTableName.database}' AND \`TABLE_NAME\` = '${parsedTableName.tableName}' AND \`COLUMN_NAME\` = '${columnName}'`;
         const result = await this.query(sql);
-        return result.rows!.length ? true : false;
+        return result.length ? true : false;
     }
 
     /**
@@ -1140,7 +1142,7 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
             type ViewDropQuery = { query: string };
             const selectViewDropsQuery = `SELECT concat('DROP VIEW IF EXISTS \`', table_schema, '\`.\`', table_name, '\`') AS \`query\` FROM \`INFORMATION_SCHEMA\`.\`VIEWS\` WHERE \`TABLE_SCHEMA\` = '${dbName}'`;
             const dropViewQueries = await this.query(selectViewDropsQuery);
-            await Promise.all(dropViewQueries.rows!.map((q: ViewDropQuery) => this.query(q["query"])));
+            await Promise.all(dropViewQueries.map((q: ViewDropQuery) => this.query(q["query"])));
 
             const disableForeignKeysCheckQuery = `SET FOREIGN_KEY_CHECKS = 0;`;
             const dropTablesQuery = `SELECT concat('DROP TABLE IF EXISTS \`', table_schema, '\`.\`', table_name, '\`') AS \`query\` FROM \`INFORMATION_SCHEMA\`.\`TABLES\` WHERE \`TABLE_SCHEMA\` = '${dbName}'`;
@@ -1148,7 +1150,7 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
 
             await this.query(disableForeignKeysCheckQuery);
             const dropQueries = await this.query(dropTablesQuery);
-            await Promise.all(dropQueries.rows!.map((query: ViewDropQuery) => this.query(query["query"])));
+            await Promise.all(dropQueries.map((query: ViewDropQuery) => this.query(query["query"])));
             await this.query(enableForeignKeysCheckQuery);
 
             await this.commitTransaction();
@@ -1170,7 +1172,7 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
      */
     protected async getCurrentDatabase(): Promise<string> {
         const currentDBQuery = await this.query(`SELECT DATABASE() AS \`db_name\``);
-        return currentDBQuery.rows![0]["db_name"];
+        return currentDBQuery[0]["db_name"];
     }
 
     protected async loadViews(viewNames: string[]): Promise<View[]> {
@@ -1191,7 +1193,7 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
         const query = `SELECT \`t\`.*, \`v\`.\`check_option\` FROM ${this.escapePath(this.getTypeormMetadataTableName())} \`t\` ` +
             `INNER JOIN \`information_schema\`.\`views\` \`v\` ON \`v\`.\`table_schema\` = \`t\`.\`schema\` AND \`v\`.\`table_name\` = \`t\`.\`name\` WHERE \`t\`.\`type\` = 'VIEW' ${viewsCondition ? `AND (${viewsCondition})` : ""}`;
         const dbViews = await this.query(query);
-        return dbViews.rows!.map((dbView: any) => {
+        return dbViews.map((dbView: any) => {
             const view = new View();
             const db = dbView["schema"] === currentDatabase ? undefined : dbView["schema"];
             view.name = this.driver.buildTableName(dbView["name"], undefined, db);
@@ -1267,8 +1269,8 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
             this.query(foreignKeysSql)
         ]);
 
-        const dbTables = dbTablesResult.rows! as Array<{ "TABLE_SCHEMA": string, "TABLE_NAME": string }>;
-        const dbColumns = dbColumnsResult.rows! as Array<{
+        const dbTables = dbTablesResult as Array<{ "TABLE_SCHEMA": string, "TABLE_NAME": string }>;
+        const dbColumns = dbColumnsResult as Array<{
             "TABLE_SCHEMA": string,
             "TABLE_NAME": string,
             "COLLATION_NAME": string,
@@ -1286,9 +1288,9 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
             "GENERATION_EXPRESSION": string,
             "IS_NULLABLE": string
         }>;
-        const dbPrimaryKeys = dbPrimaryKeysResult.rows! as Array<{ "COLUMN_NAME": string, "TABLE_NAME": string, "TABLE_SCHEMA": string }>;
-        const dbCollations = dbCollationsResult.rows! as Array<{ "SCHEMA_NAME": string, "COLLATION": string, "CHARSET": string }>;
-        const dbIndices = dbIndicesResult.rows! as Array<{
+        const dbPrimaryKeys = dbPrimaryKeysResult as Array<{ "COLUMN_NAME": string, "TABLE_NAME": string, "TABLE_SCHEMA": string }>;
+        const dbCollations = dbCollationsResult as Array<{ "SCHEMA_NAME": string, "COLLATION": string, "CHARSET": string }>;
+        const dbIndices = dbIndicesResult as Array<{
             "TABLE_SCHEMA": string,
             "TABLE_NAME": string,
             "INDEX_NAME": string,
@@ -1296,7 +1298,7 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
             "NON_UNIQUE": string,
             "COLUMN_NAME": string
         }>;
-        const dbForeignKeys = dbForeignKeysResult.rows! as Array<{
+        const dbForeignKeys = dbForeignKeysResult as Array<{
             "CONSTRAINT_NAME": string,
             "TABLE_NAME": string,
             "TABLE_SCHEMA": string,
@@ -1753,7 +1755,7 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
 
     protected async getVersion(): Promise<string> {
         const result = await this.query(`SELECT VERSION() AS \`version\``);
-        return result.rows![0]["version"];
+        return result[0]["version"];
     }
 
 }

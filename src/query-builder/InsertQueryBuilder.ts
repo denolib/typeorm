@@ -10,6 +10,8 @@ import {ColumnMetadata} from "../metadata/ColumnMetadata.ts";
 import {ReturningResultsEntityUpdator} from "./ReturningResultsEntityUpdator.ts";
 import {AbstractSqliteDriver} from "../driver/sqlite-abstract/AbstractSqliteDriver.ts";
 import {PostgresDriver} from "../driver/postgres/PostgresDriver.ts";
+import {MysqlDriver} from "../driver/mysql/MysqlDriver.ts";
+import {AuroraDataApiDriver} from "../driver/aurora-data-api/AuroraDataApiDriver.ts";
 import {BroadcasterResult} from "../subscriber/BroadcasterResult.ts";
 import {EntitySchema} from "../index.ts";
 import {DriverUtils} from "../driver/DriverUtils.ts";
@@ -273,14 +275,11 @@ export class InsertQueryBuilder<Entity> extends QueryBuilder<Entity> {
         if (valuesExpression) {
             query += ` VALUES ${valuesExpression}`;
         } else {
-            /* TODO(uki00a) uncomment this when MysqlDriver is implemented.
             if (this.connection.driver instanceof MysqlDriver || this.connection.driver instanceof AuroraDataApiDriver) { // special syntax for mysql DEFAULT VALUES insertion
                 query += " VALUES ()";
             } else {
                 query += ` DEFAULT VALUES`;
             }
-            */
-            query += ` DEFAULT VALUES`;
         }
         if (this.connection.driver instanceof PostgresDriver || this.connection.driver instanceof AbstractSqliteDriver) {
           query += `${this.expressionMap.onIgnore ? " ON CONFLICT DO NOTHING " : ""}`;
@@ -290,13 +289,13 @@ export class InsertQueryBuilder<Entity> extends QueryBuilder<Entity> {
             query += `${columns ? " ON CONFLICT " + conflict + " DO UPDATE SET " + columns : ""}`;
             query += `${overwrite ? " ON CONFLICT " + conflict + " DO UPDATE SET " + overwrite : ""}`;
           }
-        }/* else if (this.connection.driver instanceof MysqlDriver || this.connection.driver instanceof AuroraDataApiDriver) {
+        } else if (this.connection.driver instanceof MysqlDriver || this.connection.driver instanceof AuroraDataApiDriver) {
             if (this.expressionMap.onUpdate) {
               const { overwrite, columns } = this.expressionMap.onUpdate;
               query += `${columns ? " ON DUPLICATE KEY UPDATE " + columns : ""}`;
               query += `${overwrite ? " ON DUPLICATE KEY UPDATE " + overwrite : ""}`;
             }
-        }*/ // TODO(uki00a) uncomment this when MysqlDriver is implemented.
+        }
 
         // add RETURNING expression
         if (returningExpression && (this.connection.driver instanceof PostgresDriver/* || this.connection.driver instanceof OracleDriver || this.connection.driver instanceof CockroachDriver*/)) {
@@ -450,8 +449,7 @@ export class InsertQueryBuilder<Entity> extends QueryBuilder<Entity> {
                         //     value = new ArrayParameter(value);
 
                         this.expressionMap.nativeParameters[paramName] = value;
-                        if (false/*(this.connection.driver instanceof MysqlDriver || this.connection.driver instanceof AuroraDataApiDriver) && this.connection.driver.spatialTypes.indexOf(column.type) !== -1*/) { // TODO(uki00a) uncomment this when MsqlDriver is implemented.
-                            /* // TODO(uki00a) uncomment this when MysqlDriver is implemented.
+                        if ((this.connection.driver instanceof MysqlDriver || this.connection.driver instanceof AuroraDataApiDriver) && this.connection.driver.spatialTypes.indexOf(column.type) !== -1) {
                             const useLegacy = this.connection.driver.options.legacySpatialSupport;
                             const geomFromText = useLegacy ? "GeomFromText" : "ST_GeomFromText";
                             if (column.srid != null) {
@@ -459,7 +457,6 @@ export class InsertQueryBuilder<Entity> extends QueryBuilder<Entity> {
                             } else {
                                 expression += `${geomFromText}(${this.connection.driver.createParameter(paramName, parametersCount)})`;
                             }
-                            */
                         } else if (this.connection.driver instanceof PostgresDriver && this.connection.driver.spatialTypes.indexOf(column.type) !== -1) {
                             if (column.srid != null) {
                               expression += `ST_SetSRID(ST_GeomFromGeoJSON(${this.connection.driver.createParameter(paramName, parametersCount)}), ${column.srid})::${column.type}`;
