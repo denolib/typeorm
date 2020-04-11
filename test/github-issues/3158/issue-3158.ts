@@ -4,7 +4,7 @@ import {expect} from "../../deps/chai.ts";
 import { createTestingConnections, closeTestingConnections, reloadTestingDatabases, getDirnameOfCurrentModule } from "../../utils/test-utils.ts";
 import { Connection } from "../../../src/connection/Connection.ts";
 
-it("github issues > #3158 Cannot run sync a second time", async () => {
+it.only("github issues > #3158 Cannot run sync a second time", async () => {
     let connections: Connection[];
     const __dirname = getDirnameOfCurrentModule(import.meta);
     connections = await createTestingConnections({
