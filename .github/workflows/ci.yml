@@ -12,6 +12,12 @@ jobs:
           POSTGRES_DB: test
         ports:
         - 5432:5432
+      mysql:
+        image: mysql:8
+        env:
+          MYSQL_DATABASE: test
+          MYSQL_USER: test
+          MYSQL_ALLOW_EMPTY_PASSWORD: true
     steps:
     - uses: actions/checkout@master
     - uses: denolib/setup-deno@master
