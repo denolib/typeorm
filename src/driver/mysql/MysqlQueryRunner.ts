@@ -25,7 +25,7 @@ import {VersionUtils} from "../../util/VersionUtils.ts";
 import {NotImplementedError} from "../../error/NotImplementedError.ts";
 import {PromiseQueue} from "../../util/PromiseQueue.ts";
 import type {Connection} from "../../../vendor/https/deno.land/x/mysql/mod.ts";
-import type {RawExecuteResult, QueryResult} from "./typings.ts";
+import type {RawExecuteResult, Rows, QueryResult} from "./typings.ts";
 
 /**
  * Runs queries on a single mysql database connection.
@@ -239,7 +239,7 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
      * Checks if database with the given name exist.
      */
     async hasDatabase(database: string): Promise<boolean> {
-        const result = await this.query(`SELECT * FROM \`INFORMATION_SCHEMA\`.\`SCHEMATA\` WHERE \`SCHEMA_NAME\` = '${database}'`);
+        const result = await this.query(`SELECT * FROM \`INFORMATION_SCHEMA\`.\`SCHEMATA\` WHERE \`SCHEMA_NAME\` = '${database}'`) as Rows;
         return result.length ? true : false;
     }
 
@@ -256,7 +256,7 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
     async hasTable(tableOrName: Table|string): Promise<boolean> {
         const parsedTableName = this.parseTableName(tableOrName);
         const sql = `SELECT * FROM \`INFORMATION_SCHEMA\`.\`COLUMNS\` WHERE \`TABLE_SCHEMA\` = '${parsedTableName.database}' AND \`TABLE_NAME\` = '${parsedTableName.tableName}'`;
-        const result = await this.query(sql);
+        const result = await this.query(sql) as Rows;
         return result.length ? true : false;
     }
 
@@ -267,7 +267,7 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
         const parsedTableName = this.parseTableName(tableOrName);
         const columnName = column instanceof TableColumn ? column.name : column;
         const sql = `SELECT * FROM \`INFORMATION_SCHEMA\`.\`COLUMNS\` WHERE \`TABLE_SCHEMA\` = '${parsedTableName.database}' AND \`TABLE_NAME\` = '${parsedTableName.tableName}' AND \`COLUMN_NAME\` = '${columnName}'`;
-        const result = await this.query(sql);
+        const result = await this.query(sql) as Rows;
         return result.length ? true : false;
     }
 
@@ -1141,7 +1141,7 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
 
             type ViewDropQuery = { query: string };
             const selectViewDropsQuery = `SELECT concat('DROP VIEW IF EXISTS \`', table_schema, '\`.\`', table_name, '\`') AS \`query\` FROM \`INFORMATION_SCHEMA\`.\`VIEWS\` WHERE \`TABLE_SCHEMA\` = '${dbName}'`;
-            const dropViewQueries = await this.query(selectViewDropsQuery);
+            const dropViewQueries = await this.query(selectViewDropsQuery) as Rows;
             await Promise.all(dropViewQueries.map((q: ViewDropQuery) => this.query(q["query"])));
 
             const disableForeignKeysCheckQuery = `SET FOREIGN_KEY_CHECKS = 0;`;
@@ -1149,7 +1149,7 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
             const enableForeignKeysCheckQuery = `SET FOREIGN_KEY_CHECKS = 1;`;
 
             await this.query(disableForeignKeysCheckQuery);
-            const dropQueries = await this.query(dropTablesQuery);
+            const dropQueries = await this.query(dropTablesQuery) as Rows;
             await Promise.all(dropQueries.map((query: ViewDropQuery) => this.query(query["query"])));
             await this.query(enableForeignKeysCheckQuery);
 
@@ -1171,7 +1171,7 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
      * Returns current database.
      */
     protected async getCurrentDatabase(): Promise<string> {
-        const currentDBQuery = await this.query(`SELECT DATABASE() AS \`db_name\``);
+        const currentDBQuery = await this.query(`SELECT DATABASE() AS \`db_name\``) as Rows;
         return currentDBQuery[0]["db_name"];
     }
 
@@ -1192,7 +1192,7 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
 
         const query = `SELECT \`t\`.*, \`v\`.\`check_option\` FROM ${this.escapePath(this.getTypeormMetadataTableName())} \`t\` ` +
             `INNER JOIN \`information_schema\`.\`views\` \`v\` ON \`v\`.\`table_schema\` = \`t\`.\`schema\` AND \`v\`.\`table_name\` = \`t\`.\`name\` WHERE \`t\`.\`type\` = 'VIEW' ${viewsCondition ? `AND (${viewsCondition})` : ""}`;
-        const dbViews = await this.query(query);
+        const dbViews = await this.query(query) as Rows;
         return dbViews.map((dbView: any) => {
             const view = new View();
             const db = dbView["schema"] === currentDatabase ? undefined : dbView["schema"];
@@ -1754,7 +1754,7 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
     }
 
     protected async getVersion(): Promise<string> {
-        const result = await this.query(`SELECT VERSION() AS \`version\``);
+        const result = await this.query(`SELECT VERSION() AS \`version\``) as Rows;
         return result[0]["version"];
     }
 
