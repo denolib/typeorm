@@ -817,7 +817,6 @@ export class MysqlDriver implements Driver {
         return {
             charset: options.charset,
             timezone: options.timezone,
-            connectTimeout: options.connectTimeout,
             insecureAuth: options.insecureAuth,
             supportBigNumbers: options.supportBigNumbers !== undefined ? options.supportBigNumbers : true,
             bigNumberStrings: options.bigNumberStrings !== undefined ? options.bigNumberStrings : true,
@@ -834,6 +833,7 @@ export class MysqlDriver implements Driver {
             db: credentials.database,
             port: credentials.port,
             ssl: options.ssl,
+            timeout: options.connectTimeout || 1000,
 
             // timeout options
             ...(options.acquireTimeout === undefined
