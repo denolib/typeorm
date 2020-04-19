@@ -27,6 +27,6 @@
     "database": "test",
     "password": "test",
     "connectTimeout": 30000,
-    "logging": ["query", "warn", "error"]
+    "logging": false
   }
 ]
