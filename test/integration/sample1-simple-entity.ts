@@ -4,7 +4,7 @@ import {Connection} from "../../src/connection/Connection.ts";
 import {Post} from "../../sample/sample1-simple-entity/entity/Post.ts";
 import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../utils/test-utils.ts";
 
-describe.only("insertion", function() {
+describe("insertion", function() {
 
     // -------------------------------------------------------------------------
     // Setup
