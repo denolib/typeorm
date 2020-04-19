@@ -1253,24 +1253,9 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
             `FROM \`INFORMATION_SCHEMA\`.\`KEY_COLUMN_USAGE\` \`kcu\` ` +
             `INNER JOIN \`INFORMATION_SCHEMA\`.\`REFERENTIAL_CONSTRAINTS\` \`rc\` ON \`rc\`.\`constraint_name\` = \`kcu\`.\`constraint_name\` ` +
             `WHERE ` + foreignKeysCondition;
-        const [
-            dbTablesResult,
-            dbColumnsResult,
-            dbPrimaryKeysResult,
-            dbCollationsResult,
-            dbIndicesResult,
-            dbForeignKeysResult
-        ] = await Promise.all([
-            this.query(tablesSql),
-            this.query(columnsSql),
-            this.query(primaryKeySql),
-            this.query(collationsSql),
-            this.query(indicesSql),
-            this.query(foreignKeysSql)
-        ]);
 
-        const dbTables = dbTablesResult as Array<{ "TABLE_SCHEMA": string, "TABLE_NAME": string }>;
-        const dbColumns = dbColumnsResult as Array<{
+        type DbTable = { "TABLE_SCHEMA": string, "TABLE_NAME": string };
+        type DbColumn = {
             "TABLE_SCHEMA": string,
             "TABLE_NAME": string,
             "COLLATION_NAME": string,
@@ -1287,18 +1272,18 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
             "EXTRA": string,
             "GENERATION_EXPRESSION": string,
             "IS_NULLABLE": string
-        }>;
-        const dbPrimaryKeys = dbPrimaryKeysResult as Array<{ "COLUMN_NAME": string, "TABLE_NAME": string, "TABLE_SCHEMA": string }>;
-        const dbCollations = dbCollationsResult as Array<{ "SCHEMA_NAME": string, "COLLATION": string, "CHARSET": string }>;
-        const dbIndices = dbIndicesResult as Array<{
+        };
+        type DbPrimaryKey = { "COLUMN_NAME": string, "TABLE_NAME": string, "TABLE_SCHEMA": string };
+        type DbCollation = { "SCHEMA_NAME": string, "COLLATION": string, "CHARSET": string };
+        type DbIndex = {
             "TABLE_SCHEMA": string,
             "TABLE_NAME": string,
             "INDEX_NAME": string,
             "INDEX_TYPE": string,
             "NON_UNIQUE": string,
             "COLUMN_NAME": string
-        }>;
-        const dbForeignKeys = dbForeignKeysResult as Array<{
+        };
+        type DbForeignKey = {
             "CONSTRAINT_NAME": string,
             "TABLE_NAME": string,
             "TABLE_SCHEMA": string,
@@ -1308,7 +1293,23 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
             "COLUMN_NAME": string,
             "ON_DELETE": string,
             "ON_UPDATE": string
-        }>;
+        };
+
+        const [
+            dbTables,
+            dbColumns,
+            dbPrimaryKeys,
+            dbCollations,
+            dbIndices,
+            dbForeignKeys
+        ] = await Promise.all([
+            this.query(tablesSql) as Promise<Array<DbTable>>,
+            this.query(columnsSql) as Promise<Array<DbColumn>>,
+            this.query(primaryKeySql) as Promise<Array<DbPrimaryKey>>,
+            this.query(collationsSql) as Promise<Array<DbCollation>>,
+            this.query(indicesSql) as Promise<Array<DbIndex>>,
+            this.query(foreignKeysSql) as Promise<Array<DbForeignKey>>
+        ] as const);
 
         // if tables were not found in the db, no need to proceed
         if (!dbTables.length)
