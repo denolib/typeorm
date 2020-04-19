@@ -25,6 +25,7 @@
     "port": 3306,
     "username": "test",
     "database": "test",
+    "password": "test",
     "connectTimeout": 30000,
     "logging": ["query", "warn", "error"]
   }
