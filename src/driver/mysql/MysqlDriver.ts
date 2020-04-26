@@ -410,6 +410,12 @@ export class MysqlDriver implements Driver {
                 return "?";
             }
         }); // todo: make replace only in value statements, otherwise problems
+
+        // Replace `(?)` with `?`
+        // See: https://github.com/manyuanrong/deno_mysql/issues/36
+        // TODO find more efficient way to do this.
+        sql = sql.replace(/\(\?\)/g, "\?");
+
         return [sql, escapedParameters];
     }
 
