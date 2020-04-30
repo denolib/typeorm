@@ -393,6 +393,11 @@ export class MysqlDriver implements Driver {
         if (!parameters || !Object.keys(parameters).length)
             return [sql, escapedParameters];
 
+        // Replace `(:...<name>)` with `:...<name>`
+        // See: https://github.com/manyuanrong/deno_mysql/issues/36
+        // TODO find more efficient way to do this.
+        sql = sql.replace(/\((:\.\.\.[^)]+\b)\)/g, "$1");
+
         const keys = Object.keys(parameters).map(parameter => "(:(\\.\\.\\.)?" + parameter + "\\b)").join("|");
         sql = sql.replace(new RegExp(keys, "g"), (key: string) => {
             let value: any;
@@ -410,11 +415,6 @@ export class MysqlDriver implements Driver {
                 return "?";
             }
         }); // todo: make replace only in value statements, otherwise problems
-
-        // Replace `(?)` with `?`
-        // See: https://github.com/manyuanrong/deno_mysql/issues/36
-        // TODO find more efficient way to do this.
-        sql = sql.replace(/\(\?\)/g, "\?");
 
         return [sql, escapedParameters];
     }
