@@ -12,7 +12,7 @@ describe("github issues > #813 order by must support functions", () => {
     let connections: Connection[];
     const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*{.js,.ts}")],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
