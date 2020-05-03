@@ -14,7 +14,8 @@ export class Post {
     title!: string;
 
     @ManyToOne(() => Category, category => category.posts, {
-        cascade!: ["insert"]
+        cascade!: ["insert"],
+        lazy: true
     })
     category!: Promise<Category>;
 

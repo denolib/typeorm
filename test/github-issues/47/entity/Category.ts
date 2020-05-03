@@ -13,7 +13,7 @@ export class Category {
     @Column({ type: String })
     name!: string;
 
-    @OneToMany(() => Post, post => post.category)
+    @OneToMany(() => Post, post => post.category, { lazy: true })
     posts!: Promise<Post[]>;
 
 }
