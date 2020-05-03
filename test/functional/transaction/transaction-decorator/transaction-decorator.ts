@@ -12,7 +12,7 @@ describe("transaction > method wrapped into transaction decorator", () => {
     let connections: Connection[];
     const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*{.js,.ts}")],
+        entities: [joinPaths(__dirname, "/entity/*.ts")],
         enabledDrivers: ["mysql"] // since @Transaction accepts a specific connection name we can use only one connection and its name
     }));
     beforeEach(() => reloadTestingDatabases(connections));
