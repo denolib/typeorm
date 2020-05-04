@@ -76,7 +76,7 @@ export class PlatformTools {
         return path.resolve(pathStr);
     }
 
-    static expandGlob(pattern: string): AsyncIterableIterator<{filename: string}> {
+    static expandGlob(pattern: string): AsyncIterableIterator<{path: string}> {
         return fs.expandGlob(pattern, { includeDirs: false });
     }
 
@@ -107,7 +107,7 @@ export class PlatformTools {
      * Gets environment variable.
      */
     static getEnvVariable(name: string): any {
-        return Deno.env()[name];
+        return Deno.env.get(name);
     }
 
     static encodeToBase64(string: string): string {
