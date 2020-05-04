@@ -28,7 +28,7 @@ The quickest way to get started with TypeORM is to use its CLI commands to gener
 First, install TypeORM CLI:
 
 ```
-deno install --allow-read --allow-write --allow-net --allow-env -f typeorm https://denolib.com/denolib/typeorm@v0.2.23-rc1/cli.ts
+deno install --allow-read --allow-write --allow-net --allow-env -f typeorm https://denolib.com/denolib/typeorm@v0.2.23-rc3/cli.ts
 ```
 
 Then go to the directory where you want to create a new project and run the command:
