@@ -38,6 +38,6 @@ export interface PostgresConnectionCredentialsOptions {
     /**
      * Object with ssl parameters
      */
-    readonly ssl?: boolean | Deno.ListenTLSOptions;
+    readonly ssl?: boolean | Deno.ListenTlsOptions;
 
 }

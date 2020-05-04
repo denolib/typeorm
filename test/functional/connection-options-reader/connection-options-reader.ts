@@ -7,8 +7,8 @@ import {ConnectionOptionsReader} from "../../../src/connection/ConnectionOptions
 describe("ConnectionOptionsReader", () => {
   const __dirname = getDirnameOfCurrentModule(import.meta);
   after(() => {
-    delete Deno.env().TYPEORM_CONNECTION;
-    delete Deno.env().TYPEORM_DATABASE;
+    delete Deno.env.toObject().TYPEORM_CONNECTION;
+    delete Deno.env.toObject().TYPEORM_DATABASE;
   });
 
   it("properly loads config with entities specified", async function() {
@@ -45,7 +45,7 @@ describe("ConnectionOptionsReader", () => {
     const connectionOptionsReader = new ConnectionOptionsReader({ root: __dirname, configName: "configs/.env" });
     const [ fileOptions ]: ConnectionOptions[] = await connectionOptionsReader.all();
     expect(fileOptions.database).to.have.string("test-js");
-    expect(Deno.env().TYPEORM_DATABASE).to.equal("test-js");
+    expect(Deno.env.toObject().TYPEORM_DATABASE).to.equal("test-js");
   });
 });
 

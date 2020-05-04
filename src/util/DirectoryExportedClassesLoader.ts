@@ -25,8 +25,8 @@ export async function importClassesFromDirectories(logger: Logger, directories: 
 
     const allFiles = [] as string[];
     for (const dir of directories) {
-        for await (const {filename} of PlatformTools.expandGlob(dir)) {
-            allFiles.push(filename);
+        for await (const {path} of PlatformTools.expandGlob(dir)) {
+            allFiles.push(path);
         }
     }
 
