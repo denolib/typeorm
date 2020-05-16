@@ -286,7 +286,7 @@ export class InsertQueryBuilder<Entity> extends QueryBuilder<Entity> {
         }
 
         // add OUTPUT expression
-        if (returningExpression/* && this.connection.driver instanceof SqlServerDriver*/) { // TODO uncomment this when SqlServerDriver is implemented.
+        if (returningExpression && false/* && this.connection.driver instanceof SqlServerDriver*/) { // TODO uncomment this when SqlServerDriver is implemented.
             query += ` OUTPUT ${returningExpression}`;
         }
 
