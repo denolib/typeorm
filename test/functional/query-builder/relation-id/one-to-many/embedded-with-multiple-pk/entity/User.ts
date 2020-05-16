@@ -9,7 +9,7 @@ export class User {
     @PrimaryColumn({ type: Number })
     id!: number;
 
-    @PrimaryColumn({ type: Number })
+    @PrimaryColumn({ type: String })
     name!: string;
 
     @ManyToOne(type => Post, post => post.counters.subcounters.watchedUsers)

@@ -1,12 +1,10 @@
 import {Driver} from "../Driver.ts";
 import {ConnectionIsNotSetError} from "../../error/ConnectionIsNotSetError.ts";
-import {DriverPackageNotInstalledError} from "../../error/DriverPackageNotInstalledError.ts";
 import {DriverUtils} from "../DriverUtils.ts";
 import {MysqlQueryRunner} from "./MysqlQueryRunner.ts";
 import {ObjectLiteral} from "../../common/ObjectLiteral.ts";
 import {ColumnMetadata} from "../../metadata/ColumnMetadata.ts";
 import {DateUtils} from "../../util/DateUtils.ts";
-import {PlatformTools} from "../../platform/PlatformTools.ts";
 import {Connection} from "../../connection/Connection.ts";
 import {RdbmsSchemaBuilder} from "../../schema-builder/RdbmsSchemaBuilder.ts";
 import {MysqlConnectionOptions} from "./MysqlConnectionOptions.ts";
@@ -18,6 +16,10 @@ import {MysqlConnectionCredentialsOptions} from "./MysqlConnectionCredentialsOpt
 import {EntityMetadata} from "../../metadata/EntityMetadata.ts";
 import {OrmUtils} from "../../util/OrmUtils.ts";
 import {ApplyValueTransformers} from "../../util/ApplyValueTransformers.ts";
+import {NotImplementedError} from "../../error/NotImplementedError.ts";
+import type * as DenoMysql from "../../../vendor/https/deno.land/x/mysql/mod.ts";
+import type {ReleaseConnection, RawExecuteResult} from "./typings.ts";
+import {deferred} from "../../../vendor/https/deno.land/std/util/async.ts";
 
 /**
  * Organizes communication with MySQL DBMS.
@@ -36,13 +38,13 @@ export class MysqlDriver implements Driver {
     /**
      * Mysql underlying library.
      */
-    mysql: any;
+    private mysql!: typeof DenoMysql;
 
     /**
      * Connection pool.
      * Used in non-replication mode.
      */
-    pool: any;
+    pool?: DenoMysql.Client;
 
     /**
      * Pool cluster used in replication mode.
@@ -303,9 +305,6 @@ export class MysqlDriver implements Driver {
         } as MysqlConnectionOptions;
         this.isReplicated = this.options.replication ? true : false;
 
-        // load mysql package
-        this.loadDependencies();
-
         this.database = this.options.replication ? this.options.replication.master.database : this.options.database;
 
         // validate options to make sure everything is set
@@ -328,13 +327,17 @@ export class MysqlDriver implements Driver {
      * Performs connection to the database.
      */
     async connect(): Promise<void> {
+        await this.loadDependencies();
 
         if (this.options.replication) {
+            /*
             this.poolCluster = this.mysql.createPoolCluster(this.options.replication);
             this.options.replication.slaves.forEach((slave, index) => {
                 this.poolCluster.add("SLAVE" + index, this.createConnectionOptions(this.options, slave));
             });
             this.poolCluster.add("MASTER", this.createConnectionOptions(this.options, this.options.replication.master));
+            */
+           throw new NotImplementedError("MysqlConnectionOptions.replication is not currently supported yet");
 
         } else {
             this.pool = await this.createPool(this.createConnectionOptions(this.options, this.options));
@@ -362,13 +365,8 @@ export class MysqlDriver implements Driver {
             });
         }
         if (this.pool) {
-            return new Promise<void>((ok, fail) => {
-                this.pool.end((err: any) => {
-                    if (err) return fail(err);
-                    this.pool = undefined;
-                    ok();
-                });
-            });
+            await this.pool.close();
+            this.pool = undefined;
         }
     }
 
@@ -395,6 +393,11 @@ export class MysqlDriver implements Driver {
         if (!parameters || !Object.keys(parameters).length)
             return [sql, escapedParameters];
 
+        // Replace `(:...<name>)` with `:...<name>`
+        // See: https://github.com/manyuanrong/deno_mysql/issues/36
+        // TODO find more efficient way to do this.
+        sql = sql.replace(/\((:\.\.\.[^)]+\b)\)/g, "$1");
+
         const keys = Object.keys(parameters).map(parameter => "(:(\\.\\.\\.)?" + parameter + "\\b)").join("|");
         sql = sql.replace(new RegExp(keys, "g"), (key: string) => {
             let value: any;
@@ -412,6 +415,7 @@ export class MysqlDriver implements Driver {
                 return "?";
             }
         }); // todo: make replace only in value statements, otherwise problems
+
         return [sql, escapedParameters];
     }
 
@@ -658,21 +662,28 @@ export class MysqlDriver implements Driver {
      * Used for replication.
      * If replication is not setup then returns default connection's database connection.
      */
-    obtainMasterConnection(): Promise<any> {
-        return new Promise<any>((ok, fail) => {
-            if (this.poolCluster) {
-                this.poolCluster.getConnection("MASTER", (err: any, dbConnection: any) => {
-                    err ? fail(err) : ok(this.prepareDbConnection(dbConnection));
-                });
+    async obtainMasterConnection(): Promise<[DenoMysql.Connection, ReleaseConnection]> {
+        if (this.poolCluster) {
+            throw new NotImplementedError("MysqlDriver.poolCluster is not currently supported yet");
+            /*
+            this.poolCluster.getConnection("MASTER", (err: any, dbConnection: any) => {
+                err ? fail(err) : ok(this.prepareDbConnection(dbConnection));
+            });
+            */
 
-            } else if (this.pool) {
-                this.pool.getConnection((err: any, dbConnection: any) => {
-                    err ? fail(err) : ok(this.prepareDbConnection(dbConnection));
+        } else if (this.pool) {
+            const connectionPromise = deferred<[DenoMysql.Connection, ReleaseConnection]>();
+            const releasePromise = new Promise<void>(resolve => {
+                this.pool!.useConnection((connection: DenoMysql.Connection) => {
+                    const release = async () => resolve();
+                    connectionPromise.resolve([connection, release]);
+                    return releasePromise;
                 });
-            } else {
-                fail(new Error(`Connection is not established with mysql database`));
-            }
-        });
+            });
+            return connectionPromise;
+        } else {
+            throw new Error(`Connection is not established with mysql database`);
+        }
     }
 
     /**
@@ -680,7 +691,7 @@ export class MysqlDriver implements Driver {
      * Used for replication.
      * If replication is not setup then returns master (default) connection's database connection.
      */
-    obtainSlaveConnection(): Promise<any> {
+    obtainSlaveConnection(): Promise<[DenoMysql.Connection, ReleaseConnection]> {
         if (!this.poolCluster)
             return this.obtainMasterConnection();
 
@@ -694,11 +705,11 @@ export class MysqlDriver implements Driver {
     /**
      * Creates generated map of values generated or returned by database after INSERT query.
      */
-    createGeneratedMap(metadata: EntityMetadata, insertResult: any) {
+    createGeneratedMap(metadata: EntityMetadata, insertResult: RawExecuteResult) {
         const generatedMap = metadata.generatedColumns.reduce((map, generatedColumn) => {
             let value: any;
-            if (generatedColumn.generationStrategy === "increment" && insertResult.insertId) {
-                value = insertResult.insertId;
+            if (generatedColumn.generationStrategy === "increment" && insertResult.lastInsertId) {
+                value = insertResult.lastInsertId;
             // } else if (generatedColumn.generationStrategy === "uuid") {
             //     console.log("getting db value:", generatedColumn.databaseName);
             //     value = generatedColumn.getEntityValue(uuidMap);
@@ -797,41 +808,21 @@ export class MysqlDriver implements Driver {
     /**
      * Loads all driver dependencies.
      */
-    protected loadDependencies(): void {
-        try {
-            this.mysql = PlatformTools.load("mysql");  // try to load first supported package
-            /*
-             * Some frameworks (such as Jest) may mess up Node's require cache and provide garbage for the 'mysql' module
-             * if it was not installed. We check that the object we got actually contains something otherwise we treat
-             * it as if the `require` call failed.
-             *
-             * @see https://github.com/typeorm/typeorm/issues/1373
-             */
-            if (Object.keys(this.mysql).length === 0) {
-                throw new Error("'mysql' was found but it is empty. Falling back to 'mysql2'.");
-            }
-        } catch (e) {
-            try {
-                this.mysql = PlatformTools.load("mysql2"); // try to load second supported package
-
-            } catch (e) {
-                throw new DriverPackageNotInstalledError("Mysql", "mysql");
-            }
-        }
+    protected async loadDependencies(): Promise<void> {
+        this.mysql = await import("../../../vendor/https/deno.land/x/mysql/mod.ts");
     }
 
     /**
      * Creates a new connection pool for a given database credentials.
      */
-    protected createConnectionOptions(options: MysqlConnectionOptions, credentials: MysqlConnectionCredentialsOptions): Promise<any> {
+    protected createConnectionOptions(options: MysqlConnectionOptions, credentials: MysqlConnectionCredentialsOptions): DenoMysql.ClientConfig {
 
         credentials = Object.assign({}, credentials, DriverUtils.buildDriverOptions(credentials)); // todo: do it better way
 
         // build connection options for the driver
-        return Object.assign({}, {
+        return {
             charset: options.charset,
             timezone: options.timezone,
-            connectTimeout: options.connectTimeout,
             insecureAuth: options.insecureAuth,
             supportBigNumbers: options.supportBigNumbers !== undefined ? options.supportBigNumbers : true,
             bigNumberStrings: options.bigNumberStrings !== undefined ? options.bigNumberStrings : true,
@@ -839,41 +830,38 @@ export class MysqlDriver implements Driver {
             debug: options.debug,
             trace: options.trace,
             multipleStatements: options.multipleStatements,
-            flags: options.flags
-        }, {
-            host: credentials.host,
-            user: credentials.username,
+            flags: options.flags,
+
+            // connection options
+            hostname: credentials.host || "localhost",
+            username: credentials.username,
             password: credentials.password,
-            database: credentials.database,
+            db: credentials.database,
             port: credentials.port,
-            ssl: options.ssl
-        },
-        options.acquireTimeout === undefined
-          ? {}
-          : { acquireTimeout: options.acquireTimeout },
-        options.extra || {});
+            ssl: options.ssl,
+            timeout: options.connectTimeout || 1000,
+
+            // timeout options
+            ...(options.acquireTimeout === undefined
+              ? {}
+              : { acquireTimeout: options.acquireTimeout }),
+
+            // extra options
+            ...{
+                poolSize: 10, // This matches the default value of the Node.js's mysql module.
+                ...(options.extra || {})
+            }
+        } as DenoMysql.ClientConfig;
     }
 
     /**
      * Creates a new connection pool for a given database credentials.
      */
-    protected createPool(connectionOptions: any): Promise<any> {
+    protected createPool(connectionOptions: DenoMysql.ClientConfig): Promise<DenoMysql.Client> {
 
         // create a connection pool
-        const pool = this.mysql.createPool(connectionOptions);
-
-        // make sure connection is working fine
-        return new Promise<void>((ok, fail) => {
-            // (issue #610) we make first connection to database to make sure if connection credentials are wrong
-            // we give error before calling any other method that creates actual query runner
-            pool.getConnection((err: any, connection: any) => {
-                if (err)
-                    return pool.end(() => fail(err));
-
-                connection.release();
-                ok(pool);
-            });
-        });
+        const pool = new this.mysql.Client();
+        return pool.connect(connectionOptions);
     }
 
     /**

@@ -18,6 +18,9 @@ import {UniqueMetadata} from "../metadata/UniqueMetadata.ts";
 import {CheckMetadata} from "../metadata/CheckMetadata.ts";
 import {ExclusionMetadata} from "../metadata/ExclusionMetadata.ts";
 import {PostgresDriver} from "../driver/postgres/PostgresDriver.ts";
+import {MysqlDriver} from "../driver/mysql/MysqlDriver.ts";
+import {AuroraDataApiDriver} from "../driver/aurora-data-api/AuroraDataApiDriver.ts";
+import {SapDriver} from "../driver/sap/SapDriver.ts";
 
 /**
  * Builds EntityMetadata objects and all its sub-metadatas.
@@ -125,9 +128,8 @@ export class EntityMetadataBuilder {
                         entityMetadata.foreignKeys.push(foreignKey);
                     }
                     if (uniqueConstraint) {
-                        if (false
-                            /*this.connection.driver instanceof MysqlDriver ||*/ // TODO(uki00a) uncomment this when MysqlDriver is implemented.
-                            /*this.connection.driver instanceof AuroraDataApiDriver*/ // TODO(uki00a) uncomment this when AuroraDataApiDriver is implemented.
+                        if (this.connection.driver instanceof MysqlDriver ||
+                            this.connection.driver instanceof AuroraDataApiDriver
                             /*|| this.connection.driver instanceof SqlServerDriver*/ // TODO(uki00a) uncomment this when SqlServerDriver is implemented.
                             /*|| this.connection.driver instanceof SapDriver*/) { // TODO(uki00a) uncomment this when SapDriver is implemented.
                             const index = new IndexMetadata({
@@ -521,10 +523,9 @@ export class EntityMetadataBuilder {
         }
 
         // Mysql and SAP HANA stores unique constraints as unique indices.
-        if (false
-            /*this.connection.driver instanceof MysqlDriver*/ // TODO(uki00a) uncomment this when MysqlDriver is implemented.
-            /* || this.connection.driver instanceof AuroraDataApiDriver*/ // TODO(uki00a) uncomment this when AuroraDataApiDriver is implemented.
-            /* || this.connection.driver instanceof SapDriver*/) { // TODO(uki00a) uncomment this when SapDriver is implemented.
+        if (this.connection.driver instanceof MysqlDriver
+            || this.connection.driver instanceof AuroraDataApiDriver
+            || this.connection.driver instanceof SapDriver) {
             const indices = this.metadataArgsStorage.filterUniques(entityMetadata.inheritanceTree).map(args => {
                 return new IndexMetadata({
                     entityMetadata: entityMetadata,

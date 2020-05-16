@@ -11,6 +11,8 @@ import {BroadcasterResult} from "../subscriber/BroadcasterResult.ts";
 import {EntitySchema} from "../index.ts";
 import {AbstractQueryBuilderFactory} from "./AbstractQueryBuilderFactory.ts";
 import {PostgresDriver} from "../driver/postgres/PostgresDriver.ts";
+import {MysqlDriver} from "../driver/mysql/MysqlDriver.ts";
+import {AuroraDataApiDriver} from "../driver/aurora-data-api/AuroraDataApiDriver.ts";
 import {DriverUtils} from "../driver/DriverUtils.ts";
 import type {AutoSavableDriver} from "../driver/types/AutoSavable.ts";
 
@@ -68,7 +70,7 @@ export class DeleteQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
             const result = await queryRunner.query(sql, parameters);
 
             const driver = queryRunner.connection.driver;
-            if (false/*driver instanceof MysqlDriver || driver instanceof AuroraDataApiDriver*/) { // TODO(uki00a) uncomment this when MysqlDriver is implemented.
+            if (driver instanceof MysqlDriver || driver instanceof AuroraDataApiDriver) {
                 deleteResult.raw = result;
                 deleteResult.affected = result.affectedRows;
 

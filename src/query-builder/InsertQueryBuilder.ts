@@ -10,6 +10,8 @@ import {ColumnMetadata} from "../metadata/ColumnMetadata.ts";
 import {ReturningResultsEntityUpdator} from "./ReturningResultsEntityUpdator.ts";
 import {AbstractSqliteDriver} from "../driver/sqlite-abstract/AbstractSqliteDriver.ts";
 import {PostgresDriver} from "../driver/postgres/PostgresDriver.ts";
+import {MysqlDriver} from "../driver/mysql/MysqlDriver.ts";
+import {AuroraDataApiDriver} from "../driver/aurora-data-api/AuroraDataApiDriver.ts";
 import {BroadcasterResult} from "../subscriber/BroadcasterResult.ts";
 import {EntitySchema} from "../index.ts";
 import {DriverUtils} from "../driver/DriverUtils.ts";
@@ -244,6 +246,13 @@ export class InsertQueryBuilder<Entity> extends QueryBuilder<Entity> {
           this.expressionMap.onUpdate.conflict = ` ON CONSTRAINT ${statement.conflict_target} `;
       if (statement && statement.columns instanceof Array)
           this.expressionMap.onUpdate.columns = statement.columns.map(column => `${column} = :${column}`).join(", ");
+      if (statement && statement.overwrite instanceof Array) {
+        if (this.connection.driver instanceof MysqlDriver || this.connection.driver instanceof AuroraDataApiDriver) {
+          this.expressionMap.onUpdate.overwrite = statement.overwrite.map(column => `${column} = VALUES(${column})`).join(", ");
+        } else if (this.connection.driver instanceof PostgresDriver || this.connection.driver instanceof AbstractSqliteDriver/* || this.connection.driver instanceof CockroachDriver*/) { // TODO uncomment this when CockroachDriver is implemented.
+          this.expressionMap.onUpdate.overwrite = statement.overwrite.map(column => `${column} = EXCLUDED.${column}`).join(", ");
+        }
+      }
       return this;
   }
 
@@ -262,27 +271,36 @@ export class InsertQueryBuilder<Entity> extends QueryBuilder<Entity> {
         const columnsExpression = this.createColumnNamesExpression();
         let query = "INSERT ";
 
+        if (this.connection.driver instanceof MysqlDriver || this.connection.driver instanceof AuroraDataApiDriver) {
+          query += `${this.expressionMap.onIgnore ? " IGNORE " : ""}`;
+        }
+
         query += `INTO ${tableName}`;
 
         // add columns expression
         if (columnsExpression) {
             query += `(${columnsExpression})`;
+        } else {
+            if (!valuesExpression && (this.connection.driver instanceof MysqlDriver || this.connection.driver instanceof AuroraDataApiDriver)) // special syntax for mysql DEFAULT VALUES insertion
+                query += "()";
+        }
+
+        // add OUTPUT expression
+        if (returningExpression/* && this.connection.driver instanceof SqlServerDriver*/) { // TODO uncomment this when SqlServerDriver is implemented.
+            query += ` OUTPUT ${returningExpression}`;
         }
 
         // add VALUES expression
         if (valuesExpression) {
             query += ` VALUES ${valuesExpression}`;
         } else {
-            /* TODO(uki00a) uncomment this when MysqlDriver is implemented.
             if (this.connection.driver instanceof MysqlDriver || this.connection.driver instanceof AuroraDataApiDriver) { // special syntax for mysql DEFAULT VALUES insertion
                 query += " VALUES ()";
             } else {
                 query += ` DEFAULT VALUES`;
             }
-            */
-            query += ` DEFAULT VALUES`;
         }
-        if (this.connection.driver instanceof PostgresDriver || this.connection.driver instanceof AbstractSqliteDriver) {
+        if (this.connection.driver instanceof PostgresDriver || this.connection.driver instanceof AbstractSqliteDriver/* || this.connection.driver instanceof CockroachDriver */) { // TODO uncomment this when CockroachDriver is implemented.
           query += `${this.expressionMap.onIgnore ? " ON CONFLICT DO NOTHING " : ""}`;
           query += `${this.expressionMap.onConflict ? " ON CONFLICT " + this.expressionMap.onConflict : ""}`;
           if (this.expressionMap.onUpdate) {
@@ -290,13 +308,13 @@ export class InsertQueryBuilder<Entity> extends QueryBuilder<Entity> {
             query += `${columns ? " ON CONFLICT " + conflict + " DO UPDATE SET " + columns : ""}`;
             query += `${overwrite ? " ON CONFLICT " + conflict + " DO UPDATE SET " + overwrite : ""}`;
           }
-        }/* else if (this.connection.driver instanceof MysqlDriver || this.connection.driver instanceof AuroraDataApiDriver) {
+        } else if (this.connection.driver instanceof MysqlDriver || this.connection.driver instanceof AuroraDataApiDriver) {
             if (this.expressionMap.onUpdate) {
               const { overwrite, columns } = this.expressionMap.onUpdate;
               query += `${columns ? " ON DUPLICATE KEY UPDATE " + columns : ""}`;
               query += `${overwrite ? " ON DUPLICATE KEY UPDATE " + overwrite : ""}`;
             }
-        }*/ // TODO(uki00a) uncomment this when MysqlDriver is implemented.
+        }
 
         // add RETURNING expression
         if (returningExpression && (this.connection.driver instanceof PostgresDriver/* || this.connection.driver instanceof OracleDriver || this.connection.driver instanceof CockroachDriver*/)) {
@@ -325,7 +343,10 @@ export class InsertQueryBuilder<Entity> extends QueryBuilder<Entity> {
             // if user did not specified such list then return all columns except auto-increment one
             // for Oracle we return auto-increment column as well because Oracle does not support DEFAULT VALUES expression
             if (column.isGenerated && column.generationStrategy === "increment"
-                && !(this.connection.driver instanceof AbstractSqliteDriver))
+                /*&& !(this.connection.driver instanceof OracleDriver)*/ // TODO uncomment this when OracleDriver is implemented
+                && !(this.connection.driver instanceof AbstractSqliteDriver)
+                && !(this.connection.driver instanceof MysqlDriver)
+                && !(this.connection.driver instanceof AuroraDataApiDriver))
                 return false;
 
             return true;
@@ -422,7 +443,7 @@ export class InsertQueryBuilder<Entity> extends QueryBuilder<Entity> {
 
                     // if value for this column was not provided then insert default value
                     } else if (value === undefined) {
-                        if (this.connection.driver instanceof AbstractSqliteDriver) { // unfortunately sqlite does not support DEFAULT expression in INSERT queries
+                        if (this.connection.driver instanceof AbstractSqliteDriver/* || this.connection.driver instanceof SapDriver*/) { // unfortunately sqlite does not support DEFAULT expression in INSERT queries
                             if (column.default !== undefined) { // try to use default defined in the column
                                 expression += this.connection.driver.normalizeDefault(column);
                             } else {
@@ -450,8 +471,7 @@ export class InsertQueryBuilder<Entity> extends QueryBuilder<Entity> {
                         //     value = new ArrayParameter(value);
 
                         this.expressionMap.nativeParameters[paramName] = value;
-                        if (false/*(this.connection.driver instanceof MysqlDriver || this.connection.driver instanceof AuroraDataApiDriver) && this.connection.driver.spatialTypes.indexOf(column.type) !== -1*/) { // TODO(uki00a) uncomment this when MsqlDriver is implemented.
-                            /* // TODO(uki00a) uncomment this when MysqlDriver is implemented.
+                        if ((this.connection.driver instanceof MysqlDriver || this.connection.driver instanceof AuroraDataApiDriver) && this.connection.driver.spatialTypes.indexOf(column.type) !== -1) {
                             const useLegacy = this.connection.driver.options.legacySpatialSupport;
                             const geomFromText = useLegacy ? "GeomFromText" : "ST_GeomFromText";
                             if (column.srid != null) {
@@ -459,7 +479,6 @@ export class InsertQueryBuilder<Entity> extends QueryBuilder<Entity> {
                             } else {
                                 expression += `${geomFromText}(${this.connection.driver.createParameter(paramName, parametersCount)})`;
                             }
-                            */
                         } else if (this.connection.driver instanceof PostgresDriver && this.connection.driver.spatialTypes.indexOf(column.type) !== -1) {
                             if (column.srid != null) {
                               expression += `ST_SetSRID(ST_GeomFromGeoJSON(${this.connection.driver.createParameter(paramName, parametersCount)}), ${column.srid})::${column.type}`;
@@ -507,7 +526,7 @@ export class InsertQueryBuilder<Entity> extends QueryBuilder<Entity> {
 
                     // if value for this column was not provided then insert default value
                     } else if (value === undefined) {
-                        if (this.connection.driver instanceof AbstractSqliteDriver) {
+                        if (this.connection.driver instanceof AbstractSqliteDriver/*|| this.connection.driver instanceof SapDriver*/) { // TODO uncomment this when SapDriver is implemented.
                             expression += "NULL";
 
                         } else {

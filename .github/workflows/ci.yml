@@ -12,6 +12,15 @@ jobs:
           POSTGRES_DB: test
         ports:
         - 5432:5432
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: admin
+          MYSQL_DATABASE: test
+          MYSQL_USER: test
+          MYSQL_PASSWORD: "test"
+        ports:
+        - 3306:3306
     steps:
     - uses: actions/checkout@master
     - uses: denolib/setup-deno@master
@@ -20,4 +29,4 @@ jobs:
     - name: Run tests
       run: |
         cp ./ormconfig.gh-actions.json ./ormconfig.json
-        deno run --allow-read --allow-write --allow-env --allow-net --config ./tsconfig.json ./test.ts
+        deno run --allow-read --allow-write --allow-env --allow-net --config ./tsconfig.json -r ./test.ts

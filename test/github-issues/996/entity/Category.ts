@@ -13,7 +13,7 @@ export class Category {
     @Column({ type: String })
     name!: string;
 
-    @ManyToOne(type => Post, post => post.categories)
+    @ManyToOne(type => Post, post => post.categories, { lazy: true })
     post!: Promise<Post>;
 
 }

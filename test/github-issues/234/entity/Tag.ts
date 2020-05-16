@@ -13,7 +13,7 @@ export class Tag {
     @Column({ type: String })
     name!: string;
 
-    @ManyToMany(type => Post, post => post.tags)
+    @ManyToMany(type => Post, post => post.tags, { lazy: true })
     posts!: Promise<Post[]>;
 
 }

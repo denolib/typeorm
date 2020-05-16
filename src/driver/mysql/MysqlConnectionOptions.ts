@@ -36,7 +36,7 @@ export interface MysqlConnectionOptions extends BaseConnectionOptions, MysqlConn
      * The milliseconds before a timeout occurs during the initial connection to the MySQL server. (Default: 10000)
      * This difference between connectTimeout and acquireTimeout is subtle and is described in the mysqljs/mysql docs
      * https://github.com/mysqljs/mysql/tree/master#pool-options
-     */ 
+     */
     readonly acquireTimeout?: number;
 
     /**
@@ -68,7 +68,7 @@ export interface MysqlConnectionOptions extends BaseConnectionOptions, MysqlConn
      * Prints protocol details to stdout. Can be true/false or an array of packet type names that should be printed.
      * (Default: false)
      */
-    readonly debug?: boolean|string[];
+    readonly debug?: boolean;
 
     /**
      * Generates stack traces on Error to include call site of library entrance ("long stack traces").

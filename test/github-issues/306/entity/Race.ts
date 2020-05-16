@@ -9,7 +9,7 @@ export class Race {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column({ type: Number })
+    @Column({ type: String })
     name!: string;
 
     @Column(type => Duration)

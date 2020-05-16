@@ -13,17 +13,9 @@ import {Question} from "./entity/Question.ts";
 describe("entity-metadata-validator > initialized relations", function() {
     it("should throw error if relation with initialized array was found on many-to-many relation", async () => {
         const connection = new Connection({ // dummy connection options, connection won't be established anyway
-            // TODO(uki00a) uncomment this when MysqlDriver is implemented.
-            /*
             type: "mysql",
-            host: "localhost",
-            username: "test",
-            password: "test",
+            username: "root",
             database: "test",
-            entities: [Post, Category]
-            */
-            type: "sqlite",
-            database: ":memory:",
             entities: [Post, Category]
         });
         const connectionMetadataBuilder = new ConnectionMetadataBuilder(connection);

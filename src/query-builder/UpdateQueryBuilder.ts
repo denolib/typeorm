@@ -11,6 +11,8 @@ import {ReturningResultsEntityUpdator} from "./ReturningResultsEntityUpdator.ts"
 import {BroadcasterResult} from "../subscriber/BroadcasterResult.ts";
 import {AbstractSqliteDriver} from "../driver/sqlite-abstract/AbstractSqliteDriver.ts";
 import {PostgresDriver} from "../driver/postgres/PostgresDriver.ts";
+import {MysqlDriver} from "../driver/mysql/MysqlDriver.ts";
+import {AuroraDataApiDriver} from "../driver/aurora-data-api/AuroraDataApiDriver.ts";
 import {OrderByCondition} from "../find-options/OrderByCondition.ts";
 import {LimitOnUpdateNotSupportedError} from "../error/LimitOnUpdateNotSupportedError.ts";
 import {UpdateValuesMissingError} from "../error/UpdateValuesMissingError.ts";
@@ -368,8 +370,8 @@ export class UpdateQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
         // prepare columns and values to be updated
         const updateColumnAndValues: string[] = [];
         const newParameters: ObjectLiteral = {};
-        let parametersCount =   /*this.connection.driver instanceof MysqlDriver || */ // TODO(uki00a) uncomment this when MysqlDriver is implemented.
-                                /*this.connection.driver instanceof AuroraDataApiDriver || */ // TODO(uki00a) uncomment this when AuroraDataApiDriver is implemented.
+        let parametersCount =   this.connection.driver instanceof MysqlDriver ||
+                                this.connection.driver instanceof AuroraDataApiDriver ||
                                 /*this.connection.driver instanceof OracleDriver ||*/ // TODO(uki00a) uncomment this when OracleDriver is implemented.
                                 this.connection.driver instanceof AbstractSqliteDriver /*||
                                 this.connection.driver instanceof SapDriver*/ // TODO(uk00a) uncomment this when SapDriver is implemented.
@@ -412,8 +414,8 @@ export class UpdateQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
                         //     value = new ArrayParameter(value);
                         }
 
-                        if (/*this.connection.driver instanceof MysqlDriver ||*/ // TODO(uki00a) uncomment this when MysqlDriver is implemented.
-                            /*this.connection.driver instanceof AuroraDataApiDriver ||*/ // TODO(uki00a) uncomment this when AuroraDataApiDriver is implemented.
+                        if (this.connection.driver instanceof MysqlDriver ||
+                            this.connection.driver instanceof AuroraDataApiDriver ||
                             /*this.connection.driver instanceof OracleDriver || */ // TODO(uki00a) uncomment this when OracleDriver is implemented.
                             this.connection.driver instanceof AbstractSqliteDriver/*||
                             this.connection.driver instanceof SapDriver*/) { // TODO(uki00a) uncomment this when SapDriver is implemented.
@@ -423,8 +425,7 @@ export class UpdateQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
                         }
 
                         let expression = null;
-                        if (false/*(this.connection.driver instanceof MysqlDriver || this.connection.driver instanceof AuroraDataApiDriver) && this.connection.driver.spatialTypes.indexOf(column.type) !== -1*/) { // TODO(uki00a) uncomment this when MysqlDriver is implemented.
-                            /* // TODO(uki00a) uncomment this when MysqlDriver is implemented.
+                        if ((this.connection.driver instanceof MysqlDriver || this.connection.driver instanceof AuroraDataApiDriver) && this.connection.driver.spatialTypes.indexOf(column.type) !== -1) {
                             const useLegacy = this.connection.driver.options.legacySpatialSupport;
                             const geomFromText = useLegacy ? "GeomFromText" : "ST_GeomFromText";
                             if (column.srid != null) {
@@ -432,7 +433,6 @@ export class UpdateQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
                             } else {
                                 expression = `${geomFromText}(${this.connection.driver.createParameter(paramName, parametersCount)})`;
                             }
-                            */
                         } else if (this.connection.driver instanceof PostgresDriver && this.connection.driver.spatialTypes.indexOf(column.type) !== -1) {
                             if (column.srid != null) {
                               expression = `ST_SetSRID(ST_GeomFromGeoJSON(${this.connection.driver.createParameter(paramName, parametersCount)}), ${column.srid})::${column.type}`;
@@ -468,8 +468,8 @@ export class UpdateQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
                     // if (value instanceof Array)
                     //     value = new ArrayParameter(value);
 
-                    if (/*this.connection.driver instanceof MysqlDriver ||*/ // TODO(uki00a) uncomment this when MysqlDriver is implemented.
-                        /*this.connection.driver instanceof AuroraDataApiDriver ||*/ // TODO(uki00a) uncomment this when AuroraDataApiDriver is implemented.
+                    if (this.connection.driver instanceof MysqlDriver ||
+                        this.connection.driver instanceof AuroraDataApiDriver ||
                         /*this.connection.driver instanceof OracleDriver ||*/ // TODO(uki00a) uncomment this when OracleDriver is implemented.
                         this.connection.driver instanceof AbstractSqliteDriver/* ||
                         this.connection.driver instanceof SapDriver*/) { // TODO(uki00a) uncomment this when SapDriver is implemented.
@@ -490,8 +490,8 @@ export class UpdateQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
 
         // we re-write parameters this way because we want our "UPDATE ... SET" parameters to be first in the list of "nativeParameters"
         // because some drivers like mysql depend on order of parameters
-        if (/*this.connection.driver instanceof MysqlDriver ||*/ // TODO(uki00a) uncomment this when MysqlDriver is implemented.
-            /*this.connection.driver instanceof AuroraDataApiDriver ||*/ // TODO(uki00a) uncomment this AuroraDataApiDriver is implemented.
+        if (this.connection.driver instanceof MysqlDriver ||
+            this.connection.driver instanceof AuroraDataApiDriver ||
             /*this.connection.driver instanceof OracleDriver ||*/ // TODO(uki00a) uncomment this when OracleDriver is implemented.
             this.connection.driver instanceof AbstractSqliteDriver/* ||
             this.connection.driver instanceof SapDriver*/) { // TODO(uki00a) uncomment this when SapDriver is implemented.
@@ -545,7 +545,7 @@ export class UpdateQueryBuilder<Entity> extends QueryBuilder<Entity> implements 
         let limit: number|undefined = this.expressionMap.limit;
 
         if (limit) {
-            if (false/*this.connection.driver instanceof MysqlDriver || this.connection.driver instanceof AuroraDataApiDriver*/) { // TODO(uki00a) uncomment this when MysqlDriver is implemented.
+            if (this.connection.driver instanceof MysqlDriver || this.connection.driver instanceof AuroraDataApiDriver) {
                 return " LIMIT " + limit;
             } else {
                 throw new LimitOnUpdateNotSupportedError();

@@ -21,6 +21,8 @@ import {ConnectionOptions} from "./ConnectionOptions.ts";
 import {QueryRunnerProviderAlreadyReleasedError} from "../error/QueryRunnerProviderAlreadyReleasedError.ts";
 import {EntityManagerFactory} from "../entity-manager/EntityManagerFactory.ts";
 import {DriverFactory} from "../driver/DriverFactory.ts";
+import {MysqlDriver} from "../driver/mysql/MysqlDriver.ts";
+import {AuroraDataApiDriver} from "../driver/aurora-data-api/AuroraDataApiDriver.ts";
 import {ConnectionMetadataBuilder} from "./ConnectionMetadataBuilder.ts";
 import {QueryRunner} from "../query-runner/QueryRunner.ts";
 import {SelectQueryBuilder} from "../query-builder/SelectQueryBuilder.ts";
@@ -257,9 +259,9 @@ export class Connection {
         const queryRunner = this.createQueryRunner("master");
         try {
             if (
-                false/*this.driver instanceof SqlServerDriver ||*/ // TODO(uki00a) uncomment this when SqlServerDriver is implemented.
-                /* this.driver instanceof MysqlDriver ||*/ // TODO(uki00a) uncomment this when MysqlDriver is implemented.
-                /*this.driver instanceof AuroraDataApiDriver*/) { // TODO(uki00a) uncomment this when AuroraDataApiDriver is implemented.
+                /*this.driver instanceof SqlServerDriver ||*/ // TODO(uki00a) uncomment this when SqlServerDriver is implemented.
+                this.driver instanceof MysqlDriver ||
+                this.driver instanceof AuroraDataApiDriver) {
                 const databases: string[] = this.driver.database ? [this.driver.database!] : [] as string[];
                 this.entityMetadatas.forEach(metadata => {
                     if (metadata.database && databases.indexOf(metadata.database) === -1)
