@@ -1,4 +1,4 @@
-import {deferred, Deferred} from "../../vendor/https/deno.land/std/util/async.ts";
+import {deferred, Deferred} from "../../vendor/https/deno.land/std/async/deferred.ts";
 
 export class PromiseQueue<T> {
     private queue = [] as Array<{ fn: () => Promise<T>, promise: Deferred<T> }>;
