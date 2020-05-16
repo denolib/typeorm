@@ -1,6 +1,6 @@
 import { Driver } from "./Driver.ts";
 import { hash } from "../util/StringUtils.ts";
-import type { AutoSavable, AutoSavableDriver } from "./types/AutoSavable.ts";
+import type { AutoSavableDriver } from "./types/AutoSavable.ts";
 
     /**
  * Common driver utility functions.
