@@ -2,4 +2,6 @@
 
 // * `window.location` was removed in Deno@v1.0.0-rc1.
 // * Mocha depends on `window.location`.
-(window as any).location = {};
+if ((window as any).location == null) {
+  (window as any).location = {};
+}
