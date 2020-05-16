@@ -1,4 +1,4 @@
-{
+export default {
   "name": "Profile",
   "table": {
     "name": "profile"

@@ -11,7 +11,7 @@ import {Blog} from "./entity/Blog.ts";
 import {Category} from "./entity/Category.ts";
 import {DeepPartial} from "../../../../src/common/DeepPartial.ts";
 import {EntitySchema} from "../../../../src/index.ts";
-import userSchema from "./schema/user.json";
+import userSchema from "./schema/user.js";
 
 describe("repository > basic methods", () => {
 

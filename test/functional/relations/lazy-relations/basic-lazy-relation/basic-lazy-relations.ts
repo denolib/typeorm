@@ -9,8 +9,8 @@ import {
     Category,
 } from "./entity/Category.ts";
 import {EntitySchema} from "../../../../../src/index.ts";
-import UserSchemaJSON from "./schema/user.json";
-import ProfileSchemaJSON from "./schema/profile.json";
+import UserSchemaJSON from "./schema/user.js";
+import ProfileSchemaJSON from "./schema/profile.js";
 
 /**
  * Because lazy relations are overriding prototype is impossible to run these tests on multiple connections.
