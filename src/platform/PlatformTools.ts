@@ -87,6 +87,10 @@ export class PlatformTools {
         return fs.existsSync(pathStr);
     }
 
+    static readFile(filename: string): Promise<Uint8Array> {
+        return Deno.readFile(filename);
+    }
+
     static readFileSync(filename: string): Buffer {
         throw new NotImplementedError('PlatformTools.readFileSync');
     }

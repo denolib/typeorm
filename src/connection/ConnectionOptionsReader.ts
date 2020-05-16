@@ -116,7 +116,7 @@ export class ConnectionOptionsReader {
             connectionOptions = await mod.default;
 
         } else if (foundFileFormat === "json") {
-            connectionOptions = await import(configFile);
+            connectionOptions = await this.loadJson(configFile);
 
         } else if (foundFileFormat === "yml") {
             connectionOptions = new ConnectionOptionsYmlReader().read(configFile);
@@ -134,6 +134,12 @@ export class ConnectionOptionsReader {
         }
 
         return undefined;
+    }
+
+    protected async loadJson(path: string): Promise<ConnectionOptions> {
+        const content = await PlatformTools.readFile(path);
+        const decoder = new TextDecoder();
+        return JSON.parse(decoder.decode(content));
     }
 
     /**
