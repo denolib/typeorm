@@ -915,7 +915,7 @@ export class PostgresDriver implements Driver {
 
         // build connection options for the driver
         const connectionOptions = Object.assign({}, {
-            host: credentials.host,
+            hostname: credentials.host,
             user: credentials.username,
             password: credentials.password,
             database: credentials.database,
