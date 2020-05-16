@@ -1,1 +1,1 @@
-export * from 'https://deno.land/x/mysql@1.9.1/mod.ts';
+export * from 'https://deno.land/x/mysql@2.1.0/mod.ts';

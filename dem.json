@@ -3,19 +3,19 @@
     {
       "protocol": "https",
       "path": "deno.land/std",
-      "version": "v0.42.0",
+      "version": "v0.51.0",
       "files": [
+        "/async/deferred.ts",
         "/fmt/colors.ts",
         "/fs/mod.ts",
         "/node/process.ts",
-        "/path/mod.ts",
-        "/util/async.ts"
+        "/path/mod.ts"
       ]
     },
     {
       "protocol": "https",
       "path": "deno.land/x/mysql",
-      "version": "1.9.1",
+      "version": "2.1.0",
       "files": [
         "/mod.ts"
       ]
@@ -23,7 +23,7 @@
     {
       "protocol": "https",
       "path": "deno.land/x/postgres",
-      "version": "v0.3.11",
+      "version": "v0.4.0",
       "files": [
         "/mod.ts"
       ]
@@ -39,7 +39,7 @@
     {
       "protocol": "https",
       "path": "deno.land/x/sqlite",
-      "version": "73935087a1ebe9108d784503bc5474662ba54b73",
+      "version": "v1.0.0",
       "files": [
         "/mod.ts"
       ]
@@ -47,7 +47,7 @@
     {
       "protocol": "https",
       "path": "unpkg.com/cac",
-      "version": "v6.5.8",
+      "version": "v6.5.9",
       "files": [
         "/mod.js"
       ]

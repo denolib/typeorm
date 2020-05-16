@@ -19,7 +19,7 @@ import {ApplyValueTransformers} from "../../util/ApplyValueTransformers.ts";
 import {NotImplementedError} from "../../error/NotImplementedError.ts";
 import type * as DenoMysql from "../../../vendor/https/deno.land/x/mysql/mod.ts";
 import type {ReleaseConnection, RawExecuteResult} from "./typings.ts";
-import {deferred} from "../../../vendor/https/deno.land/std/util/async.ts";
+import {deferred} from "../../../vendor/https/deno.land/std/async/deferred.ts";
 
 /**
  * Organizes communication with MySQL DBMS.
