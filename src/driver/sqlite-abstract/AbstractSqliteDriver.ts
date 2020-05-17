@@ -203,6 +203,7 @@ export abstract class AbstractSqliteDriver implements Driver {
      * Performs connection to the database.
      */
     async connect(): Promise<void> {
+        await this.loadDependencies();
         this.databaseConnection = await this.createDatabaseConnection();
     }
 

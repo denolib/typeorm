@@ -1,4 +1,4 @@
-import * as DenoPostgres from "../../../vendor/https/deno.land/x/postgres/mod.ts";
+import type * as DenoPostgres from "../../../vendor/https/deno.land/x/postgres/mod.ts";
 
 type ResolvedType<T> = T extends Promise<infer U> ? U : never;
 export type PoolClient = ResolvedType<ReturnType<DenoPostgres.Pool['connect']>>;
