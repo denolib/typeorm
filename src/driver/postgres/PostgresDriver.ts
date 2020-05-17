@@ -1,4 +1,4 @@
-import * as DenoPostgres from "../../../vendor/https/deno.land/x/postgres/mod.ts";
+import type * as DenoPostgres from "../../../vendor/https/deno.land/x/postgres/mod.ts";
 import {Driver} from "../Driver.ts";
 import {ConnectionIsNotSetError} from "../../error/ConnectionIsNotSetError.ts";
 import {ObjectLiteral} from "../../common/ObjectLiteral.ts";
@@ -40,7 +40,7 @@ export class PostgresDriver implements Driver {
     /**
      * Postgres underlying library.
      */
-    private postgres: typeof DenoPostgres;
+    private postgres!: typeof DenoPostgres;
 
     /**
      * Pool for master database.
@@ -254,7 +254,6 @@ export class PostgresDriver implements Driver {
         this.options = connection.options as any;
         this.isReplicated = this.options.replication ? true : false;
 
-        this.postgres = DenoPostgres;
         // load postgres package
         // this.loadDependencies();
 
@@ -279,6 +278,7 @@ export class PostgresDriver implements Driver {
      * either create a pool and create connection when needed.
      */
     async connect(): Promise<void> {
+        await this.loadDependencies();
 
         if (this.options.replication) {
             this.slaves = await Promise.all(this.options.replication.slaves.map(slave => {
@@ -892,7 +892,8 @@ export class PostgresDriver implements Driver {
     /**
      * If driver dependency is not given explicitly, then try to load it via "require".
      */
-    protected loadDependencies(): void {
+    protected async loadDependencies(): Promise<void> {
+        this.postgres = await import("../../../vendor/https/deno.land/x/postgres/mod.ts");
         // try {
         //     this.postgres = PlatformTools.load("pg");
         //     try {

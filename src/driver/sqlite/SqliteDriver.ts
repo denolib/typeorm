@@ -1,4 +1,4 @@
-import {open, save, DB} from "../../../vendor/https/deno.land/x/sqlite/mod.ts";
+import type * as DenoSqlite from "../../../vendor/https/deno.land/x/sqlite/mod.ts";
 import {ensureDir} from "../../../vendor/https/deno.land/std/fs/mod.ts";
 import {dirname} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {SqliteQueryRunner} from "./SqliteQueryRunner.ts";
@@ -28,7 +28,9 @@ export class SqliteDriver extends AbstractSqliteDriver implements AutoSavableDri
      */
     options: SqliteConnectionOptions;
 
-    databaseConnection!: DB;
+    databaseConnection!: DenoSqlite.DB;
+
+    sqlite!: typeof DenoSqlite;
 
     /**
      * This method is simply copied from `SqljsDriver#load`
@@ -110,7 +112,7 @@ export class SqliteDriver extends AbstractSqliteDriver implements AutoSavableDri
             return;
         }
 
-        save(this.databaseConnection);
+        this.sqlite.save(this.databaseConnection);
     }
 
     /**
@@ -202,7 +204,7 @@ export class SqliteDriver extends AbstractSqliteDriver implements AutoSavableDri
             await this.createDatabaseDirectory(database);
         }
 
-        const databaseConnection = await open(database, true);
+        const databaseConnection = await this.sqlite.open(database, true);
 
         // we need to enable foreign keys in sqlite to make sure all foreign key related features
         // working properly. this also makes onDelete to work with sqlite.
@@ -219,8 +221,8 @@ export class SqliteDriver extends AbstractSqliteDriver implements AutoSavableDri
     /**
      * If driver dependency is not given explicitly, then try to load it via "require".
      */
-    protected loadDependencies(): void {
-        // TODO(uki00a) Remove this method.
+    protected async loadDependencies(): Promise<void> {
+        this.sqlite = await import("../../../vendor/https/deno.land/x/sqlite/mod.ts");
     }
 
     /**
