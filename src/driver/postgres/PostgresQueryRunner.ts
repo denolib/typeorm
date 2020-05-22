@@ -208,17 +208,6 @@ export class PostgresQueryRunner extends BaseQueryRunner implements QueryRunner 
             this.driver.connection.logger.logQueryError(error, query, parameters, this);
             return Promise.reject(new QueryFailedError(query, parameters, error));
         } else {
-            // TODO(uki00a) We want to preserve the same behavior as node-postgres.
-            // switch (result.command) {
-            //     case "DELETE":
-            //     case "UPDATE":
-            //         // for UPDATE and DELETE query additionally return number of affected rows
-            //         ok([result.rows, result.rowCount]);
-            //         break;
-            //     default:
-            //         ok(result.rows);
-            // }
-
             // TODO(uki00a) Use `QueryResult#rowsOfObjects`.
             // return result.rowsOfObjects();
             const rawObjects = [];
@@ -230,7 +219,15 @@ export class PostgresQueryRunner extends BaseQueryRunner implements QueryRunner 
                 }
                 rawObjects.push(rawObject);
             }
-            return rawObjects;
+
+            switch (result!.command) {
+                case "DELETE":
+                case "UPDATE":
+                    // for UPDATE and DELETE query additionally return number of affected rows
+                    return [rawObjects, result!.rowCount];
+                default:
+                    return rawObjects;
+            }
         }
     }
 
