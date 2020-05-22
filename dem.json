@@ -23,7 +23,7 @@
     {
       "protocol": "https",
       "path": "deno.land/x/postgres",
-      "version": "v0.4.0",
+      "version": "v0.4.1",
       "files": [
         "/mod.ts"
       ]
@@ -52,5 +52,6 @@
         "/mod.js"
       ]
     }
-  ]
+  ],
+  "aliases": {}
 }
