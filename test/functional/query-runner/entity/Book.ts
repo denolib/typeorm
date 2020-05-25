@@ -9,7 +9,7 @@ export class Book {
 
 }
 
-@Entity({ withoutRowid!: true })
+@Entity({ withoutRowid: true })
 export class Book2 {
 
     @PrimaryColumn({ type: String })

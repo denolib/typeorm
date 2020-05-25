@@ -18,12 +18,12 @@ export class EventRole {
     compensation!: string;
 
     @ManyToOne(type => Role, role => role.roles, {
-        onDelete!: "CASCADE"
+        onDelete: "CASCADE"
     })
     role!: Role;
 
     @ManyToOne(type => Event, event => event.roles, {
-        onDelete!: "CASCADE"
+        onDelete: "CASCADE"
     })
     event!: Event;
 }

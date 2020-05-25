@@ -4,17 +4,17 @@ import {TournamentGraph} from "./TournamentGraph.ts";
 
 @Entity()
 @TableInheritance({
-    pattern!: "STI",
+    pattern: "STI",
     column: {
-        name!: "type",
-        type!: "varchar",
+        name: "type",
+        type: "varchar",
     },
 })
 export abstract class Tournament {
     @PrimaryGeneratedColumn()
     public id!: number;
 
-    @Column({ type!: String })
+    @Column({ type: String })
     public name!: string;
 
     @OneToOne(type => TournamentGraph, graph => graph.tournament)

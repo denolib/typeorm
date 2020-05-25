@@ -16,7 +16,7 @@ export class AccessToken {
     expireTime!: number;
 
     @OneToOne(type => User, user => user.access_token, {
-        cascade!: true
+        cascade: true
     })
     user!: User;
 

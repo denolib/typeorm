@@ -8,6 +8,6 @@ export class Foo {
 
   @Column({ type: String, default: "foo description" }) description!: string;
 
-  @OneToMany(() => Bar, bar => bar.foo, { cascade: true, eager!: true })
+  @OneToMany(() => Bar, bar => bar.foo, { cascade: true, eager: true })
   bars?: Bar[];
 }

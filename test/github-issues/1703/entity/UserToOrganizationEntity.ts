@@ -9,8 +9,8 @@ export class UserToOrganizationEntity {
     id!: number;
 
     @Column({
-        type!: "enum",
-        enum!: [
+        type: "enum",
+        enum: [
             "owner",
             "editor",
             "viewer"

@@ -4,7 +4,7 @@ import {Month} from "./month.ts";
 @Entity()
 export class Year {
 
-    @PrimaryColumn({ type!: Number })
+    @PrimaryColumn({ type: Number })
     public yearNo!: number;
 
     @OneToMany(type => Month, month => month.yearNo)

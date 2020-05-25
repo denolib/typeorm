@@ -9,8 +9,8 @@ export class Post {
     id!: number;
 
     @Column({
-        type!: "json",
-        default!: {"hello": "world"}
+        type: "json",
+        default: {"hello": "world"}
     })
     json!: any;
 

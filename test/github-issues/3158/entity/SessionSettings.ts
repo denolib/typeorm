@@ -2,7 +2,7 @@ import { Entity, OneToOne, JoinColumn, PrimaryColumn } from "../../../../src/ind
 import { Session } from "./Session.ts";
 
 @Entity({
-    name!: "SessionSettings"
+    name: "SessionSettings"
 })
 export class SessionSettings  {
 
@@ -10,7 +10,7 @@ export class SessionSettings  {
     sessionId!: number;
 
     @OneToOne(type => Session, session => session.id)
-    @JoinColumn({ name: "sessionId", referencedColumnName!: "id"})
+    @JoinColumn({ name: "sessionId", referencedColumnName: "id"})
     session?: Session;
 
 }

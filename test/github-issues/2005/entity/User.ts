@@ -7,7 +7,7 @@ export class User {
     id!: number;
 
     @Column({
-        type!: "tinyint",
+        type: "tinyint",
         transformer: {
             from: val => !!val,
             to: val => val,

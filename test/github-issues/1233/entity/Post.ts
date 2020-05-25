@@ -1,8 +1,8 @@
 import {Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn} from "../../../../src/index.ts";
 
 @Entity({
-    orderBy!: {
-        updatedDate!: "DESC",
+    orderBy: {
+        updatedDate: "DESC",
     }
 })
 export class Post {

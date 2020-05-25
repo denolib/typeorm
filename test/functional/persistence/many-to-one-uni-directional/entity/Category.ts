@@ -14,8 +14,8 @@ export class Category {
     name!: string;
 
     @ManyToOne(type => Post, {
-        cascade!: true,
-        onDelete!: "SET NULL"
+        cascade: true,
+        onDelete: "SET NULL"
     })
     post?: Post|null|number;
 

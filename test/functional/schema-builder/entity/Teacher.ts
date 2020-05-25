@@ -6,7 +6,7 @@ import {OneToMany} from "../../../../src/decorator/relations/OneToMany.ts";
 import {Index} from "../../../../src/decorator/Index.ts";
 
 @Entity()
-@Index("ignored_index", { synchronize!: false })
+@Index("ignored_index", { synchronize: false })
 export class Teacher {
 
     @PrimaryGeneratedColumn()

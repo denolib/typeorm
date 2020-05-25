@@ -20,13 +20,13 @@ export class Photo {
     details!: Details;
 
     @OneToOne(type => Post, post => post.photo, {
-        nullable!: false
+        nullable: false
     })
     @JoinColumn()
     post!: Post;
 
     @OneToOne(type => Category, {
-        nullable!: false
+        nullable: false
     })
     @JoinColumn()
     category!: Category;

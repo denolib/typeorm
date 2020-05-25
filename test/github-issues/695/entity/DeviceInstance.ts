@@ -11,7 +11,7 @@ export class DeviceInstance {
     @PrimaryColumn({ name: "id", type: "char", length: "36" })
     id!: string;
 
-    @ManyToOne(type => Device, { nullable!: false })
+    @ManyToOne(type => Device, { nullable: false })
     @JoinColumn({ name: "device_id", referencedColumnName: "id" })
     device!: Device;
 

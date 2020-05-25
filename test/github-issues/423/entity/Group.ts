@@ -3,7 +3,7 @@ import {PrimaryColumn} from "../../../../src/decorator/columns/PrimaryColumn.ts"
 import {Column} from "../../../../src/decorator/columns/Column.ts";
 import {Index} from "../../../../src/decorator/Index.ts";
 
-@Index("Groups name", ["name"], { unique!: true })
+@Index("Groups name", ["name"], { unique: true })
 @Entity("groups")
 export class Group {
 

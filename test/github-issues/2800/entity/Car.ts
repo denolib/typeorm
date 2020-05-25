@@ -3,10 +3,10 @@ import {ChildEntity, Column} from "../../../../src/index.ts";
 
 export class CarEngine extends Engine {
 
-    @Column({ type!: Number })
+    @Column({ type: Number })
     public horsePower!: number;
 
-    @Column({ type!: Number })
+    @Column({ type: Number })
     public torque!: number;
 
 }
@@ -14,7 +14,7 @@ export class CarEngine extends Engine {
 @ChildEntity()
 export class Car extends Vehicle {
 
-    @Column(type => CarEngine, { prefix!: "carEngine" })
+    @Column(type => CarEngine, { prefix: "carEngine" })
     public engine!: CarEngine;
 
 }

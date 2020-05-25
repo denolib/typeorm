@@ -10,28 +10,28 @@ export class Post {
     id!: number;
 
     @Column("geometry", {
-      nullable!: true
+      nullable: true
     })
     @Index({
-      spatial!: true
+      spatial: true
     })
     geom!: object;
 
     @Column("geometry", {
-      nullable!: true,
-      spatialFeatureType!: "Point"
+      nullable: true,
+      spatialFeatureType: "Point"
     })
     pointWithoutSRID!: object;
 
     @Column("geometry", {
-      nullable!: true,
+      nullable: true,
       spatialFeatureType: "Point",
-      srid!: 4326
+      srid: 4326
     })
     point!: object;
 
     @Column("geography", {
-      nullable!: true
+      nullable: true
     })
     geog!: object;
 }

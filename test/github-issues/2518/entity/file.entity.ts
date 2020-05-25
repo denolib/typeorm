@@ -7,13 +7,13 @@ export class File {
     @PrimaryGeneratedColumn() id!: number;
 
     @Column("text", {
-        nullable!: false,
-        name!: "name"
+        nullable: false,
+        name: "name"
     })
     name!: string;
 
     @Column("integer", {
-        nullable!: true
+        nullable: true
     })
     parentId!: number;
 

@@ -14,7 +14,7 @@ export class Office {
     name!: string;
 
     @ManyToOne(type => Company, company => company.id, {
-        deferrable!: "INITIALLY IMMEDIATE",
+        deferrable: "INITIALLY IMMEDIATE",
     })
     company!: Company;
 }

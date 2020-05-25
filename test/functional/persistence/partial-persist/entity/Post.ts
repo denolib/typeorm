@@ -22,7 +22,7 @@ export class Post {
     counters!: Counters;
 
     @ManyToMany(type => Category, category => category.posts, {
-        cascade!: ["update"],
+        cascade: ["update"],
     })
     @JoinTable()
     categories!: Category[];

@@ -9,14 +9,14 @@ import {
 } from "./Post.ts";
 
 @Entity("s_category_named_all", {
-    orderBy!: {
-        id!: "ASC",
+    orderBy: {
+        id: "ASC",
     }
 })
 export class Category {
 
     @PrimaryGeneratedColumn({
-        name!: "s_category_id",
+        name: "s_category_id",
     })
     id!: number;
 

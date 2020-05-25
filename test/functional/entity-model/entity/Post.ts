@@ -15,8 +15,8 @@ export class Post extends BaseEntity {
     title!: string;
 
     @Column({
-        type!: String,
-        default!: "This is default text."
+        type: String,
+        default: "This is default text."
     })
     text!: string;
 

@@ -17,7 +17,7 @@ export class User {
     @Column({ type: String })
     lastName!: string;
 
-    @OneToOne(type => Profile, profile => profile.user, { eager!: true })
+    @OneToOne(type => Profile, profile => profile.user, { eager: true })
     @JoinColumn()
     profile!: Profile;
 

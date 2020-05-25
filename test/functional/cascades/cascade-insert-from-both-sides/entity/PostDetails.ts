@@ -10,7 +10,7 @@ export class PostDetails {
     keyword!: string;
 
     @OneToOne(type => Post, post => post.details, {
-        cascade!: ["insert"]
+        cascade: ["insert"]
     })
     post!: Post;
 

@@ -18,7 +18,7 @@ export class Post {
     @Column({ type: String })
     title!: string;
 
-    @ManyToMany(type => Category, { eager!: true })
+    @ManyToMany(type => Category, { eager: true })
     @JoinTable()
     categories1!: Category[];
 

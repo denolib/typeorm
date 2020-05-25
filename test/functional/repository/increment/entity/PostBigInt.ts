@@ -12,7 +12,7 @@ export class PostBigInt {
     title!: string;
 
     @Column("bigint", {
-        unsigned!: true
+        unsigned: true
     })
     counter!: string;
 

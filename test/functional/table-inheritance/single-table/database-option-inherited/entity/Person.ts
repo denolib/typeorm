@@ -1,7 +1,7 @@
 import {Column, Entity, PrimaryGeneratedColumn, TableInheritance} from "../../../../../../src/index.ts";
 
 @Entity({database: "test"})
-@TableInheritance({column: {name: "type", type!: "varchar"}})
+@TableInheritance({column: {name: "type", type: "varchar"}})
 export class Person {
 
     @PrimaryGeneratedColumn()

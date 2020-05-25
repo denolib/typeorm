@@ -6,7 +6,7 @@ import {Index} from "../../../../src/decorator/Index.ts";
 
 @Entity()
 @Unique(["name"])
-@Index(["text"], { unique!: true })
+@Index(["text"], { unique: true })
 export class Photo {
 
     @PrimaryColumn({ type: Number })
@@ -15,7 +15,7 @@ export class Photo {
     @Column({ type: String })
     name!: string;
 
-    @Column({ type!: String })
+    @Column({ type: String })
     @Index({ unique: true })
     tag!: string;
 

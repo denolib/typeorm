@@ -5,7 +5,7 @@ import { Column, Entity, PrimaryColumn } from "../../../../src/index.ts";
 export class User {
 
     @PrimaryColumn("binary", {
-        length!: 16
+        length: 16
     })
     public _id!: Uint8Array;
     get id(): string {

@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from "../../../../sr
 import { SessionSettings } from "./SessionSettings.ts";
 
 @Entity({
-    name!: "Sessions"
+    name: "Sessions"
 })
 export class Session {
 
@@ -13,8 +13,8 @@ export class Session {
     title!: string;
 
     @Column({
-        type!: String,
-        nullable!: true
+        type: String,
+        nullable: true
     })
     description?: string;
 

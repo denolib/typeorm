@@ -1,10 +1,10 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "../../../../src/index.ts";
 
 export class EmbeddedInThing {
-  @Column({ type!: Number })
+  @Column({ type: Number })
   public someSeriouslyLongFieldNameFirst!: number;
 
-  @Column({ type!: Number })
+  @Column({ type: Number })
   public someSeriouslyLongFieldNameSecond!: number;
 }
 

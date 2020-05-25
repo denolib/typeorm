@@ -10,14 +10,14 @@ export class Post {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column({ type!: String })
+    @Column({ type: String })
     @Index()
     title!: string;
 
     @Column({ type: String })
     text!: string;
 
-    @Column(type => PostInformation, { prefix!: "info" })
+    @Column(type => PostInformation, { prefix: "info" })
     information?: PostInformation;
 
 }

@@ -10,7 +10,7 @@ export enum PersonType {
 }
 
 @Entity("issue184_person")
-@TableInheritance({ column: { name: "type", type!: "int"} })
+@TableInheritance({ column: { name: "type", type: "int"} })
 export abstract class Person  {
 
     @PrimaryColumn({ type: String })

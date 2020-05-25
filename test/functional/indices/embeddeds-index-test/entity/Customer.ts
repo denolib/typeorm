@@ -5,7 +5,7 @@ import {Column} from "../../../../../src/decorator/columns/Column.ts";
 import {Profile} from "./Profile.ts";
 
 @Entity()
-@Index("index_name_english", ["nameEnglish"], { unique!: true })
+@Index("index_name_english", ["nameEnglish"], { unique: true })
 @Index("index_profile_job", ["profile.job"])
 export class Customer {
 

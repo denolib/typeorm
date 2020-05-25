@@ -10,7 +10,7 @@ export class Post {
     title!: string;
 
     @Column({
-        type!: "json"
+        type: "json"
     })
     meta!: any;
 

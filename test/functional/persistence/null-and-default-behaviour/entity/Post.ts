@@ -8,7 +8,7 @@ export class Post {
     @PrimaryColumn({ type: Number })
     id!: number;
 
-    @Column({ type: String, default: "hello default value", nullable!: true })
+    @Column({ type: String, default: "hello default value", nullable: true })
     title?: string|null;
 
 }

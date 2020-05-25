@@ -10,18 +10,18 @@ export class TileEntity {
     id!: string;
 
     @ManyToMany(type => TileEntity, tile => tile.children, {
-        cascade!: ["insert"]
+        cascade: ["insert"]
     })
     @JoinTable()
     parents!: TileEntity[];
 
     @ManyToMany(type => TileEntity, tile => tile.parents, {
-        cascade!: ["insert"]
+        cascade: ["insert"]
     })
     children!: TileEntity[];
 
     @ManyToMany(type => ActivityEntity, activity => activity.tiles, {
-        cascade!: ["insert"]
+        cascade: ["insert"]
     })
     @JoinTable()
     activities!: ActivityEntity[];

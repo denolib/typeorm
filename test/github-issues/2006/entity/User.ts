@@ -10,9 +10,9 @@ export class User {
     token: string | null = null;
 
     @Column({
-        type!: "tinyint",
+        type: "tinyint",
         default: 0,
-        width!: 1
+        width: 1
     })
     dnd: boolean = false;
 

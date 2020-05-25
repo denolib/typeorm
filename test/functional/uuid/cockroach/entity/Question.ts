@@ -9,7 +9,7 @@ export class Question {
     @PrimaryGeneratedColumn("uuid")
     id!: string;
 
-    @Column({ type!: String })
+    @Column({ type: String })
     @Generated("uuid")
     uuid!: string;
 
@@ -19,7 +19,7 @@ export class Question {
     @Column("uuid", { nullable: true })
     uuid3!: string|null;
 
-    @Column({ nullable: true, type!: String })
+    @Column({ nullable: true, type: String })
     @Generated("uuid")
     uuid4!: string|null;
 

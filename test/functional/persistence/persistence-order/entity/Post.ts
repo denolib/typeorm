@@ -17,13 +17,13 @@ export class Post {
     title!: string;
 
     @OneToOne(type => Category, category => category.post, {
-        nullable!: true
+        nullable: true
     })
     @JoinColumn()
     category!: Category;
 
     @OneToOne(type => Details, details => details.post, {
-        nullable!: false
+        nullable: false
     })
     @JoinColumn()
     details!: Details;

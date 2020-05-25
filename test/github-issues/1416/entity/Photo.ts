@@ -8,8 +8,8 @@ export class Photo {
     id!: number;
 
     @Column({
-        type!: String,
-        length!: 500,
+        type: String,
+        length: 500,
     })
     name!: string;
 

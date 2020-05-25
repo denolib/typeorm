@@ -9,8 +9,8 @@ import {
 } from "./Post.ts";
 
 @Entity("s_category", {
-    orderBy!: {
-        id!: "ASC",
+    orderBy: {
+        id: "ASC",
     }
 })
 export class Category {

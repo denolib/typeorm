@@ -8,12 +8,12 @@ import {Image} from "./Image.ts";
 export class PostCategory {
 
     @ManyToOne(type => Post, post => post.categories, {
-        primary!: true
+        primary: true
     })
     post!: Post;
 
     @ManyToOne(type => Category, category => category.posts, {
-        primary!: true
+        primary: true
     })
     category!: Category;
 

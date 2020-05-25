@@ -43,10 +43,10 @@ export class User {
   @Column({ type: String })
   name!: string;
 
-  @Column({type: String, nullable!: true})
+  @Column({type: String, nullable: true})
   picture?: string;
 
-  @Column({type: String, nullable!: true})
+  @Column({type: String, nullable: true})
   phone?: string;
 
   @ManyToMany(type => Chat, chat => chat.allTimeMembers)

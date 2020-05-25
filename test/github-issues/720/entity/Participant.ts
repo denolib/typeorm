@@ -11,7 +11,7 @@ export class Participant {
     @PrimaryColumn({ type: String })
     distance!: string;
 
-    @Column({ type!: String })
+    @Column({ type: String })
     price?: string;
 
 }

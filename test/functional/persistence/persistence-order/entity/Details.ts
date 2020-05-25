@@ -19,7 +19,7 @@ export class Details {
     post!: Post;
 
     @OneToOne(type => Photo, photo => photo.details, {
-        nullable!: false
+        nullable: false
     })
     @JoinColumn()
     photo!: Photo;

@@ -14,11 +14,11 @@ export class Post {
     @Column({ type: String })
     message!: string;
 
-    @Column({ type!: Date })
+    @Column({ type: Date })
     @CreateDateColumn()
     createdAt!: Date;
 
-    @Column({ type!: Date })
+    @Column({ type: Date })
     @UpdateDateColumn()
     updatedAt!: Date;
 }

@@ -8,12 +8,12 @@ import {User} from "./User.ts";
 export class UserCredential {
 
     @OneToOne(() => User, {
-        primary!: true,
-        cascade!: true,
+        primary: true,
+        cascade: true,
     })
     @JoinColumn({
-        name!: "id",
-        referencedColumnName!: "id",
+        name: "id",
+        referencedColumnName: "id",
     })
     user!: User;
 

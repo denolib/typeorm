@@ -8,13 +8,13 @@ export class Post {
     id!: number;
 
     @Column("cube", {
-        nullable!: true
+        nullable: true
     })
     mainColor!: number[];
 
     @Column("cube", {
-        nullable!: true,
-        array!: true
+        nullable: true,
+        array: true
     })
     colors!: number[][];
 }

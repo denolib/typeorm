@@ -10,9 +10,9 @@ export class Bar extends BaseEntity {
   @PrimaryGeneratedColumn() barId!: number;
 
   @Column({
-    type!: "enum",
+    type: "enum",
     enum: getEnumValues(DocumentEnum),
-    array!: true,
+    array: true,
   })
   documents!: DocumentEnum[];
 }

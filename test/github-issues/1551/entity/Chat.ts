@@ -45,10 +45,10 @@ export class Chat {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column({type: String, nullable!: true})
+  @Column({type: String, nullable: true})
   name?: string;
 
-  @Column({type: String, nullable!: true})
+  @Column({type: String, nullable: true})
   picture?: string;
 
   @ManyToMany(() => User, user => user.allTimeMemberChats, {eager: true})

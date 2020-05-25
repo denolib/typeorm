@@ -7,9 +7,9 @@ export class Post {
 }
 
 export const PostSchema: EntitySchemaOptions<Post> = {
-    name!: "Post",
+    name: "Post",
     target: Post,
-    columns!: {
+    columns: {
         id: {
             primary: true,
             type: Number

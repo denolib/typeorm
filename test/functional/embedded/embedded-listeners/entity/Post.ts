@@ -10,7 +10,7 @@ export class Post {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column({ type!: String })
+    @Column({ type: String })
     @Index()
     title!: string;
 

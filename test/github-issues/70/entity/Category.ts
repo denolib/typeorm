@@ -14,7 +14,7 @@ export class Category {
     name!: string;
 
     @ManyToOne(() => Post, post => post.categories, {
-        onDelete!: "CASCADE"
+        onDelete: "CASCADE"
     })
     post!: Post;
 

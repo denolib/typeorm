@@ -14,9 +14,9 @@ export class Animal {
     name!: string;
 
     @Column({
-        type!: "enum",
+        type: "enum",
         enum: Gender,
-        enumName!: "genderEnum"
+        enumName: "genderEnum"
     })
     gender!: Gender;
 

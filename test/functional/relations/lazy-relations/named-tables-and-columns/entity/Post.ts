@@ -11,15 +11,15 @@ import {
 } from "./Category.ts";
 
 @Entity("s_post_named_all", {
-    orderBy!: {
+    orderBy: {
         title: "ASC",
-        id!: "DESC",
+        id: "DESC",
     }
 })
 export class Post {
 
     @PrimaryGeneratedColumn({
-        name!: "s_post_id"
+        name: "s_post_id"
     })
     id!: number;
 
@@ -29,11 +29,11 @@ export class Post {
     @Column({ type: String })
     text!: string;
 
-    @ManyToMany(type => Category, { lazy!: true })
+    @ManyToMany(type => Category, { lazy: true })
     @JoinTable()
     categories!: Promise<Category[]>;
 
-    @ManyToMany(type => Category, category => category.twoSidePosts, { lazy!: true })
+    @ManyToMany(type => Category, category => category.twoSidePosts, { lazy: true })
     @JoinTable()
     twoSideCategories!: Promise<Category[]>;
 
@@ -43,7 +43,7 @@ export class Post {
     @ManyToOne(type => Category, { lazy: true })
     category!: Promise<Category>;
 
-    @OneToOne(type => Category, category => category.onePost, { lazy!: true })
+    @OneToOne(type => Category, category => category.onePost, { lazy: true })
     @JoinColumn()
     oneCategory!: Promise<Category>;
 
@@ -51,21 +51,21 @@ export class Post {
     twoSideCategory!: Promise<Category>;
 
     // ManyToMany with named properties
-    @ManyToMany(type => Category, category => category.postsNamedAll, { lazy!: true })
+    @ManyToMany(type => Category, category => category.postsNamedAll, { lazy: true })
     @JoinTable()
     categoriesNamedAll!: Promise<Category[]>;
 
     // ManyToOne with named properties
-    @ManyToOne(type => Category, category => category.onePostsNamedAll, { lazy!: true })
+    @ManyToOne(type => Category, category => category.onePostsNamedAll, { lazy: true })
     @JoinColumn({
-        name!: "s_category_named_all_id"
+        name: "s_category_named_all_id"
     })
     categoryNamedAll!: Promise<Category>;
 
     // OneToOne with named properties
-    @OneToOne(type => Category, category => category.onePostNamedAll, { lazy!: true })
+    @OneToOne(type => Category, category => category.onePostNamedAll, { lazy: true })
     @JoinColumn({
-        name!: "s_one_category_named_all_id"
+        name: "s_one_category_named_all_id"
     })
     oneCategoryNamedAll!: Promise<Category>;
 }
