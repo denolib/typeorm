@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from "../../../../sr
 import { SessionSettings } from "./SessionSettings.ts";
 
 @Entity({
-    name!: "Sessions"
+    name: "Sessions"
 })
 export class Session {
 
