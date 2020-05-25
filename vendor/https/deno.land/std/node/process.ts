@@ -1,1 +1,1 @@
-export * from 'https://deno.land/std@v0.51.0/node/process.ts';
+export * from "https://deno.land/std@0.53.0/node/process.ts";
