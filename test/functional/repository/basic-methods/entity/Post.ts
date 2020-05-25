@@ -12,7 +12,7 @@ export class Post {
     title!: string;
 
     @Column({
-        type!: "date",
+        type: "date",
         transformer: {
             from: (value: any) => new Date(value),
             to: (value: Date) => value.toISOString(),

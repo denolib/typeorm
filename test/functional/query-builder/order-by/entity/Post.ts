@@ -3,8 +3,8 @@ import {PrimaryGeneratedColumn} from "../../../../../src/decorator/columns/Prima
 import {Column} from "../../../../../src/decorator/columns/Column.ts";
 
 @Entity({
-    orderBy!: {
-        myOrder!: "DESC"
+    orderBy: {
+        myOrder: "DESC"
     }
 })
 export class Post {

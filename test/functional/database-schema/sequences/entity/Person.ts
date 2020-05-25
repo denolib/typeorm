@@ -9,8 +9,8 @@ export class Person {
     Id!: number;
 
     @Column({
-        type!: String,
-        unique!: true
+        type: String,
+        unique: true
     })
     Name!: string;
 

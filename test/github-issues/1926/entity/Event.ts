@@ -13,7 +13,7 @@ export class Event {
     @OneToMany(type => EventRole, role => role.event, {
         // eager!: true,
         // persistence: true,
-        cascade!: true,
+        cascade: true,
     })
     roles!: EventRole[];
 }

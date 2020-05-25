@@ -10,7 +10,7 @@ export class Person {
     @Column({ type: String })
     fullName!: string;
 
-    @OneToOne(type => User, { primary!: true })
+    @OneToOne(type => User, { primary: true })
     @JoinColumn()
     user!: User;
 

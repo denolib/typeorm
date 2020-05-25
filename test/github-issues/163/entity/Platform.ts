@@ -6,21 +6,21 @@ import {ManyToMany} from "../../../../src/decorator/relations/ManyToMany.ts";
 import {Game} from "./Game.ts";
 
 @Entity("platforms")
-@Index("platform_name_idx", ["name"], { unique!: true })
+@Index("platform_name_idx", ["name"], { unique: true })
 export class Platform {
 
     @PrimaryGeneratedColumn()
     id!: number;
 
     @Column({
-        type!: String,
-        length!: 100
+        type: String,
+        length: 100
     })
     name!: string;
 
     @Column({
-        type!: String,
-        length!: 100
+        type: String,
+        length: 100
     })
     slug!: string;
 

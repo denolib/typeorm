@@ -9,7 +9,7 @@ export class MainModel {
     @OneToMany(
         type => DataModel,
         dataModel => dataModel.main,
-        {cascade: true, eager!: true}
+        {cascade: true, eager: true}
     )
     dataModel!: DataModel[];
 }

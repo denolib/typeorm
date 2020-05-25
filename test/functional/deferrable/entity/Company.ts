@@ -8,7 +8,7 @@ export class Company {
     @PrimaryColumn({ type: Number })
     id!: number;
 
-    @Column({ type!: String })
+    @Column({ type: String })
     name?: string;
 
 }

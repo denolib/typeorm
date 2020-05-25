@@ -39,67 +39,67 @@ export class EnumArrayEntity {
     id!: number;
 
     @Column({
-        type!: "simple-enum",
+        type: "simple-enum",
         enum: NumericEnum,
-        array!: true,
-        default!: [NumericEnum.GHOST, NumericEnum.ADMIN]
+        array: true,
+        default: [NumericEnum.GHOST, NumericEnum.ADMIN]
     })
     numericEnums!: NumericEnum[];
 
     @Column({
-        type!: "simple-enum",
+        type: "simple-enum",
         enum: StringEnum,
-        array!: true,
-        default!: []
+        array: true,
+        default: []
     })
     stringEnums!: StringEnum[];
 
     @Column({
-        type!: "simple-enum",
+        type: "simple-enum",
         enum: StringNumericEnum,
-        array!: true,
-        default!: [StringNumericEnum.THREE, StringNumericEnum.ONE]
+        array: true,
+        default: [StringNumericEnum.THREE, StringNumericEnum.ONE]
     })
     stringNumericEnums!: StringNumericEnum[];
 
     @Column({
-        type!: "simple-enum",
+        type: "simple-enum",
         enum: HeterogeneousEnum,
-        array!: true,
-        default!: [HeterogeneousEnum.YES]
+        array: true,
+        default: [HeterogeneousEnum.YES]
     })
     heterogeneousEnums!: HeterogeneousEnum[];
 
     @Column({
-        type!: "simple-enum",
+        type: "simple-enum",
         enum: ["admin", "editor", "ghost"],
-        array!: true,
-        default!: ["admin"]
+        array: true,
+        default: ["admin"]
     })
     arrayDefinedStringEnums!: ArrayDefinedStringEnumType[];
 
     @Column({
-        type!: "simple-enum",
+        type: "simple-enum",
         enum: [11, 12, 13],
-        array!: true,
-        default!: [11, 13]
+        array: true,
+        default: [11, 13]
     })
     arrayDefinedNumericEnums!: ArrayDefinedNumericEnumType[];
 
     @Column({
-        type!: "simple-enum",
+        type: "simple-enum",
         enum: StringEnum,
-        array!: true,
-        nullable!: true
+        array: true,
+        nullable: true
     })
     enumWithoutDefault!: StringEnum[];
 
 
     @Column({
-        type!: "simple-enum",
+        type: "simple-enum",
         enum: StringEnum,
-        array!: true,
-        default!: "{}"
+        array: true,
+        default: "{}"
     })
     legacyDefaultAsString!: StringEnum[];
 }

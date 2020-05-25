@@ -14,7 +14,7 @@ export class Locale {
     @Column("varchar", { length: 50 })
     englishName!: string;
 
-    @OneToOne(() => Message, { onDelete!: "SET NULL" })
+    @OneToOne(() => Message, { onDelete: "SET NULL" })
     @JoinColumn()
     name!: Message;
 

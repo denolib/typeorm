@@ -9,7 +9,7 @@ export class Post {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column({ type!: String })
+    @Column({ type: String })
     @Generated("uuid")
     uuid!: string;
 

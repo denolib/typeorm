@@ -39,50 +39,50 @@ export class SimpleEnumEntity {
     id!: number;
 
     @Column({
-        type!: "simple-enum",
+        type: "simple-enum",
         enum: NumericEnum,
-        default!: NumericEnum.MODERATOR
+        default: NumericEnum.MODERATOR
     })
     numericEnum!: NumericEnum;
 
     @Column({
-        type!: "simple-enum",
+        type: "simple-enum",
         enum: StringEnum,
-        default!: StringEnum.GHOST
+        default: StringEnum.GHOST
     })
     stringEnum!: StringEnum;
 
     @Column({
-        type!: "simple-enum",
+        type: "simple-enum",
         enum: StringNumericEnum,
-        default!: StringNumericEnum.FOUR
+        default: StringNumericEnum.FOUR
     })
     stringNumericEnum!: StringNumericEnum;
 
     @Column({
-        type!: "simple-enum",
+        type: "simple-enum",
         enum: HeterogeneousEnum,
-        default!: HeterogeneousEnum.NO
+        default: HeterogeneousEnum.NO
     })
     heterogeneousEnum!: HeterogeneousEnum;
 
     @Column({
-        type!: "simple-enum",
+        type: "simple-enum",
         enum: ["admin", "editor", "ghost"],
-        default!: "ghost"
+        default: "ghost"
     })
     arrayDefinedStringEnum!: ArrayDefinedStringEnumType;
 
     @Column({
-        type!: "simple-enum",
+        type: "simple-enum",
         enum: [11, 12, 13],
-        default!: 12
+        default: 12
     })
     arrayDefinedNumericEnum!: ArrayDefinedNumericEnumType;
 
     @Column({
-        type!: "simple-enum",
-        enum!: StringEnum,
+        type: "simple-enum",
+        enum: StringEnum,
     })
     enumWithoutdefault!: StringEnum;
 

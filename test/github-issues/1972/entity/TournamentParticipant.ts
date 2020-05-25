@@ -2,10 +2,10 @@ import { Entity, TableInheritance, PrimaryGeneratedColumn } from "../../../../sr
 
 @Entity()
 @TableInheritance({
-    pattern!: "STI",
+    pattern: "STI",
     column: {
-        name!: "type",
-        type!: "varchar",
+        name: "type",
+        type: "varchar",
     },
 })
 export abstract class TournamentParticipant {

@@ -4,7 +4,7 @@ import {UserMonth} from "./user-month.ts";
 @Entity()
 export class User {
 
-    @PrimaryColumn({ type!: String })
+    @PrimaryColumn({ type: String })
     public username!: string;
 
     @OneToMany(type => UserMonth, userMonth => userMonth.user)

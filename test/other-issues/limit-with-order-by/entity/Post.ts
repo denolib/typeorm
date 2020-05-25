@@ -15,7 +15,7 @@ export class Post {
     title!: string;
 
     @ManyToMany(type => Category, {
-        cascade!: ["insert"]
+        cascade: ["insert"]
     })
     @JoinTable()
     categories!: Category[];

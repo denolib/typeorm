@@ -14,7 +14,7 @@ export class User {
     name!: string;
 
     @ManyToOne(type => Company, company => company.id, {
-        deferrable!: "INITIALLY DEFERRED",
+        deferrable: "INITIALLY DEFERRED",
     })
     company!: Company;
 }

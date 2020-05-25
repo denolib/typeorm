@@ -10,7 +10,7 @@ export class Person {
     id!: number;
 
     @Index({
-        unique!: true
+        unique: true
     })
     @Column({ type: String })
     firstname!: string;

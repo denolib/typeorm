@@ -6,7 +6,7 @@ export class Profile {
     @Column({ type: String })
     job!: string;
 
-    @Column({ type!: String })
+    @Column({ type: String })
     @Index("customer_profile_address")
     address!: string;
 }

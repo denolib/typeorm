@@ -12,7 +12,7 @@ export class Bar extends BaseEntity {
     id!: number;
 
     @OneToOne(type => Foo, {
-        onDelete!: "SET NULL"
+        onDelete: "SET NULL"
     })
     @JoinColumn()
     foo!: Foo;

@@ -8,7 +8,7 @@ import {Post} from "./Post.ts";
 @Entity()
 export class Editor {
 
-    @OneToOne(type => User, { eager: true, primary!: true })
+    @OneToOne(type => User, { eager: true, primary: true })
     @JoinColumn()
     user!: User;
 

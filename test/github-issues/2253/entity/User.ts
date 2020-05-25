@@ -1,6 +1,6 @@
 import { ChildEntity, Column, Entity, PrimaryColumn, TableInheritance } from "../../../../src/index.ts";
 
-@TableInheritance({ column!: "type" })
+@TableInheritance({ column: "type" })
 @Entity()
 export class User {
   @PrimaryColumn({ type: Number })

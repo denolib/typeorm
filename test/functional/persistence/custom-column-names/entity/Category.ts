@@ -20,7 +20,7 @@ export class Category {
     metadataId!: number;
 
     @OneToOne(type => CategoryMetadata, metadata => metadata.category, {
-        cascade!: ["insert"]
+        cascade: ["insert"]
     })
     @JoinColumn({ name: "metadataId" })
     metadata!: CategoryMetadata;

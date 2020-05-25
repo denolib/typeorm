@@ -18,13 +18,13 @@ export class Post {
 
     @ManyToOne(() => Category, category => category.posts, {
         lazy: true,
-        cascade!: ["insert"]
+        cascade: ["insert"]
     })
     category!: Promise<Category>;
 
     @ManyToMany(type => Tag, tag => tag.posts, {
         lazy: true,
-        cascade!: ["insert"]
+        cascade: ["insert"]
     })
     @JoinTable()
     tags!: Promise<Tag[]>;

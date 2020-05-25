@@ -4,7 +4,7 @@ import {Tree} from "../../../../src/decorator/tree/Tree.ts";
 import {TreeChildren} from "../../../../src/decorator/tree/TreeChildren.ts";
 import {TreeParent} from "../../../../src/decorator/tree/TreeParent.ts";
 
-@Entity({ name: "users", schema!: "admin" })
+@Entity({ name: "users", schema: "admin" })
 @Tree("nested-set")
 export class User {
     @PrimaryGeneratedColumn("uuid")

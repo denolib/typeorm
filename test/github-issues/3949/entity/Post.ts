@@ -8,7 +8,7 @@ export class Post {
     @PrimaryColumn({ type: Number })
     id!: number;
 
-    @Column({ type!: Date })
+    @Column({ type: Date })
     date!: Date;
 
 }

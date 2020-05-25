@@ -6,7 +6,7 @@ export class Information {
     @Column({ type: String })
     description!: string;
 
-    @Column({ type!: Number })
+    @Column({ type: Number })
     @Index("post_likes")
     likes!: number;
 

@@ -10,8 +10,8 @@ export class User {
     id!: number;
 
     @ManyToOne(type => Question, {
-        cascade!: ["insert"],
-        nullable!: true
+        cascade: ["insert"],
+        nullable: true
     })
     question!: Question;
 

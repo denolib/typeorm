@@ -9,15 +9,15 @@ export class User {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column({ type!: String })
+    @Column({ type: String })
     @Index()
     email!: string;
 
-    @Column({ type!: String })
+    @Column({ type: String })
     @Index()
     username!: string;
 
-    @Column({ type!: Number })
+    @Column({ type: Number })
     @Index()
     privilege!: number;
 

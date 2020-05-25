@@ -8,9 +8,9 @@ export class Post {
     id!: number;
 
     @Column({
-        type!: String,
+        type: String,
         nullable: true,
-        transformer!: {
+        transformer: {
             from(val: string | undefined | null) {
                 return val === null ? "This is null" : val;
             },

@@ -14,10 +14,10 @@ export class Human {
     name!: string;
 
     @Column({
-        type!: "enum",
+        type: "enum",
         enum: Gender,
-        enumName!: "genderEnum",
-        name!: "Gender"
+        enumName: "genderEnum",
+        name: "Gender"
     })
     gender!: Gender;
 

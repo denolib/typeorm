@@ -12,14 +12,14 @@ export class Profile {
     id!: number;
 
     @OneToOne(type => User, user => user.profile, {
-        nullable!: false
+        nullable: false
     })
     @JoinColumn()
     user!: User;
 
     @OneToOne(type => Photo, {
-        nullable!: false,
-        cascade!: ["insert"]
+        nullable: false,
+        cascade: ["insert"]
     })
     @JoinColumn()
     photo!: Photo;

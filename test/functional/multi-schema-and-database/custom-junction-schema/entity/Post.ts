@@ -6,7 +6,7 @@ import {JoinTable} from "../../../../../src/decorator/relations/JoinTable.ts";
 import {Category} from "./Category.ts";
 
 @Entity({
-    schema!: "yoman"
+    schema: "yoman"
 })
 export class Post {
 

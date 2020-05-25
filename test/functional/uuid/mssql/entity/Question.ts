@@ -9,14 +9,14 @@ export class Question {
     @PrimaryGeneratedColumn("uuid")
     id!: string;
 
-    @Column({ type!: String })
+    @Column({ type: String })
     @Generated("uuid")
     uuid!: string;
 
     @Column("uniqueidentifier", { nullable: true })
     uuid2!: string|null;
 
-    @Column("uniqueidentifier", { nullable!: true })
+    @Column("uniqueidentifier", { nullable: true })
     @Generated("uuid")
     uuid3!: string|null;
 

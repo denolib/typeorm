@@ -12,20 +12,20 @@ export class Answer {
     id!: number;
 
     @ManyToOne(type => Question, question => question.answers, {
-        cascade!: ["insert"],
-        nullable!: false
+        cascade: ["insert"],
+        nullable: false
     })
     question!: Question;
 
     @ManyToOne(type => Photo, {
-        cascade!: ["insert"],
-        nullable!: false
+        cascade: ["insert"],
+        nullable: false
     })
     photo!: Photo;
 
     @ManyToOne(type => User, {
-        cascade!: ["insert"],
-        nullable!: false
+        cascade: ["insert"],
+        nullable: false
     })
     user!: User;
 

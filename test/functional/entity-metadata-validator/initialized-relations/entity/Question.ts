@@ -14,7 +14,7 @@ export class Question {
     @Column({ type: String })
     title!: string;
 
-    @ManyToMany(type => Category, { persistence!: false })
+    @ManyToMany(type => Category, { persistence: false })
     @JoinTable()
     categories: Category[] = [];
 

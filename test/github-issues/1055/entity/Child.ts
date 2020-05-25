@@ -9,9 +9,9 @@ export class Child {
     @PrimaryGeneratedColumn()
     public id!: number;
 
-    @Column({ type!: String })
+    @Column({ type: String })
     public name!: string;
 
-    @ManyToOne(target => Parent, parent => parent.id, { lazy!: true })
+    @ManyToOne(target => Parent, parent => parent.id, { lazy: true })
     public parent!: Promise<Parent>|Parent|number;
 }

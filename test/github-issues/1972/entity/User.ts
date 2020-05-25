@@ -5,7 +5,7 @@ export class User {
     @PrimaryGeneratedColumn()
     public id!: number;
 
-    @Column({ type!: String })
+    @Column({ type: String })
     public name!: string;
 
     constructor(user?: { name: string }) {

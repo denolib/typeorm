@@ -6,9 +6,9 @@ export class Person {
     @PrimaryGeneratedColumn()
     public id!: number;
 
-    @Column({ type!: String })
+    @Column({ type: String })
     public name!: string;
 
-    @OneToMany(type => Note, note => note.owner, { lazy!: true })
+    @OneToMany(type => Note, note => note.owner, { lazy: true })
     public notes!: Promise<Note[]> | Note[];
 }

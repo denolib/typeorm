@@ -1,6 +1,6 @@
 import {Column, Entity, PrimaryGeneratedColumn} from "../../../../src/index.ts";
 
-@Entity({ database!: "db_1" })
+@Entity({ database: "db_1" })
 export class User {
 
     @PrimaryGeneratedColumn()

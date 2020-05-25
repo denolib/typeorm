@@ -4,9 +4,9 @@ import {Column, PrimaryColumn} from "../../../../src/index.ts";
 @Entity()
 export class Dummy2 {
     @PrimaryColumn("integer", {
-        generated!: true,
+        generated: true,
         nullable: false,
-        primary!: true,
+        primary: true,
     })
     id!: number;
 

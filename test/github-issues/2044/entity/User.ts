@@ -7,7 +7,7 @@ import {Photo} from "./Photo.ts";
 export class User {
 
     @PrimaryColumn("binary", {
-        length!: 2
+        length: 2
     })
     private _id!: Uint8Array;
 

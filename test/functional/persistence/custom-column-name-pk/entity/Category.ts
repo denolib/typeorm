@@ -8,7 +8,7 @@ import {Generated} from "../../../../../src/decorator/Generated.ts";
 @Entity()
 export class Category {
 
-    @PrimaryColumn({name: "theId", type!: Number})
+    @PrimaryColumn({name: "theId", type: Number})
     @Generated()
     id!: number;
 
@@ -16,7 +16,7 @@ export class Category {
     name!: string;
 
     @OneToMany(type => Post, post => post.category, {
-        cascade!: ["insert"]
+        cascade: ["insert"]
     })
     posts!: Post[];
 

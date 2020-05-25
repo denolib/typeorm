@@ -14,8 +14,8 @@ export class Post {
     categories!: Category[]|null;
 
     @Column({
-        type!: String,
-        default!: "supervalue"
+        type: String,
+        default: "supervalue"
     })
     title!: string;
 

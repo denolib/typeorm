@@ -20,37 +20,37 @@ export class Post {
 
     @ManyToMany(type => Category, category => category.postsWithOptions)
     @JoinTable({
-        name!: "post_categories",
+        name: "post_categories",
         joinColumns: [{
-            name!: "postId",
-            referencedColumnName!: "id"
+            name: "postId",
+            referencedColumnName: "id"
         }],
-        inverseJoinColumns!: [{
+        inverseJoinColumns: [{
             name: "categoryName",
-            referencedColumnName!: "name"
+            referencedColumnName: "name"
         }, {
-            name!: "categoryType",
-            referencedColumnName!: "type"
+            name: "categoryType",
+            referencedColumnName: "type"
         }]
     })
     categoriesWithOptions!: Category[];
 
     @ManyToMany(type => Category, category => category.postsWithNonPKColumns)
     @JoinTable({
-        name!: "post_categories_non_primary",
+        name: "post_categories_non_primary",
         joinColumns: [{
-            name!: "postId",
-            referencedColumnName!: "id"
+            name: "postId",
+            referencedColumnName: "id"
         }],
-        inverseJoinColumns!: [{
+        inverseJoinColumns: [{
             name: "categoryCode",
-            referencedColumnName!: "code"
+            referencedColumnName: "code"
         }, {
-            name!: "categoryVersion",
-            referencedColumnName!: "version"
+            name: "categoryVersion",
+            referencedColumnName: "version"
         }, {
-            name!: "categoryDescription",
-            referencedColumnName!: "description"
+            name: "categoryDescription",
+            referencedColumnName: "description"
         }]
     })
     categoriesWithNonPKColumns!: Category[];

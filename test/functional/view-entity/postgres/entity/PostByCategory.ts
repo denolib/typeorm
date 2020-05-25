@@ -5,7 +5,7 @@ import {Category} from "./Category.ts";
 import {Post} from "./Post.ts";
 
 @ViewEntity({
-    materialized!: true,
+    materialized: true,
     expression: (connection: Connection) => connection.createQueryBuilder()
         .select("category.name", "categoryName")
         .addSelect("COUNT(post.id)", "postCount")

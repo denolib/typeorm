@@ -12,21 +12,21 @@ export class User {
     id!: number;
 
     @Column({
-        type!: String,
+        type: String,
         length: 32,
-        unique!: true
+        unique: true
     })
     username!: string;
 
     @Column({
-        type!: String,
-        nullable!: true
+        type: String,
+        nullable: true
     })
     password!: string;
 
     @Column({
-        type!: String,
-        nullable!: true
+        type: String,
+        nullable: true
     })
     phone!: string;
 

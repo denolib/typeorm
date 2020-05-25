@@ -9,12 +9,12 @@ export class Post {
     id!: number;
 
     @Column("char", {
-        length!: 50
+        length: 50
     })
     char!: string;
 
     @Column("varchar", {
-        length!: 50
+        length: 50
     })
     varchar!: string;
 

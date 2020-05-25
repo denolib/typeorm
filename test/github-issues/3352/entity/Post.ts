@@ -9,7 +9,7 @@ export class Post {
     id!: number;
 
     @Column({
-        type!: "text",
+        type: "text",
     })
     text!: string;
 

@@ -18,7 +18,7 @@ export class User { // todo!: check one-to-one relation as well, but in another 
     @OneToMany(type => Photo, photo => photo.user, { cascade: true })
     manyPhotos!: Photo[];
 
-    @ManyToMany(type => Photo, { cascade!: true })
+    @ManyToMany(type => Photo, { cascade: true })
     @JoinTable()
     manyToManyPhotos!: Photo[];
 

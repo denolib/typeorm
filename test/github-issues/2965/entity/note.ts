@@ -6,9 +6,9 @@ export class Note {
     @PrimaryGeneratedColumn()
     public id!: number;
 
-    @Column({ type!: String })
+    @Column({ type: String })
     public label!: string;
 
-    @ManyToOne(type => Person, { lazy!: true })
+    @ManyToOne(type => Person, { lazy: true })
     public owner!: Promise<Person> | Person;
 }
