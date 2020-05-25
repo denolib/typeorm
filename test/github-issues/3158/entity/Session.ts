@@ -13,8 +13,8 @@ export class Session {
     title!: string;
 
     @Column({
-        type!: String,
-        nullable!: true
+        type: String,
+        nullable: true
     })
     description?: string;
 
