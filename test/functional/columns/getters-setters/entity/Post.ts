@@ -19,7 +19,7 @@ export class Post {
         }
     }
 
-    @Column({ type!: String })
+    @Column({ type: String })
     get title(): string {
         return this._title;
     }
