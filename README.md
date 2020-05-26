@@ -1,4 +1,5 @@
 [![Build Status](https://github.com/denolib/typeorm/workflows/ci/badge.svg)](https://github.com/denolib/typeorm/actions)
+![https://img.shields.io/github/v/tag/denolib/typeorm](https://img.shields.io/github/v/tag/denolib/typeorm)
 [![license](https://img.shields.io/github/license/denolib/typeorm.svg)](https://github.com/denolib/typeorm)
 
 ## Introduction
