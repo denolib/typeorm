@@ -9,7 +9,6 @@ import {ColumnType} from "../types/ColumnTypes.ts";
 import {QueryRunner} from "../../query-runner/QueryRunner.ts";
 import {PlatformTools} from "../../platform/PlatformTools.ts";
 import {AbstractSqliteDriver} from "../sqlite-abstract/AbstractSqliteDriver.ts";
-import type {AutoSavableDriver} from "../types/AutoSavable.ts";
 import {NotImplementedError} from "../../error/NotImplementedError.ts";
 
 /**
@@ -17,7 +16,7 @@ import {NotImplementedError} from "../../error/NotImplementedError.ts";
  *
  * This driver provides the same behavior as the original TypeORM's SqljsDriver.
  */
-export class SqliteDriver extends AbstractSqliteDriver implements AutoSavableDriver {
+export class SqliteDriver extends AbstractSqliteDriver {
 
     // -------------------------------------------------------------------------
     // Public Properties
