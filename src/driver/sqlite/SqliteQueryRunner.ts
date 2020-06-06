@@ -1,4 +1,4 @@
-import {DB} from "../../../vendor/https/deno.land/x/sqlite/mod.ts";
+import type {DB} from "../../../vendor/https/deno.land/x/sqlite/mod.ts";
 import {QueryRunnerAlreadyReleasedError} from "../../error/QueryRunnerAlreadyReleasedError.ts";
 import {QueryFailedError} from "../../error/QueryFailedError.ts";
 import {AbstractSqliteQueryRunner} from "../sqlite-abstract/AbstractSqliteQueryRunner.ts";
@@ -30,16 +30,6 @@ export class SqliteQueryRunner extends AbstractSqliteQueryRunner {
         this.broadcaster = new Broadcaster(this);
     }
 
-    /**
-     * Commits transaction.
-     * Error will be thrown if transaction was not started.
-     */
-    async commitTransaction(): Promise<void> {
-        await super.commitTransaction();
-        await this.driver.autoSave();
-    }
-
-
 
     /**
      * Executes a given SQL query.
@@ -59,40 +49,27 @@ export class SqliteQueryRunner extends AbstractSqliteQueryRunner {
                 connection.logger.logQuerySlow(queryExecutionTime, query, parameters, this);
         };
 
+        const databaseConnection = (await this.connect()) as DB;
+        this.driver.connection.logger.logQuery(query, parameters, this);
+        const queryStartTime = +new Date();
+        const isInsertQuery = SqlUtils.isInsertQuery(query);
         const run = () => {
             if (isInsertQuery) {
                 databaseConnection.query(query, parameters || []);
-                const lastID = this.getLastInsertRowID(databaseConnection);
                 reportSlowQuery();
-                return lastID;
+                return databaseConnection.lastInsertRowId;
             } else {
                 const rows = databaseConnection.query(query, parameters || []);
                 reportSlowQuery();
                 return this.convertRowsIntoArray(rows, query);
             }
         };
-
-        const databaseConnection = (await this.connect()) as DB;
-        this.driver.connection.logger.logQuery(query, parameters, this);
-        const queryStartTime = +new Date();
-        const isInsertQuery = SqlUtils.isInsertQuery(query);
         try {
             const result = run();
             return result;
         } catch (err) {
             connection.logger.logQueryError(err, query, parameters, this);
             throw new QueryFailedError(query, parameters, err);
-        }
-    }
-
-    private getLastInsertRowID(databaseConnection: DB): unknown {
-        const query = "SELECT last_insert_rowid()";
-        this.connection.logger.logQuery(query, [], this);
-        const rows = databaseConnection.query(query, []);
-        for (const row of rows) {
-            const [lastID] = row!;
-            rows.done();
-            return lastID;
         }
     }
 

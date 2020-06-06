@@ -1,10 +1,9 @@
 import {BaseConnectionOptions} from "../../connection/BaseConnectionOptions.ts";
-import {AutoSavableOptions} from "../types/AutoSavable.ts";
 
 /**
  * Sqlite-specific connection options.
  */
-export interface SqliteConnectionOptions extends BaseConnectionOptions, AutoSavableOptions {
+export interface SqliteConnectionOptions extends BaseConnectionOptions {
 
     /**
      * Database type.
