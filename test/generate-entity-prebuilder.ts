@@ -27,10 +27,8 @@ async function collectEntityFiles(): Promise<string[]> {
 
 function renderSource(entityFiles: string[]): string {
   let source = "";
-  let i = 1;
   for (const entityFile of entityFiles) {
-    source += 'import * as Entities_' + i + ' from "' + `file://${entityFile}` + '";\n';
-    i++;
+    source += 'import("' + `file://${entityFile}` + '");\n';
   }
   return source;
 }
