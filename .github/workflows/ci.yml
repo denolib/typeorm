@@ -26,6 +26,11 @@ jobs:
     - uses: denolib/setup-deno@master
       with:
         deno-version: 1.0.5
+    - name: Prebuild entities # See test/generate-entity-prebuilder.ts
+      run: |
+        deno run --allow-read --unstable ./test/generate-entity-prebuilder.ts > ./prebuild-entities.ts
+        deno run --config ./tsconfig.json --unstable ./prebuild-entities.ts
+        rm ./prebuild-entities.ts
     - name: Run tests
       run: |
         cp ./ormconfig.gh-actions.json ./ormconfig.json
