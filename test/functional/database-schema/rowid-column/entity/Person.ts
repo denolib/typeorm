@@ -1,8 +1,8 @@
-import {Generated} from "../../../../../src";
-import {PrimaryColumn} from "../../../../../src";
-import {PrimaryGeneratedColumn} from "../../../../../src";
-import {Entity} from "../../../../../src";
-import {Column} from "../../../../../src";
+import {Generated} from "../../../../../src/index.ts";
+import {PrimaryColumn} from "../../../../../src/index.ts";
+import {PrimaryGeneratedColumn} from "../../../../../src/index.ts";
+import {Entity} from "../../../../../src/index.ts";
+import {Column} from "../../../../../src/index.ts";
 
 @Entity()
 export class Person {
