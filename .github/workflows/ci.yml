@@ -29,7 +29,7 @@ jobs:
     - name: Prebuild entities
       run: |
         deno run --allow-read --unstable ./test/generate-entity-prebuilder.ts > ./prebuild-entities.ts
-        deno bundle --config ./tsconfig.json ./prebuild-entities.ts > ./bundle.js
+        deno bundle --config ./tsconfig.json --unstable ./prebuild-entities.ts > ./bundle.js
         rm ./prebuild-entities.ts
         rm ./bundle.js
     - name: Run tests
