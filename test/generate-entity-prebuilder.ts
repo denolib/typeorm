@@ -29,7 +29,7 @@ function renderSource(entityFiles: string[]): string {
   let source = "";
   let i = 1;
   for (const entityFile of entityFiles) {
-    source += 'import * as Entities_' + i + ' from "' + entityFile + '";\n';
+    source += 'import * as Entities_' + i + ' from "' + `file://${entityFile}` + '";\n';
     i++;
   }
   return source;
