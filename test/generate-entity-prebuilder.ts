@@ -27,10 +27,11 @@ async function collectEntityFiles(): Promise<string[]> {
 }
 
 function renderSource(entityFiles: string[]): string {
-  let source = "";
+  let source = "const identity = (x: any): any => x;";
   let i = 0;
   for (const entityFile of entityFiles) {
     source += 'import * as Entities_' + i + ' from "' + entityFile + '";\n';
+    source += `identity(Entities_${i});\n`
     i++;
   }
   return source;
