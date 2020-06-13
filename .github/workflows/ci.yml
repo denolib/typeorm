@@ -29,9 +29,8 @@ jobs:
     - name: Prebuild entities
       run: |
         deno run --allow-read --unstable ./test/generate-entity-prebuilder.ts > ./prebuild-entities.ts
-        deno bundle --config ./tsconfig.json --unstable ./prebuild-entities.ts > ./bundle.js
+        deno run --allow-read --allow-net --config ./tsconfig.json --unstable ./prebuild-entities.ts
         rm ./prebuild-entities.ts
-        rm ./bundle.js
     - name: Run tests
       run: |
         cp ./ormconfig.gh-actions.json ./ormconfig.json

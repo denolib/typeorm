@@ -20,6 +20,7 @@ async function collectEntityFiles(): Promise<string[]> {
     const pattern = path.join(dirname, "**", entityDirectory, "*.ts");
     for await (const entry of fs.expandGlob(pattern, { includeDirs: false })) {
       files.push(entry.path);
+      return files;
     }
   }
   return files;
@@ -27,8 +28,10 @@ async function collectEntityFiles(): Promise<string[]> {
 
 function renderSource(entityFiles: string[]): string {
   let source = "";
+  let i = 0;
   for (const entityFile of entityFiles) {
-    source += 'import("' + `file://${entityFile}` + '");\n';
+    source += 'import * as Entities_' + i + ' from "' + entityFile + '";\n';
+    i++;
   }
   return source;
 }
