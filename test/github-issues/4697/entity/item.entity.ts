@@ -8,10 +8,10 @@ export class Item {
   /**
    * @deprecated use contacts instead
    */
-  @Column({ type!: String })
+  @Column({ type: String })
   public contact?: string;
 
-  @Column({ array: true, type!: String })
+  @Column({ array: true, type: String })
   public contacts!: Array<string>;
 
   @Column({ type: "json" })
