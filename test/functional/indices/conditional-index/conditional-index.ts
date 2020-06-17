@@ -6,7 +6,6 @@ import {Post} from "./entity/Post.ts";
 
 describe("indices > conditional index", function() {
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
             entities: [Post],
