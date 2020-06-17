@@ -1,19 +1,18 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import "../../deps/chai.ts";
 import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver.ts";
 // import {PostgresDriver} from "../../../src/driver/postgres/PostgresDriver.ts";
 import {AbstractSqliteDriver} from "../../../src/driver/sqlite-abstract/AbstractSqliteDriver.ts";
 import {SqlServerDriver} from "../../../src/driver/sqlserver/SqlServerDriver.ts";
-import {getDirnameOfCurrentModule, createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
 import {Connection, Table} from "../../../src/index.ts";
+import {Post} from "./entity/Post.ts";
 
 describe("github issues > #3379 Migration will keep create and drop indexes if index name is the same across tables", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")]
+        entities: [Post]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));

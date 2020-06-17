@@ -3,6 +3,8 @@ import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnect
 import {Connection} from "../../../../src/connection/Connection.ts";
 import {Post} from "./entity/Post.ts";
 import {Category} from "./entity/Category.ts";
+import {Details} from "./entity/Details.ts";
+import {Photo} from "./entity/Photo.ts";
 import {ConnectionMetadataBuilder} from "../../../../src/connection/ConnectionMetadataBuilder.ts";
 import {EntityMetadataValidator} from "../../../../src/metadata-builder/EntityMetadataValidator.ts";
 import {expect} from "../../../deps/chai.ts";
@@ -26,7 +28,7 @@ describe("persistence > order of persistence execution operations", () => {
                 */
                 type: "sqlite",
                 database: ":memory:",
-                entities: [joinPaths(__dirname, "/entity/*.ts}")]
+                entities: [Category, Details, Photo, Post]
             });
             const connectionMetadataBuilder = new ConnectionMetadataBuilder(connection);
             const entityMetadatas = await connectionMetadataBuilder.buildEntityMetadatas([joinPaths(__dirname, "/entity/*.ts")]);

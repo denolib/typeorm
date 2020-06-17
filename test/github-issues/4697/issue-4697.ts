@@ -3,13 +3,15 @@ import {runIfMain} from "../../deps/mocha.ts";
 import "../../deps/chai.ts";
 import {getDirnameOfCurrentModule, createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
 import {Connection} from "../../../src/connection/Connection.ts";
+import {Config} from "./entity/config.entity.ts";
+import {Item} from "./entity/item.entity.ts";
 
 describe("github issues > #4697 Revert migrations running in reverse order.", () => {
 
     let connections: Connection[];
     const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [Config, Item],
         migrations: [joinPaths(__dirname, "/migration/*.ts")],
         enabledDrivers: ["mongodb"],
         schemaCreate: true,

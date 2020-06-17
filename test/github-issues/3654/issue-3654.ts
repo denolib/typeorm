@@ -1,9 +1,7 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import "../../deps/chai.ts";
 import { Connection } from "../../../src/index.ts";
 import {
-    getDirnameOfCurrentModule,
     closeTestingConnections,
     createTestingConnections,
     reloadTestingDatabases
@@ -13,11 +11,10 @@ import { User } from "./entity/User.ts";
 // TODO(uki00a) This suite is skipped because it depends on `string_decoder` module.
 describe.skip("github issues > #3654 Should be able compare buffer type", () => {
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(
         async () =>
             (connections = await createTestingConnections({
-                entities: [joinPaths(__dirname, "/entity/*.ts")],
+                entities: [User],
                 enabledDrivers: ["mysql"]
             }))
     );

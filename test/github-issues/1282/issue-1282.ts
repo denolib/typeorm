@@ -1,9 +1,9 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import {expect} from "../../deps/chai.ts";
-import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
 import {Connection} from "../../../src/connection/Connection.ts";
 import {Animal} from "./entity/Animal.ts";
+import {Category} from "./entity/Category.ts";
 import {NamingStrategyUnderTest} from "./naming/NamingStrategyUnderTest.ts";
 import {ColumnMetadata} from "../../../src/metadata/ColumnMetadata.ts";
 
@@ -12,10 +12,9 @@ describe("github issue > #1282 FEATURE REQUEST - Naming strategy joinTableColumn
 
     let connections: Connection[];
     let namingStrategy = new NamingStrategyUnderTest();
-    const __dirname = getDirnameOfCurrentModule(import.meta);
 
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [Animal, Category],
         namingStrategy
     }));
     beforeEach(() => {

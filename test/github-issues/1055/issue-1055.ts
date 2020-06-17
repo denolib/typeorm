@@ -1,7 +1,6 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import {expect} from "../../deps/chai.ts";
-import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
 import {Connection} from "../../../src/connection/Connection.ts";
 import {Parent} from "./entity/Parent.ts";
 import {Child} from "./entity/Child.ts";
@@ -10,9 +9,8 @@ import {PromiseUtils} from "../../../src/util/PromiseUtils.ts";
 describe("github issues > #1055 ind with relations not working, correct syntax causes type error", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [Child, Parent],
         enabledDrivers: ["mysql"] // only one driver is enabled because this example uses lazy relations
     }));
     beforeEach(() => reloadTestingDatabases(connections));

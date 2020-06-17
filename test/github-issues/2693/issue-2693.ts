@@ -1,16 +1,15 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import {expect} from "../../deps/chai.ts";
-import {getDirnameOfCurrentModule, createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
 import {Connection} from "../../../src/connection/Connection.ts";
 import {Migration} from "../../../src/migration/Migration.ts";
 import {QueryFailedError} from "../../../src/error/QueryFailedError.ts";
+import {User} from "./entity/user.ts";
 
 describe("github issues > #2875 Option to run migrations in 1-transaction-per-migration mode", () => {
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [User],
         schemaCreate: false,
         dropSchema: true,
         enabledDrivers: ["postgres"]

@@ -1,15 +1,15 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import {expect} from "../../deps/chai.ts";
-import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections} from "../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils.ts";
 import {Connection} from "../../../src/connection/Connection.ts";
+import {Project} from "./entity/Project.ts";
+import {User} from "./entity/User.ts";
 
 describe("github issues > #108 Error with constraint names on postgres", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [Project, User],
         schemaCreate: true,
         dropSchema: true,
     }));

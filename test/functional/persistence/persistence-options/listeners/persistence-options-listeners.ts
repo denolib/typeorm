@@ -1,5 +1,4 @@
-import {join as joinPaths} from "../../../../../vendor/https/deno.land/std/path/mod.ts";
-import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils.ts";
 import {Post} from "./entity/Post.ts";
 import {Connection} from "../../../../../src/connection/Connection.ts";
 import "../../../../deps/chai.ts";
@@ -13,8 +12,7 @@ describe("persistence > persistence options > listeners", () => {
     // -------------------------------------------------------------------------
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
-    before(async () => connections = await createTestingConnections({ entities: [joinPaths(__dirname, "/entity/*.ts")] }));
+    before(async () => connections = await createTestingConnections({ entities: [Post] }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
 

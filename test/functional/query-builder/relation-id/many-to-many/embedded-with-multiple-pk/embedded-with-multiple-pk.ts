@@ -1,8 +1,6 @@
-import {join as joinPaths} from "../../../../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../../../../deps/mocha.ts";
 import {expect} from "../../../../../deps/chai.ts";
 import {
-    getDirnameOfCurrentModule,
     closeTestingConnections,
     createTestingConnections,
     reloadTestingDatabases
@@ -17,9 +15,8 @@ import {Subcounters} from "./entity/Subcounters.ts";
 describe("query builder > relation-id > many-to-many > embedded-with-multiple-pk", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [Category, Counters, Post, Subcounters, User],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));

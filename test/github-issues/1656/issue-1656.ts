@@ -1,7 +1,6 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import {expect} from "../../deps/chai.ts";
-import {getDirnameOfCurrentModule, createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
 import {Connection} from "../../../src/connection/Connection.ts";
 import {Controller} from "./controller/Controller.ts";
 import {A} from "./entity/A.ts";
@@ -12,9 +11,8 @@ import {C} from "./entity/C.ts";
 describe.skip("github issues > #1656 Wrong repository order with multiple TransactionRepository inside a Transaction decorator", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [A, B, C],
         enabledDrivers: ["mysql"],
         schemaCreate: true,
         dropSchema: true,

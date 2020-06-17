@@ -1,16 +1,14 @@
-import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
 import "../../../deps/chai.ts";
 import {runIfMain} from "../../../deps/mocha.ts";
-import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
 import {Connection} from "../../../../src/connection/Connection.ts";
 import {Customer} from "./entity/Customer.ts";
 
 describe("indices > basic unique index test", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [Customer],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));

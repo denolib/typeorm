@@ -1,8 +1,8 @@
 import {expect} from "../../../deps/chai.ts";
 import {runIfMain} from "../../../deps/mocha.ts";
 import {Connection} from "../../../../src/connection/Connection.ts";
-import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
-import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
+import {Counters} from "./entity/Counters.ts";
 import {SimplePost} from "./entity/SimplePost.ts";
 import {SimpleCounters} from "./entity/SimpleCounters.ts";
 import {Information} from "./entity/Information.ts";
@@ -11,9 +11,8 @@ import {Post} from "./entity/Post.ts";
 describe("columns > embedded columns", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [Counters, Information, Post, SimpleCounters, SimplePost],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));

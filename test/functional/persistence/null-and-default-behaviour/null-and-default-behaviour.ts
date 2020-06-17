@@ -1,6 +1,5 @@
-import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
 import {Connection} from "../../../../src/connection/Connection.ts";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases, getDirnameOfCurrentModule} from "../../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
 import {Post} from "./entity/Post.ts";
 import {expect} from "../../../deps/chai.ts";
 import {runIfMain} from "../../../deps/mocha.ts";
@@ -8,9 +7,8 @@ import {runIfMain} from "../../../deps/mocha.ts";
 describe("persistence > null and default behaviour", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [Post],
 
     }));
     beforeEach(() => reloadTestingDatabases(connections));

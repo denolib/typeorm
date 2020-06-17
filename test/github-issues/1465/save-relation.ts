@@ -1,17 +1,16 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import {expect} from "../../deps/chai.ts";
 import {Connection} from "../../../src/connection/Connection.ts";
-import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
 import {Account} from "./entity/Account.ts";
 import {AccountActivationToken} from "./entity/AccountActivationToken.ts";
+import {Token} from "./entity/Token.ts";
 
 describe("save child and parent entity", () => {
 
     let connections: Connection[] = [];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [Account, AccountActivationToken, Token],
         enabledDrivers: ["mysql", "mariadb", "sqlite", "sqljs"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));

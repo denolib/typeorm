@@ -1,7 +1,6 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import {expect} from "../../deps/chai.ts";
-import { getDirnameOfCurrentModule, createTestingConnections, closeTestingConnections, reloadTestingDatabases } from "../../utils/test-utils.ts";
+import { createTestingConnections, closeTestingConnections, reloadTestingDatabases } from "../../utils/test-utils.ts";
 import { Connection } from "../../../src/connection/Connection.ts";
 import { Dummy } from "./entity/dummy.ts";
 import { Dummy2 } from "./entity/dummy2.ts";
@@ -9,11 +8,10 @@ import { Dummy2 } from "./entity/dummy2.ts";
 describe("github issues > #2364 should generate id value if @Column generated:true is set", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
 
     it("should generate id value", async () => {
         connections = await createTestingConnections({
-            entities: [joinPaths(__dirname, "/entity/*.ts")],
+            entities: [Dummy, Dummy2],
             schemaCreate: true,
             dropSchema: true,
         });

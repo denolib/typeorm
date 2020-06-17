@@ -1,7 +1,6 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import "../../deps/chai.ts";
-import {createTestingConnections, closeTestingConnections, reloadTestingDatabases, getDirnameOfCurrentModule} from "../../utils/test-utils.ts";
+import {createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
 import {Connection} from "../../../src/index.ts";
 import {Simple} from "./entity/Simple.ts";
 import {Complex} from "./entity/Complex.ts";
@@ -9,9 +8,8 @@ import {Complex} from "./entity/Complex.ts";
 describe("github issues > #2103 query builder regression", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [Complex, Simple],
         schemaCreate: true,
         dropSchema: true,
     }));

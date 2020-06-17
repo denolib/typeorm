@@ -1,17 +1,15 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import "../../deps/chai.ts";
 import {Cliente} from "./entity/cliente.ts";
-import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
 import {Connection} from "../../../src/index.ts";
 import {TipoCliente} from "./entity/tipo-cliente.ts";
 
 describe("github issue #1754 Repository.save() always updating ManyToOne relation", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [Cliente, TipoCliente],
         enabledDrivers: ["mysql"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));

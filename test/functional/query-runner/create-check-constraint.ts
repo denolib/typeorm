@@ -1,19 +1,23 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import "../../deps/chai.ts";
 import {Connection} from "../../../src/index.ts";
-import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
 import {Table} from "../../../src/index.ts";
 import {TableCheck} from "../../../src/schema-builder/table/TableCheck.ts";
 import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver.ts";
+import {Book, Book2} from "./entity/Book.ts";
+import {Faculty} from "./entity/Faculty.ts";
+import {Photo} from "./entity/Photo.ts";
+import {Post} from "./entity/Post.ts";
+import {Student} from "./entity/Student.ts";
+import {Teacher} from "./entity/Teacher.ts";
 
 describe("query runner > create check constraint", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
-            entities: [joinPaths(__dirname, "/entity/*.ts")],
+            entities: [Book, Book2, Faculty, Photo, Post, Student, Teacher],
             schemaCreate: true,
             dropSchema: true,
         });

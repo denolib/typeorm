@@ -1,7 +1,6 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import "../../deps/chai.ts";
-import {getDirnameOfCurrentModule, createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
 import {Connection} from "../../../src/connection/Connection.ts";
 import {Person} from "./entity/Person.ts";
 import {Men} from "./entity/Men.ts";
@@ -10,10 +9,9 @@ import {Women} from "./entity/Women.ts";
 describe("github issues > #3857 Schema inheritance when STI pattern is used", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
         enabledDrivers: ["postgres", "mariadb", "mysql"],
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [Men, Person, Women],
         schema: "custom",
         schemaCreate: true
     }));

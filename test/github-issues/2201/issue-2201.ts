@@ -1,18 +1,18 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import {expect} from "../../deps/chai.ts";
-import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections} from "../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils.ts";
+import {RecordContext as RecordContext_ver1} from "./entity/ver1/context.ts";
+import {Record as Record_ver1} from "./entity/ver1/record.ts";
+import {User as User_ver1} from "./entity/ver1/user.ts";
 import {RecordContext} from "./entity/ver2/context.ts";
 import {Record} from "./entity/ver2/record.ts";
 import {User} from "./entity/ver2/user.ts";
 
 describe("github issues > #2201 - Create a select query when using a (custom) junction table", () => {
 
-    const __dirname = getDirnameOfCurrentModule(import.meta);
-
     it("Should create only two PM columns ('order_id' and 'user_id')", async () => {
         const connections = await createTestingConnections({
-            entities: [joinPaths(__dirname, "/entity/ver1/*.ts")],
+            entities: [RecordContext_ver1, Record_ver1, User_ver1],
             schemaCreate: true,
             dropSchema: true
         });
@@ -30,7 +30,7 @@ describe("github issues > #2201 - Create a select query when using a (custom) ju
 
     it.skip("Should not try to update the junction table when not needed", async () => {
         const connections = await createTestingConnections({
-            entities: [joinPaths(__dirname, "/entity/ver2/*.ts")],
+            entities: [RecordContext, Record, User],
             enabledDrivers: ["postgres"],
             schemaCreate: true,
             dropSchema: true,

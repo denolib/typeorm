@@ -1,9 +1,8 @@
-import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../../deps/mocha.ts";
 import {expect} from "../../../deps/chai.ts";
 import {Category} from "./entity/Category.ts";
 import {Connection} from "../../../../src/index.ts";
-import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
 import {Post} from "./entity/Post.ts";
 import {PostCategory} from "./entity/PostCategory.ts";
 import {PostByCategory} from "./entity/PostByCategory.ts";
@@ -11,9 +10,8 @@ import {PostByCategory} from "./entity/PostByCategory.ts";
 describe("view entity > postgres", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [Category, Post, PostByCategory, PostCategory],
         enabledDrivers: ["postgres"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));

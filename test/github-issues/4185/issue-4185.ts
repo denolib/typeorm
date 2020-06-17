@@ -4,14 +4,16 @@ import {expect} from "../../deps/chai.ts";
 import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
 import {Connection} from "../../../src/connection/Connection.ts";
 import {Post} from "./entity/Post.ts";
+import {ExtendedAfterLoadSubscriber} from "./subscriber/ExtendedAfterLoadSubscriber.ts";
+import {SimpleAfterLoadSubscriber} from "./subscriber/SimpleAfterLoadSubscriber.ts";
 
 describe("github issues > #4185 afterLoad() subscriber interface missing additional info available on other events", () => {
 
     let connections: Connection[];
     const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
-        subscribers: [joinPaths(__dirname, "/subscriber/*.ts")],
+        entities: [Post],
+        subscribers: [ExtendedAfterLoadSubscriber, SimpleAfterLoadSubscriber],
         schemaCreate: true,
         dropSchema: true
     }));

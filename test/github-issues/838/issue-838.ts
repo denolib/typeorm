@@ -1,8 +1,7 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import {expect} from "../../deps/chai.ts";
 import {Connection} from "../../../src/connection/Connection.ts";
-import {getDirnameOfCurrentModule, createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
 import {Flight} from "./entity/Flight.ts";
 // import {PostgresDriver} from "../../../src/driver/postgres/PostgresDriver.ts";
 
@@ -11,11 +10,10 @@ describe.skip("github issues > #838 Time zones for timestamp columns are incorre
     let connections: Connection[];
     let postgresConnection: Connection;
     const testDateString = "1989-08-16T10:00:00+03:00";
-    const __dirname = getDirnameOfCurrentModule(import.meta);
 
     before(async () => {
         connections = await createTestingConnections({
-            entities: [joinPaths(__dirname, "/entity/*{.js,.ts}")],
+            entities: [Flight],
             enabledDrivers: [
                 "postgres"
             ]

@@ -1,16 +1,15 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import "../../deps/chai.ts";
 import {Connection} from "../../../src/connection/Connection.ts";
-import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections} from "../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils.ts";
+import {FooEntity} from "./entity/Post.ts";
 
 describe("github issues > #1615 Datetime2 with any precision result in datetime2(7) in database", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
-            entities: [joinPaths(__dirname, "/entity/*{.js,.ts}")],
+            entities: [FooEntity],
             enabledDrivers: ["mssql"],
             schemaCreate: true,
             dropSchema: true,

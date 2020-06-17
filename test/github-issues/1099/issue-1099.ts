@@ -1,20 +1,19 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import {expect} from "../../deps/chai.ts";
 import {AuroraDataApiDriver} from "../../../src/driver/aurora-data-api/AuroraDataApiDriver.ts";
 import {SapDriver} from "../../../src/driver/sap/SapDriver.ts";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases, getDirnameOfCurrentModule} from "../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
 import {Connection} from "../../../src/connection/Connection.ts";
 import {Animal} from "./entity/Animal.ts";
+import {Category} from "./entity/Category.ts";
 import {OffsetWithoutLimitNotSupportedError} from "../../../src/error/OffsetWithoutLimitNotSupportedError.ts";
 import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver.ts";
 
 describe("github issues > #1099 BUG - QueryBuilder MySQL skip sql is wrong", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [Animal, Category],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));

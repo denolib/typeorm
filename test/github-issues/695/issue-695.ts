@@ -1,7 +1,6 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import "../../deps/chai.ts";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases, getDirnameOfCurrentModule} from "../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
 import {Connection} from "../../../src/connection/Connection.ts";
 import {Device} from "./entity/Device.ts";
 import {DeviceInstance} from "./entity/DeviceInstance.ts";
@@ -9,9 +8,8 @@ import {DeviceInstance} from "./entity/DeviceInstance.ts";
 describe("github issues > #695 Join columns are not using correct length", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [Device, DeviceInstance],
         enabledDrivers: ["mysql"],
     }));
     beforeEach(() => reloadTestingDatabases(connections));

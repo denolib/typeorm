@@ -1,6 +1,5 @@
-import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
 import {Connection} from "../../../../src/connection/Connection.ts";
-import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
 import {Post} from "./entity/Post.ts";
 import {Category} from "./entity/Category.ts";
 import {expect} from "../../../deps/chai.ts";
@@ -9,10 +8,9 @@ import {runIfMain} from "../../../deps/mocha.ts";
 describe("persistence > many-to-one uni-directional relation", function() {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
-            entities: [joinPaths(__dirname, "/entity/*.ts")],
+            entities: [Category, Post],
         });
     });
     beforeEach(() => reloadTestingDatabases(connections));

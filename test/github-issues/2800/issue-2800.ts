@@ -1,18 +1,17 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import "../../deps/chai.ts";
 import {Connection} from "../../../src/index.ts";
-import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
-import {Car} from "./entity/Car.ts";
-import {Plane} from "./entity/Plane.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Car, CarEngine} from "./entity/Car.ts";
+import {Plane, PlaneEngine} from "./entity/Plane.ts";
+import {Vehicle, Engine} from "./entity/Vehicle.ts";
 
 describe("github issues > #2800 - Can't override embedded entities in STI implementation", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
 
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [Car, CarEngine, Plane, PlaneEngine, Vehicle, Engine],
         schemaCreate: true,
         dropSchema: true
     }));

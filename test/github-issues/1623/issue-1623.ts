@@ -1,8 +1,7 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import "../../deps/chai.ts";
 import {Connection} from "../../../src/connection/Connection.ts";
-import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections} from "../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils.ts";
 import {ColumnMetadata} from "../../../src/metadata/ColumnMetadata.ts";
 import {ColumnMetadataArgs} from "../../../src/metadata-args/ColumnMetadataArgs.ts";
 import {User} from "./entity/User.ts";
@@ -10,10 +9,9 @@ import {User} from "./entity/User.ts";
 describe("github issues > #1623 NOT NULL constraint failed after a new column is added (SQLite)", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
-            entities: [joinPaths(__dirname, "/entity/*.ts")],
+            entities: [User],
             schemaCreate: true,
             dropSchema: true,
         });

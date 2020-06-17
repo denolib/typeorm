@@ -1,8 +1,7 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import "../../deps/chai.ts";
 import {Connection} from "../../../src/index.ts";
-import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
 import {User} from "./entity/User.ts";
 import {Photo} from "./entity/Photo.ts";
 
@@ -10,9 +9,8 @@ import {Photo} from "./entity/Photo.ts";
 describe.skip("github issues > #2044 Should not double get embedded column value", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [Photo, User],
         enabledDrivers: ["mysql"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));

@@ -1,7 +1,6 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import {expect} from "../../deps/chai.ts";
-import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
 import {Connection} from "../../../src/connection/Connection.ts";
 import {User} from "./entity/User.ts";
 import {Circle} from "./entity/Circle.ts";
@@ -9,9 +8,8 @@ import {Circle} from "./entity/Circle.ts";
 describe("github issues > #1034 Issue using setter with promises", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [Circle, User],
         enabledDrivers: ["mysql"] // we are using lazy relations that's why we are using a single driver
     }));
     beforeEach(() => reloadTestingDatabases(connections));

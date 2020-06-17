@@ -1,18 +1,16 @@
-import {join as joinPaths} from "../../../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../../../deps/mocha.ts";
 import "../../../../deps/chai.ts";
 import {Post} from "./entity/Post.ts";
 import {Connection} from "../../../../../src/connection/Connection.ts";
-import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils.ts";
 
 // skipped because there is no way to get column collation from SQLite table schema
 describe.skip("database schema > column collation > sqlite", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
-            entities: [joinPaths(__dirname, "/entity/*.ts")],
+            entities: [Post],
             enabledDrivers: ["sqlite"],
         });
     });

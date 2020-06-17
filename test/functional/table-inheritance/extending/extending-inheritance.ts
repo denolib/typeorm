@@ -1,16 +1,16 @@
-import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../../deps/mocha.ts";
 import {expect} from "../../../deps/chai.ts";
 import {Connection} from "../../../../src/connection/Connection.ts";
-import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
+import {Content} from "./entity/Content.ts";
 import {Post} from "./entity/Post.ts";
+import {Unit} from "./entity/Unit.ts";
 
 describe("table inheritance > regular inheritance using extends keyword", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [Content, Post, Unit],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));

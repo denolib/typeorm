@@ -1,9 +1,8 @@
-import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../../deps/mocha.ts";
 import {expect} from "../../../deps/chai.ts";
 // TODO(uki00a) uncomment this when CockroachDriver is implemented.
 // import {CockroachDriver} from "../../../../src/driver/cockroachdb/CockroachDriver.ts";
-import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
 import {Connection} from "../../../../src/connection/Connection.ts";
 import {Tag} from "./entity/Tag.ts";
 import {Post} from "./entity/Post.ts";
@@ -14,9 +13,8 @@ import {User} from "./entity/User.ts";
 describe("query builder > joins", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [Category, Image, Post, Tag, User],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));

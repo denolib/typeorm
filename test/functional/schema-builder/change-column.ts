@@ -1,4 +1,3 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import {expect} from "../../deps/chai.ts";
 import {Connection, PromiseUtils} from "../../../src/index.ts";
@@ -12,17 +11,23 @@ import {OracleDriver} from "../../../src/driver/oracle/OracleDriver.ts";
 import {SapDriver} from "../../../src/driver/sap/SapDriver.ts";
 import {AbstractSqliteDriver} from "../../../src/driver/sqlite-abstract/AbstractSqliteDriver.ts";
 import {SqlServerDriver} from "../../../src/driver/sqlserver/SqlServerDriver.ts";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases, getDirnameOfCurrentModule} from "../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
 import {Post} from "./entity/Post.ts";
+import {Album} from "./entity/Album.ts";
+import {Category} from "./entity/Category.ts";
+import {Faculty} from "./entity/Faculty.ts";
+import {Photo} from "./entity/Photo.ts";
+import {Question} from "./entity/Question.ts";
+import {Student} from "./entity/Student.ts";
+import {Teacher} from "./entity/Teacher.ts";
 import {PostVersion} from "./entity/PostVersion.ts";
 
 describe("schema builder > change column", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
-            entities: [joinPaths(__dirname, "/entity/*.ts")],
+            entities: [Post, Album, Category, Faculty, Photo, PostVersion, Question, Student, Teacher],
             schemaCreate: true,
             dropSchema: true,
         });

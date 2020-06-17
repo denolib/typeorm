@@ -1,7 +1,6 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import "../../deps/chai.ts";
-import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
 import {Connection} from "../../../src/connection/Connection.ts";
 import {Message, MessageType} from "./entity/Message.ts";
 import {Recipient} from "./entity/Recipient.ts";
@@ -11,8 +10,10 @@ import {Chat} from "./entity/Chat.ts";
 describe("github issues > #1551 complex example of cascades + multiple primary keys = persistence order", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
-    before(async () => connections = await createTestingConnections({ entities: [joinPaths(__dirname, "/entity/*.ts")], enabledDrivers: ["mysql"] }));
+    before(async () => connections = await createTestingConnections({
+        entities: [Chat, Message, Recipient, User],
+        enabledDrivers: ["mysql"]
+    }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
 

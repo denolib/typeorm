@@ -1,8 +1,7 @@
-import {join as joinPaths} from "../../../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../../../deps/mocha.ts";
 import "../../../../deps/chai.ts";
 import {Connection} from "../../../../../src/connection/Connection.ts";
-import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils.ts";
 import {User} from "./entity/User.ts";
 import {Profile} from "./entity/Profile.ts";
 import {Editor} from "./entity/Editor.ts";
@@ -12,9 +11,8 @@ import {Category} from "./entity/Category.ts";
 describe("relations > eager relations > basic", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [Category, Editor, Post, Profile, User],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
