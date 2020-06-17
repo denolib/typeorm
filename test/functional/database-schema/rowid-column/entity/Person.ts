@@ -10,14 +10,14 @@ export class Person {
     @PrimaryGeneratedColumn("rowid")
     id!: string;
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: String })
     @Generated("rowid")
     id2!: string;
 
-    @PrimaryColumn({ generated: "rowid" })
+    @PrimaryColumn({ type: String, generated: "rowid" })
     id3!: string;
 
-    @Column({ generated: "rowid" })
+    @Column({ type: String, generated: "rowid" })
     id4!: string;
 
 }
