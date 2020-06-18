@@ -514,4 +514,7 @@ import "./test/other-issues/preventing-injection/preventing-injection.ts";
 import "./test/other-issues/take-multiple-pk/take-multiple-pk.ts";
 import "./test/other-issues/update-relational-column-on-relation-change/update-relational-column-on-relation-change.ts";
 
+// Tests for denolib issues
+import "./test/denolib-issues/70/issue-70.ts";
+
 runTests();
