@@ -7,7 +7,7 @@
     "logging": false
   },
   {
-    "skip": true,
+    "skip": false,
     "name": "postgres",
     "type": "postgres",
     "host": "localhost",
@@ -18,7 +18,7 @@
     "logging": false
   },
   {
-    "skip": false,
+    "skip": true,
     "name": "mysql",
     "type": "mysql",
     "host": "127.0.0.1",
