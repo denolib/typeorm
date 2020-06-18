@@ -1,12 +1,18 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import {expect} from "../../deps/chai.ts";
 import {Connection} from "../../../src/connection/Connection.ts";
 // TODO(uki00a) uncomment this when CockroachDriver is implemented.
 // import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver.ts";
-import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
 import {PromiseUtils} from "../../../src/index.ts";
 import {IndexMetadata} from "../../../src/metadata/IndexMetadata.ts";
+import {Post} from "./entity/Post.ts";
+import {Album} from "./entity/Album.ts";
+import {Category} from "./entity/Category.ts";
+import {Faculty} from "./entity/Faculty.ts";
+import {Photo} from "./entity/Photo.ts";
+import {PostVersion} from "./entity/PostVersion.ts";
+import {Question} from "./entity/Question.ts";
 import {Teacher} from "./entity/Teacher.ts";
 import {Student} from "./entity/Student.ts";
 import {TableIndex} from "../../../src/schema-builder/table/TableIndex.ts";
@@ -14,10 +20,9 @@ import {TableIndex} from "../../../src/schema-builder/table/TableIndex.ts";
 describe("schema builder > change index", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
-            entities: [joinPaths(__dirname, "/entity/*.ts")],
+            entities: [Post, Album, Category, Faculty, Photo, PostVersion, Question, Student, Teacher],
             schemaCreate: true,
             dropSchema: true,
         });

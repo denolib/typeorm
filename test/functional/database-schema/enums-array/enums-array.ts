@@ -1,17 +1,15 @@
-import { join as joinPaths } from "../../../../vendor/https/deno.land/std/path/mod.ts";
 import { runIfMain } from "../../../deps/mocha.ts";
 import "../../../deps/chai.ts";
 import { Connection } from "../../../../src/index.ts";
-import { getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases } from "../../../utils/test-utils.ts";
+import { closeTestingConnections, createTestingConnections, reloadTestingDatabases } from "../../../utils/test-utils.ts";
 import { EnumArrayEntity, NumericEnum, StringEnum, HeterogeneousEnum, StringNumericEnum } from "./entity/EnumArrayEntity.ts";
 
 describe("database schema > enum arrays", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
-            entities: [joinPaths(__dirname, "/entity/*.ts")],
+            entities: [EnumArrayEntity],
             enabledDrivers: ["postgres"]
         });
     });

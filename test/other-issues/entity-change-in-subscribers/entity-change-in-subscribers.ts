@@ -1,18 +1,17 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import {expect} from "../../deps/chai.ts";
-import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
 import {Connection} from "../../../src/connection/Connection.ts";
 import {Post} from "./entity/Post.ts";
 import {PostCategory} from "./entity/PostCategory.ts";
+import {PostSubscriber} from "./subscriber/PostSubscriber.ts";
 
 describe("other issues > entity change in subscribers should affect persistence", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
-        subscribers: [joinPaths(__dirname, "/subscriber/*.ts")],
+        entities: [Post, PostCategory],
+        subscribers: [PostSubscriber],
         enabledDrivers: ["postgres", "mysql", "mariadb", "mssql", "oracle", "mongodb", "cockroachdb"] // TODO(uki00a) `sqlite` is ommited because `@UpdateDateColumn` doesn't currently work. Remove `enableDrivers` when deno-sqite supports `datetime('now')`.
     }));
     beforeEach(() => reloadTestingDatabases(connections));

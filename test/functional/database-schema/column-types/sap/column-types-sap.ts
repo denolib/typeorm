@@ -1,9 +1,8 @@
-import {join as joinPaths} from "../../../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../../../deps/mocha.ts";
 import "../../../../deps/chai.ts";
 import {Post} from "./entity/Post.ts";
 import {Connection} from "../../../../../src/index.ts";
-import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils.ts";
 import {PostWithOptions} from "./entity/PostWithOptions.ts";
 import {PostWithoutTypes} from "./entity/PostWithoutTypes.ts";
 import {DateUtils} from "../../../../../src/util/DateUtils.ts";
@@ -11,11 +10,10 @@ import {DateUtils} from "../../../../../src/util/DateUtils.ts";
 describe("database schema > column types > sap", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     const encoder = new TextEncoder();
     before(async () => {
         connections = await createTestingConnections({
-            entities: [joinPaths(__dirname, "/entity/*.ts")],
+            entities: [Post, PostWithOptions, PostWithoutTypes],
             enabledDrivers: ["sap"],
         });
     });

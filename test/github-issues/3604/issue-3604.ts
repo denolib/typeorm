@@ -3,13 +3,15 @@ import {runIfMain} from "../../deps/mocha.ts";
 import "../../deps/chai.ts";
 import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
 import {Connection} from "../../../src/index.ts";
+import {Author} from "./entity/Author.ts";
+import {Post} from "./entity/Post.ts";
 
 describe("github issues > #3604 FK columns have wrong length when PrimaryGeneratedColumn('uuid') is used.", () => {
 
     let connections: Connection[];
     const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [Author, Post],
         subscribers: [joinPaths(__dirname, "/subscriber/*.ts")],
         enabledDrivers: ["mysql"],
     }));

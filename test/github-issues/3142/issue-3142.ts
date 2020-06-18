@@ -3,13 +3,15 @@ import {runIfMain} from "../../deps/mocha.ts";
 import {expect} from "../../deps/chai.ts";
 import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
 import {Connection} from "../../../src/index.ts";
+import {Contact} from "./entity/Contact.ts";
+import {Person} from "./entity/Person.ts";
 
 describe("github issues > #3142 Unique constraint not created on embedded entity field", () => {
 
     let connections: Connection[];
     const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [Contact, Person],
         subscribers: [joinPaths(__dirname, "/subscriber/*.ts")],
         enabledDrivers: ["postgres"],
     }));

@@ -1,9 +1,7 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import {expect} from "../../deps/chai.ts";
 import {Connection} from "../../../src/connection/Connection.ts";
 import {
-  getDirnameOfCurrentModule,
   closeTestingConnections,
   createTestingConnections,
   reloadTestingDatabases
@@ -13,11 +11,10 @@ import {User} from "./entity/User.ts";
 
 describe("other issues > using take with multiple primary keys", () => {
   let connections: Connection[];
-  const __dirname = getDirnameOfCurrentModule(import.meta);
   before(
     async () =>
       (connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [Role, User],
       }))
   );
   beforeEach(() => reloadTestingDatabases(connections));

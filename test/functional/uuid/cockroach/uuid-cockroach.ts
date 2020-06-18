@@ -1,19 +1,17 @@
-import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../../deps/mocha.ts";
 import {expect} from "../../../deps/chai.ts";
 import {Record} from "./entity/Record.ts";
 import {Connection} from "../../../../src/connection/Connection.ts";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases, getDirnameOfCurrentModule} from "../../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
 import {Post} from "./entity/Post.ts";
 import {Question} from "./entity/Question.ts";
 
 describe("uuid-cockroach", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
-            entities: [joinPaths(__dirname, "/entity/*.ts")],
+            entities: [Post, Question, Record],
             enabledDrivers: ["cockroachdb"],
         });
     });

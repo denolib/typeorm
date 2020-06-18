@@ -1,14 +1,12 @@
-import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../../deps/mocha.ts";
-import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
 import {Connection} from "../../../../src/connection/Connection.ts";
 import {Post} from "./entity/Post.ts";
 
 describe("query builder > enabling transaction", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
-    before(async () => connections = await createTestingConnections({ entities: [joinPaths(__dirname, "/entity/*.ts")] }));
+    before(async () => connections = await createTestingConnections({ entities: [Post] }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));
 

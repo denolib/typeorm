@@ -1,16 +1,14 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import "../../deps/chai.ts";
-import {closeTestingConnections, createTestingConnections, getDirnameOfCurrentModule} from "../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils.ts";
 import {Connection} from "../../../src/connection/Connection.ts";
 import {Group} from "./entity/Group.ts";
 
 describe("github issues > #1089 UUID in ClosureEntity", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [Group],
         schemaCreate: false,
         dropSchema: true
     }));

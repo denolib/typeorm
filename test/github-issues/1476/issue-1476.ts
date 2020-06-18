@@ -1,8 +1,7 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import {expect} from "../../deps/chai.ts";
 import { Connection } from "../../../src/connection/Connection.ts";
-import { getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases } from "../../utils/test-utils.ts";
+import { closeTestingConnections, createTestingConnections, reloadTestingDatabases } from "../../utils/test-utils.ts";
 import { Plan } from "./entity/Plan.ts";
 import { Item } from "./entity/Item.ts";
 import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver.ts";
@@ -10,9 +9,8 @@ import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver.ts";
 describe("github issues > #1476 subqueries", () => {
 
     let connections: Connection[] = [];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [Item, Plan],
         enabledDrivers: ["mysql", "mariadb", "sqlite", "sqljs"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));

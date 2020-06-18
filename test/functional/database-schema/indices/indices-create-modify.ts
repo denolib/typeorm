@@ -1,19 +1,17 @@
-import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../../deps/mocha.ts";
 import {expect} from "../../../deps/chai.ts";
 import {Connection, EntityMetadata} from "../../../../src/index.ts";
 // import {CockroachDriver} from "../../../../src/driver/cockroachdb/CockroachDriver.ts";
 import {IndexMetadata} from "../../../../src/metadata/IndexMetadata.ts";
-import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
 
 import {Person} from "./entity/Person.ts";
 
 describe("database schema > indices > reading index from entity and updating database", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [Person],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));

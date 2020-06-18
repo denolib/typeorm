@@ -1,7 +1,6 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import {expect} from "../../deps/chai.ts";
-import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
 import {Connection} from "../../../src/connection/Connection.ts";
 import {Company} from "./entity/Company.ts";
 import {Office} from "./entity/Office.ts";
@@ -10,9 +9,8 @@ import {User} from "./entity/User.ts";
 describe("deferrable fk constraints should be check at the end of transaction (#2191)", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [Company, Office, User],
         enabledDrivers: ["postgres"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));

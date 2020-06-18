@@ -1,9 +1,7 @@
-import { join as joinPaths } from "../../../../vendor/https/deno.land/std/path/mod.ts";
 import { runIfMain } from "../../../deps/mocha.ts";
 import { expect } from "../../../deps/chai.ts";
 import { Connection } from "../../../../src/connection/Connection.ts";
 import {
-    getDirnameOfCurrentModule,
     closeTestingConnections,
     createTestingConnections,
     reloadTestingDatabases
@@ -12,11 +10,10 @@ import { Post } from "./entity/Post.ts";
 
 // TODO(uki00a) We implement when this deno-postgres supports cube.
 describe.skip("cube-postgres", () => {
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     let connections: Connection[];
     before(async () => {
         connections = await createTestingConnections({
-            entities: [joinPaths(__dirname, "/entity/*.ts")],
+            entities: [Post],
             enabledDrivers: ["postgres"]
         });
     });

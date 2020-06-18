@@ -1,16 +1,15 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import {expect} from "../../deps/chai.ts";
 // import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver";
-import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections} from "../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils.ts";
 import {Connection} from "../../../src/connection/Connection.ts";
+import {Group} from "./entity/Group.ts";
 
 describe("github issues > #423 Cannot use Group as Table name && cannot autoSchemeSync when use alias Entity", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [Group],
         schemaCreate: false,
         dropSchema: true
     }));

@@ -1,8 +1,7 @@
-import { join as joinPaths } from "../../../vendor/https/deno.land/std/path/mod.ts";
 import { runIfMain } from "../../deps/mocha.ts";
 import "../../deps/chai.ts";
 import { Connection } from "../../../src/connection/Connection.ts";
-import { getDirnameOfCurrentModule, createTestingConnections, reloadTestingDatabases, closeTestingConnections } from "../../utils/test-utils.ts";
+import { createTestingConnections, reloadTestingDatabases, closeTestingConnections } from "../../utils/test-utils.ts";
 import { ValidationModel } from "./entity/ValidationModel.ts";
 import { MainModel } from "./entity/MainModel.ts";
 import { DataModel } from "./entity/DataModel.ts";
@@ -10,9 +9,8 @@ import { DataModel } from "./entity/DataModel.ts";
 describe("github issues > #1545 Typeorm runs insert query instead of update query on save of existing entity for ManyToOne relationships", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [DataModel, MainModel, ValidationModel],
         enabledDrivers: ["postgres"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));

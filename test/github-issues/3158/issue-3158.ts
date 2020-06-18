@@ -1,14 +1,14 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import {expect} from "../../deps/chai.ts";
-import { createTestingConnections, closeTestingConnections, reloadTestingDatabases, getDirnameOfCurrentModule } from "../../utils/test-utils.ts";
+import { createTestingConnections, closeTestingConnections, reloadTestingDatabases } from "../../utils/test-utils.ts";
 import { Connection } from "../../../src/connection/Connection.ts";
+import {Session} from "./entity/Session.ts";
+import {SessionSettings} from "./entity/SessionSettings.ts";
 
 it("github issues > #3158 Cannot run sync a second time", async () => {
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [Session, SessionSettings],
         schemaCreate: true,
         dropSchema: true,
         enabledDrivers: ["mysql", "mariadb", "oracle", "mssql", "sqljs", "sqlite"],

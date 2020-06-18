@@ -1,17 +1,18 @@
 import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import "../../deps/chai.ts";
-import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
 import {Connection} from "../../../src/index.ts";
+import {BilliardsTournament} from "./entity/BilliardsTournament.ts";
+import {Tournament} from "./entity/Tournament.ts";
 import {TournamentGraph} from "./entity/TournamentGraph.ts";
 import {SquadBilliardsTournament} from "./entity/SquadBilliardsTournament.ts";
 
 describe("other issues > using nested child entities", () => {
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
 
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [BilliardsTournament, Tournament, TournamentGraph, SquadBilliardsTournament],
         enabledDrivers: ["postgres"]
     }));
 

@@ -1,15 +1,14 @@
-import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
 import {Connection} from "../../../../src/index.ts";
-import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections} from "../../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections} from "../../../utils/test-utils.ts";
 import {expect} from "../../../deps/chai.ts";
 import {runIfMain} from "../../../deps/mocha.ts";
+import {Post} from "./entity/Post.ts";
 
 describe("indices > conditional index", function() {
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
-            entities: [joinPaths(__dirname, "/entity/*.ts")],
+            entities: [Post],
             enabledDrivers: ["mssql", "postgres", "sqlite"], // only these drivers supports conditional indices
             schemaCreate: true,
             dropSchema: true,

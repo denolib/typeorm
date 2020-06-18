@@ -1,11 +1,10 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import {expect} from "../../deps/chai.ts";
 import {Connection} from "../../../src/connection/Connection.ts";
 // TODO(uki00a) uncomment this when CockroachDriver is implemented.
 // import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver.ts";
 import {SapDriver} from "../../../src/driver/sap/SapDriver.ts";
-import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections} from "../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils.ts";
 import {Table} from "../../../src/schema-builder/table/Table.ts";
 import {TableOptions} from "../../../src/schema-builder/options/TableOptions.ts";
 import {Post} from "./entity/Post.ts";
@@ -14,15 +13,17 @@ import {AbstractSqliteDriver} from "../../../src/driver/sqlite-abstract/Abstract
 import {OracleDriver} from "../../../src/driver/oracle/OracleDriver.ts";
 import {Photo} from "./entity/Photo.ts";
 import {Book2, Book} from "./entity/Book.ts";
+import {Faculty} from "./entity/Faculty.ts";
+import {Student} from "./entity/Student.ts";
+import {Teacher} from "./entity/Teacher.ts";
 import {SqliteDriver} from "../../../src/driver/sqlite/SqliteDriver.ts";
 
 describe("query runner > create table", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
-            entities: [joinPaths(__dirname, "/entity/*.ts")],
+            entities: [Book, Book2, Faculty, Photo, Post, Student, Teacher],
             dropSchema: true,
         });
     });

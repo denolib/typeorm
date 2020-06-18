@@ -4,13 +4,15 @@ import "../../deps/chai.ts";
 import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
 import {Connection} from "../../../src/connection/Connection.ts";
 import {TestEntity1} from "./entity/TestEntity1.ts";
+import {TestEntity2} from "./entity/TestEntity2.ts";
+import {TestEntity3} from "./entity/TestEntity3.ts";
+import {TestEntity4} from "./entity/TestEntity4.ts";
 
 describe("github issues > #1504 Cannot eagerly query Entity with relation more than 3 levels deep", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [TestEntity1, TestEntity2, TestEntity3, TestEntity4],
         enabledDrivers: ["postgres"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));

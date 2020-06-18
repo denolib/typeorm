@@ -1,16 +1,16 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import "../../deps/chai.ts";
 import {Connection} from "../../../src/connection/Connection.ts";
-import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections} from "../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections} from "../../utils/test-utils.ts";
+import {Category} from "./entity/Category.ts";
+import {Post} from "./entity/Post.ts";
 
 describe("github issues > #1839 Charset and collation not being carried to JoinTable when generating migration", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
-            entities: [joinPaths(__dirname, "/entity/*.ts")],
+            entities: [Category, Post],
             enabledDrivers: ["mysql"],
             schemaCreate: true,
             dropSchema: true,

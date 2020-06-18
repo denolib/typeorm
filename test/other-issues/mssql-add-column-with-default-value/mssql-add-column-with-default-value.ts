@@ -1,18 +1,18 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import {expect} from "../../deps/chai.ts";
-import { getDirnameOfCurrentModule, createTestingConnections, closeTestingConnections } from "../../utils/test-utils.ts";
+import { createTestingConnections, closeTestingConnections } from "../../utils/test-utils.ts";
 import { Connection } from "../../../src/index.ts";
-import { Post } from "./entity/Post-Succeed.ts";
+import { Post } from "./entity/Post.ts";
+import { Post as PostSucceed } from "./entity/Post-Succeed.ts";
+import { Post as PostFail } from "./entity/Post-Fail.ts";
 
 describe("mssql -> add column to existing table", () => {
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
 
     beforeEach(async () => {
         connections = (await createTestingConnections({
             enabledDrivers: ["mssql"],
-            entities: [joinPaths(__dirname, "/entity/Post.ts")]
+            entities: [Post]
         }));
         await Promise.all(connections.map(async connection => {
             await connection.synchronize(true);
@@ -28,7 +28,7 @@ describe("mssql -> add column to existing table", () => {
     it("should fail to add column", async () => {
         connections = (await createTestingConnections({
             enabledDrivers: ["mssql"],
-            entities: [__dirname + "/entity/Post-Fail{.js,.ts}"]
+            entities: [PostFail]
         }));
         await Promise.all(connections.map(async connection => {
             let error;
@@ -45,12 +45,12 @@ describe("mssql -> add column to existing table", () => {
     it("should succeed to add column", async () => {
         connections = (await createTestingConnections({
             enabledDrivers: ["mssql"],
-            entities: [__dirname + "/entity/Post-Succeed{.js,.ts}"]
+            entities: [PostSucceed]
         }));
 
         await Promise.all(connections.map(async connection => {
             expect(await connection.synchronize()).to.be.undefined;
-            const post = await connection.getRepository<Post>("Post").findOne();
+            const post = await connection.getRepository<PostSucceed>("Post").findOne();
             if (!post) {
                 throw "Post should exist";
             }

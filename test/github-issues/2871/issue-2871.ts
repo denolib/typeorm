@@ -1,7 +1,6 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import {expect} from "../../deps/chai.ts";
-import {getDirnameOfCurrentModule, closeTestingConnections, reloadTestingDatabases, setupSingleTestingConnection} from "../../utils/test-utils.ts";
+import {closeTestingConnections, reloadTestingDatabases, setupSingleTestingConnection} from "../../utils/test-utils.ts";
 import {Connection} from "../../../src/connection/Connection.ts";
 import {createConnection, Repository} from "../../../src/index.ts";
 
@@ -11,11 +10,10 @@ import {DocumentEnum} from "./documentEnum.ts";
 describe("github issues > #2871 Empty enum array is returned as array with single empty string", () => {
   let connection: Connection;
   let repository: Repository<Bar>;
-  const __dirname = getDirnameOfCurrentModule(import.meta);
 
   before(async () => {
       const options = setupSingleTestingConnection("postgres", {
-          entities: [joinPaths(__dirname, "/entity/*.ts")],
+          entities: [Bar],
           schemaCreate: true,
           dropSchema: true,
       });

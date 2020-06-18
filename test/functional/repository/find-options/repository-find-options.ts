@@ -1,7 +1,6 @@
-import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../../deps/mocha.ts";
 import {expect} from "../../../deps/chai.ts";
-import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases, sleep} from "../../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases, sleep} from "../../../utils/test-utils.ts";
 import {Connection} from "../../../../src/connection/Connection.ts";
 import {User} from "./entity/User.ts";
 import {Category} from "./entity/Category.ts";
@@ -11,9 +10,8 @@ import {Photo} from "./entity/Photo.ts";
 describe("repository > find options", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [Category, Photo, Post, User],
         enabledDrivers: ["sqlite"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
@@ -168,9 +166,8 @@ describe("repository > find options", () => {
 
 describe("repository > find options > cache", () => {
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [Category, Photo, Post, User],
         cache: true
     }));
     beforeEach(() => reloadTestingDatabases(connections));

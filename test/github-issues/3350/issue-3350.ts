@@ -11,7 +11,7 @@ describe("github issues > #3350 ER_DUP_FIELDNAME with simple find", () => {
     let connections: Connection[];
     const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [Category, Post],
         subscribers: [joinPaths(__dirname, "/subscriber/*.ts")],
         enabledDrivers: ["mysql"],
     }));

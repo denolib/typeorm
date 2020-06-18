@@ -4,13 +4,15 @@ import {expect} from "../../deps/chai.ts";
 import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
 import {Connection} from "../../../src/connection/Connection.ts";
 import {Post} from "./entity/Post.ts";
+import {BaseContent} from "./entity/BaseContent.ts";
+import {BasePost} from "./entity/BasePost.ts";
 
 describe("other issues > double inheritance produces multiple duplicated columns", () => {
 
     let connections: Connection[];
     const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [Post, BaseContent, BasePost],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));

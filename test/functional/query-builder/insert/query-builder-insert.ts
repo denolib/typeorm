@@ -1,20 +1,20 @@
-import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../../deps/mocha.ts";
 import {expect} from "../../../deps/chai.ts";
 import {SapDriver} from "../../../../src/driver/sap/SapDriver.ts";
-import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
 import {Connection} from "../../../../src/connection/Connection.ts";
+import {Counters} from "./entity/Counters.ts";
 import {User} from "./entity/User.ts";
 import {SqlServerDriver} from "../../../../src/driver/sqlserver/SqlServerDriver.ts";
+import {Post} from "./entity/Post.ts";
 import {Photo} from "./entity/Photo.ts";
 import {AbstractSqliteDriver} from "../../../../src/driver/sqlite-abstract/AbstractSqliteDriver.ts";
 import {OracleDriver} from "../../../../src/driver/oracle/OracleDriver.ts";
 
 describe("query builder > insert", function() {
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [Counters, Photo, Post, User],
         dropSchema: true
     }));
     beforeEach(() => reloadTestingDatabases(connections));

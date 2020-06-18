@@ -1,4 +1,3 @@
-import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
 import {expect} from "../../../deps/chai.ts";
 import {runIfMain} from "../../../deps/mocha.ts";
 import {Post} from "./entity/Post.ts";
@@ -16,9 +15,8 @@ import {Subcounters} from "../embedded-many-to-one-case2/entity/Subcounters.ts";
 describe("embedded > embedded-with-special-columns", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [Counters, Post, Subcounters],
         // TODO(uki00a) Remove `enableDrivers` option when deno-sqlite supports `datetime('now')`.
         // deno-sqlite currently does not support `datetime('now')`. This is due to lack of support for getting current time in WASI.
         // @see https://github.com/dyedgreen/deno-sqlite/blob/a68be951b8a09e5df3eb76a1659d93e18ba048c5/build/src/vfs.c#L235

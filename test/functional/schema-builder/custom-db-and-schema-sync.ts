@@ -1,4 +1,3 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import "../../deps/chai.ts";
 import {Connection} from "../../../src/index.ts";
@@ -8,15 +7,23 @@ import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver.ts";
 import {SapDriver} from "../../../src/driver/sap/SapDriver.ts";
 import {SqlServerDriver} from "../../../src/driver/sqlserver/SqlServerDriver.ts";
 import {ForeignKeyMetadata} from "../../../src/metadata/ForeignKeyMetadata.ts";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases, getDirnameOfCurrentModule} from "../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {Post} from "./entity/Post.ts";
+import {Album} from "./entity/Album.ts";
+import {Category} from "./entity/Category.ts";
+import {Faculty} from "./entity/Faculty.ts";
+import {Photo} from "./entity/Photo.ts";
+import {PostVersion} from "./entity/PostVersion.ts";
+import {Question} from "./entity/Question.ts";
+import {Student} from "./entity/Student.ts";
+import {Teacher} from "./entity/Teacher.ts";
 
 describe("schema builder > custom-db-and-schema-sync", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
-            entities: [joinPaths(__dirname, "/entity/*.ts")],
+            entities: [Post, Album, Category, Faculty, Photo, PostVersion, Question, Student, Teacher],
             enabledDrivers: ["mysql", "mssql", "postgres", "sap"],
             dropSchema: true,
         });

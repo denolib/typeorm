@@ -1,8 +1,8 @@
-import {Generated} from "../../../../../src";
-import {PrimaryColumn} from "../../../../../src";
-import {PrimaryGeneratedColumn} from "../../../../../src";
-import {Entity} from "../../../../../src";
-import {Column} from "../../../../../src";
+import {Generated} from "../../../../../src/index.ts";
+import {PrimaryColumn} from "../../../../../src/index.ts";
+import {PrimaryGeneratedColumn} from "../../../../../src/index.ts";
+import {Entity} from "../../../../../src/index.ts";
+import {Column} from "../../../../../src/index.ts";
 
 @Entity()
 export class Person {
@@ -10,14 +10,14 @@ export class Person {
     @PrimaryGeneratedColumn("rowid")
     id!: string;
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: String })
     @Generated("rowid")
     id2!: string;
 
-    @PrimaryColumn({ generated: "rowid" })
+    @PrimaryColumn({ type: String, generated: "rowid" })
     id3!: string;
 
-    @Column({ generated: "rowid" })
+    @Column({ type: String, generated: "rowid" })
     id4!: string;
 
 }

@@ -1,7 +1,6 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import "../../deps/chai.ts";
-import { closeTestingConnections, createTestingConnections, reloadTestingDatabases, getDirnameOfCurrentModule } from "../../utils/test-utils.ts";
+import { closeTestingConnections, createTestingConnections, reloadTestingDatabases } from "../../utils/test-utils.ts";
 import { Connection } from "../../../src/index.ts";
 import { EntityMetadata } from "../../../src/index.ts";
 import { Person } from "./entity/person.ts";
@@ -9,9 +8,8 @@ import { Person } from "./entity/person.ts";
 describe("github issues > #197 Fails to drop indexes when removing fields", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [Person],
         schemaCreate: false,
     }));
     beforeEach(() => reloadTestingDatabases(connections));

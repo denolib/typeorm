@@ -4,7 +4,7 @@ import "../../deps/chai.ts";
 import {Connection} from "../../../src/connection/Connection.ts";
 import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections} from "../../utils/test-utils.ts";
 import {PromiseUtils} from "../../../src/index.ts";
-import { Book } from "./entity/Book.ts";
+import { Book, Chapter, Page } from "./entity/Book.ts";
 
 describe("github issues > #3551 array of embedded documents through multiple levels are not handled", () => {
 
@@ -12,7 +12,7 @@ describe("github issues > #3551 array of embedded documents through multiple lev
     const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
-            entities: [joinPaths(__dirname, "/entity/*.ts")],
+            entities: [Book, Chapter, Page],
             enabledDrivers: ["mongodb"],
             dropSchema: true,
         });

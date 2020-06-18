@@ -1,10 +1,9 @@
-import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../../deps/mocha.ts";
 import {expect} from "../../../deps/chai.ts";
 // TODO(uki00a) uncomment this when CockroachDriver is implemented.
 // import {CockroachDriver} from "../../../../src/driver/cockroachdb/CockroachDriver.ts";
 import {SapDriver} from "../../../../src/driver/sap/SapDriver.ts";
-import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases, allSettled} from "../../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases, allSettled} from "../../../utils/test-utils.ts";
 import {Connection} from "../../../../src/index.ts";
 import {PostWithVersion} from "./entity/PostWithVersion.ts";
 import {PostWithoutVersionAndUpdateDate} from "./entity/PostWithoutVersionAndUpdateDate.ts";
@@ -24,9 +23,13 @@ import {LockNotSupportedOnGivenDriverError} from "../../../../src/error/LockNotS
 describe("repository > find options > locking", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [
+            PostWithoutVersionAndUpdateDate,
+            PostWithUpdateDate,
+            PostWithVersion,
+            PostWithVersionAndUpdatedDate
+        ],
         enabledDrivers: ["postgres", "mysql", "mariadb", "mssql", "oracle", "mongodb"] // TODO(uki00a) Remove `enabledDrivers` when deno-sqlite supports `datetime('now')`.
     }));
     beforeEach(() => reloadTestingDatabases(connections));

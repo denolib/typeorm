@@ -1,7 +1,6 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import {expect} from "../../deps/chai.ts";
-import {closeTestingConnections, createTestingConnections, reloadTestingDatabases, getDirnameOfCurrentModule} from "../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
 import {Connection} from "../../../src/connection/Connection.ts";
 import {Post} from "./entity/Post.ts";
 import {MssqlParameter} from "../../../src/driver/sqlserver/MssqlParameter.ts";
@@ -9,9 +8,8 @@ import {MssqlParameter} from "../../../src/driver/sqlserver/MssqlParameter.ts";
 describe("github issues > #352 double precision round to int in mssql", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [Post],
         enabledDrivers: ["mssql"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));

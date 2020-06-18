@@ -1,8 +1,6 @@
-import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
 import {expect} from "../../../deps/chai.ts";
 import {runIfMain} from "../../../deps/mocha.ts";
 import {
-    getDirnameOfCurrentModule,
     closeTestingConnections,
     createTestingConnections,
     reloadTestingDatabases,
@@ -13,9 +11,8 @@ import {User} from "./entity/User.ts";
 
 describe("query builder > cache", function() {
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [User],
         cache: true,
         // cache: {
         //     type: "redis",

@@ -12,7 +12,7 @@ describe("github issues > #3363 Isolation Level in transaction() from Connection
     let connections: Connection[];
     const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [Category, Post],
         subscribers: [joinPaths(__dirname, "/subscriber/*.ts")]
     }));
     beforeEach(() => reloadTestingDatabases(connections));

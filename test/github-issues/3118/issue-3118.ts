@@ -1,8 +1,7 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import {expect} from "../../deps/chai.ts";
 import {Connection} from "../../../src/connection/Connection.ts";
-import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
 import {GroupWithVeryLongName} from "./entity/GroupWithVeryLongName.ts";
 import {AuthorWithVeryLongName} from "./entity/AuthorWithVeryLongName.ts";
 import {PostWithVeryLongName} from "./entity/PostWithVeryLongName.ts";
@@ -17,9 +16,8 @@ import {CategoryWithVeryLongName} from "./entity/CategoryWithVeryLongName.ts";
  */
 describe("github issues > #3118 shorten alias names (for RDBMS with a limit) when they are longer than 63 characters", () => {
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [AuthorWithVeryLongName, CategoryWithVeryLongName, GroupWithVeryLongName, PostWithVeryLongName],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));

@@ -1,7 +1,6 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import {expect} from "../../deps/chai.ts";
-import {getDirnameOfCurrentModule, createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
 import {Connection} from "../../../src/connection/Connection.ts";
 //import {PostgresDriver} from "../../../src/driver/postgres/PostgresDriver.ts";
 import {User} from "./entity/User.ts";
@@ -9,10 +8,9 @@ import {User} from "./entity/User.ts";
 describe("github issues > #2067 Unhandled promise rejection warning on postgres connection issues", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
         enabledDrivers: ["postgres"],
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [User],
         schemaCreate: true,
         dropSchema: true,
     }));

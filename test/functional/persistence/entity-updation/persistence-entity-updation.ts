@@ -1,8 +1,7 @@
-import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
 import {Connection} from "../../../../src/connection/Connection.ts";
 // TODO(uki00a) uncomment when CockroachDriver is implemented.
 // import {CockroachDriver} from "../../../../src/driver/cockroachdb/CockroachDriver.ts";
-import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
 import {PostIncrement} from "./entity/PostIncrement.ts";
 import {PostUuid} from "./entity/PostUuid.ts";
 import {PostDefaultValues} from "./entity/PostDefaultValues.ts";
@@ -16,9 +15,16 @@ import {PostEmbedded} from "./entity/PostEmbedded.ts";
 describe("persistence > entity updation", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [
+            PostComplex,
+            PostDefaultValues,
+            PostEmbedded,
+            PostIncrement,
+            PostMultiplePrimaryKeys,
+            PostSpecialColumns,
+            PostUuid
+        ],
         enabledDrivers: ["postgres", "mysql", "mssql", "oracle"] // TODO(uki00a) Remove this when deno-sqlite supports `datetime('now')`
     }));
     beforeEach(() => reloadTestingDatabases(connections));

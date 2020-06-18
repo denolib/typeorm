@@ -5,6 +5,8 @@ import {EntityMetadataValidator} from "../../../../src/metadata-builder/EntityMe
 import {getDirnameOfCurrentModule} from "../../../utils/test-utils.ts";
 import {expect} from "../../../deps/chai.ts";
 import {runIfMain} from "../../../deps/mocha.ts";
+import {Category} from "./entity/Category.ts";
+import {Post} from "./entity/Post.ts";
 
 describe("entity-metadata-validator", () => {
 
@@ -22,7 +24,7 @@ describe("entity-metadata-validator", () => {
             */
             type: "sqlite",
             database: ":memory:",
-            entities: [joinPaths(__dirname, "/entity/*.ts")]
+            entities: [Category, Post]
         });
         const connectionMetadataBuilder = new ConnectionMetadataBuilder(connection);
         const entityMetadatas = await connectionMetadataBuilder.buildEntityMetadatas([joinPaths(__dirname, "/entity/*.ts")]);

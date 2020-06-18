@@ -1,16 +1,17 @@
 import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import {expect} from "../../deps/chai.ts";
-import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
 import {Connection} from "../../../src/connection/Connection.ts";
 import {ConcreteEntity} from "./entity/ConcreteEntity.ts";
+import {AbstractEntity} from "./entity/AbstractEntity.ts";
+import {AbstractEntitySubscriber} from "./subscriber/AbstractEntitySubscriber.ts";
 
 describe("github issues > #1369 EntitySubscriber not firing events on abstract class entity", () => {
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
-        subscribers: [joinPaths(__dirname, "/subscriber/*.ts")],
+        entities: [AbstractEntity, ConcreteEntity],
+        subscribers: [AbstractEntitySubscriber],
         schemaCreate: true,
         dropSchema: true
     }));

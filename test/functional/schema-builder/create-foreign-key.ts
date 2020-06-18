@@ -1,20 +1,27 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import "../../deps/chai.ts";
 import {Connection} from "../../../src/connection/Connection.ts";
 // TODO(uki00a) uncomment this when CockroachDriver is implemented.
 // import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver.ts";
 import {UniqueMetadata} from "../../../src/metadata/UniqueMetadata.ts";
-import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
 import {ForeignKeyMetadata} from "../../../src/metadata/ForeignKeyMetadata.ts";
+import {Post} from "./entity/Post.ts";
+import {Album} from "./entity/Album.ts";
+import {Category} from "./entity/Category.ts";
+import {Faculty} from "./entity/Faculty.ts";
+import {Photo} from "./entity/Photo.ts";
+import {PostVersion} from "./entity/PostVersion.ts";
+import {Question} from "./entity/Question.ts";
+import {Student} from "./entity/Student.ts";
+import {Teacher} from "./entity/Teacher.ts";
 
 describe("schema builder > create foreign key", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => {
         connections = await createTestingConnections({
-            entities: [joinPaths(__dirname, "/entity/*.ts")],
+            entities: [Post, Album, Category, Faculty, Photo, PostVersion, Question, Student, Teacher],
             schemaCreate: true,
             dropSchema: true,
         });

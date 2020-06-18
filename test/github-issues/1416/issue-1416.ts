@@ -1,7 +1,6 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import {expect} from "../../deps/chai.ts";
-import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
 import {Author} from "./entity/Author.ts";
 import {Photo} from "./entity/Photo.ts";
 import {Connection} from "../../../src/connection/Connection.ts";
@@ -9,9 +8,8 @@ import {PhotoMetadata} from "./entity/PhotoMetadata.ts";
 
 describe("github issue > #1416 Wrong behavior when fetching an entity that has a relation with its own eager relations", () => {
     let connections: Connection[] = [];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [Author, Photo, PhotoMetadata],
         enabledDrivers: ["mysql"]
     }));
     beforeEach(() => reloadTestingDatabases(connections));

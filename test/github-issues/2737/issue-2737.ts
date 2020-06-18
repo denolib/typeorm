@@ -1,16 +1,15 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import {expect} from "../../deps/chai.ts";
 import {Connection} from "../../../src/connection/Connection.ts";
-import {getDirnameOfCurrentModule, createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {TestEntity} from "./entity/TestEntity.ts";
 
 describe("github issues > #2737 MySQLDriver findChangedColumns (fields: width, precision)", () => {
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
 
     before(async () => connections = await createTestingConnections({
         dropSchema: false,
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [TestEntity],
         enabledDrivers: ["mysql", "aurora-data-api"],
         schemaCreate: false,
         cache: false,

@@ -1,4 +1,3 @@
-import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../../deps/mocha.ts";
 import {expect} from "../../../deps/chai.ts";
 // TODO(uki00a) uncomment this when CockroachDriver is implemented.
@@ -6,7 +5,7 @@ import {expect} from "../../../deps/chai.ts";
 import {Album} from "./entity/Album.ts";
 import {Category} from "./entity/Category.ts";
 import {Connection} from "../../../../src/index.ts";
-import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
 import {Photo} from "./entity/Photo.ts";
 import {PhotoAlbumCategory} from "./entity/PhotoAlbumCategory.ts";
 import {Post} from "./entity/Post.ts";
@@ -15,9 +14,8 @@ import {PostCategory} from "./entity/PostCategory.ts";
 describe("view entity > general", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")]
+        entities: [Album, Category, Photo, PhotoAlbumCategory, Post, PostCategory]
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));

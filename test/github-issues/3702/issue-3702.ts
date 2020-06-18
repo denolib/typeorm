@@ -1,19 +1,17 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import {expect} from "../../deps/chai.ts";
-import {getDirnameOfCurrentModule, createTestingConnections, closeTestingConnections} from "../../utils/test-utils.ts";
+import {createTestingConnections, closeTestingConnections} from "../../utils/test-utils.ts";
 import {Connection} from "../../../src/connection/Connection.ts";
 import {LetterBox} from "./entity/LetterBox.ts";
 
 // Another related path: test/functional/spatial
 describe("github issues > #3702 MySQL Spatial Type Support : GeomFromText function is not supported", () => {
 
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     describe("when legacySpatialSupport: true", () => {
         let connections: Connection[];
 
         before(async () => connections = await createTestingConnections({
-            entities: [joinPaths(__dirname, "/entity/*.ts")],
+            entities: [LetterBox],
             enabledDrivers: ["mysql"],
             dropSchema: true,
             schemaCreate: true,
@@ -63,7 +61,7 @@ describe("github issues > #3702 MySQL Spatial Type Support : GeomFromText functi
         let connections: Connection[];
 
         before(async () => connections = await createTestingConnections({
-            entities: [joinPaths(__dirname, "/entity/*.ts")],
+            entities: [LetterBox],
             enabledDrivers: ["mysql"],
             dropSchema: true,
             schemaCreate: true,
