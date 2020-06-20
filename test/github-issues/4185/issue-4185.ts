@@ -1,7 +1,6 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import {expect} from "../../deps/chai.ts";
-import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
 import {Connection} from "../../../src/connection/Connection.ts";
 import {Post} from "./entity/Post.ts";
 import {ExtendedAfterLoadSubscriber} from "./subscriber/ExtendedAfterLoadSubscriber.ts";
@@ -10,7 +9,6 @@ import {SimpleAfterLoadSubscriber} from "./subscriber/SimpleAfterLoadSubscriber.
 describe("github issues > #4185 afterLoad() subscriber interface missing additional info available on other events", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
         entities: [Post],
         subscribers: [ExtendedAfterLoadSubscriber, SimpleAfterLoadSubscriber],
