@@ -72,7 +72,7 @@ function createCommandBuilder(cli: ReturnType<typeof cac>, module: CommandModule
 }
 
 export function createCliBuilder(): CliBuilder {
-  const cli = cac("typeorm").help();
+  const cli = cac("typeorm").help(null);
   const builder = {
       version(version: string) {
         cli.version(version);
