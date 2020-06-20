@@ -1,7 +1,6 @@
-import {join as joinPaths} from "../../../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../../../deps/mocha.ts";
 import {expect} from "../../../../deps/chai.ts";
-import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../../utils/test-utils.ts";
 import {Connection} from "../../../../../src/connection/Connection.ts";
 import {Category} from "./entity/Category.ts";
 import {Post} from "./entity/Post.ts";
@@ -9,9 +8,8 @@ import {Post} from "./entity/Post.ts";
 describe("decorators > relation-id > one-to-many", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
-        entities: [joinPaths(__dirname, "/entity/*.ts")],
+        entities: [Category, Post],
     }));
     beforeEach(() => reloadTestingDatabases(connections));
     after(() => closeTestingConnections(connections));

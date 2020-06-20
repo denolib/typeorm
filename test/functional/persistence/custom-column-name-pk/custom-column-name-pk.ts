@@ -1,5 +1,4 @@
-import {join as joinPaths} from "../../../../vendor/https/deno.land/std/path/mod.ts";
-import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
+import {closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../../utils/test-utils.ts";
 import {Connection} from "../../../../src/connection/Connection.ts";
 import {Post} from "./entity/Post.ts";
 import {Category} from "./entity/Category.ts";
@@ -9,7 +8,6 @@ import "../../../deps/chai.ts";
 describe("persistence > cascade operations with custom name", () => {
 
     let connections: Connection[];
-    const __dirname = getDirnameOfCurrentModule(import.meta);
     before(async () => connections = await createTestingConnections({
         entities: [Category, Post],
     }));
