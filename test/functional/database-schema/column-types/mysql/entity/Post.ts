@@ -14,7 +14,7 @@ export class Post {
     id!: number;
 
     @Column("bit")
-    bit!: Uint8Array; /* Buffer; */
+    bit!: Uint8Array;
 
     @Column("int")
     int!: number;

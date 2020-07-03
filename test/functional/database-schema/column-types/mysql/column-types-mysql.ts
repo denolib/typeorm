@@ -6,11 +6,11 @@ import {closeTestingConnections, createTestingConnections, reloadTestingDatabase
 import {PostWithOptions} from "./entity/PostWithOptions.ts";
 import {PostWithoutTypes} from "./entity/PostWithoutTypes.ts";
 import {FruitEnum} from "./enum/FruitEnum.ts";
+import {encode, decode} from "../../../../../vendor/https/deno.land/std/encoding/utf8.ts";
 
 describe("database schema > column types > mysql", () => {
 
     let connections: Connection[];
-    const encoder = new TextEncoder();
     before(async () => {
         connections = await createTestingConnections({
             entities: [Post, PostWithOptions, PostWithoutTypes],
@@ -29,8 +29,7 @@ describe("database schema > column types > mysql", () => {
 
         const post = new Post();
         post.id = 1;
-        // TODO(uki00a) not fully tested yet.
-        post.bit = new Uint8Array([0]);/* Buffer.from([0]); */
+        post.bit = new Uint8Array([0]);
         post.int = 2147483647;
         post.integer = 2147483647;
         post.tinyint = 127;
@@ -64,13 +63,12 @@ describe("database schema > column types > mysql", () => {
         post.timestamp.setMilliseconds(0); // set milliseconds to zero, because if datetime type specified without precision, milliseconds won't save in database
         post.time = "15:30:00";
         post.year = 2017;
-        // TODO(uki00a) not fully tested yet.
-        post.binary = encoder.encode("A");/* new Buffer("A"); */
-        post.varbinary = encoder.encode("B");/* new Buffer("B"); */
-        post.blob = encoder.encode("This is blob");/* new Buffer("This is blob"); */
-        post.tinyblob = encoder.encode("This is tinyblob");/* new Buffer("This is tinyblob"); */
-        post.mediumblob = encoder.encode("This is mediumblob");/* new Buffer("This is mediumblob"); */
-        post.longblob = encoder.encode("This is longblob");/* new Buffer("This is longblob"); */
+        post.binary = encode("A");
+        post.varbinary = encode("B");
+        post.blob = encode("This is blob");
+        post.tinyblob = encode("This is tinyblob");
+        post.mediumblob = encode("This is mediumblob");
+        post.longblob = encode("This is longblob");
         post.geometry = "POINT(1 1)";
         post.point = "POINT(1 1)";
         post.linestring = "LINESTRING(0 0,1 1,2 2)";
@@ -90,7 +88,7 @@ describe("database schema > column types > mysql", () => {
 
         const loadedPost = (await postRepository.findOne(1))!;
         loadedPost.id.should.be.equal(post.id);
-        loadedPost.bit.toString().should.be.equal(post.bit.toString());
+        decode(loadedPost.bit).should.be.equal(decode(post.bit));
         loadedPost.int.should.be.equal(post.int);
         loadedPost.tinyint.should.be.equal(post.tinyint);
         loadedPost.smallint.should.be.equal(post.smallint);
@@ -282,8 +280,7 @@ describe("database schema > column types > mysql", () => {
         post.id = 1;
         post.name = "Post";
         post.boolean = true;
-        // TODO(uki00a) not fully tested yet.
-        post.blob = encoder.encode("A");/* new Buffer("A"); */
+        post.blob = encode("A");
         post.datetime = new Date();
         post.datetime.setMilliseconds(0); // set milliseconds to zero, because if datetime type specified without precision, milliseconds won't save in database
         await postRepository.save(post);

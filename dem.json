@@ -6,6 +6,7 @@
       "version": "0.59.0",
       "files": [
         "/async/deferred.ts",
+        "/encoding/utf8.ts",
         "/fmt/colors.ts",
         "/fs/mod.ts",
         "/node/process.ts",
