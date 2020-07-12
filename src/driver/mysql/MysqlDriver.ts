@@ -517,8 +517,7 @@ export class MysqlDriver implements Driver {
             value = DateUtils.stringToSimpleArray(value);
         } else if (columnMetadata.type === "bigint" || columnMetadata.type === "decimal") {
             value = String(value);
-        }
-        // For compatibility with the original typeorm, we convert specific types.
+        } // Some types are treated differently from the original typeorm.
         else if (
             columnMetadata.type === "tinyblob" ||
             columnMetadata.type === "mediumblob" ||
@@ -526,11 +525,13 @@ export class MysqlDriver implements Driver {
             columnMetadata.type === "blob" ||
             columnMetadata.type === "binary" ||
             columnMetadata.type === "varbinary" ||
-            columnMetadata.type === "bit") {
+            columnMetadata.type === "bit" ||
+            columnMetadata.type === Uint8Array) {
             // treats binary data as `Uint8Array`
             // See https://github.com/mysqljs/mysql#buffer
             value = encode(value);
-        } else if (columnMetadata.type === "year") {
+        } // For compatibility with the original typeorm, we convert specific types.
+        else if (columnMetadata.type === "year") {
             value = Number(value);
         }
 

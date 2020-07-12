@@ -289,7 +289,7 @@ describe("database schema > column types > mysql", () => {
         loadedPost.id.should.be.equal(post.id);
         loadedPost.name.should.be.equal(post.name);
         loadedPost.boolean.should.be.equal(post.boolean);
-        loadedPost.blob.toString().should.be.equal(post.blob.toString());
+        decode(loadedPost.blob).should.be.equal(decode(post.blob));
         loadedPost.datetime.getTime().should.be.equal(post.datetime.getTime());
 
         table!.findColumnByName("id")!.type.should.be.equal("int");
