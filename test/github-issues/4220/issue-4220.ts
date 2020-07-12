@@ -3,8 +3,10 @@ import {expect} from "../../deps/chai.ts";
 import {createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
 import {Connection} from "../../../src/connection/Connection.ts";
 import {User} from "./entity/User.ts";
+import {encode, decode} from "../../../vendor/https/deno.land/std/encoding/utf8.ts";
 
-describe("github issues > #4220 Fix the bug when using buffer as the key.", () => {
+// TODO denolib/typeorm currently does not support `Buffer`.
+describe.skip("github issues > #4220 Fix the bug when using buffer as the key.", () => {
 
     let connections: Connection[];
     before(async () => connections = await createTestingConnections({
@@ -17,8 +19,6 @@ describe("github issues > #4220 Fix the bug when using buffer as the key.", () =
     after(() => closeTestingConnections(connections));
 
     it("should use the hex string format of buffer when the primary column is buffer type.", () => Promise.all(connections.map(async connection => {
-       const encoder = new TextEncoder();
-       const decoder = new TextDecoder();
        const ids = [
         "11E9845B84B510E0A99EDBC51EED5BB5",
         "11E9845B84C27E60A99EDBC51EED5BB5",
@@ -47,7 +47,7 @@ describe("github issues > #4220 Fix the bug when using buffer as the key.", () =
         [...Array(10)].map((_, index) => {
             const user = new User();
             user.name = "random-name";
-            user.id = encoder.encode(ids[index]);//Buffer.from(ids[index], "hex");
+            user.id = encode(ids[index]);//Buffer.from(ids[index], "hex");
             return user;
         }).map(user => repo.save(user))
       );
@@ -58,7 +58,7 @@ describe("github issues > #4220 Fix the bug when using buffer as the key.", () =
 
       expect(result.length).equal(10);
       //expect(result[0].id.toString("hex").toUpperCase()).equal(ids[0]);
-      expect(decoder.decode(result[0].id)).equal(ids[0]);
+      expect(decode(result[0].id)).equal(ids[0]);
     })));
 });
 

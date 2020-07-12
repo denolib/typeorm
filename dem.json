@@ -6,6 +6,7 @@
       "version": "0.59.0",
       "files": [
         "/async/deferred.ts",
+        "/encoding/utf8.ts",
         "/fmt/colors.ts",
         "/fs/mod.ts",
         "/node/process.ts",
@@ -15,7 +16,7 @@
     {
       "protocol": "https",
       "path": "deno.land/x/mysql",
-      "version": "2.2.0",
+      "version": "v2.3.0",
       "files": [
         "/mod.ts"
       ]

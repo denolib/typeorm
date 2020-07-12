@@ -20,6 +20,7 @@ import {NotImplementedError} from "../../error/NotImplementedError.ts";
 import type * as DenoMysql from "../../../vendor/https/deno.land/x/mysql/mod.ts";
 import type {ReleaseConnection, RawExecuteResult} from "./typings.ts";
 import {deferred} from "../../../vendor/https/deno.land/std/async/deferred.ts";
+import {decode, encode} from "../../../vendor/https/deno.land/std/encoding/utf8.ts";
 
 /**
  * Organizes communication with MySQL DBMS.
@@ -470,6 +471,9 @@ export class MysqlDriver implements Driver {
 
         } else if (columnMetadata.type === "set") {
             return DateUtils.simpleArrayToString(value);
+        } else if (value instanceof Uint8Array) {
+            // TODO We want to avoid this decoding...
+            return decode(value);
         }
 
         return value;
@@ -511,6 +515,24 @@ export class MysqlDriver implements Driver {
             value = parseInt(value);
         } else if (columnMetadata.type === "set") {
             value = DateUtils.stringToSimpleArray(value);
+        } else if (columnMetadata.type === "bigint" || columnMetadata.type === "decimal") {
+            value = String(value);
+        } // Some types are treated differently from the original typeorm.
+        else if (
+            columnMetadata.type === "tinyblob" ||
+            columnMetadata.type === "mediumblob" ||
+            columnMetadata.type === "longblob" ||
+            columnMetadata.type === "blob" ||
+            columnMetadata.type === "binary" ||
+            columnMetadata.type === "varbinary" ||
+            columnMetadata.type === "bit" ||
+            columnMetadata.type === Uint8Array) {
+            // treats binary data as `Uint8Array`
+            // See https://github.com/mysqljs/mysql#buffer
+            value = encode(value);
+        } // For compatibility with the original typeorm, we convert specific types.
+        else if (columnMetadata.type === "year") {
+            value = Number(value);
         }
 
         if (columnMetadata.transformer)
@@ -531,6 +553,9 @@ export class MysqlDriver implements Driver {
 
         } else if (column.type === Date) {
             return "datetime";
+
+        } else if (column.type === Uint8Array) {
+            return "blob";
 
         } else if (column.type === Boolean) {
             return "tinyint";

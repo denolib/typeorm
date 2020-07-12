@@ -55,7 +55,7 @@ describe("github issues > #1476 subqueries", () => {
         expect(plan.b_planName).to.be.equal("Test");
         expect(plan.planId).to.be.equal(1);
 
-        if (connection.driver instanceof MysqlDriver) {
+        if (connection.driver instanceof MysqlDriver && false) { // Unlike node-mysql, deno_mysql treats the result of count as number/bigint.
             expect(plan.total).to.be.equal("2");
         } else {
             expect(plan.total).to.be.equal(2);
