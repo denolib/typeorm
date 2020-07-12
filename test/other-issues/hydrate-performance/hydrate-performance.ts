@@ -4,7 +4,7 @@ import {closeTestingConnections, createTestingConnections, reloadTestingDatabase
 import {Connection} from "../../../src/connection/Connection.ts";
 import {Post} from "./entity/Post.ts";
 
-describe("other issues > hydration performance", () => {
+describe.skip("other issues > hydration performance", () => {
 
     let connections: Connection[];
     before(async () => connections = await createTestingConnections({
