@@ -3,7 +3,7 @@
     {
       "protocol": "https",
       "path": "deno.land/std",
-      "version": "0.59.0",
+      "version": "v0.61.0",
       "files": [
         "/async/deferred.ts",
         "/encoding/utf8.ts",
@@ -24,7 +24,7 @@
     {
       "protocol": "https",
       "path": "deno.land/x/postgres",
-      "version": "v0.4.1",
+      "version": "28249fbec10f7f1581f405a5a5b4b105a838629b",
       "files": [
         "/mod.ts"
       ]
