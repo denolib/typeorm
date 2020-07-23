@@ -26,7 +26,7 @@ export class Post {
     int2!: number;
 
     @Column("int8")
-    int8!: number;
+    int8!: BigInt;
 
     @Column("tinyint")
     tinyint!: number;
@@ -38,10 +38,10 @@ export class Post {
     mediumint!: number;
 
     @Column("bigint")
-    bigint!: number;
+    bigint!: BigInt;
 
     @Column("unsigned big int")
-    unsignedBigInt!: number;
+    unsignedBigInt!: BigInt;
 
     // -------------------------------------------------------------------------
     // Character Types
