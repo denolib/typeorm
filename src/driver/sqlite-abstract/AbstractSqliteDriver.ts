@@ -263,6 +263,12 @@ export abstract class AbstractSqliteDriver implements Driver {
         } else if (columnMetadata.type === "simple-enum") {
             return DateUtils.simpleEnumToString(value);
         }
+        // Some types are treated differently from the original typeorm.
+        else if (typeof value === "bigint") {
+            // Unlike node-sqlite, deno-sqlite uses BigInt for large numbers.
+            // https://github.com/dyedgreen/deno-sqlite/pull/67
+            return value.toString();
+        }
 
         return value;
     }
@@ -319,6 +325,16 @@ export abstract class AbstractSqliteDriver implements Driver {
         } else if ( columnMetadata.type === "simple-enum" ) {
             value = DateUtils.stringToSimpleEnum(value, columnMetadata);
 
+        }
+        // Some types are treated differently from the original typeorm.
+        else if (
+            columnMetadata.type === "int8" ||
+            columnMetadata.type === "bigint" ||
+            columnMetadata.type === "unsigned big int" ||
+            columnMetadata.type === BigInt) {
+            // Unlike node-sqlite, deno-sqlite uses BigInt for large numbers.
+            // https://github.com/dyedgreen/deno-sqlite/pull/67
+            value = BigInt(value);
         }
 
         if (columnMetadata.transformer)
