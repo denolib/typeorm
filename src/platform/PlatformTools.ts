@@ -103,7 +103,7 @@ export class PlatformTools {
         if (data instanceof Uint8Array) {
             return Deno.writeFile(path, data);
         } else {
-            return fs.writeFileStr(path, data);
+            return Deno.writeTextFile(path, data);
         }
     }
 

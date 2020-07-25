@@ -22,14 +22,14 @@ export class CommandUtils {
         if (override === false && await fs.exists(filePath))
             return;
 
-        await fs.writeFileStr(filePath, content);
+        await Deno.writeTextFile(filePath, content);
     }
 
     /**
      * Reads everything from a given file and returns its content as a string.
      */
     static async readFile(filePath: string): Promise<string> {
-        return fs.readFileStr(filePath, { encoding: "utf-8" });
+        return Deno.readTextFile(filePath);
     }
 
 
