@@ -25,6 +25,10 @@
 [ ] `@next`
 [ ] `0.x.x` (or put your version here)
 
+**Deno version:**
+
+`x.x.x`
+
 **Steps to reproduce or a small repository showing the problem:**
 
 <!--
