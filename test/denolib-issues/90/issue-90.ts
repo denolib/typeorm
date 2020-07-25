@@ -1,9 +1,5 @@
-import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {runIfMain} from "../../deps/mocha.ts";
-import {expect} from "../../deps/chai.ts";
-import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases, setupTestingConnections} from "../../utils/test-utils.ts";
-import {Connection} from "../../../src/connection/Connection.ts";
-import {ConnectionOptions} from "../../../src/connection/ConnectionOptions.ts";
+import {setupTestingConnections} from "../../utils/test-utils.ts";
 import {PostgresConnectionOptions} from "../../../src/driver/postgres/PostgresConnectionOptions.ts";
 import { createConnection } from "../../../src/index.ts";
 import { ConnectionOptionsReader } from "../../../src/connection/ConnectionOptionsReader.ts";
