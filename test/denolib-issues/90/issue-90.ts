@@ -4,8 +4,8 @@ import {PostgresConnectionOptions} from "../../../src/driver/postgres/PostgresCo
 import { createConnection } from "../../../src/index.ts";
 import { ConnectionOptionsReader } from "../../../src/connection/ConnectionOptionsReader.ts";
 
-describe.only("denolib issues > #90 Could not connect to the postgres database when TYPEORM_PORT is set", () => {
-    it("can connect to postgres database with TYPEORM_PORT env var", async () => {
+describe("denolib issues > #90 Could not connect to the postgres database when TYPEORM_PORT is set", () => {
+    it("can connect to postgres database when TYPEORM_PORT is set", async () => {
         const connectionOptionsArray = setupTestingConnections({
             enabledDrivers: ["postgres"],
         });
