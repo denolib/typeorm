@@ -516,5 +516,6 @@ import "./test/other-issues/update-relational-column-on-relation-change/update-r
 
 // Tests for denolib issues
 import "./test/denolib-issues/70/issue-70.ts";
+import "./test/denolib-issues/90/issue-90.ts";
 
 runTests();
