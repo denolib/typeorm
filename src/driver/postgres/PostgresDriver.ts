@@ -920,7 +920,7 @@ export class PostgresDriver implements Driver {
             user: credentials.username,
             password: credentials.password,
             database: credentials.database,
-            port: credentials.port,
+            port: credentials.port != null ? Number(credentials.port) : null,
             ssl: credentials.ssl
         }, options.extra || {});
 
