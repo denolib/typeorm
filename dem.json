@@ -8,7 +8,10 @@
         "/async/deferred.ts",
         "/encoding/utf8.ts",
         "/fmt/colors.ts",
-        "/fs/mod.ts",
+        "/fs/empty_dir.ts",
+        "/fs/ensure_dir.ts",
+        "/fs/exists.ts",
+        "/fs/expand_glob.ts",
         "/node/process.ts",
         "/path/mod.ts"
       ]

@@ -1,4 +1,4 @@
-import * as fs from "../../vendor/https/deno.land/std/fs/mod.ts";
+import * as fs from "../util/fs.ts";
 import * as path from "../../vendor/https/deno.land/std/path/mod.ts";
 
 /**

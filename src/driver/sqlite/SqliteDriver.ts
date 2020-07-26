@@ -1,5 +1,5 @@
 import type * as DenoSqlite from "../../../vendor/https/deno.land/x/sqlite/mod.ts";
-import {ensureDir} from "../../../vendor/https/deno.land/std/fs/mod.ts";
+import {ensureDir} from "../../util/fs.ts";
 import {dirname} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {SqliteQueryRunner} from "./SqliteQueryRunner.ts";
 import {DriverOptionNotSetError} from "../../error/DriverOptionNotSetError.ts";
