@@ -1,7 +1,7 @@
 import {runIfMain} from "../../deps/mocha.ts";
 import {expect} from "../../deps/chai.ts";
 import * as path from "../../../vendor/https/deno.land/std/path/mod.ts";
-import * as fs from "../../../vendor/https/deno.land/std/fs/mod.ts";
+import * as fs from "../../../src/util/fs.ts";
 import {getSqljsManager} from "../../../src/index.ts";
 import {getDirnameOfCurrentModule, closeTestingConnections, createTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
 import {Connection} from "../../../src/connection/Connection.ts";

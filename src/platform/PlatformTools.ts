@@ -1,6 +1,6 @@
 import * as path from "../../vendor/https/deno.land/std/path/mod.ts";
 import * as colors from "../../vendor/https/deno.land/std/fmt/colors.ts";
-import * as fs from "../../vendor/https/deno.land/std/fs/mod.ts";
+import * as fs from "../util/fs.ts";
 import {NotImplementedError} from "../error/NotImplementedError.ts";
 type Buffer = unknown;
 export type ReadStream = unknown;

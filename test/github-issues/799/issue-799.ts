@@ -1,6 +1,6 @@
 import {join as joinPaths} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {dirname} from "../../../vendor/https/deno.land/std/path/mod.ts";
-import {emptyDir} from "../../../vendor/https/deno.land/std/fs/mod.ts";
+import {emptyDir} from "../../../src/util/fs.ts";
 import {runIfMain} from "../../deps/mocha.ts";
 import {expect} from "../../deps/chai.ts";
 import {getDirnameOfCurrentModule} from "../../utils/test-utils.ts";
