@@ -4,8 +4,7 @@ import {createTestingConnections, closeTestingConnections, reloadTestingDatabase
 import {Connection} from "../../../src/connection/Connection.ts";
 import {User} from "./entity/User.ts";
 
-// TODO(uki00a) See: https://github.com/denolib/typeorm/issues/17
-describe.skip("github issues > #4096 SQLite support for orUpdate", () => {
+describe("github issues > #4096 SQLite support for orUpdate", () => {
     let connections: Connection[];
 
     before(async () => connections = await createTestingConnections({
