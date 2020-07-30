@@ -42,17 +42,28 @@ export class PlatformTools {
         return window;
     }
 
+    // FIXME fix signature
     /**
      * Loads ("require"-s) given file or package.
      * This operation only supports on node platform
      */
-    static load(name: string): any {
+    static load<T>(name: "postgres" | "sqlite" | "mysql" | "dotenv"): Promise<T>;
+    static load(name: string): any;
+    static load(name: any): any {
 
         // if name is not absolute or relative, then try to load package from the node_modules of the directory we are currently in
         // this is useful when we are using typeorm package globally installed and it accesses drivers
         // that are not installed globally
-
-        throw new NotImplementedError('PlatformTools.load');
+        switch (name) {
+            case "postgres":
+                return import("../../vendor/https/deno.land/x/postgres/mod.ts");
+            case "sqlite":
+                return import("../../vendor/https/deno.land/x/sqlite/mod.ts");
+            case "mysql":
+                return import("../../vendor/https/deno.land/x/mysql/mod.ts");
+            default:
+                throw new NotImplementedError('PlatformTools.load');
+        }
     }
 
     /**

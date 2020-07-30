@@ -17,10 +17,12 @@ import {EntityMetadata} from "../../metadata/EntityMetadata.ts";
 import {OrmUtils} from "../../util/OrmUtils.ts";
 import {ApplyValueTransformers} from "../../util/ApplyValueTransformers.ts";
 import {NotImplementedError} from "../../error/NotImplementedError.ts";
-import type * as DenoMysql from "../../../vendor/https/deno.land/x/mysql/mod.ts";
-import type {ReleaseConnection, RawExecuteResult} from "./typings.ts";
+import type {DenoMysql, Client, Connection as MysqlConnection, ExecuteResult, ClientConfig} from "./typings.ts";
 import {deferred} from "../../../vendor/https/deno.land/std/async/deferred.ts";
 import {decode, encode} from "../../../vendor/https/deno.land/std/encoding/utf8.ts";
+import { PlatformTools } from "../../platform/PlatformTools.ts";
+
+type ReleaseConnection = () => Promise<void>;
 
 /**
  * Organizes communication with MySQL DBMS.
@@ -39,13 +41,13 @@ export class MysqlDriver implements Driver {
     /**
      * Mysql underlying library.
      */
-    private mysql!: typeof DenoMysql;
+    private mysql!: DenoMysql;
 
     /**
      * Connection pool.
      * Used in non-replication mode.
      */
-    pool?: DenoMysql.Client;
+    pool?: Client;
 
     /**
      * Pool cluster used in replication mode.
@@ -687,7 +689,7 @@ export class MysqlDriver implements Driver {
      * Used for replication.
      * If replication is not setup then returns default connection's database connection.
      */
-    async obtainMasterConnection(): Promise<[DenoMysql.Connection, ReleaseConnection]> {
+    async obtainMasterConnection(): Promise<[MysqlConnection, ReleaseConnection]> {
         if (this.poolCluster) {
             throw new NotImplementedError("MysqlDriver.poolCluster is not currently supported yet");
             /*
@@ -697,9 +699,9 @@ export class MysqlDriver implements Driver {
             */
 
         } else if (this.pool) {
-            const connectionPromise = deferred<[DenoMysql.Connection, ReleaseConnection]>();
+            const connectionPromise = deferred<[MysqlConnection, ReleaseConnection]>();
             const releasePromise = new Promise<void>(resolve => {
-                this.pool!.useConnection((connection: DenoMysql.Connection) => {
+                this.pool!.useConnection((connection: MysqlConnection) => {
                     const release = async () => resolve();
                     connectionPromise.resolve([connection, release]);
                     return releasePromise;
@@ -716,7 +718,7 @@ export class MysqlDriver implements Driver {
      * Used for replication.
      * If replication is not setup then returns master (default) connection's database connection.
      */
-    obtainSlaveConnection(): Promise<[DenoMysql.Connection, ReleaseConnection]> {
+    obtainSlaveConnection(): Promise<[MysqlConnection, ReleaseConnection]> {
         if (!this.poolCluster)
             return this.obtainMasterConnection();
 
@@ -730,7 +732,7 @@ export class MysqlDriver implements Driver {
     /**
      * Creates generated map of values generated or returned by database after INSERT query.
      */
-    createGeneratedMap(metadata: EntityMetadata, insertResult: RawExecuteResult) {
+    createGeneratedMap(metadata: EntityMetadata, insertResult: ExecuteResult) {
         const generatedMap = metadata.generatedColumns.reduce((map, generatedColumn) => {
             let value: any;
             if (generatedColumn.generationStrategy === "increment" && insertResult.lastInsertId) {
@@ -834,13 +836,13 @@ export class MysqlDriver implements Driver {
      * Loads all driver dependencies.
      */
     protected async loadDependencies(): Promise<void> {
-        this.mysql = await import("../../../vendor/https/deno.land/x/mysql/mod.ts");
+        this.mysql = await PlatformTools.load<DenoMysql>("mysql");
     }
 
     /**
      * Creates a new connection pool for a given database credentials.
      */
-    protected createConnectionOptions(options: MysqlConnectionOptions, credentials: MysqlConnectionCredentialsOptions): DenoMysql.ClientConfig {
+    protected createConnectionOptions(options: MysqlConnectionOptions, credentials: MysqlConnectionCredentialsOptions): ClientConfig {
 
         credentials = Object.assign({}, credentials, DriverUtils.buildDriverOptions(credentials)); // todo: do it better way
 
@@ -876,13 +878,13 @@ export class MysqlDriver implements Driver {
                 poolSize: 10, // This matches the default value of the Node.js's mysql module.
                 ...(options.extra || {})
             }
-        } as DenoMysql.ClientConfig;
+        } as ClientConfig;
     }
 
     /**
      * Creates a new connection pool for a given database credentials.
      */
-    protected createPool(connectionOptions: DenoMysql.ClientConfig): Promise<DenoMysql.Client> {
+    protected createPool(connectionOptions: ClientConfig): Promise<Client> {
 
         // create a connection pool
         const pool = new this.mysql.Client();

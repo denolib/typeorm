@@ -1,7 +1,27 @@
-import type {Connection} from "../../../vendor/https/deno.land/x/mysql/mod.ts"
-
-type ResolvedType<T> = T extends Promise<infer U> ? U : never;
-export type ReleaseConnection = () => Promise<void>;
-export type RawExecuteResult = ResolvedType<ReturnType<Connection["execute"]>>;
+// TODO(#79) We want to generate this file automatically.
+export interface ExecuteResult {
+    lastInsertId?: number;
+    rows?: Rows;
+}
 export type Rows = Array<any>;
-export type QueryResult = Rows | RawExecuteResult;
+
+export type DenoMysql = {
+    Client: ClientConstructor;
+}
+
+interface ClientConstructor {
+    new(): Client;
+}
+
+export interface ClientConfig {
+}
+
+export interface Client {
+    connect(config: ClientConfig): Promise<Client>;
+    close(): Promise<void>;
+    useConnection(callback: (connection: Connection) => Promise<void>): Promise<void>;
+}
+
+export interface Connection {
+    execute(query: string, parameters: any[]): Promise<ExecuteResult>
+}

@@ -1,4 +1,3 @@
-import type * as DenoPostgres from "../../../vendor/https/deno.land/x/postgres/mod.ts";
 import {Driver} from "../Driver.ts";
 import {ConnectionIsNotSetError} from "../../error/ConnectionIsNotSetError.ts";
 import {ObjectLiteral} from "../../common/ObjectLiteral.ts";
@@ -7,7 +6,7 @@ import {DriverUtils} from "../DriverUtils.ts";
 import {ColumnMetadata} from "../../metadata/ColumnMetadata.ts";
 import {PostgresQueryRunner} from "./PostgresQueryRunner.ts";
 import {DateUtils} from "../../util/DateUtils.ts";
-// import {PlatformTools} from "../../platform/PlatformTools.ts";
+import {PlatformTools} from "../../platform/PlatformTools.ts";
 import {Connection} from "../../connection/Connection.ts";
 import {RdbmsSchemaBuilder} from "../../schema-builder/RdbmsSchemaBuilder.ts";
 import {PostgresConnectionOptions} from "./PostgresConnectionOptions.ts";
@@ -21,7 +20,7 @@ import {EntityMetadata} from "../../metadata/EntityMetadata.ts";
 import {OrmUtils} from "../../util/OrmUtils.ts";
 import {ApplyValueTransformers} from "../../util/ApplyValueTransformers.ts";
 import {NotImplementedError} from "../../error/NotImplementedError.ts";
-import {PoolClient} from "./typings.ts";
+import type {DenoPostgres, Pool, PoolClient} from "./typings.ts";
 
 /**
  * Organizes communication with PostgreSQL DBMS.
@@ -40,18 +39,18 @@ export class PostgresDriver implements Driver {
     /**
      * Postgres underlying library.
      */
-    private postgres!: typeof DenoPostgres;
+    private postgres!: DenoPostgres;
 
     /**
      * Pool for master database.
      */
-    private master?: DenoPostgres.Pool;
+    private master?: Pool;
 
     /**
      * Pool for slave databases.
      * Used in replication.
      */
-    private slaves: DenoPostgres.Pool[] = [];
+    private slaves: Pool[] = [];
 
     /**
      * We store all created query runners because we need to release them.
@@ -783,7 +782,7 @@ export class PostgresDriver implements Driver {
         return this.obtainConnectionFromPool(this.slaves[random]);
     }
 
-    private async obtainConnectionFromPool(pool: DenoPostgres.Pool): Promise<[PoolClient, () => Promise<void>]> {
+    private async obtainConnectionFromPool(pool: Pool): Promise<[PoolClient, () => Promise<void>]> {
         const poolClient = await pool.connect();
         return [poolClient, () => poolClient.release()];
     }
@@ -893,7 +892,7 @@ export class PostgresDriver implements Driver {
      * If driver dependency is not given explicitly, then try to load it via "require".
      */
     protected async loadDependencies(): Promise<void> {
-        this.postgres = await import("../../../vendor/https/deno.land/x/postgres/mod.ts");
+        this.postgres = await PlatformTools.load<DenoPostgres>("postgres");
         // try {
         //     this.postgres = PlatformTools.load("pg");
         //     try {
@@ -910,7 +909,7 @@ export class PostgresDriver implements Driver {
     /**
      * Creates a new connection pool for a given database credentials.
      */
-    protected async createPool(options: PostgresConnectionOptions, credentials: PostgresConnectionCredentialsOptions): Promise<DenoPostgres.Pool> {
+    protected async createPool(options: PostgresConnectionOptions, credentials: PostgresConnectionCredentialsOptions): Promise<Pool> {
 
         credentials = Object.assign({}, credentials, DriverUtils.buildDriverOptions(credentials)); // todo: do it better way
 
@@ -949,7 +948,7 @@ export class PostgresDriver implements Driver {
     /**
      * Closes connection pool.
      */
-    protected async closePool(pool: DenoPostgres.Pool): Promise<void> {
+    protected async closePool(pool: Pool): Promise<void> {
         await Promise.all(this.connectedQueryRunners.map(queryRunner => queryRunner.release()));
         return pool.end();
     }
