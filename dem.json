@@ -12,6 +12,7 @@
         "/fs/ensure_dir.ts",
         "/fs/exists.ts",
         "/fs/expand_glob.ts",
+        "/hash/sha256.ts",
         "/node/process.ts",
         "/path/mod.ts"
       ]
@@ -36,14 +37,6 @@
       "protocol": "https",
       "path": "deno.land/x/postgres",
       "version": "28249fbec10f7f1581f405a5a5b4b105a838629b",
-      "files": [
-        "/mod.ts"
-      ]
-    },
-    {
-      "protocol": "https",
-      "path": "deno.land/x/sha256",
-      "version": "v1.0.2",
       "files": [
         "/mod.ts"
       ]
