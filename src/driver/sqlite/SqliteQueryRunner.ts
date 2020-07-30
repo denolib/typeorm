@@ -1,4 +1,4 @@
-import type {DB} from "../../../vendor/https/deno.land/x/sqlite/mod.ts";
+import type {DB} from "./typings.ts";
 import {QueryRunnerAlreadyReleasedError} from "../../error/QueryRunnerAlreadyReleasedError.ts";
 import {QueryFailedError} from "../../error/QueryFailedError.ts";
 import {AbstractSqliteQueryRunner} from "../sqlite-abstract/AbstractSqliteQueryRunner.ts";

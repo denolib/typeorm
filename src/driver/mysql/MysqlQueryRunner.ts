@@ -24,8 +24,9 @@ import {TableExclusion} from "../../schema-builder/table/TableExclusion.ts";
 import {VersionUtils} from "../../util/VersionUtils.ts";
 import {NotImplementedError} from "../../error/NotImplementedError.ts";
 import {PromiseQueue} from "../../util/PromiseQueue.ts";
-import type {Connection} from "../../../vendor/https/deno.land/x/mysql/mod.ts";
-import type {RawExecuteResult, Rows, QueryResult} from "./typings.ts";
+import type {ExecuteResult, Rows, Connection} from "./typings.ts";
+
+type QueryResult = Rows | ExecuteResult;
 
 /**
  * Runs queries on a single mysql database connection.
@@ -169,15 +170,15 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
             // const result = await databaseConnection.execute(query, parameters).finally(logSlowQuery);
             const result = await this.executeQuery(databaseConnection, query, parameters || []).finally(logSlowQuery);
             return Array.isArray(result.rows)
-                ? result.rows as QueryResult // SELECT
-                : result as RawExecuteResult; // INSERT, UPDATE, DELETE
+                ? result.rows as Rows // SELECT
+                : result as ExecuteResult; // INSERT, UPDATE, DELETE
         } catch (err) {
             this.driver.connection.logger.logQueryError(err, query, parameters, this);
             throw new QueryFailedError(query, parameters, err);
         }
     }
 
-    private queryQueueMap = new Map<Connection, PromiseQueue<RawExecuteResult>>();
+    private queryQueueMap = new Map<Connection, PromiseQueue<ExecuteResult>>();
 
     /**
      * TODO Remove this method.
@@ -185,7 +186,7 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
      */
     private executeQuery(connection: Connection, query: string, parameters: any[]) {
         if (!this.queryQueueMap.has(connection)) {
-            const queue = new PromiseQueue<RawExecuteResult>();
+            const queue = new PromiseQueue<ExecuteResult>();
             this.queryQueueMap.set(connection, queue);
             queue.onEmpty().then(() => {
                 this.queryQueueMap.delete(connection);

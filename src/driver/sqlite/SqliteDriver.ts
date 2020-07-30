@@ -1,4 +1,3 @@
-import type * as DenoSqlite from "../../../vendor/https/deno.land/x/sqlite/mod.ts";
 import {ensureDir} from "../../util/fs.ts";
 import {dirname} from "../../../vendor/https/deno.land/std/path/mod.ts";
 import {SqliteQueryRunner} from "./SqliteQueryRunner.ts";
@@ -8,6 +7,8 @@ import {SqliteConnectionOptions} from "./SqliteConnectionOptions.ts";
 import {ColumnType} from "../types/ColumnTypes.ts";
 import {QueryRunner} from "../../query-runner/QueryRunner.ts";
 import {AbstractSqliteDriver} from "../sqlite-abstract/AbstractSqliteDriver.ts";
+import {PlatformTools} from "../../platform/PlatformTools.ts";
+import type {DenoSqlite, DB} from "./typings.ts";
 
 /**
  * Organizes communication with sqlite DBMS.
@@ -25,9 +26,9 @@ export class SqliteDriver extends AbstractSqliteDriver {
      */
     options: SqliteConnectionOptions;
 
-    databaseConnection!: DenoSqlite.DB;
+    databaseConnection!: DB;
 
-    sqlite!: typeof DenoSqlite;
+    sqlite!: DenoSqlite;
 
 
     // -------------------------------------------------------------------------
@@ -122,7 +123,7 @@ export class SqliteDriver extends AbstractSqliteDriver {
      * If driver dependency is not given explicitly, then try to load it via "require".
      */
     protected async loadDependencies(): Promise<void> {
-        this.sqlite = await import("../../../vendor/https/deno.land/x/sqlite/mod.ts");
+        this.sqlite = await PlatformTools.load<DenoSqlite>("sqlite");
     }
 
     /**
