@@ -3,6 +3,7 @@ import {PlatformTools} from "../platform/PlatformTools.ts";
 import {ConnectionOptionsEnvReader} from "./options-reader/ConnectionOptionsEnvReader.ts";
 import {ConnectionOptionsYmlReader} from "./options-reader/ConnectionOptionsYmlReader.ts";
 import {ConnectionOptionsXmlReader} from "./options-reader/ConnectionOptionsXmlReader.ts";
+import type {Dotenv} from "./typings.ts";
 
 /**
  * Reads connection options from the ormconfig.
@@ -91,14 +92,14 @@ export class ConnectionOptionsReader {
             return PlatformTools.fileExist(this.baseFilePath + "." + format);
         });
 
+        // TODO(denolib/typeorm#100) add support for `safe`/`example`/`defaults` options.
         // if .env file found then load all its variables into process.env using dotenv package
-        type Dotenv = { config(opts: { path: string }): void }; // TODO This is not ideal.
         if (foundFileFormat === "env") {
             const dotenv = await PlatformTools.load<Dotenv>("dotenv");
-            dotenv.config({ path: this.baseFilePath });
+            dotenv.config({ path: this.baseFilePath, export: true });
         } else if (PlatformTools.fileExist(".env")) {
             const dotenv = await PlatformTools.load<Dotenv>("dotenv");
-            dotenv.config({ path: ".env" });
+            dotenv.config({ export: true });
         }
 
         // Determine config file name

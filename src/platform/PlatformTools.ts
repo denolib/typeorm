@@ -61,8 +61,10 @@ export class PlatformTools {
                 return import("../../vendor/https/deno.land/x/sqlite/mod.ts");
             case "mysql":
                 return import("../../vendor/https/deno.land/x/mysql/mod.ts");
+            case "dotenv":
+                return import("../../vendor/https/deno.land/x/dotenv/mod.ts");
             default:
-                throw new NotImplementedError('PlatformTools.load');
+                throw new NotImplementedError(`PlatformTools.load("${name}")`);
         }
     }
 
