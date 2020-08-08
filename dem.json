@@ -7,6 +7,7 @@
       "files": [
         "/async/deferred.ts",
         "/encoding/utf8.ts",
+        "/encoding/yaml.ts",
         "/fmt/colors.ts",
         "/fs/empty_dir.ts",
         "/fs/ensure_dir.ts",

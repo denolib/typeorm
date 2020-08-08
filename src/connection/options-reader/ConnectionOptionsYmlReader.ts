@@ -13,9 +13,13 @@ export class ConnectionOptionsYmlReader {
     /**
      * Reads connection options from given yml file.
      */
-    read(path: string): ConnectionOptions[] {
-        const ymlParser = PlatformTools.load("js-yaml");
-        const config = ymlParser.safeLoad(PlatformTools.readFileSync(path));
+    async read(path: string): Promise<ConnectionOptions[]> {
+        type StdYaml = {
+            parse(content: string): { [name: string]: ConnectionOptions };
+        };
+        const ymlParser = await PlatformTools.load<StdYaml>("js-yaml");
+        const decoder = new TextDecoder();
+        const config = ymlParser.parse(decoder.decode(PlatformTools.readFileSync(path)));
         return Object.keys(config).map(connectionName => {
             return Object.assign({ name: connectionName }, config[connectionName]);
         });
