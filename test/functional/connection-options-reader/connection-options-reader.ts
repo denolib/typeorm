@@ -40,6 +40,16 @@ describe("ConnectionOptionsReader", () => {
     expect(fileOptions.database).to.have.string("/test-js-async");
   });
 
+  it("properly loads config from .yml file", async () => {
+    const connectionOptionsReader = new ConnectionOptionsReader({ root: __dirname, configName: "configs/config.yml" });
+    const defaultOptions: ConnectionOptions = await connectionOptionsReader.get("default");
+    const sampleOptions: ConnectionOptions = await connectionOptionsReader.get("sample");
+    expect(defaultOptions.type).to.equal("sqlite");
+    expect(defaultOptions.database).to.have.string("sqlitedb");
+    expect(sampleOptions.type).to.equal("mysql");
+    expect(sampleOptions.database).to.equal("mysqldb");
+  });
+
   it("properly loads config from .env file", async () => {
     const connectionOptionsReader = new ConnectionOptionsReader({ root: __dirname, configName: "configs/.env" });
     const [ fileOptions ]: ConnectionOptions[] = await connectionOptionsReader.all();

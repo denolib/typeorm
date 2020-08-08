@@ -47,7 +47,13 @@ export class PlatformTools {
      * Loads ("require"-s) given file or package.
      * This operation only supports on node platform
      */
-    static load<T>(name: "postgres" | "sqlite" | "mysql" | "dotenv"): Promise<T>;
+    static load<T>(name:
+        "postgres" |
+        "sqlite" |
+        "mysql" |
+        "dotenv" |
+        "js-yaml"
+    ): Promise<T>;
     static load(name: string): any;
     static load(name: any): any {
 
@@ -63,6 +69,8 @@ export class PlatformTools {
                 return import("../../vendor/https/deno.land/x/mysql/mod.ts");
             case "dotenv":
                 return import("../../vendor/https/deno.land/x/dotenv/mod.ts");
+            case "js-yaml":
+                return import("../../vendor/https/deno.land/std/encoding/yaml.ts");
             default:
                 throw new NotImplementedError(`PlatformTools.load("${name}")`);
         }
@@ -104,8 +112,8 @@ export class PlatformTools {
         return Deno.readFile(filename);
     }
 
-    static readFileSync(filename: string): Buffer {
-        throw new NotImplementedError('PlatformTools.readFileSync');
+    static readFileSync(filename: string): Uint8Array {
+        return Deno.readFileSync(filename);
     }
 
     static appendFileSync(filename: string, data: any): void {

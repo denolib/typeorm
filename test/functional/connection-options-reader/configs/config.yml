@@ -1,0 +1,8 @@
+default:
+  type: "sqlite"
+  database: "sqlitedb"
+sample:
+  type: "mysql"
+  database: "mysqldb"
+  username: "test"
+  password: "test"

@@ -121,10 +121,10 @@ export class ConnectionOptionsReader {
             connectionOptions = await this.loadJson(configFile);
 
         } else if (foundFileFormat === "yml") {
-            connectionOptions = new ConnectionOptionsYmlReader().read(configFile);
+            connectionOptions = await new ConnectionOptionsYmlReader().read(configFile);
 
         } else if (foundFileFormat === "yaml") {
-            connectionOptions = new ConnectionOptionsYmlReader().read(configFile);
+            connectionOptions = await new ConnectionOptionsYmlReader().read(configFile);
 
         } else if (foundFileFormat === "xml") {
             connectionOptions = await new ConnectionOptionsXmlReader().read(configFile);
