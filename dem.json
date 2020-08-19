@@ -3,7 +3,7 @@
     {
       "protocol": "https",
       "path": "deno.land/std",
-      "version": "v0.64.0",
+      "version": "0.65.0",
       "files": [
         "/async/deferred.ts",
         "/encoding/utf8.ts",
