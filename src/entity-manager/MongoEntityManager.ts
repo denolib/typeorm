@@ -77,6 +77,10 @@ export class MongoEntityManager extends EntityManager {
     /**
      * Gets query runner used to execute queries.
      */
+    // FIXME After upgrading Deno from v1.3.0 to v.1.3.2, compilation fails with the following error:
+    //   `error: TS2611 [ERROR]: 'queryRunner' is defined as a property in class 'EntityManager', but is overridden here in 'MongoEntityManager' as an accessor.`
+    //   This is probably due to the update of TypeScript to v4.
+    // @ts-ignore
     get queryRunner(): MongoQueryRunner {
         return (this.connection.driver as MongoDriver).queryRunner!;
     }
