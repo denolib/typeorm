@@ -1,5 +1,5 @@
 import {CommandBuilder, CommandModule, Args} from "./CliBuilder.ts";
-import {VERSION} from "../version.ts";
+import {VERSION, BASE_TYPEORM_VERSION} from "../version.ts";
 
 /**
  * Shows typeorm version.
@@ -11,6 +11,7 @@ export class VersionCommand implements CommandModule {
     async handler() {
 
         console.log("TypeORM CLI version:", VERSION);
+        console.log("Base TypeORM version:", BASE_TYPEORM_VERSION);
     }
 
 }
