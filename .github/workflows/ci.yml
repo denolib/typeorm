@@ -31,7 +31,7 @@ jobs:
     - uses: actions/checkout@master
     - uses: denolib/setup-deno@master
       with:
-        deno-version: 1.4.1
+        deno-version: 1.5.1
     - name: Check cli.ts
       run: |
         deno run -A ./cli.ts version
