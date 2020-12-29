@@ -3,21 +3,21 @@ import {CommandUtils} from "./CommandUtils.ts";
 import {camelCase} from "../util/StringUtils.ts";
 import {Connection} from "../connection/Connection.ts";
 import {ConnectionOptions} from "../connection/ConnectionOptions.ts";
-import {CommandBuilder, CommandModule, Args} from "./CliBuilder.ts";
 import * as colors from "../../vendor/https/deno.land/std/fmt/colors.ts";
 import {process} from "../../vendor/https/deno.land/std/node/process.ts";
 import {MOD_URL} from "../version.ts";
+import type * as yargs from "./types.ts";
 
 /**
  * Creates a new migration file.
  */
-export class MigrationCreateCommand implements CommandModule {
+export class MigrationCreateCommand implements yargs.CommandModule {
 
     command = "migration:create";
     describe = "Creates a new migration file.";
     aliases = "migrations:create";
 
-    builder(args: CommandBuilder) {
+    builder(args: yargs.Argv) {
         return args
             .option("c", {
                 alias: "connection",
@@ -40,7 +40,7 @@ export class MigrationCreateCommand implements CommandModule {
             });
     }
 
-    async handler(args: Args) {
+    async handler(args: yargs.Arguments) {
         if (args._[0] === "migrations:create") {
             console.log("'migrations:create' is deprecated, please use 'migration:create' instead");
         }

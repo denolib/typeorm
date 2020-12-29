@@ -3,19 +3,19 @@ import {QueryRunner} from "../query-runner/QueryRunner.ts";
 import {ConnectionOptionsReader} from "../connection/ConnectionOptionsReader.ts";
 import {Connection} from "../connection/Connection.ts";
 import {PlatformTools} from "../platform/PlatformTools.ts";
-import {CommandModule, CommandBuilder, Args} from "./CliBuilder.ts";
 import * as colors from "../../vendor/https/deno.land/std/fmt/colors.ts";
 import { process } from "../../vendor/https/deno.land/std/node/process.ts";
+import type * as yargs from "./types.ts";
 
 
 /**
  * Executes an sql query on the given connection.
  */
-export class QueryCommand implements CommandModule {
+export class QueryCommand implements yargs.CommandModule {
     command = "query";
     describe = "Executes given SQL query on a default connection. Specify connection name to run query on a specific connection.";
 
-    builder(args: CommandBuilder) {
+    builder(args: yargs.Argv) {
         return args
             .option("c", {
                 alias: "connection",
@@ -29,7 +29,7 @@ export class QueryCommand implements CommandModule {
             });
     }
 
-    async handler(args: Args) {
+    async handler(args: yargs.Arguments) {
         let connection: Connection|undefined = undefined;
         let queryRunner: QueryRunner|undefined = undefined;
         try {
@@ -50,8 +50,8 @@ export class QueryCommand implements CommandModule {
 
             // create a query runner and execute query using it
             queryRunner = connection.createQueryRunner("master");
-            console.log(colors.green("Running query: ") + PlatformTools.highlightSql(args._[1]));
-            const queryResult = await queryRunner.query(args._[1]);
+            console.log(colors.green("Running query: ") + PlatformTools.highlightSql(args._[1] as string));
+            const queryResult = await queryRunner.query(args._[1] as string);
             console.log(colors.green("Query has been executed. Result: "));
             console.log(PlatformTools.highlightJson(JSON.stringify(queryResult, undefined, 2)));
 

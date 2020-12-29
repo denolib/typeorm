@@ -2,19 +2,19 @@ import {createConnection} from "../index.ts";
 import {Connection} from "../connection/Connection.ts";
 import {ConnectionOptionsReader} from "../connection/ConnectionOptionsReader.ts";
 import {ConnectionOptions} from "../connection/ConnectionOptions.ts";
-import {CommandModule, CommandBuilder, Args} from "./CliBuilder.ts";
 import * as colors from "../../vendor/https/deno.land/std/fmt/colors.ts";
 import {process} from "../../vendor/https/deno.land/std/node/process.ts";
+import type * as yargs from "./types.ts";
 
 /**
  * Drops all tables of the database from the given connection.
  */
-export class SchemaDropCommand implements CommandModule {
+export class SchemaDropCommand implements yargs.CommandModule {
     command = "schema:drop";
     describe = "Drops all tables in the database on your default connection. " +
         "To drop table of a concrete connection's database use -c option.";
 
-    builder(args: CommandBuilder) {
+    builder(args: yargs.Argv) {
         return args
             .option("c", {
                 alias: "connection",
@@ -28,7 +28,7 @@ export class SchemaDropCommand implements CommandModule {
             });
     }
 
-    async handler(args: Args) {
+    async handler(args: yargs.Arguments) {
 
         let connection: Connection|undefined = undefined;
         try {

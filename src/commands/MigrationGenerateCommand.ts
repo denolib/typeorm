@@ -6,21 +6,21 @@ import {MysqlDriver} from "../driver/mysql/MysqlDriver.ts";
 import {camelCase} from "../util/StringUtils.ts";
 import {AuroraDataApiDriver} from "../driver/aurora-data-api/AuroraDataApiDriver.ts";
 import {ConnectionOptions} from "../connection/ConnectionOptions.ts";
-import {CommandBuilder, CommandModule, Args} from "./CliBuilder.ts";
 import * as colors from "../../vendor/https/deno.land/std/fmt/colors.ts";
 import {process} from "../../vendor/https/deno.land/std/node/process.ts";
 import {MOD_URL} from "../version.ts";
+import type * as yargs from "./types.ts";
 
 /**
  * Generates a new migration file with sql needs to be executed to update schema.
  */
-export class MigrationGenerateCommand implements CommandModule {
+export class MigrationGenerateCommand implements yargs.CommandModule {
 
     command = "migration:generate";
     describe = "Generates a new migration file with sql needs to be executed to update schema.";
     aliases = "migrations:generate";
 
-    builder(args: CommandBuilder) {
+    builder(args: yargs.Argv) {
         return args
             .option("c", {
                 alias: "connection",
@@ -43,7 +43,7 @@ export class MigrationGenerateCommand implements CommandModule {
             });
     }
 
-    async handler(args: Args) {
+    async handler(args: yargs.Arguments) {
         if (args._[0] === "migrations:generate") {
             console.log("'migrations:generate' is deprecated, please use 'migration:generate' instead");
         }

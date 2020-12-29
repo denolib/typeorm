@@ -1,5 +1,5 @@
 #!/usr/bin/env deno
-import {createCliBuilder} from "./commands/CliBuilder.ts";
+import yargs from "../vendor/https/deno.land/x/yargs/deno.ts";
 import {SchemaSyncCommand} from "./commands/SchemaSyncCommand.ts";
 import {SchemaDropCommand} from "./commands/SchemaDropCommand.ts";
 import {QueryCommand} from "./commands/QueryCommand.ts";
@@ -14,10 +14,9 @@ import {MigrationGenerateCommand} from "./commands/MigrationGenerateCommand.ts";
 import {VersionCommand} from "./commands/VersionCommand.ts";
 import {InitCommand} from "./commands/InitCommand.ts";
 import {CacheClearCommand} from "./commands/CacheClearCommand.ts";
-import {VERSION} from "./version.ts";
 
-createCliBuilder()
-    // .usage("Usage: $0 <command> [options]")
+yargs(Deno.args)
+    .usage("Usage: $0 <command> [options]")
     .command(new SchemaSyncCommand())
     .command(new SchemaLogCommand())
     .command(new SchemaDropCommand())
@@ -32,15 +31,13 @@ createCliBuilder()
     .command(new VersionCommand())
     .command(new CacheClearCommand())
     .command(new InitCommand())
-    // .recommendCommands()
-    // .demandCommand(1)
-    // .strict()
-    // .alias("v", "version")
-    // .help("h")
-    // .alias("h", "help")
-    // .argv;
-    .version(VERSION)
-    .parse();
+    .recommendCommands()
+    .demandCommand(1)
+    .strict()
+    .alias("v", "version")
+    .help("h")
+    .alias("h", "help")
+    .argv;
 
 // require("yargonaut")
 //     .style("blue")

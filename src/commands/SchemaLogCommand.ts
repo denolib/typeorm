@@ -3,20 +3,20 @@ import {Connection} from "../connection/Connection.ts";
 import {ConnectionOptionsReader} from "../connection/ConnectionOptionsReader.ts";
 import {ConnectionOptions} from "../connection/ConnectionOptions.ts";
 import {PlatformTools} from "../platform/PlatformTools.ts";
-import {CommandModule, CommandBuilder, Args} from "./CliBuilder.ts";
 import * as colors from "../../vendor/https/deno.land/std/fmt/colors.ts";
 import {process} from "../../vendor/https/deno.land/std/node/process.ts";
+import type * as yargs from "./types.ts";
 
 /**
  * Shows sql to be executed by schema:sync command.
  */
-export class SchemaLogCommand implements CommandModule {
+export class SchemaLogCommand implements yargs.CommandModule {
 
     command = "schema:log";
     describe = "Shows sql to be executed by schema:sync command. It shows sql log only for your default connection. " +
         "To run update queries on a concrete connection use -c option.";
 
-    builder(args: CommandBuilder) {
+    builder(args: yargs.Argv) {
         return args
             .option("c", {
                 alias: "connection",
@@ -30,7 +30,7 @@ export class SchemaLogCommand implements CommandModule {
             });
     }
 
-    async handler(args: Args) {
+    async handler(args: yargs.Arguments) {
 
         let connection: Connection|undefined = undefined;
         try {

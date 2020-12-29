@@ -1,19 +1,19 @@
 import {ConnectionOptionsReader} from "../connection/ConnectionOptionsReader.ts";
 import {CommandUtils} from "./CommandUtils.ts";
 import {ConnectionOptions} from "../connection/ConnectionOptions.ts";
-import {CommandBuilder, CommandModule, Args} from "./CliBuilder.ts";
 import * as colors from "../../vendor/https/deno.land/std/fmt/colors.ts";
 import {process} from "../../vendor/https/deno.land/std/node/process.ts";
 import {MOD_URL} from "../version.ts";
+import type * as yargs from "./types.ts";
 
 /**
  * Generates a new subscriber.
  */
-export class SubscriberCreateCommand implements CommandModule {
+export class SubscriberCreateCommand implements yargs.CommandModule {
     command = "subscriber:create";
     describe = "Generates a new subscriber.";
 
-    builder(args: CommandBuilder) {
+    builder(args: yargs.Argv) {
         return args
             .option("c", {
                 alias: "connection",
@@ -36,7 +36,7 @@ export class SubscriberCreateCommand implements CommandModule {
             });
     }
 
-    async handler(args: Args) {
+    async handler(args: yargs.Arguments) {
 
         try {
             const fileContent = SubscriberCreateCommand.getTemplate(args.name as any);

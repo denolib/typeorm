@@ -1,8 +1,5 @@
 import {runTests} from "./test/deps/mocha.ts";
 
-// Unit tests
-import "./test/unit/commands/CliBuilder.ts";
-
 // Integration tests
 import "./test/integration/sample1-simple-entity.ts";
 

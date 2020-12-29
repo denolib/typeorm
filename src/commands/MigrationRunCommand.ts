@@ -2,20 +2,20 @@ import {createConnection} from "../index.ts";
 import {ConnectionOptionsReader} from "../connection/ConnectionOptionsReader.ts";
 import {Connection} from "../connection/Connection.ts";
 import {ConnectionOptions} from "../connection/ConnectionOptions.ts";
-import {CommandBuilder, CommandModule, Args} from "./CliBuilder.ts";
 import * as colors from "../../vendor/https/deno.land/std/fmt/colors.ts";
 import {process} from "../../vendor/https/deno.land/std/node/process.ts";
+import type * as yargs from "./types.ts";
 
 /**
  * Runs migration command.
  */
-export class MigrationRunCommand implements CommandModule {
+export class MigrationRunCommand implements yargs.CommandModule {
 
     command = "migration:run";
     describe = "Runs all pending migrations.";
     aliases = "migrations:run";
 
-    builder(args: CommandBuilder) {
+    builder(args: yargs.Argv) {
         return args
             .option("connection", {
                 alias: "c",
@@ -34,7 +34,7 @@ export class MigrationRunCommand implements CommandModule {
             });
     }
 
-    async handler(args: Args) {
+    async handler(args: yargs.Arguments) {
         if (args._[0] === "migrations:run") {
             console.log("'migrations:run' is deprecated, please use 'migration:run' instead");
         }
