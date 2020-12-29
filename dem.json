@@ -29,7 +29,7 @@
     {
       "protocol": "https",
       "path": "deno.land/x/mysql",
-      "version": "v2.6.0",
+      "version": "v2.7.0",
       "files": [
         "/mod.ts"
       ]
@@ -37,7 +37,7 @@
     {
       "protocol": "https",
       "path": "deno.land/x/postgres",
-      "version": "v0.4.5",
+      "version": "v0.4.6",
       "files": [
         "/mod.ts"
       ]
