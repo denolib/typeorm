@@ -2,19 +2,19 @@ import {createConnection} from "../index.ts";
 import {Connection} from "../connection/Connection.ts";
 import {ConnectionOptionsReader} from "../connection/ConnectionOptionsReader.ts";
 import {ConnectionOptions} from "../connection/ConnectionOptions.ts";
-import {CommandModule, CommandBuilder, Args} from "./CliBuilder.ts";
 import * as colors from "../../vendor/https/deno.land/std/fmt/colors.ts";
 import {process} from "../../vendor/https/deno.land/std/node/process.ts";
+import type * as yargs from "./types.ts";
 
 /**
  * Synchronizes database schema with entities.
  */
-export class SchemaSyncCommand implements CommandModule {
+export class SchemaSyncCommand implements yargs.CommandModule {
     command = "schema:sync";
     describe = "Synchronizes your entities with database schema. It runs schema update queries on all connections you have. " +
         "To run update queries on a concrete connection use -c option.";
 
-    builder(args: CommandBuilder) {
+    builder(args: yargs.Argv) {
         return args
             .option("c", {
                 alias: "connection",
@@ -28,7 +28,7 @@ export class SchemaSyncCommand implements CommandModule {
             });
     }
 
-    async handler(args: Args) {
+    async handler(args: yargs.Arguments) {
 
         let connection: Connection|undefined = undefined;
         try {

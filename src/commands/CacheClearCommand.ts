@@ -2,19 +2,19 @@ import {createConnection} from "../index.ts";
 import {ConnectionOptionsReader} from "../connection/ConnectionOptionsReader.ts";
 import {Connection} from "../connection/Connection.ts";
 import {ConnectionOptions} from "../connection/ConnectionOptions.ts";
-import {CommandBuilder, CommandModule, Args} from "./CliBuilder.ts";
 import * as colors from "../../vendor/https/deno.land/std/fmt/colors.ts";
 import {process} from "../../vendor/https/deno.land/std/node/process.ts";
+import type * as yargs from "./types.ts";
 
 /**
  * Clear cache command.
  */
-export class CacheClearCommand implements CommandModule {
+export class CacheClearCommand implements yargs.CommandModule {
 
     command = "cache:clear";
     describe = "Clears all data stored in query runner cache.";
 
-    builder(args: CommandBuilder) {
+    builder(args: yargs.Argv) {
         return args
             .option("connection", {
                 alias: "c",
@@ -28,7 +28,7 @@ export class CacheClearCommand implements CommandModule {
             });
     }
 
-    async handler(args: Args) {
+    async handler(args: yargs.Arguments) {
 
         let connection: Connection|undefined = undefined;
         try {

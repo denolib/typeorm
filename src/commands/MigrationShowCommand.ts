@@ -2,19 +2,19 @@ import {createConnection} from "../index.ts";
 import {ConnectionOptionsReader} from "../connection/ConnectionOptionsReader.ts";
 import {Connection} from "../connection/Connection.ts";
 import {ConnectionOptions} from "../connection/ConnectionOptions.ts";
-import {CommandBuilder, CommandModule, Args} from "./CliBuilder.ts";
 import * as colors from "../../vendor/https/deno.land/std/fmt/colors.ts";
 import {process} from "../../vendor/https/deno.land/std/node/process.ts";
+import type * as yargs from "./types.ts";
 
 /**
  * Runs migration command.
  */
-export class MigrationShowCommand implements CommandModule {
+export class MigrationShowCommand implements yargs.CommandModule {
 
   command = "migration:show";
   describe = "Show all migrations and whether they have been run or not";
 
-  builder(args: CommandBuilder) {
+  builder(args: yargs.Argv) {
     return args
       .option("connection", {
         alias: "c",
@@ -28,7 +28,7 @@ export class MigrationShowCommand implements CommandModule {
       });
   }
 
-  async handler(args: Args) {
+  async handler(args: yargs.Arguments) {
     let connection: Connection|undefined = undefined;
     try {
       const connectionOptionsReader = new ConnectionOptionsReader({

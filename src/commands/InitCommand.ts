@@ -1,21 +1,21 @@
 import {CommandUtils} from "./CommandUtils.ts";
 import {ObjectLiteral} from "../common/ObjectLiteral.ts";
-import {CommandBuilder, CommandModule, Args} from "./CliBuilder.ts";
 import * as colors from "../../vendor/https/deno.land/std/fmt/colors.ts";
 import {process} from "../../vendor/https/deno.land/std/node/process.ts";
 import {MOD_URL} from "../version.ts";
 import * as path from "../../vendor/https/deno.land/std/path/mod.ts";
+import type * as yargs from "./types.ts";
 
 /**
  * Generates a new project with TypeORM.
  */
-export class InitCommand implements CommandModule {
+export class InitCommand implements yargs.CommandModule {
     command = "init";
     describe = "Generates initial TypeORM project structure. " +
         "If name specified then creates files inside directory called as name. " +
         "If its not specified then creates files inside current directory.";
 
-    builder(args: CommandBuilder) {
+    builder(args: yargs.Argv) {
         return args
             .option("c", {
                 alias: "connection",
@@ -35,7 +35,7 @@ export class InitCommand implements CommandModule {
             });
     }
 
-    async handler(args: Args) {
+    async handler(args: yargs.Arguments) {
         try {
             const database: string = args.database as any || "mysql";
             const isDocker = args.docker !== undefined ? true : false;

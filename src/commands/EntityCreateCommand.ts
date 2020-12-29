@@ -1,18 +1,18 @@
 import {ConnectionOptionsReader} from "../connection/ConnectionOptionsReader.ts";
 import {CommandUtils} from "./CommandUtils.ts";
-import {CommandBuilder, CommandModule, Args} from "./CliBuilder.ts";
 import {MOD_URL} from "../version.ts";
 import * as colors from "../../vendor/https/deno.land/std/fmt/colors.ts";
 import {process} from "../../vendor/https/deno.land/std/node/process.ts";
+import type * as yargs from "./types.ts";
 
 /**
  * Generates a new entity.
  */
-export class EntityCreateCommand implements CommandModule {
+export class EntityCreateCommand implements yargs.CommandModule {
     command = "entity:create";
     describe = "Generates a new entity.";
 
-    builder(args: CommandBuilder) {
+    builder(args: yargs.Argv) {
         return args
             .option("c", {
                 alias: "connection",
@@ -35,7 +35,7 @@ export class EntityCreateCommand implements CommandModule {
             });
     }
 
-    async handler(args: Args) {
+    async handler(args: yargs.Arguments) {
         try {
             const fileContent = EntityCreateCommand.getTemplate(args.name as any);
             const filename = args.name + ".ts";

@@ -2,20 +2,20 @@ import {createConnection} from "../index.ts";
 import {ConnectionOptionsReader} from "../connection/ConnectionOptionsReader.ts";
 import {Connection} from "../connection/Connection.ts";
 import {ConnectionOptions} from "../connection/ConnectionOptions.ts";
-import {CommandBuilder, CommandModule, Args} from "./CliBuilder.ts";
 import * as colors from "../../vendor/https/deno.land/std/fmt/colors.ts";
 import {process} from "../../vendor/https/deno.land/std/node/process.ts";
+import type * as yargs from "./types.ts";
 
 /**
  * Reverts last migration command.
  */
-export class MigrationRevertCommand implements CommandModule {
+export class MigrationRevertCommand implements yargs.CommandModule {
 
     command = "migration:revert";
     describe = "Reverts last executed migration.";
     aliases = "migrations:revert";
 
-    builder(args: CommandBuilder) {
+    builder(args: yargs.Argv) {
         return args
             .option("c", {
                 alias: "connection",
@@ -34,7 +34,7 @@ export class MigrationRevertCommand implements CommandModule {
             });
     }
 
-    async handler(args: Args) {
+    async handler(args: yargs.Arguments) {
         if (args._[0] === "migrations:revert") {
             console.log("'migrations:revert' is deprecated, please use 'migration:revert' instead");
         }
