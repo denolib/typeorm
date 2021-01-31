@@ -38,4 +38,4 @@ jobs:
     - name: Run tests
       run: |
         cp ./ormconfig.gh-actions.json ./ormconfig.json
-        deno run --allow-read --allow-write --allow-env --allow-net --config ./tsconfig.json -r ./test.ts
+        deno run --allow-read --allow-write --allow-env --allow-net --config ./tsconfig.json -r --location=http://127.0.0.1 ./test.ts
