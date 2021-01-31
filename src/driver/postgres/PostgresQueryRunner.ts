@@ -22,7 +22,7 @@ import {OrmUtils} from "../../util/OrmUtils.ts";
 import {Query} from "../Query.ts";
 import {IsolationLevel} from "../types/IsolationLevel.ts";
 import {PostgresDriver} from "./PostgresDriver.ts";
-import {PoolClient, QueryResult} from "./typings.ts";
+import {PoolClient, QueryArrayResult} from "./typings.ts";
 import {NotImplementedError} from "../../error/NotImplementedError.ts";
 import {PromiseQueue} from "../../util/PromiseQueue.ts";
 
@@ -156,7 +156,7 @@ export class PostgresQueryRunner extends BaseQueryRunner implements QueryRunner 
         this.isTransactionActive = false;
     }
 
-    private queryQueueMap = new Map<PoolClient, PromiseQueue<QueryResult>>();
+    private queryQueueMap = new Map<PoolClient, PromiseQueue<QueryArrayResult>>();
 
     /**
      * TODO Remove this method.
@@ -164,14 +164,14 @@ export class PostgresQueryRunner extends BaseQueryRunner implements QueryRunner 
      */
     private executeQuery(connection: PoolClient, query: string, parameters: any[]) {
         if (!this.queryQueueMap.has(connection)) {
-            const queue = new PromiseQueue<QueryResult>();
+            const queue = new PromiseQueue<QueryArrayResult>();
             this.queryQueueMap.set(connection, queue);
             queue.onEmpty().then(() => {
                 this.queryQueueMap.delete(connection);
             });
         }
         const queue = this.queryQueueMap.get(connection);
-        return queue!.add(() => connection.query(query, ...parameters));
+        return queue!.add(() => connection.queryArray(query, ...parameters));
     }
 
     /**
@@ -189,7 +189,7 @@ export class PostgresQueryRunner extends BaseQueryRunner implements QueryRunner 
         const queryStartTime = +new Date();
 
         let error: any | undefined;
-        let result: QueryResult | undefined;
+        let result: QueryArrayResult | undefined;
         try {
             //result = await databaseConnection.query(query, ...(parameters || []));
             result = await this.executeQuery(databaseConnection, query, parameters || []);
@@ -208,7 +208,7 @@ export class PostgresQueryRunner extends BaseQueryRunner implements QueryRunner 
             this.driver.connection.logger.logQueryError(error, query, parameters, this);
             return Promise.reject(new QueryFailedError(query, parameters, error));
         } else {
-            // TODO(uki00a) Use `QueryResult#rowsOfObjects`.
+            // TODO(uki00a) Use `PoolClient#queryObject` instead of `PoolClient#queryArray`.
             // return result.rowsOfObjects();
             const rawObjects = [];
             for (const row of result!.rows) {

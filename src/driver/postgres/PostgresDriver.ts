@@ -957,7 +957,7 @@ export class PostgresDriver implements Driver {
      * Executes given query.
      */
     protected executeQuery(connection: PoolClient, query: string) {
-        return connection.query(query);
+        return connection.queryArray(query);
     }
 
 }

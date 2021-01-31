@@ -23,16 +23,15 @@ export interface Pool {
 }
 
 interface Client {
-    query(): Promise<QueryResult>;
+    queryArray(): Promise<QueryArrayResult>;
 }
 
 export interface PoolClient {
-    query(query: string, ...params: any[]): Promise<QueryResult>;
+    queryArray(query: string, ...params: any[]): Promise<QueryArrayResult>;
     release(): Promise<void>;
 }
 
 export interface QueryResult {
-    rows: Array<any[]>;
     rowCount?: number;
     rowDescription: {
         columnCount: number;
@@ -41,3 +40,6 @@ export interface QueryResult {
     command: string;
 }
 
+export interface QueryArrayResult extends QueryResult {
+    rows: Array<any[]>;
+}
