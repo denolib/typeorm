@@ -31,11 +31,11 @@ jobs:
     - uses: actions/checkout@master
     - uses: denolib/setup-deno@master
       with:
-        deno-version: 1.6.2
+        deno-version: 1.7.1
     - name: Check cli.ts
       run: |
         deno run -A ./cli.ts version
     - name: Run tests
       run: |
         cp ./ormconfig.gh-actions.json ./ormconfig.json
-        deno run --allow-read --allow-write --allow-env --allow-net --config ./tsconfig.json -r ./test.ts
+        deno run --allow-read --allow-write --allow-env --allow-net --config ./tsconfig.json -r --location=http://127.0.0.1 ./test.ts
