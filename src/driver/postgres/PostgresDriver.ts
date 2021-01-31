@@ -544,6 +544,16 @@ export class PostgresDriver implements Driver {
                 value = !isNaN(+value) && columnMetadata.enum!.indexOf(parseInt(value)) >= 0 ? parseInt(value) : value;
             }
         }
+        // Specific handling for denolib/typeorm
+        else if (columnMetadata.type === "float4" || columnMetadata.type === "float8" || columnMetadata.type === "double precision" || columnMetadata.type === "real") {
+            // In deno-postgres v0.7.0, these types are treated as String.
+            // We convert these types to Number for the compatibility with the original typeorm.
+            value = Number(value);
+        } else if (columnMetadata.type === "bigint" || columnMetadata.type === "int8") {
+            // In deno-postgres, these types are treated as BigInt.
+            // We convert these types to String for the compability with the original typeorm.
+            value = value.toString();
+        }
 
         if (columnMetadata.transformer)
             value = ApplyValueTransformers.transformFrom(columnMetadata.transformer, value);

@@ -31,7 +31,7 @@ export class Post {
     int2!: number;
 
     @Column("bigint")
-    bigint!: BigInt;
+    bigint!: String;
 
     @Column("int8")
     int8!: string;
