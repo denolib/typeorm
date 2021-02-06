@@ -2,7 +2,7 @@ import {runIfMain} from "../../deps/mocha.ts";
 import {expect} from "../../deps/chai.ts";
 import {createTestingConnections, closeTestingConnections, reloadTestingDatabases} from "../../utils/test-utils.ts";
 import {Connection} from "../../../src/connection/Connection.ts";
-//import {PostgresDriver} from "../../../src/driver/postgres/PostgresDriver.ts";
+import {PostgresDriver} from "../../../src/driver/postgres/PostgresDriver.ts";
 import {User} from "./entity/User.ts";
 
 describe("github issues > #2067 Unhandled promise rejection warning on postgres connection issues", () => {
@@ -20,7 +20,7 @@ describe("github issues > #2067 Unhandled promise rejection warning on postgres 
     it("should return a catchable error on connection errors in queries", () => Promise.all(connections.map(async connection => {
         const connectionFailureMessage = "Test error to simulate a connection error";
 
-        if (false/*connection.driver instanceof PostgresDriver*/) { // TODO(uki00a) uncomment this when PostgresDriver is implemented.
+        if (connection.driver instanceof PostgresDriver) {
           connection.driver.obtainMasterConnection = () => Promise.reject<any>(new Error(connectionFailureMessage));
           connection.driver.obtainSlaveConnection = () => Promise.reject<any>(new Error(connectionFailureMessage));
         }
