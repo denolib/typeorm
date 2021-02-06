@@ -3,7 +3,7 @@ import {expect} from "../../deps/chai.ts";
 import { closeTestingConnections, createTestingConnections, reloadTestingDatabases } from "../../utils/test-utils.ts";
 import { Connection } from "../../../src/connection/Connection.ts";
 import { Post } from "./entity/Post.ts";
-//import { PostgresDriver } from "../../../src/driver/postgres/PostgresDriver.ts";
+import { PostgresDriver } from "../../../src/driver/postgres/PostgresDriver.ts";
 
 describe("github issues > #2128 skip preparePersistentValue for value functions", () => {
 
@@ -38,7 +38,7 @@ describe("github issues > #2128 skip preparePersistentValue for value functions"
         await connection.createQueryBuilder()
             .update(Post)
             .set({
-                meta: () => false/*connection.driver instanceof PostgresDriver*/ // TODO(uki00a) uncomment this when PostgresDriver is implemented.
+                meta: () => connection.driver instanceof PostgresDriver
                     ? `'${metaAddition}'::JSONB || meta::JSONB`
                     : `JSON_MERGE('${metaAddition}', meta)`
             })
