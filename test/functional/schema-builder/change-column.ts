@@ -6,8 +6,7 @@ import {AuroraDataApiDriver} from "../../../src/driver/aurora-data-api/AuroraDat
 // import {CockroachDriver} from "../../../src/driver/cockroachdb/CockroachDriver.ts";
 import {MysqlDriver} from "../../../src/driver/mysql/MysqlDriver.ts";
 import {OracleDriver} from "../../../src/driver/oracle/OracleDriver.ts";
-// TODO(uki00a) uncomment this when PostgresDriver is implemented.
-// import {PostgresDriver} from "../../../src/driver/postgres/PostgresDriver.ts";
+import {PostgresDriver} from "../../../src/driver/postgres/PostgresDriver.ts";
 import {SapDriver} from "../../../src/driver/sap/SapDriver.ts";
 import {AbstractSqliteDriver} from "../../../src/driver/sqlite-abstract/AbstractSqliteDriver.ts";
 import {SqlServerDriver} from "../../../src/driver/sqlserver/SqlServerDriver.ts";
@@ -169,7 +168,7 @@ describe("schema builder > change column", () => {
 
         const queryRunner = connection.createQueryRunner();
 
-        if (false/*connection.driver instanceof PostgresDriver*/) // TODO(uki00a) uncomment this when PostgresDriver is implemented.
+        if (connection.driver instanceof PostgresDriver)
             await queryRunner.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`);
 
         const postMetadata = connection.getMetadata(Post);
@@ -178,9 +177,7 @@ describe("schema builder > change column", () => {
         idColumn.generationStrategy = "uuid";
 
         // depending on driver, we must change column and referenced column types
-        if (false/*connection.driver instanceof PostgresDriver || connection.driver instanceof CockroachDriver*/) {
-            // TODO(uki00a) uncomment this when PostgresDriver is implemented.
-            // TODO(uki00a) uncomment this when CockroachDriver is implemented.
+        if (connection.driver instanceof PostgresDriver/* || connection.driver instanceof CockroachDriver*/) { // TODO(uki00a) uncomment this when CockroachDriver is implemented.
             idColumn.type = "uuid";
         } else if (connection.driver instanceof SqlServerDriver) {
             idColumn.type = "uniqueidentifier";
@@ -193,9 +190,7 @@ describe("schema builder > change column", () => {
         const postTable = await queryRunner.getTable("post");
         await queryRunner.release();
 
-        if (/*connection.driver instanceof PostgresDriver || */connection.driver instanceof SqlServerDriver/* || connection.driver instanceof CockroachDriver*/) {
-            // TODO(uki00a) uncomment this when PostgresDriver is implemented.
-            // TODO(uki00a) uncomment this when CockroachDriver is implemented.
+        if (connection.driver instanceof PostgresDriver || connection.driver instanceof SqlServerDriver/* || connection.driver instanceof CockroachDriver*/) { // TODO(uki00a) uncomment this when CockroachDriver is implemented.
             postTable!.findColumnByName("id")!.isGenerated.should.be.true;
             postTable!.findColumnByName("id")!.generationStrategy!.should.be.equal("uuid");
 
@@ -226,9 +221,7 @@ describe("schema builder > change column", () => {
         idColumn.generationStrategy = "uuid";
 
         // depending on driver, we must change column and referenced column types
-        if (false/*connection.driver instanceof PostgresDriver || connection.driver instanceof CockroachDriver*/) {
-            // TODO(uki00a) uncomment this when PostgresDriver is implemented.
-            // TODO(uki00a) uncomment this when CockroachDriver is implemented.
+        if (connection.driver instanceof PostgresDriver/* || connection.driver instanceof CockroachDriver*/) { // TODO(uki00a) uncomment this when CockroachDriver is implemented.
             idColumn.type = "uuid";
             teacherColumn.type = "uuid";
         } else if (connection.driver instanceof SqlServerDriver) {
@@ -245,7 +238,7 @@ describe("schema builder > change column", () => {
         const teacherTable = await queryRunner.getTable("teacher");
         await queryRunner.release();
 
-        if (/*connection.driver instanceof PostgresDriver || */connection.driver instanceof SqlServerDriver) { // TODO(uki00a) uncomment this when PostgresDriver is implemented.
+        if (connection.driver instanceof PostgresDriver || connection.driver instanceof SqlServerDriver) {
             teacherTable!.findColumnByName("id")!.isGenerated.should.be.true;
             teacherTable!.findColumnByName("id")!.generationStrategy!.should.be.equal("uuid");
 
