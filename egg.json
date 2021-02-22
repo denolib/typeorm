@@ -1,0 +1,10 @@
+{
+                                "name": "typeorm",
+                                "description": "Forked from https://github.com/typeorm/typeorm",
+                                "homepage": "https://github.com/denolib/typeorm",
+                                "files": [
+                                  "./**/*.ts",
+                                  "README.md"
+                                ],
+                                "entry": "./mod.ts"
+                              }
