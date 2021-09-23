@@ -54,7 +54,7 @@ export class PostgresQueryRunner extends BaseQueryRunner implements QueryRunner 
      */
     protected releaseCallback!: () => Promise<void>;
 
-    protected databaseConnection!: PoolClient;
+   declare  protected databaseConnection: PoolClient;
 
     // -------------------------------------------------------------------------
     // Constructor

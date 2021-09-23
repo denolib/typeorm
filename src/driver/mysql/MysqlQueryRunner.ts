@@ -51,7 +51,7 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
      */
     protected databaseConnectionPromise!: Promise<[Connection, () => Promise<void>]>;
 
-    protected databaseConnection!: [Connection, () => Promise<void>];
+    declare protected databaseConnection: [Connection, () => Promise<void>];
 
     // -------------------------------------------------------------------------
     // Constructor
