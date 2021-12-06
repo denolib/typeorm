@@ -20,7 +20,7 @@ declare var window: Window;
 
 export class SqljsDriver extends AbstractSqliteDriver implements AutoSavableDriver {
     // The driver specific options.
-    options!: SqljsConnectionOptions;
+    declare options: SqljsConnectionOptions;
 
     // -------------------------------------------------------------------------
     // Constructor

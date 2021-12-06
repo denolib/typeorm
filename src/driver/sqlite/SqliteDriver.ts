@@ -26,9 +26,9 @@ export class SqliteDriver extends AbstractSqliteDriver {
      */
     options: SqliteConnectionOptions;
 
-    databaseConnection!: DB;
+    declare databaseConnection: DB;
 
-    sqlite!: DenoSqlite;
+    declare sqlite: DenoSqlite;
 
 
     // -------------------------------------------------------------------------
